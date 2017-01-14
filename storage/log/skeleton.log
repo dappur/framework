@@ -1,0 +1,47 @@
+[2017-01-13 20:07:26] Skeleton.INFO: this is a test {"test":"test"} {"uid":"2af30cb"}
+[2017-01-13 20:07:26] Skeleton.INFO: this is a test {"test":"test"} {"uid":"2af30cb"}
+[2017-01-13 20:07:54] Skeleton.INFO: this is a test {"test":"test"} {"uid":"5aad261"}
+[2017-01-13 20:07:55] Skeleton.INFO: this is a test {"test":"test"} {"uid":"5aad261"}
+[2017-01-13 20:07:56] Skeleton.INFO: this is a test {"test":"test"} {"uid":"cf789da"}
+[2017-01-13 20:07:56] Skeleton.INFO: this is a test {"test":"test"} {"uid":"cf789da"}
+[2017-01-13 20:07:57] Skeleton.INFO: this is a test {"test":"test"} {"uid":"b7f14d3"}
+[2017-01-13 20:07:57] Skeleton.INFO: this is a test {"test":"test"} {"uid":"b7f14d3"}
+[2017-01-13 20:08:34] Skeleton.INFO: this is a test {"test":"test"} {"uid":"f1f2890"}
+[2017-01-13 20:08:49] Skeleton.INFO: this is a test {"test":"test"} {"uid":"c6e17e0"}
+[2017-01-13 20:08:53] Skeleton.INFO: this is a test {"test":"test"} {"uid":"f6a07c9"}
+[2017-01-13 20:08:57] Skeleton.INFO: this is a test {"test":"test"} {"uid":"e508264"}
+[2017-01-13 20:09:02] Skeleton.INFO: this is a test {"test":"test"} {"uid":"32737b4"}
+[2017-01-13 20:16:56] Skeleton.INFO: this is a test {"test":"test"} {"uid":"7ef3fa3"}
+[2017-01-13 20:17:34] Skeleton.INFO: this is a test {"test":"test"} {"uid":"ea6252f"}
+{"message":"this is a test 2","context":{"test2":"test2","test":"test"},"level":200,"level_name":"INFO","channel":"Skeleton","datetime":{"date":"2017-01-13 22:29:50.169050","timezone_type":3,"timezone":"America/Los_Angeles"},"extra":[]}
+{"message":"this is a test 2","context":{"test2":"test2","test":"test"},"level":200,"level_name":"INFO","channel":"Skeleton","datetime":{"date":"2017-01-13 22:30:53.028596","timezone_type":3,"timezone":"America/Los_Angeles"},"extra":[]}
+{"message":"this is a test 2","context":{"test2":"test2","test":"test"},"level":200,"level_name":"INFO","channel":"Skeleton","datetime":{"date":"2017-01-13 22:35:11.764499","timezone_type":3,"timezone":"America/Los_Angeles"},"extra":[]}
+{"message":"this is a test 2","context":{"test2":"test2","test":"test"},"level":200,"level_name":"INFO","channel":"Skeleton","datetime":{"date":"2017-01-13 22:46:47.634468","timezone_type":3,"timezone":"America/Los_Angeles"},"extra":[]}
+{"message":"this is a test 2","context":{"test2":"test2","test":"test"},"level":500,"level_name":"CRITICAL","channel":"Skeleton","datetime":{"date":"2017-01-13 22:48:36.640969","timezone_type":3,"timezone":"America/Los_Angeles"},"extra":[]}
+[2017-01-13 22:57:25] Skeleton.CRITICAL: this is a test 2 {"test2":"test2","test":"test"} []
+[2017-01-13 23:02:39] Skeleton.NOTICE: hgdhdfhgdhgf {"test2":"fdafsadfdsa","test":"jhfjfjhfjg"} []
+[2017-01-13 23:03:08] Skeleton.WARNING: hgdhdfhgdhgf {"test2":"fdafsadfdsa","test":"jhfjfjhfjg"} []
+{"message":"hgdhdfhgdhgf","context":{"test2":"fdafsadfdsa","test":"jhfjfjhfjg"},"level":300,"level_name":"WARNING","channel":"Skeleton","datetime":{"date":"2017-01-13 23:05:50.363330","timezone_type":3,"timezone":"America/Los_Angeles"},"extra":[]}
+{"message":"jhgjhfjh","context":{"test2":"jhgjgjhg","test":"rewqrewrew"},"level":300,"level_name":"WARNING","channel":"Skeleton","datetime":{"date":"2017-01-13 23:06:07.769511","timezone_type":3,"timezone":"America/Los_Angeles"},"extra":[]}
+{"message":"jhgjhfjh","context":{"test2":"jhgjgjhg","test":"rewqrewrew"},"level":300,"level_name":"WARNING","channel":"Skeleton","datetime":{"date":"2017-01-13 23:15:09.266215","timezone_type":3,"timezone":"America/Los_Angeles"},"extra":[]}
+{"message":"jhgjhfjh","context":{"test2":"jhgjgjhg","test":"rewqrewrew"},"level":300,"level_name":"WARNING","channel":"Skeleton","datetime":{"date":"2017-01-13 23:16:35.371716","timezone_type":3,"timezone":"America/Los_Angeles"},"extra":[]}
+{"message":"jhgjhfjh","context":{"test2":"jhgjgjhg","test":"rewqrewrew"},"level":300,"level_name":"WARNING","channel":"Skeleton","datetime":{"date":"2017-01-13 23:17:50.288248","timezone_type":3,"timezone":"America/Los_Angeles"},"extra":[]}
+[2017-01-13 23:18:15] Skeleton.WARNING: jhgjhfjh {"test2":"jhgjgjhg","test":"rewqrewrew"} []
+[2017-01-13 23:18:17] Skeleton.WARNING: jhgjhfjh {"test2":"jhgjgjhg","test":"rewqrewrew"} []
+[2017-01-13 23:32:15] Skeleton.WARNING: jhgjhfjh {"test2":"jhgjgjhg","test":"jhfrewrewqrewjfjhfjg"} []
+[2017-01-13 23:53:18] Skeleton.WARNING: jhgjhfjh {"test2":"jhgjgjhg","test":"jhfrewrewqrewjfjhfjg"} []
+[2017-01-13 23:54:13] Skeleton.WARNING: jhgjhfjh {"test2":"jhgjgjhg","test":"jhfrewrewqrewjfjhfjg"} []
+[2017-01-13 23:55:02] Skeleton.WARNING: jhgjhfjh {"test2":"jhgjgjhg","test":"jhfrewrewqrewjfjhfjg"} []
+[2017-01-13 23:55:17] Skeleton.WARNING: jhgjhfjh {"test2":"jhgjgjhg","test":"jhfrewrewqrewjfjhfjg"} []
+[2017-01-14 00:16:50] Skeleton.WARNING: invalid login info {"email":null,"ip_address":null} []
+[2017-01-14 00:18:03] Skeleton.WARNING: invalid login info {"email":"jeffmthomas@gmail.com","ip_address":null} []
+[2017-01-14 00:21:07] Skeleton.NOTICE: invalid login info {"email":"jeffmthomas@gmail.com","ip_address":"127.0.0.1"} []
+[2017-01-14 00:25:19] Skeleton.NOTICE: invalid login info {"email":"jeffmthomas@gmail.com","ip_address":"127.0.0.1"} []
+[2017-01-14 00:29:16] Skeleton.NOTICE: invalid login info {"email":"jeffmthomas@gmail.com","ip_address":"127.0.0.1"} []
+[2017-01-14 00:29:18] Skeleton.NOTICE: invalid login info {"email":"jeffmthomas@gmail.com","ip_address":"127.0.0.1"} []
+[2017-01-14 00:29:21] Skeleton.NOTICE: invalid login info {"email":"jeffmthomas@gmail.com","ip_address":"127.0.0.1"} []
+[2017-01-14 00:29:23] Skeleton.NOTICE: invalid login info {"email":"jeffmthomas@gmail.com","ip_address":"127.0.0.1"} []
+[2017-01-14 00:29:25] Skeleton.NOTICE: invalid login info {"email":"jeffmthomas@gmail.com","ip_address":"127.0.0.1"} []
+[2017-01-14 00:29:27] Skeleton.ERROR: login throttling exception {"email":"jeffmthomas@gmail.com","ip_address":"127.0.0.1"} []
+[2017-01-14 00:29:39] Skeleton.ERROR: login throttling exception {"email":"jeffmthomas@gmail.com","ip_address":"127.0.0.1"} []
+[2017-01-14 00:30:28] Skeleton.INFO: user login success {"email":"jeffmthomas@gmail.com","ip_address":"127.0.0.1"} []

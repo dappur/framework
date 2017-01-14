@@ -1,0 +1,9 @@
+composer.phar
+composer.lock
+vendor/
+storage/cache/twig/*
+!storage/cache/twig/.gitkeep
+storage/log/monolog/*
+!storage/log/monolog/.gitkeep
+
+app/bootstrap/settings.php

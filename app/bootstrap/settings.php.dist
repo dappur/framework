@@ -1,0 +1,31 @@
+<?php
+return [
+    'settings' => [
+        
+        'displayErrorDetails' => true,
+
+        'db' => [
+            'driver' => 'mysql',
+            'host' => 'localhost',
+            'database' => '',
+            'username' => '',
+            'password' => '',
+            'charset' => 'utf8',
+            'collation' => 'utf8_general_ci',
+            'prefix' => ''
+        ], 
+        'view' => [
+            'template_path' => __DIR__ . '/../views/',
+            'twig' => [
+                'cache' => false, //__DIR__ . '/../../storage/cache/twig',
+                'debug' => true,
+                'auto_reload' => true,
+            ],
+        ],
+        'logger' => [
+            'name' => 'Skeleton',
+            'log_path' => false, // PATH_TO_LOG eg __DIR__ . '/../../storage/log/skeleton.log'
+            'le_token' => false, // Logentries Access Token
+        ],
+    ],
+];

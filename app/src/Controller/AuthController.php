@@ -1,0 +1,96 @@
+<?php
+
+namespace App\Controller;
+
+use Cartalyst\Sentinel\Checkpoints\ThrottlingException;
+use Psr\Http\Message\ServerRequestInterface as Request;
+use Psr\Http\Message\ResponseInterface as Response;
+use Respect\Validation\Validator as V;
+
+class AuthController extends Controller{
+    
+    //Login Controller
+    public function login(Request $request, Response $response){
+        if ($request->isPost()) {
+            $credentials = [
+                'email' => $request->getParam('email'),
+                'password' => $request->getParam('password')
+            ];
+            $remember = $request->getParam('remember') ? true : false;
+
+            try {
+                if ($this->auth->authenticate($credentials, $remember)) {
+                    $this->flash('success', 'You have been logged in.');
+                    $this->logger->addInfo("user login success", array("email" => $request->getParam('email')));
+                    return $this->redirect($response, 'home');
+                } else {
+                    $this->flash('danger', 'Invalid email or password.');
+                    $this->logger->addNotice("invalid login info", array("email" => $request->getParam('email')));
+                }
+            } catch (ThrottlingException $e) {
+                $this->flash('danger', 'Too many attempts!  Please wait 5 minutes before trying again.');
+                $this->logger->addError("login throttling exception", array("email" => $request->getParam('email')));
+            }
+
+            return $this->redirect($response, 'login');
+        }
+
+        return $this->view->render($response, 'Auth/login.twig');
+    }
+
+    // Register Controller
+    public function register(Request $request, Response $response){
+
+        if ($request->isPost()) {
+            $first_name = $request->getParam('first_name');
+            $last_name = $request->getParam('last_name');
+            $email = $request->getParam('email');
+            $password = $request->getParam('password');
+
+            $this->validator->validate($request, [
+                'first_name' => V::length(6, 25)->alpha('\''),
+                'last_name' => V::length(6, 25)->alpha('\''),
+                'email' => V::noWhitespace()->email(),
+                'password' => V::noWhitespace()->length(6, 25),
+                'password-confirm' => V::equals($password)
+            ]);
+
+            if ($this->auth->findByCredentials(['login' => $email])) {
+                $this->validator->addError('email', 'User already exists with this email address.');
+            }
+
+            if ($this->validator->isValid()) {
+                $role = $this->auth->findRoleByName('User');
+
+                $user = $this->auth->registerAndActivate([
+                    'first_name' => $first_name,
+                    'last_name' => $last_name,
+                    'email' => $email,
+                    'password' => $password,
+                    'permissions' => [
+                        'user.delete' => 0
+                    ]
+                ]);
+
+                $role->users()->attach($user);
+
+                $this->flash('success', 'Your account has been created.');
+                $this->logger->addInfo("user registration success", array("first_name" => $first_name, "last_name" => $last_name, "email" => $email));
+                return $this->redirect($response, 'login');
+            }else{
+                $this->logger->addError("registration data validation failed", array("first_name" => $first_name, "last_name" => $last_name, "email" => $email));
+            }
+        }
+
+        return $this->view->render($response, 'Auth/register.twig');
+    }
+
+    // Logout Controller
+    public function logout(Request $request, Response $response){
+
+        $this->auth->logout();
+
+        $this->flash('success', 'You have been logged out.');
+        return $this->redirect($response, 'home');
+    }
+}
