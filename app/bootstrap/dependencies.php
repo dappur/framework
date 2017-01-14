@@ -74,7 +74,6 @@ $container['userAccess'] = function($container) {
 
     }
     return array('roles' => $rolesSlugs, 'permissions' => $permissions);
-    
 };
 
 $container['flash'] = function () {

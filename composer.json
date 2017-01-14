@@ -27,6 +27,6 @@
         "symfony/http-foundation": "^3.2",
         "awurth/slim-validation": "^1.2",
         "monolog/monolog": "^1.22",
-        "logentries/logentries-monolog-handler": "^2.1",
+        "logentries/logentries-monolog-handler": "^2.1"
     }
 }
