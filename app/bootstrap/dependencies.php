@@ -1,9 +1,9 @@
 <?php
-
+// Initialize Container
 $container = $app->getContainer();
 
+// Configure Database
 $db = $container['settings']['db'];
-
 $capsule = new \Illuminate\Database\Capsule\Manager();
 $capsule->addConnection($db);
 $capsule->setAsGlobal();
@@ -13,6 +13,7 @@ $container['db'] = function () use ($capsule) {
     return $capsule;
 };
 
+// Get config table from database
 $container['config'] = function () use ($container) {
     //Generate Config Array
     $config = $container->db->table('config')->get();
@@ -29,6 +30,7 @@ $container['config'] = function () use ($container) {
     return $cfg;
 };
 
+// Load Sentinel Authorization plugin
 $container['auth'] = function () {
     $sentinel = new \Cartalyst\Sentinel\Native\Facades\Sentinel(
         new \Cartalyst\Sentinel\Native\SentinelBootstrapper(__DIR__ . '/sentinel.php')
@@ -76,14 +78,17 @@ $container['userAccess'] = function($container) {
     return array('roles' => $rolesSlugs, 'permissions' => $permissions);
 };
 
+// Load Flash Messages
 $container['flash'] = function () {
     return new \Slim\Flash\Messages();
 };
 
+// Load Respect Validation
 $container['validator'] = function () {
     return new \Awurth\Slim\Validation\Validator();
 };
 
+// Load View
 $container['view'] = function ($container) {
     $view = new \Slim\Views\Twig(
         $container['settings']['view']['template_path'] . $container->config['theme'],
@@ -107,26 +112,27 @@ $container['view'] = function ($container) {
     return $view;
 };
 
+//Load Found Handler
 $container['foundHandler'] = function() {
     return new \Slim\Handlers\Strategies\RequestResponseArgs();
 };
 
 
+//Initialize Monolog Logging System
 $container['logger'] = function($container) {
 
+    // Stream Log output to file
     $logger = new Monolog\Logger($container['settings']['logger']['name']);
     if($container['settings']['logger']['log_path']){
         $file_stream = new \Monolog\Handler\StreamHandler($container['settings']['logger']['log_path']);
         $logger->pushHandler($file_stream);
     }
     
+    //Stream log output to Logentries
     if ($container['settings']['logger']['le_token']) {
         $le_stream = new Logentries\Handler\LogentriesHandler($container['settings']['logger']['le_token']);
         $logger->pushHandler($le_stream);
     }
-
-    
-    
     
     return $logger;
 };
