@@ -7,3 +7,4 @@ storage/log/monolog/*
 !storage/log/monolog/.gitkeep
 
 app/bootstrap/settings.php
+bower_components
