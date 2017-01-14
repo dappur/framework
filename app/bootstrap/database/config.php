@@ -17,6 +17,7 @@ $init_config = array(
 	array('domain', 'string', 'skeleton.dev'),
 	array('replyto-email', 'string', 'noreply@skeleton.dev'),
 	array('theme', 'string', 'default'));
+	array('ga', 'string', ''));
 
 foreach ($init_config as $key => $value) {
 	$config = new App\Model\Config;
