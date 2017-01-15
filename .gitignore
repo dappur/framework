@@ -8,3 +8,4 @@ storage/log/monolog/*
 
 app/bootstrap/settings.php
 bower_components
+node_modules

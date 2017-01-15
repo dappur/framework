@@ -1,6 +1,6 @@
 {
     "name": "dappur/skeleton-php",
-    "description": "PHP app skeleton using Slim, Twig, Eloquent, Sentinel, Monolog w/ Logentries Support, Validation and Custom Site Config",
+    "description": "PHP app skeleton using Slim, Twig, Eloquent, Sentinel, Monolog w/ Logentries Support, Validation and Custom Site Config.",
     "keywords": ["slim", "eloquent", "twig", "sentinel", "monolog", "logentries", "validation", "config", "skeleton"],
     "homepage": "https://github.com/dappur/skeleton-php",
     "authors": [
@@ -27,6 +27,7 @@
         "symfony/http-foundation": "^3.2",
         "awurth/slim-validation": "^1.2",
         "monolog/monolog": "^1.22",
-        "logentries/logentries-monolog-handler": "^2.1"
+        "logentries/logentries-monolog-handler": "^2.1",
+        "dflydev/fig-cookies": "^1.0"
     }
 }

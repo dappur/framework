@@ -6,7 +6,7 @@ use Illuminate\Database\Capsule\Manager;
 
 $settings = require __DIR__ . '/settings.php';
 
-$config = $settings['db'];
+$config = $settings['settings']['database'];
 
 $capsule = new Manager();
 $capsule->addConnection($config);

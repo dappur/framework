@@ -3,7 +3,7 @@
 $container = $app->getContainer();
 
 // Configure Database
-$db = $container['settings']['db'];
+$db = $container['settings']['database'];
 $capsule = new \Illuminate\Database\Capsule\Manager();
 $capsule->addConnection($db);
 $capsule->setAsGlobal();
@@ -117,16 +117,18 @@ $container['foundHandler'] = function() {
     return new \Slim\Handlers\Strategies\RequestResponseArgs();
 };
 
+//Initialize FigCookies
+$container['cookies'] = function() {
+    return new \Dflydev\FigCookies\FigRequestCookies();
+};
 
 //Initialize Monolog Logging System
 $container['logger'] = function($container) {
 
     // Stream Log output to file
     $logger = new Monolog\Logger($container['settings']['logger']['name']);
-    if($container['settings']['logger']['log_path']){
-        $file_stream = new \Monolog\Handler\StreamHandler($container['settings']['logger']['log_path']);
-        $logger->pushHandler($file_stream);
-    }
+    $file_stream = new \Monolog\Handler\StreamHandler($container['settings']['logger']['log_path'] . $container['settings']['logger']['log_file_name']);
+    $logger->pushHandler($file_stream);
     
     //Stream log output to Logentries
     if ($container['settings']['logger']['le_token']) {

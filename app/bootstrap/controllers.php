@@ -7,3 +7,7 @@ $container['HomeController'] = function ($container) {
 $container['AuthController'] = function ($container) {
     return new App\Controller\AuthController($container);
 };
+
+$container['AdminController'] = function ($container) {
+    return new App\Controller\AdminController($container);
+};

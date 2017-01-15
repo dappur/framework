@@ -22,7 +22,14 @@ class AuthController extends Controller{
                 if ($this->auth->authenticate($credentials, $remember)) {
                     $this->flash('success', 'You have been logged in.');
                     $this->logger->addInfo("user login success", array("email" => $request->getParam('email')));
-                    return $this->redirect($response, 'home');
+
+                    if ($this->auth->inRole("admin")) {
+                        return $this->redirect($response, 'dashboard');
+                    }else{
+                        return $this->redirect($response, 'home');
+                    }
+
+                    
                 } else {
                     $this->flash('danger', 'Invalid email or password.');
                     $this->logger->addNotice("invalid login info", array("email" => $request->getParam('email')));

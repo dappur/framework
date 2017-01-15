@@ -3,6 +3,8 @@
 use Illuminate\Database\Capsule\Manager;
 use Illuminate\Database\Schema\Blueprint;
 
+Manager::schema()->dropIfExists('config');
+
 Manager::schema()->create('config', function (Blueprint $table) {
     $table->increments('id');
     $table->string('name')->unique();
@@ -13,10 +15,10 @@ Manager::schema()->create('config', function (Blueprint $table) {
 
 $init_config = array(
 	array('timezone', 'timezone', 'America/Los_Angeles'),
-	array('site-name', 'string', 'Dappur Skeleton PHP|Slim|Twig|Sentinel'),
+	array('site-name', 'string', 'Skeleton-PHP'),
 	array('domain', 'string', 'skeleton.dev'),
 	array('replyto-email', 'string', 'noreply@skeleton.dev'),
-	array('theme', 'string', 'default'));
+	array('theme', 'string', 'default'),
 	array('ga', 'string', ''));
 
 foreach ($init_config as $key => $value) {
