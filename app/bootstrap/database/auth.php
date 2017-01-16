@@ -20,6 +20,7 @@ Manager::schema()->dropIfExists('users');
 Manager::schema()->create('users', function (Blueprint $table) {
     $table->increments('id');
     $table->string('email')->unique();
+    $table->string('username')->unique();
     $table->string('password');
     $table->string('last_name')->nullable();
     $table->string('first_name')->nullable();
@@ -115,9 +116,10 @@ $sentinel->getRoleRepository()->createModel()->create(array(
 //Create Admin User
 $role = $sentinel->findRoleByName('Admin');
 
-$user = $sentinel->registerAndActivate([
+$admin = $sentinel->registerAndActivate([
     'first_name' => "Admin",
     'last_name' => "User",
+    'username' => 'admin',
     'email' => "admin@example.com",
     'password' => "admin123",
     'permissions' => [
@@ -125,4 +127,4 @@ $user = $sentinel->registerAndActivate([
     ]
 ]);
 
-$role->users()->attach($user);
+$role->users()->attach($admin);

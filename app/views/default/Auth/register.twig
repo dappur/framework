@@ -15,6 +15,7 @@
                     <form action="{{ path_for('register') }}" method="POST">
                         {{ form.grouphalf('first_name', null, 'first_name', 'First Name') }}
                         {{ form.grouphalf('last_name', null, 'last_name', 'Last Name') }}
+                        {{ form.group('username', null, 'username', 'username', null, 'username') }}
                         {{ form.group('email', null, 'email', 'Email', null, 'email') }}
                         {{ form.group('password', null, 'password', 'Password', null, 'password') }}
                         {{ form.group('password-confirm', null, 'password-confirm', 'Confirm password', null, 'password') }}

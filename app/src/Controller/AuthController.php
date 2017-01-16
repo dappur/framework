@@ -12,16 +12,24 @@ class AuthController extends Controller{
     //Login Controller
     public function login(Request $request, Response $response){
         if ($request->isPost()) {
-            $credentials = [
-                'email' => $request->getParam('email'),
-                'password' => $request->getParam('password')
-            ];
+            if(filter_var($request->getParam('login'), FILTER_VALIDATE_EMAIL)) {
+                $credentials = [
+                    'email' => $request->getParam('login'),
+                    'password' => $request->getParam('password')
+                ];
+            } else {
+                $credentials = [
+                    'username' => $request->getParam('login'),
+                    'password' => $request->getParam('password')
+                ];
+            }
+            
             $remember = $request->getParam('remember') ? true : false;
 
             try {
                 if ($this->auth->authenticate($credentials, $remember)) {
                     $this->flash('success', 'You have been logged in.');
-                    $this->logger->addInfo("user login success", array("email" => $request->getParam('email')));
+                    $this->logger->addInfo("user login success", array("login" => $request->getParam('login')));
 
                     if ($this->auth->inRole("admin")) {
                         return $this->redirect($response, 'dashboard');
@@ -31,12 +39,12 @@ class AuthController extends Controller{
 
                     
                 } else {
-                    $this->flash('danger', 'Invalid email or password.');
-                    $this->logger->addNotice("invalid login info", array("email" => $request->getParam('email')));
+                    $this->flash('danger', 'Invalid username or password.');
+                    $this->logger->addNotice("invalid login info", array("login" => $request->getParam('login')));
                 }
             } catch (ThrottlingException $e) {
                 $this->flash('danger', 'Too many attempts!  Please wait 5 minutes before trying again.');
-                $this->logger->addError("login throttling exception", array("email" => $request->getParam('email')));
+                $this->logger->addError("login throttling exception", array("login" => $request->getParam('login')));
             }
 
             return $this->redirect($response, 'login');
@@ -52,18 +60,20 @@ class AuthController extends Controller{
             $first_name = $request->getParam('first_name');
             $last_name = $request->getParam('last_name');
             $email = $request->getParam('email');
+            $username = $request->getParam('username');
             $password = $request->getParam('password');
 
             $this->validator->validate($request, [
                 'first_name' => V::length(6, 25)->alpha('\''),
                 'last_name' => V::length(6, 25)->alpha('\''),
                 'email' => V::noWhitespace()->email(),
+                'username' => V::noWhitespace()->alnum(),
                 'password' => V::noWhitespace()->length(6, 25),
                 'password-confirm' => V::equals($password)
             ]);
 
-            if ($this->auth->findByCredentials(['login' => $email])) {
-                $this->validator->addError('email', 'User already exists with this email address.');
+            if ($this->auth->findByCredentials(['login' => $username])) {
+                $this->validator->addError('username', 'User already exists with this username.');
             }
 
             if ($this->validator->isValid()) {
