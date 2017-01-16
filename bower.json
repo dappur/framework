@@ -2,9 +2,9 @@
   "name": "skeleton-php",
   "homepage": "https://github.com/dappur/skeleton-php",
   "authors": [
-    "Jeff Thomas <jeffmthomas@gmail.com>"
+    "Dappur"
   ],
-  "description": "",
+  "description": "PHP app skeleton using Slim, Twig, Eloquent, Sentinel, Monolog w/ Logentries Support, Validation and Custom Site Config.",
   "main": "",
   "license": "MIT",
   "ignore": [

@@ -7,14 +7,6 @@
     </div>
 {% endmacro %}
 
-{% macro grouphalf(name, value, id, label, class, type) %}
-    <div class="form-group{% if has_error(name) %} has-error{% endif %}">
-        <label for="{{ id }}">{{ label }}</label>
-        <input type="{{ type|default('text') }}" name="{{ name }}" value="{{ value }}" id="{{ id }}" class="form-control {{ class }}" aria-describedby="{{ id }}-help-block">
-        <span id="{{ id }}-help-block" class="help-block">{{ error(name) }}</span>
-    </div>
-{% endmacro %}
-
 {% macro select(name, options, value_key, text_key, default_value, default_text, selected_value, id, label) %}
     <div class="form-group{% if has_error(name) %} has-error{% endif %}">
         {% if label %}

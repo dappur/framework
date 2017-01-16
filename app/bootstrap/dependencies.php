@@ -15,19 +15,8 @@ $container['db'] = function () use ($capsule) {
 
 // Get config table from database
 $container['config'] = function () use ($container) {
-    //Generate Config Array
-    $config = $container->db->table('config')->get();
-    $cfg = array();
-    foreach($config as $cfgkey => $cfgvalue){
-        $cfg[$cfgvalue->name] = $cfgvalue->value;
-    }
-
-    $cfg['copyright-year'] = date("Y");
-
-    //Set Default Timezone
-    date_default_timezone_set($cfg['timezone']);
-
-    return $cfg;
+    $config = new \App\Dappur\SiteConfig($container);
+    return $config->getConfig();
 };
 
 // Load Sentinel Authorization plugin
