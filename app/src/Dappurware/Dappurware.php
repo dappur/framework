@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Custom;
+namespace App\Dappurware;
 
 use Interop\Container\ContainerInterface;
 
@@ -11,7 +11,7 @@ use Interop\Container\ContainerInterface;
  * @property Validator validator
  * @property Sentinel auth
  */
-class Custom
+class Dappurware
 {
     /**
      * Slim application container

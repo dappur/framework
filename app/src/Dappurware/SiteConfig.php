@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Dappur;
+namespace App\Dappurware;
 
-Class SiteConfig extends Dappur 
+Class SiteConfig extends Dappurware 
 {
 
 	public function getConfig() 
