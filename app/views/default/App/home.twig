@@ -1,10 +1,12 @@
-{% extends 'layout.twig' %}
+{% extends 'app.twig' %}
 
 {% block title %}
 {{config['site-name']}}
 {% endblock %}
 
 {% block body %}
+
+
 
 <div class="container">
     <div class="jumbotron">
@@ -15,5 +17,10 @@
         {% endif %}
     </div>
 </div>
+
+{% for user in userlist %}
+{{user.username}}<br />
+{% for role in user.roles %}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ role.slug }}<br />{% endfor %}
+{% endfor %}
 
 {% endblock %}

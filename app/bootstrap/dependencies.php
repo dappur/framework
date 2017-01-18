@@ -77,12 +77,12 @@ $container['cookies'] = function() {
     return new \Dflydev\FigCookies\FigRequestCookies();
 };
 
-//Initialize Monolog Logging System
+//Initialize Monolog Logging System if Enables
 $container['logger'] = function($container) {
 
     // Stream Log output to file
     $logger = new Monolog\Logger($container['settings']['logger']['name']);
-    $file_stream = new \Monolog\Handler\StreamHandler($container['settings']['logger']['log_path'] . $container['settings']['logger']['log_file_name']);
+    $file_stream = new \Monolog\Handler\StreamHandler($container['settings']['logger']['log_path']);
     $logger->pushHandler($file_stream);
     
     //Stream log output to Logentries

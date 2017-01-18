@@ -50,7 +50,7 @@ class AuthController extends Controller{
             return $this->redirect($response, 'login');
         }
 
-        return $this->view->render($response, 'Auth/login.twig');
+        return $this->view->render($response, 'App/login.twig');
     }
 
     // Register Controller
@@ -64,8 +64,8 @@ class AuthController extends Controller{
             $password = $request->getParam('password');
 
             $this->validator->validate($request, [
-                'first_name' => V::length(6, 25)->alpha('\''),
-                'last_name' => V::length(6, 25)->alpha('\''),
+                'first_name' => V::length(2, 25)->alpha('\''),
+                'last_name' => V::length(2, 25)->alpha('\''),
                 'email' => V::noWhitespace()->email(),
                 'username' => V::noWhitespace()->alnum(),
                 'password' => V::noWhitespace()->length(6, 25),
@@ -83,6 +83,7 @@ class AuthController extends Controller{
                     'first_name' => $first_name,
                     'last_name' => $last_name,
                     'email' => $email,
+                    'username' => $username,
                     'password' => $password,
                     'permissions' => [
                         'user.delete' => 0
@@ -99,7 +100,7 @@ class AuthController extends Controller{
             }
         }
 
-        return $this->view->render($response, 'Auth/register.twig');
+        return $this->view->render($response, 'App/register.twig');
     }
 
     // Logout Controller

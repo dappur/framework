@@ -1,6 +1,6 @@
-{% extends 'layout.twig' %}
+{% extends 'app.twig' %}
 
-{% import 'Macro/form.twig' as form %}
+{% import 'App/macros/form.twig' as form %}
 
 {% block title %}{{ config['site-name'] }} || Registration{% endblock %}
 
@@ -13,9 +13,9 @@
                 <div class="panel-heading">Register</div>
                 <div class="panel-body">
                     <form action="{{ path_for('register') }}" method="POST">
-                        {{ form.grouphalf('first_name', null, 'first_name', 'First Name') }}
-                        {{ form.grouphalf('last_name', null, 'last_name', 'Last Name') }}
-                        {{ form.group('username', null, 'username', 'username', null, 'username') }}
+                        {{ form.group('first_name', null, 'first_name', 'First Name') }}
+                        {{ form.group('last_name', null, 'last_name', 'Last Name') }}
+                        {{ form.group('username', null, 'username', 'Username', null, 'username') }}
                         {{ form.group('email', null, 'email', 'Email', null, 'email') }}
                         {{ form.group('password', null, 'password', 'Password', null, 'password') }}
                         {{ form.group('password-confirm', null, 'password-confirm', 'Confirm password', null, 'password') }}
