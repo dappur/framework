@@ -1,0 +1,47 @@
+{% extends 'admin.twig' %}
+
+{#
+title
+stylesheets
+navi
+body
+javascript
+#}
+
+
+{% block title %}Skeleton-PHP || Dashboard{% endblock %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header">Edit User</h1>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    {{ user.first_name}}
+                </div>
+
+                
+                <div class="panel-body">
+                    <form action="{{ path_for('admin-users-edit') }}" method="POST" role="form">
+                        <legend>Form title</legend>
+                    
+                        <div class="form-group">
+                            <label for="">label</label>
+                            <input type="text" class="form-control" id="" placeholder="Input field">
+                        </div>
+                    
+                        {{ csrf() }}
+                    
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+

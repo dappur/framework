@@ -24,7 +24,7 @@ return [
         ],
         'logger' => [
             'name' => 'Skeleton',
-            'log_path' => false, // PATH_TO_LOG eg __DIR__ . '/../../storage/log/skeleton.log'
+            'log_path' => __DIR__ . '/../../storage/log/monolog/skeleton.log', // PATH_TO_LOG
             'le_token' => false, // Logentries Access Token
         ],
     ],

@@ -1,0 +1,12 @@
+<div class="row">
+    {% for name, messages in flash.getMessages() %}
+        <div class="col-lg-12">
+            <div class="alert alert-{{ name }} alert-dismissable" style="margin-top: 15px;">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                {% for message in messages %}
+                    {{ message }}
+                {% endfor %}
+            </div>
+        </div>
+    {% endfor %}
+</div>
