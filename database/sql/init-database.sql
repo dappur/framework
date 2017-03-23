@@ -52,6 +52,7 @@ INSERT INTO `activations` (`id`, `user_id`, `code`, `completed`, `completed_at`,
 CREATE TABLE `config` (
   `id` int(10) UNSIGNED NOT NULL,
   `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `description` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `type` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `value` text COLLATE utf8_unicode_ci,
   `created_at` timestamp NULL DEFAULT NULL,
@@ -63,12 +64,12 @@ CREATE TABLE `config` (
 --
 
 INSERT INTO `config` (`id`, `name`, `type`, `value`, `created_at`, `updated_at`) VALUES
-(1, 'timezone', 'timezone', 'America/Los_Angeles', '2017-01-18 10:55:39', '2017-01-18 10:55:39'),
-(2, 'site-name', 'string', 'Skeleton-PHP', '2017-01-18 10:55:39', '2017-01-18 10:55:39'),
-(3, 'domain', 'string', 'skeleton.dev', '2017-01-18 10:55:39', '2017-01-18 10:55:39'),
-(4, 'replyto-email', 'string', 'noreply@skeleton.dev', '2017-01-18 10:55:39', '2017-01-18 10:55:39'),
-(5, 'theme', 'string', 'default', '2017-01-18 10:55:39', '2017-01-18 10:55:39'),
-(6, 'ga', 'string', '', '2017-01-18 10:55:39', '2017-01-18 10:55:39');
+(1, 'timezone', 'PHP Timezone', 'timezone', 'America/Los_Angeles', '2017-01-18 10:55:39', '2017-01-18 10:55:39'),
+(2, 'site-name', 'Site Name', 'string', 'Skeleton-PHP', '2017-01-18 10:55:39', '2017-01-18 10:55:39'),
+(3, 'domain', 'Site Domain', 'string', 'skeleton.dev', '2017-01-18 10:55:39', '2017-01-18 10:55:39'),
+(4, 'replyto-email', 'Reply To Email', 'string', 'noreply@skeleton.dev', '2017-01-18 10:55:39', '2017-01-18 10:55:39'),
+(5, 'theme', 'Theme', 'theme', 'default', '2017-01-18 10:55:39', '2017-01-18 10:55:39'),
+(6, 'ga', 'Google Analytics UA', 'string', '', '2017-01-18 10:55:39', '2017-01-18 10:55:39');
 
 -- --------------------------------------------------------
 

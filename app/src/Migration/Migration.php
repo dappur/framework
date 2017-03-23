@@ -17,7 +17,7 @@ class Migration extends AbstractMigration {
     public function init()
     {
         $settings = require __DIR__ . '/../../bootstrap/settings.php';
-        $dbconf = $settings['settings']['database'];
+        $dbconf = $settings['settings']['db'];
 
         $this->capsule = new Capsule;
         $this->capsule->addConnection([
