@@ -7,19 +7,25 @@ $app->group('/dashboard', function () use($app) {
 
     // Users Routes
     $app->group('/users', function() use ($app) {
-
         // User List
         $app->get('', 'AdminController:users')
             ->setName('admin-users');
-
         // Add New User
         $app->map(['GET', 'POST'], '/add', 'AdminController:usersAdd')
             ->setName('admin-users-add');
-
         // Edit User
-        $app->map(['GET', 'POST'], '/edit[/{username}]', 'AdminController:usersEdit')
+        $app->map(['GET', 'POST'], '/edit[/{user_id}]', 'AdminController:usersEdit')
             ->setName('admin-users-edit');
 
+        //User Roles
+        $app->group('/roles', function() use ($app) {
+            $app->get('/delete[/{role}]', 'AdminController:rolesDelete')
+            ->setName('admin-roles-delete');
+            $app->map(['GET', 'POST'], '/edit[/{role}]', 'AdminController:rolesEdit')
+            ->setName('admin-roles-edit');
+            $app->post('/add', 'AdminController:rolesAdd')
+            ->setName('admin-roles-add');
+        });
     });
 
     // Account Settings

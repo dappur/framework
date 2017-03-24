@@ -56,6 +56,7 @@ $container['view'] = function ($container) {
     ));
     $view->addExtension(new \Twig_Extension_Debug());
     $view->addExtension(new \App\TwigExtension\Asset($container['request']));
+    $view->addExtension(new \App\TwigExtension\JsonDecode($container['request']));
     $view->addExtension(new \Awurth\Slim\Validation\ValidatorExtension($container['validator']));
 
     $view->getEnvironment()->addGlobal('flash', $container['flash']);
