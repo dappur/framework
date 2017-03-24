@@ -119,15 +119,15 @@ class InitDatabase extends Migration
             $table->timestamps();
         });
 
-
         // Create Admin Role
         $this->sentinel->getRoleRepository()->createModel()->create(array(
             'name' => 'Admin',
             'slug' => 'admin',
             'permissions' => array(
-                'user.create' => true,
-                'user.update' => true,
-                'user.delete' => true
+                'user.*' => true,
+                'config.*' => true,
+                'role.*' => true,
+                'permission.*' => true
             )
         ));
 
@@ -135,9 +135,7 @@ class InitDatabase extends Migration
         $this->sentinel->getRoleRepository()->createModel()->create(array(
             'name' => 'User',
             'slug' => 'user',
-            'permissions' => array(
-                'user.update' => true,
-            )
+            'permissions' => array()
         ));
 
         //Create Admin User
@@ -147,10 +145,7 @@ class InitDatabase extends Migration
             'last_name' => "User",
             'username' => 'admin',
             'email' => "admin@example.com",
-            'password' => "admin123",
-            'permissions' => [
-                'app.config' => true
-            ]
+            'password' => "admin123"
         ]);
         $role->users()->attach($admin);
 
