@@ -106,9 +106,11 @@ javascript
                                         <a href="{{ path_for('admin-roles-edit', {'role': role.id}) }}" class="btn btn-primary btn-xs">
                                             <span class="fa fa-fw fa-pencil"></span>
                                         </a>
+                                        {% if role.id != 1 %}
                                         <a href="{{ path_for('admin-roles-delete', {'role': role.id}) }}" class="btn btn-danger btn-xs" onClick="return confirm('Are you sure you could like to delete this role?')">
                                             <span class="fa fa-fw fa-close"></span>
                                         </a>
+                                        {% endif %}
                                     </td>
                                 </tr>
                             {% endfor %}
