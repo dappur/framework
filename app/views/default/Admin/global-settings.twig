@@ -27,7 +27,7 @@ javascript
 
     <div class="row">
         <div class="col-lg-8">
-            <div class="panel panel-default">
+            <div class="panel panel-primary">
                 <div class="panel-heading">
                     Global Settings
                 </div>
@@ -62,32 +62,35 @@ javascript
 
 
         <div class="col-lg-4">
-            <div class="panel panel-default">
+            <div class="panel panel-success">
                 <div class="panel-heading">
                     Add New Setting
                 </div>
 
                 <div class="panel-body">
                     <form action="{{ path_for('settings-global-add') }}" method="post">
-                        <div class="form-group">
+                        <div class="form-group{% if has_error('add_name') %} has-error{% endif %}">
                             <label for="name">Name</label>
                             <input type="text" name="add_name" id="add_name" class="form-control" value="" required="required" placeholder="Name">
+                            <span class="help-block">{{ error('add_name') }}</span>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group{% if has_error('add_description') %} has-error{% endif %}">
                             <label for="description">Description</label>
                             <input type="text" name="add_description" id="add_description" class="form-control" value="" required="required" placeholder="Description">
+                            <span class="help-block">{{ error('add_description') }}</span>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group{% if has_error('add_type') %} has-error{% endif %}">
                             <label for="type">Type</label>
                             <select name="add_type" id="add_type" class="form-control" required="required">
                                 <option value=""></option>
                                 <option value="string">String</option>
-                                <option value="timezone">Timezone</option>
                             </select>
+                            <span class="help-block">{{ error('add_type') }}</span>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group{% if has_error('add_value') %} has-error{% endif %}">
                             <label for="value">Value</label>
                             <input type="text" name="add_value" id="add_value" class="form-control" value="" required="required" placeholder="Value">
+                            <span class="help-block">{{ error('add_value') }}</span>
                         </div>
 
                         {{ csrf() }}
