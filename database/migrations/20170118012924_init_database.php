@@ -1,30 +1,20 @@
 <?php
 
 use \App\Migration\Migration;
+use Illuminate\Database\Schema\Blueprint;
 
 class InitDatabase extends Migration
 {
     /**
-     * Change Method.
-     *
-     * Write your reversible migrations using this method.
-     *
-     * More information on writing migrations is available here:
-     * http://docs.phinx.org/en/latest/migrations.html#the-abstractmigration-class
-     *
-     * The following commands can be used in this method and Phinx will
-     * automatically reverse them when rolling back:
-     *
-     *    createTable
-     *    renameTable
-     *    addColumn
-     *    renameColumn
-     *    addIndex
-     *    addForeignKey
-     *
-     * Remember to call "create()" or "update()" and NOT "save()" when working
-     * with the Table class.
-     */
+    *
+    * Write your reversible migrations using this method.
+    *
+    * More information on writing eloquent migrations is available here:
+    * https://laravel.com/docs/5.4/migrations
+    *
+    * Remember to use both the up() and down() functions in order to be able to roll back. 
+    */
+   
     public function up()
     {
         //Initial Config Table Options
@@ -37,7 +27,7 @@ class InitDatabase extends Migration
             array('ga', 'Google Analytics UA', 'string', ''));
 
         // Create Users Table
-        $this->schema->create('users', function (Illuminate\Database\Schema\Blueprint $table) {
+        $this->schema->create('users', function (Blueprint $table) {
             $table->increments('id');
             $table->string('email')->unique();
             $table->string('username')->unique();
@@ -50,7 +40,7 @@ class InitDatabase extends Migration
         });
 
         // Create Activations Table
-        $this->schema->create('activations', function (Illuminate\Database\Schema\Blueprint $table) {
+        $this->schema->create('activations', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('user_id')->unsigned();
             $table->string('code');
@@ -61,7 +51,7 @@ class InitDatabase extends Migration
         });
 
         // Create Persistences Table
-        $this->schema->create('persistences', function (Illuminate\Database\Schema\Blueprint $table) {
+        $this->schema->create('persistences', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('user_id')->unsigned();
             $table->string('code')->unique();
@@ -70,7 +60,7 @@ class InitDatabase extends Migration
         });
 
         // Create Reminders Table
-        $this->schema->create('reminders', function (Illuminate\Database\Schema\Blueprint $table) {
+        $this->schema->create('reminders', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('user_id')->unsigned();
             $table->string('code');
@@ -81,7 +71,7 @@ class InitDatabase extends Migration
         });
 
         // Create Roles Table
-        $this->schema->create('roles', function (Illuminate\Database\Schema\Blueprint $table) {
+        $this->schema->create('roles', function (Blueprint $table) {
             $table->increments('id');
             $table->string('slug')->unique();
             $table->string('name');
@@ -90,7 +80,7 @@ class InitDatabase extends Migration
         });
 
         // Create Roles_Users Table
-        $this->schema->create('role_users', function (Illuminate\Database\Schema\Blueprint $table) {
+        $this->schema->create('role_users', function (Blueprint $table) {
             $table->integer('user_id')->unsigned();
             $table->integer('role_id')->unsigned();
             $table->timestamps();
@@ -100,7 +90,7 @@ class InitDatabase extends Migration
         });
 
         // Create Throttle Table
-        $this->schema->create('throttle', function (Illuminate\Database\Schema\Blueprint $table) {
+        $this->schema->create('throttle', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('user_id')->unsigned()->nullable();
             $table->string('type');
@@ -110,7 +100,7 @@ class InitDatabase extends Migration
         });
 
         // Create Config Table
-        $this->schema->create('config', function (Illuminate\Database\Schema\Blueprint $table) {
+        $this->schema->create('config', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name')->unique();
             $table->string('description')->nullable();
