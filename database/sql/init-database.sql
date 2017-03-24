@@ -121,8 +121,8 @@ CREATE TABLE `roles` (
 --
 
 INSERT INTO `roles` (`id`, `slug`, `name`, `permissions`, `created_at`, `updated_at`) VALUES
-(1, 'admin', 'Admin', '{"user.create":true,"user.update":true,"user.delete":true}', '2017-01-18 10:55:39', '2017-01-18 10:55:39'),
-(2, 'user', 'User', '{"user.update":true}', '2017-01-18 10:55:39', '2017-01-18 10:55:39');
+(1, 'admin', 'Admin', '{"user.*":true,"config.*":true,"permission.*":true,"role.*":true}', '2017-01-18 10:55:39', '2017-01-18 10:55:39'),
+(2, 'user', 'User', '', '2017-01-18 10:55:39', '2017-01-18 10:55:39');
 
 -- --------------------------------------------------------
 
@@ -183,7 +183,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `email`, `username`, `password`, `last_name`, `first_name`, `permissions`, `last_login`, `created_at`, `updated_at`) VALUES
-(1, 'admin@example.com', 'admin', '$2y$10$DwndruY/b.gY17PG3cUNNeHI3tFcW/fwaYWZ7rY39m2ZdIoVkq/kO', 'User', 'Admin', '{"app.config":true}', '2017-01-18 01:55:39', '2017-01-18 10:55:39', '2017-01-18 10:55:39');
+(1, 'admin@example.com', 'admin', '$2y$10$DwndruY/b.gY17PG3cUNNeHI3tFcW/fwaYWZ7rY39m2ZdIoVkq/kO', 'User', 'Admin', '', '2017-01-18 01:55:39', '2017-01-18 10:55:39', '2017-01-18 10:55:39');
 
 --
 -- Indexes for dumped tables
