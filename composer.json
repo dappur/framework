@@ -2,7 +2,7 @@
     "name": "dappur/skeleton-php",
     "description": "PHP app skeleton using Slim, Twig, Eloquent, Sentinel, Monolog w/ Logentries Support, Validation and Custom Site Config.",
     "keywords": ["slim", "eloquent", "twig", "sentinel", "monolog", "logentries", "validation", "config", "skeleton"],
-    "version": "1.0.1",
+    "version": "1.0.2",
     "homepage": "https://github.com/dappur/skeleton-php",
     "authors": [
         {

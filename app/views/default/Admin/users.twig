@@ -61,8 +61,8 @@ javascript
                     	    				<span class="fa fa-fw fa-pencil"></span>
                     	    			</a>
                                         {% if user.id != 1 %}
-                                        <a href="{{ path_for('admin-users-delete', {'user_id': user.id}) }}" class="btn btn-primary btn-xs">
-                                            <span class="fa fa-fw fa-pencil"></span>
+                                        <a href="{{ path_for('admin-users-delete', {'user_id': user.id}) }}" class="btn btn-danger btn-xs">
+                                            <span class="fa fa-fw fa-close"></span>
                                         </a>
                                         {% endif %}
                         	    	</td>

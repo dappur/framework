@@ -16,6 +16,9 @@ $app->group('/dashboard', function () use($app) {
         // Edit User
         $app->map(['GET', 'POST'], '/edit[/{user_id}]', 'AdminController:usersEdit')
             ->setName('admin-users-edit');
+        // Delete User
+        $app->get('/delete[/{user_id}]', 'AdminController:usersDelete')
+            ->setName('admin-users-delete');
 
         //User Roles
         $app->group('/roles', function() use ($app) {
