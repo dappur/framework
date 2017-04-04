@@ -21,7 +21,7 @@ class AdminController extends Controller{
             
             $this->flash('danger', 'You do not have permission to create roles.');
             $this->logger->addError("Unauthorized Access", array("message" => "Unauthorized access was attempted on the create role page", "user_id" => $loggedUser['id']));
-            return $this->redirect($response, 'dashboard');
+            return $this->redirect($response, 'admin-users');
             
         }
         if ($request->isPost()) {
@@ -67,7 +67,7 @@ class AdminController extends Controller{
             
             $this->flash('danger', 'You do not have permission to delete roles.');
             $this->logger->addError("Unauthorized Access", array("message" => "Unauthorized access was attempted on the delete role page", "user_id" => $loggedUser['id']));
-            return $this->redirect($response, 'dashboard');
+            return $this->redirect($response, 'admin-users');
             
         }
 
@@ -97,7 +97,7 @@ class AdminController extends Controller{
             
             $this->flash('danger', 'You do not have permission to edit roles.');
             $this->logger->addError("Unauthorized Access", array("message" => "Unauthorized access was attempted on the edit role page", "user_id" => $loggedUser['id']));
-            return $this->redirect($response, 'dashboard');
+            return $this->redirect($response, 'admin-users');
             
         }
 
@@ -187,6 +187,15 @@ class AdminController extends Controller{
 
     public function users(Request $request, Response $response){
 
+        if (!$this->auth->hasAccess('user.view')) {
+
+            $loggedUser = $this->auth->check();
+            
+            $this->flash('danger', 'You do not have permission to view users.');
+            $this->logger->addError("Unauthorized Access", array("message" => "Unauthorized access was attempted on the users page", "user_id" => $loggedUser['id']));
+            return $this->redirect($response, 'dashboard');
+            
+        }
 
         $users = new \App\Model\Users;
         $roles = new \App\Model\Roles;
@@ -357,11 +366,11 @@ class AdminController extends Controller{
 
     public function usersEdit(Request $request, Response $response, $userid){
 
-        if (!$this->auth->hasAccess('user.edit')) {
+        if (!$this->auth->hasAccess('user.update')) {
 
             $loggedUser = $this->auth->check();
             
-            $this->flash('danger', 'You do not have permission to access the settings.');
+            $this->flash('danger', 'You do not have permission to edit users.');
             $this->logger->addError("Unauthorized Access", array("message" => "Unauthorized access was attempted on the edit user page", "user_id" => $loggedUser['id']));
             return $this->redirect($response, 'dashboard');
             
@@ -531,12 +540,6 @@ class AdminController extends Controller{
             return $this->redirect($response, 'admin-users');
         }
         
-    }
-
-    public function settings(Request $request, Response $response){
-
-        return $this->view->render($response, 'Admin/settings.twig');
-
     }
 
     public function settingsGlobal(Request $request, Response $response){

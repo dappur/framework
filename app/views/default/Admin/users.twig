@@ -74,7 +74,7 @@ javascript
             </div>
         </div>
     </div>
-
+    {% if auth.hasAccess('role.view') %}
     <div class="row">
         <div class="col-md-6">
             <div class="panel panel-info">
@@ -103,13 +103,17 @@ javascript
                                         {% endfor %}
                                     </td>
                                     <td>
+                                        {% if auth.hasAccess('role.update') %}
                                         <a href="{{ path_for('admin-roles-edit', {'role': role.id}) }}" class="btn btn-primary btn-xs">
                                             <span class="fa fa-fw fa-pencil"></span>
                                         </a>
-                                        {% if role.id != 1 %}
-                                        <a href="{{ path_for('admin-roles-delete', {'role': role.id}) }}" class="btn btn-danger btn-xs" onClick="return confirm('Are you sure you could like to delete this role?')">
-                                            <span class="fa fa-fw fa-close"></span>
-                                        </a>
+                                        {% endif %}
+                                        {% if auth.hasAccess('role.delete') %}
+                                            {% if role.id != 1 %}
+                                            <a href="{{ path_for('admin-roles-delete', {'role': role.id}) }}" class="btn btn-danger btn-xs" onClick="return confirm('Are you sure you could like to delete this role?')">
+                                                <span class="fa fa-fw fa-close"></span>
+                                            </a>
+                                            {% endif %}
                                         {% endif %}
                                     </td>
                                 </tr>
@@ -119,7 +123,8 @@ javascript
                 </div>
             </div>
         </div>
-
+        {% endif %}
+        {% if auth.hasAccess('role.create') %}
         <div class="col-md-6">
             <div class="panel panel-primary">
                 <div class="panel-heading">
@@ -147,6 +152,7 @@ javascript
                 </div>
             </div>
         </div>
+        {% endif %}
     </div>
 {% endblock %}
 

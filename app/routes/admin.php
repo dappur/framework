@@ -31,13 +31,9 @@ $app->group('/dashboard', function () use($app) {
         });
     });
 
-    // Account Settings
-    $app->get('/settings', 'AdminController:settings')
-    	->setName('admin-settings');
-
-    $app->map(['GET', 'POST'], '/settings/global', 'AdminController:settingsGlobal')->setName('settings-global');
-
-    $app->post('/settings/global/add', 'AdminController:settingsGlobalAdd')
+    // Global Settings
+    $app->map(['GET', 'POST'], '/settings', 'AdminController:settingsGlobal')->setName('settings-global');
+    $app->post('/settings/add', 'AdminController:settingsGlobalAdd')
         ->setName('settings-global-add');
 })
 ->add(new App\Middleware\AdminMiddleware($container))
