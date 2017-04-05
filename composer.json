@@ -1,8 +1,8 @@
 {
     "name": "dappur/skeleton-php",
-    "description": "PHP app skeleton using Slim, Twig, Eloquent, Sentinel, Monolog w/ Logentries Support, Validation, Cookies and Custom Site Config.",
-    "keywords": ["slim", "eloquent", "twig", "sentinel", "monolog", "logentries", "validation", "config", "skeleton"],
-    "version": "1.0.5",
+    "description": "PHP app skeleton including the Slim PHP micro framework, Twig templating engine, Eloquent ORM database interactions, Phinx database migrations, Sentinel user management, Monolog w/ Logentries Support, form validation with CSRF protection, cookie management and Site Config.",
+    "keywords": ["slim", "eloquent", "twig", "sentinel", "monolog", "logentries", "validation", "config", "skeleton", "phinx"],
+    "version": "1.0.6",
     "homepage": "https://github.com/dappur/skeleton-php",
     "authors": [
         {

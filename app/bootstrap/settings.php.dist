@@ -2,7 +2,7 @@
 return [
     'settings' => [
         
-        'displayErrorDetails' => true,
+        'displayErrorDetails' => false,
 
         'db' => [
             'driver' => 'mysql',
@@ -18,8 +18,8 @@ return [
         'view' => [
             'template_path' => __DIR__ . '/../views/',
             'twig' => [
-                'cache' => false, //__DIR__ . '/../../storage/cache/twig',
-                'debug' => true,
+                'cache' => false, //__DIR__ . '/../../storage/cache/twig'
+                'debug' => false,
                 'auto_reload' => true,
             ],
         ],
