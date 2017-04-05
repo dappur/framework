@@ -138,7 +138,7 @@ logger->le_token (Optional)
 ```
 Once you have the `settings.php` file configured, all you have to do is navigate to your root project directory from a terminal and run the first migration:
 ```
-$# phinx migrate
+phinx migrate
 ```
 
 ----------
