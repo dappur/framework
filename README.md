@@ -19,6 +19,7 @@ PHP app skeleton including the Slim PHP micro framework, Twig templating engine,
 
 ## Pre-Requisites
 [Composer](https://getcomposer.org/) - Dependency manager is required in order to use the Dappur PHP app skeleton.  Installation instructions are [located here](https://getcomposer.org/doc/00-intro.md).
+
 [Phinx](https://phinx.org/) - Phinx is required in order to utilize the database migrations.  It is recommended that you install Phinx globally via composer by running:
 
     composer global require robmorgan/phinx
@@ -182,6 +183,7 @@ In addition to the few basic front end templates, this skeleton also comes pre-b
 This dashboard can be accessed automatically by logging in with the admin user credentials.
 
 **Default Admin Username:** admin
+
 **Default Admin Password:** admin123
 
 It is HIGHLY recommended that you change the default admin password to one of your choosing by modifying line 138 of `database/migrations/20170118012924_init_database.php`.
