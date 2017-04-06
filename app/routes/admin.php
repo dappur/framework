@@ -35,6 +35,9 @@ $app->group('/dashboard', function () use($app) {
     $app->map(['GET', 'POST'], '/settings', 'AdminController:settingsGlobal')->setName('settings-global');
     $app->post('/settings/add', 'AdminController:settingsGlobalAdd')
         ->setName('settings-global-add');
+
+    // My Account
+    $app->map(['GET', 'POST'], '/my-account', 'AdminController:myAccount')->setName('my-account');
 })
 ->add(new App\Middleware\AdminMiddleware($container))
 ->add(new App\Middleware\AuthMiddleware($container));

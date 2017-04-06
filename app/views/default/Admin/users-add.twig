@@ -31,25 +31,25 @@ javascript
                         <div class="col-md-6">
                             <div class="form-group{% if has_error('first_name') %} has-error{% endif %}">
                                 <label for="first_name">First Name</label>
-                                <input type="text" name="first_name" class="form-control" id="first_name" placeholder="First Name" value="" required="required">
+                                <input type="text" name="first_name" class="form-control" id="first_name" placeholder="First Name" value="{% if requestParams.first_name %}{{requestParams.first_name}}{% endif %}" required="required">
                                 <span class="help-block">{{ error('first_name') }}</span>
                             </div>
 
                             <div class="form-group{% if has_error('last_name') %} has-error{% endif %}">
                                 <label for="last_name">Last name</label>
-                                <input type="text" name="last_name" class="form-control" id="last_name" placeholder="Last name" value="" required="required">
+                                <input type="text" name="last_name" class="form-control" id="last_name" placeholder="Last name" value="{% if requestParams.last_name %}{{requestParams.last_name}}{% endif %}" required="required">
                                 <span class="help-block">{{ error('last_name') }}</span>
                             </div>
 
                             <div class="form-group{% if has_error('email') %} has-error{% endif %}">
                                 <label for="email">Email</label>
-                                <input type="email" name="email" class="form-control" id="email" placeholder="Email" value="" required="required">
+                                <input type="email" name="email" class="form-control" id="email" placeholder="Email" value="{% if requestParams.email %}{{requestParams.email}}{% endif %}" required="required">
                                 <span class="help-block">{{ error('email') }}</span>
                             </div>
 
                             <div class="form-group{% if has_error('username') %} has-error{% endif %}">
                                 <label for="username">Username</label>
-                                <input type="text" name="username" class="form-control" id="username" placeholder="Username" value="" required="required">
+                                <input type="text" name="username" class="form-control" id="username" placeholder="Username" value="{% if requestParams.username %}{{requestParams.username}}{% endif %}" required="required">
                                 <span class="help-block">{{ error('username') }}</span>
                             </div>
 

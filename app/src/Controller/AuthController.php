@@ -103,6 +103,64 @@ class AuthController extends Controller{
         return $this->view->render($response, 'App/register.twig');
     }
 
+    // Forgot Password
+    public function forgotPassword(Request $request, Response $response){
+        if ($request->isPost()) {
+
+            if(filter_var($request->getParam('email'), FILTER_VALIDATE_EMAIL)) {
+                $credentials = [
+                    'email' => $request->getParam('email')
+                ];
+            }
+
+             $user = $this->auth->findByCredentials($credentials);
+
+             if ($user) {
+                $password = $this->randomPassword();
+                 $new_password = [
+                    'password' => $password
+                ];
+
+                $update_password = $this->auth->update($user, $new_password);
+
+                if ($update_password) {
+
+                    $email = $request->getParam('email');
+                    $subject = $this->config['site-name'] . " - Password Reset";
+                    $message = "Here is your new password for " . $this->config['site-name'] . ":" . "\n\n";
+                    $message .= $password . "\n\n";
+                    $message .= "To log on, please visit: https://" . $this->config['domain'] . "/login to sign into your account.";
+                    $headers = "From: " . $this->config['replyto-email'] . "\r\n";
+
+                    $send_email = mail($email,$subject,$message,$headers);
+
+                    if($send_email){
+                        $this->flash('success', 'Your new password has been emailed to: ' . $email);
+                        $this->logger->addInfo("Forgot Password: Password successfully reset.", array("email" => $email));
+                        return $this->redirect($response, 'login');
+                    }else{
+                        $this->flash('danger', 'An error occured sending your email, please try again.');
+                        $this->logger->addError("Forgot Password: An unknown error occured sending the email.", array("response" => $send_email));
+                        return $this->redirect($response, 'forgot-password');
+                    }
+
+                }else{
+                    $this->flash('danger', 'An unknown error occured, please try again.');
+                    $this->logger->addError("Forgot Password: An unknown error occured updating the password.", array("response" => $update_password));
+                }
+
+
+             }else{
+                $this->flash('danger', 'That account does not exist.');
+                $this->logger->addError("Forgot Password: Account doesn't exist.", array("email" => $request->getParam('email')));
+                return $this->redirect($response, 'forgot-password');
+             }
+
+        }
+
+        return $this->view->render($response, 'App/forgot-password.twig', array("requestParams" => $request->getParams()));
+    }
+
     // Logout Controller
     public function logout(Request $request, Response $response){
 
@@ -110,5 +168,18 @@ class AuthController extends Controller{
 
         $this->flash('success', 'You have been logged out.');
         return $this->redirect($response, 'home');
+    }
+
+
+    // Generate Random Password
+    private function randomPassword() {
+        $alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
+        $pass = array(); //remember to declare $pass as an array
+        $alphaLength = strlen($alphabet) - 1; //put the length -1 in cache
+        for ($i = 0; $i < 8; $i++) {
+            $n = rand(0, $alphaLength);
+            $pass[] = $alphabet[$n];
+        }
+        return implode($pass); //turn the array into a string
     }
 }
