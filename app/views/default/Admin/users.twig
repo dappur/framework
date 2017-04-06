@@ -61,7 +61,7 @@ javascript
                     	    				<span class="fa fa-fw fa-pencil"></span>
                     	    			</a>
                                         {% if user.id != 1 %}
-                                        <a href="{{ path_for('admin-users-delete', {'user_id': user.id}) }}" class="btn btn-danger btn-xs">
+                                        <a href="{{ path_for('admin-users-delete', {'user_id': user.id}) }}" class="btn btn-danger btn-xs" onClick="return confirm('Are you sure you could like to delete this role?');">
                                             <span class="fa fa-fw fa-close"></span>
                                         </a>
                                         {% endif %}
