@@ -13,13 +13,13 @@ $container['db'] = function () use ($capsule) {
     return $capsule;
 };
 
-// Get config table from database
+// Bind config table from database
 $container['config'] = function () use ($container) {
     $config = new \App\Dappurware\SiteConfig($container);
     return $config->getConfig();
 };
 
-// Load Sentinel Authorization plugin
+// Bind Sentinel Authorization plugin
 $container['auth'] = function () {
     $sentinel = new \Cartalyst\Sentinel\Native\Facades\Sentinel(
         new \Cartalyst\Sentinel\Native\SentinelBootstrapper(__DIR__ . '/sentinel.php')
@@ -28,22 +28,25 @@ $container['auth'] = function () {
     return $sentinel->getSentinel();
 };
 
-// Get User Permissions
+// Bind User Permissions
 $container['userAccess'] = function($container) {
     return (new \App\Dappurware\Sentinel($container))->userAccess();
 };
 
-// Load Flash Messages
+// Bind Flash Messages
 $container['flash'] = function () {
     return new \Slim\Flash\Messages();
 };
 
-// Load Respect Validation
+// Bind Respect Validation
 $container['validator'] = function () {
     return new \Awurth\Slim\Validation\Validator();
 };
 
-// Load View
+// Bind Cookies
+    return new \App\Dappurware\Cookies($container);
+
+// Bind Twig View
 $container['view'] = function ($container) {
     $view = new \Slim\Views\Twig(
         $container['settings']['view']['template_path'] . $container->config['theme'],
@@ -68,17 +71,12 @@ $container['view'] = function ($container) {
     return $view;
 };
 
-//Load Found Handler
+// Bind Found Handler
 $container['foundHandler'] = function() {
     return new \Slim\Handlers\Strategies\RequestResponseArgs();
 };
 
-//Initialize FigCookies
-$container['cookies'] = function() {
-    return new \Dflydev\FigCookies\FigRequestCookies();
-};
-
-//Initialize Monolog Logging System if Enables
+// Bind Monolog Logging System if Enables
 $container['logger'] = function($container) {
 
     // Stream Log output to file
