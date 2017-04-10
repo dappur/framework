@@ -16,6 +16,9 @@
     <link href="/assets/default/css/bootstrap.min.css" rel="stylesheet">
     
     <link href="/assets/default/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    {% if hasCloudinary and auth.hasAccess('media.manage') %}
+        <link href="/assets/default/css/lity.min.css" rel="stylesheet">
+    {% endif %}
     <!-- End Global CSS -->
 
     <!-- Page Level CSS -->
@@ -75,13 +78,21 @@
     <!-- Global JS -->
     <script src="/assets/default/js/jquery.min.js"></script>
     <script src="/assets/default/js/bootstrap.min.js"></script>
+    {% if hasCloudinary and auth.hasAccess('media.manage') %}
+        <script src="/assets/default/js/lity.min.js"></script>
+    {% endif %}
     <!-- End Global JS -->
+
+    <script>
+    $(document).on('click', '#openCloudinaryCms', function($e){
+        lightbox = lity('{{cloudinaryCmsUrl}}');
+    });
+    </script>
 
     <!-- Page Level JS -->
     {% block javascript %}{% endblock %}
 
     <!-- Custom JS -->
-    <script src="/assets/default/js/sb-admin-2.min.js"></script>
 
 </body>
 

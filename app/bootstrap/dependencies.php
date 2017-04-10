@@ -65,6 +65,10 @@ $container['view'] = function ($container) {
     $view->addExtension(new \Awurth\Slim\Validation\ValidatorExtension($container['validator']));
     if ($container['cloudinary']) {
         $view->addExtension(new \App\TwigExtension\Cloudinary());
+        $view->getEnvironment()->addGlobal('hasCloudinary', 1);
+        $view->getEnvironment()->addGlobal('cloudinaryCmsUrl', \App\Controller\AdminController::getCloudinaryCMS($container));
+    }else{
+        $view->getEnvironment()->addGlobal('hasCloudinary', 0);
     }
     
 
@@ -115,8 +119,4 @@ $container['cloudinary'] = function($container) {
         return false;
     }
     
-
-    
-
-
 };

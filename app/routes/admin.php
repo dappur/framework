@@ -38,6 +38,9 @@ $app->group('/dashboard', function () use($app) {
 
     // My Account
     $app->map(['GET', 'POST'], '/my-account', 'AdminController:myAccount')->setName('my-account');
+
+    // Media Manager
+    $app->get('/media', 'AdminController:media')->setName('admin-media');
 })
 ->add(new App\Middleware\AdminMiddleware($container))
 ->add(new App\Middleware\AuthMiddleware($container));
