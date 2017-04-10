@@ -44,7 +44,9 @@ $container['validator'] = function () {
 };
 
 // Bind Cookies
+$container['cookies'] = function ($container){
     return new \App\Dappurware\Cookies($container);
+};
 
 // Bind Twig View
 $container['view'] = function ($container) {
@@ -61,6 +63,10 @@ $container['view'] = function ($container) {
     $view->addExtension(new \App\TwigExtension\Asset($container['request']));
     $view->addExtension(new \App\TwigExtension\JsonDecode($container['request']));
     $view->addExtension(new \Awurth\Slim\Validation\ValidatorExtension($container['validator']));
+    if ($container['cloudinary']) {
+        $view->addExtension(new \App\TwigExtension\Cloudinary());
+    }
+    
 
     $view->getEnvironment()->addGlobal('flash', $container['flash']);
     $view->getEnvironment()->addGlobal('auth', $container['auth']);
@@ -91,4 +97,26 @@ $container['logger'] = function($container) {
     }
     
     return $logger;
+};
+
+// Bind Cloudinary
+// Cloudinary PHP API
+$container['cloudinary'] = function($container) {
+    
+    if ($container['settings']['cloudinary']['enabled']) {
+        \Cloudinary::config(
+        array( "cloud_name" => $container['settings']['cloudinary']['cloud_name'], 
+            "api_key" => $container['settings']['cloudinary']['api_key'], 
+            "api_secret" => $container['settings']['cloudinary']['api_secret'])
+        );
+
+        return new \Cloudinary;
+    }else{
+        return false;
+    }
+    
+
+    
+
+
 };

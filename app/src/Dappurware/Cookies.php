@@ -59,7 +59,7 @@ class Cookies extends Dappurware
                 ->withValue($value)
                 ->withExpires($expiration)
             ;
-        }
+        };
 
         $response = FigResponseCookies::modify($response, $name, $modify);
 
@@ -99,7 +99,7 @@ class Cookies extends Dappurware
             $value = $cookie->getValue();
 
             return $cookie->withValue($value);
-        }
+        };
 
         $request = FigRequestCookies::modify($request, $name, $modify);
 

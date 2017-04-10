@@ -50,7 +50,7 @@ This will clone the Dappur skeleton into a new project directory called `new_app
     		    |-- AdminController.php 
     		    |-- AuthController.php
     		    |-- Controller.php
-    		    |-- HomeController.php
+    		    |-- AppController.php
     	    |-- Customware (Custom Php Classes)
     		    |-- Customware.php
     	    |-- Dappurware (Official Dappur Classes)

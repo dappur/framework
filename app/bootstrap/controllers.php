@@ -1,7 +1,7 @@
 <?php
 
-$container['HomeController'] = function ($container) {
-    return new App\Controller\HomeController($container);
+$container['AppController'] = function ($container) {
+    return new App\Controller\AppController($container);
 };
 
 $container['AuthController'] = function ($container) {
