@@ -1,5 +1,7 @@
-# Dappur PHP App Skeleton 
-PHP app skeleton including the Slim PHP micro framework, Twig templating engine, Eloquent ORM database interactions, Phinx database migrations, Sentinel user management, Monolog w/ Logentries Support, form validation with CSRF protection, cookie management and site config.
+# Dappur PHP Framework
+PHP App Framework built on the Slim PHP Micro Framework, Twig templating engine, Eloquent ORM database interactions, Phinx database migrations, Sentinel user management, Monolog w/ Logentries Support, form validation with CSRF protection, cookie management, database controlled config and Cloudinary CMS integration.
+
+This is a lightweight full featured framework intended for PHP developers who need an open source fast and reliable framework.  Have your new projects up and running in minutes with the provided basic bootstrap pages and basic bootstrap admin.
 
 ----------
 
@@ -14,11 +16,12 @@ PHP app skeleton including the Slim PHP micro framework, Twig templating engine,
 * [Monolog Logging](https://github.com/Seldaek/monolog) - Send logs to files, sockets, inboxes, databases and various web services. 
 * [Fig Cookies](https://github.com/dflydev/dflydev-fig-cookies) - Cookies for PSR-7 HTTP Message Interface.
 * [Phinx Database Migrations](https://github.com/robmorgan/phinx) - Phinx makes it ridiculously easy to manage the database migrations for your PHP app.
+* [Cloudinary Image CDN](https://github.com/cloudinary/cloudinary_php) - Cloudinary is a cloud service that offers a solution to a web application's entire image management pipeline.
 
 ----------
 
 ## Pre-Requisites
-[Composer](https://getcomposer.org/) - Dependency manager is required in order to use the Dappur PHP app skeleton.  Installation instructions are [located here](https://getcomposer.org/doc/00-intro.md).
+[Composer](https://getcomposer.org/) - Dependency manager is required in order to use the Dappur PHP Framework.  Installation instructions are [located here](https://getcomposer.org/doc/00-intro.md).
 
 [Phinx](https://phinx.org/) - Phinx is required in order to utilize the database migrations.  It is recommended that you install Phinx globally via composer by running:
 
@@ -29,10 +32,10 @@ PHP app skeleton including the Slim PHP micro framework, Twig templating engine,
 ## Install Via Composer Create-Project
 You can start a new project user the Composer `create-project` command.
 
-    composer create-project dappur/skeleton-php new_app
+    composer create-project dappur/dappur-framework new_app
 
 
-This will clone the Dappur skeleton into a new project directory called `new_app`.   It will also automatically install and update all of the required dependencies.
+This will clone the Dappur Framework into a new project directory called `new_app`.   It will also automatically install and update all of the required dependencies.
 
 ----------
 
@@ -71,6 +74,7 @@ This will clone the Dappur skeleton into a new project directory called `new_app
     		    |-- Users
     	    |-- TwigExtension (Twig Extensions)
     		    |-- Asset.php
+                |-- Cloudinary.php
     		    |-- Csrf.php
     		    |-- JsonDecode.php
         |-- views (Twig Templates)
@@ -135,7 +139,7 @@ db->password
 logger->name
 logger->log_path
 logger->le_token (Optional)
-
+cloudinary (Optional)
 ```
 Once you have the `settings.php` file configured, all you have to do is navigate to your root project directory from a terminal and run the first migration:
 ```
@@ -162,18 +166,18 @@ You can then navigate to [http://localhost:8181](http://localhost:8181) to view 
 ----------
 
 ## Pre-Made Bootstrap Template
-This skeleton comes with several pre-made pages to help get your project moving. These basic pages include:
+This framework comes with several pre-made pages to help get your project moving. These basic pages include:
 
  - Home Page 
  - Login Page 
  - Registration Page
 
-All of these pages and their respective controllers/views provide you an insight into how the skeleton functions including form validation, CSRF, working with Eloquent ORM and other plugins.  You can expand on the default template or create a completely new template using Twig and the front-end framework of your choosing.
+All of these pages and their respective controllers/views provide you an insight into how the framework functions including form validation, CSRF, working with Eloquent ORM and other plugins.  You can expand on the default template or create a completely new template using Twig and the front-end framework of your choosing.
 
 ----------
 
 ## Admin Interface
-In addition to the few basic front end templates, this skeleton also comes pre-built with a basic Bootstrap admin dashboard.  The dashboard allows an admin to:
+In addition to the few basic front end templates, this framework also comes pre-built with a basic Bootstrap admin dashboard.  The dashboard allows an admin to:
 
 - Create/View/Update/Delete Users
 - Create/View/Update/Delete Roles
