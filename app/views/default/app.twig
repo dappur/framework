@@ -8,7 +8,10 @@
     <title>{% block title %}{% endblock %}</title>
 
     <!-- Bootstrap -->
-    <link rel="stylesheet" href="assets/default/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/assets/default/css/bootstrap.min.css">
+
+    <link rel="stylesheet" href="/assets/default/css/custom.min.css">
+
     {% block stylesheets %}{% endblock %}
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
@@ -43,8 +46,8 @@
 
     {% block body %}{% endblock %}
 
-    <script src="assets/default/js/jquery.min.js"></script>
-    <script src="assets/default/js/bootstrap.min.js"></script>
+    <script src="/assets/default/js/jquery.min.js"></script>
+    <script src="/assets/default/js/bootstrap.min.js"></script>
     {% block javascript %}{% endblock %}
 </body>
 </html>

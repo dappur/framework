@@ -57,11 +57,12 @@ javascript
                                         {% endfor %}
                                     </td>
                         	    	<td>
-                    	    			<a href="{{ path_for('admin-users-edit', {'user_id': user.id}) }}" class="btn btn-primary btn-xs">
+                    	    			<a href="{{ path_for('admin-users-edit', {'user_id': user.id}) }}" class="btn btn-primary btn-xs pull-left">
                     	    				<span class="fa fa-fw fa-pencil"></span>
                     	    			</a>
                                         {% if user.id != 1 %}
-                                        <a href="{{ path_for('admin-users-delete', {'user_id': user.id}) }}" class="btn btn-danger btn-xs" onClick="return confirm('Are you sure you could like to delete this role?');">
+                                        <div class="pull-left">&nbsp;&nbsp;</div>
+                                        <a href="{{ path_for('admin-users-delete', {'user_id': user.id}) }}" class="btn btn-danger btn-xs pull-left" onClick="return confirm('Are you sure you could like to delete this role?');">
                                             <span class="fa fa-fw fa-close"></span>
                                         </a>
                                         {% endif %}
@@ -104,13 +105,14 @@ javascript
                                     </td>
                                     <td>
                                         {% if auth.hasAccess('role.update') %}
-                                        <a href="{{ path_for('admin-roles-edit', {'role': role.id}) }}" class="btn btn-primary btn-xs">
+                                        <a href="{{ path_for('admin-roles-edit', {'role': role.id}) }}" class="btn btn-primary btn-xs pull-left">
                                             <span class="fa fa-fw fa-pencil"></span>
                                         </a>
                                         {% endif %}
                                         {% if auth.hasAccess('role.delete') %}
                                             {% if role.id != 1 %}
-                                            <a href="{{ path_for('admin-roles-delete', {'role': role.id}) }}" class="btn btn-danger btn-xs" onClick="return confirm('Are you sure you could like to delete this role?')">
+                                            <div class="pull-left">&nbsp;&nbsp;</div>
+                                            <a href="{{ path_for('admin-roles-delete', {'role': role.id}) }}" class="btn btn-danger btn-xs pull-left" onClick="return confirm('Are you sure you could like to delete this role?')">
                                                 <span class="fa fa-fw fa-close"></span>
                                             </a>
                                             {% endif %}

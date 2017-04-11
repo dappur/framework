@@ -1,9 +1,9 @@
 {
-    "name": "dappur/skeleton-php",
-    "description": "PHP app skeleton including the Slim PHP micro framework, Twig templating engine, Eloquent ORM database interactions, Phinx database migrations, Sentinel user management, Monolog w/ Logentries Support, form validation with CSRF protection, cookie management and Site Config.",
-    "keywords": ["slim", "eloquent", "twig", "sentinel", "monolog", "logentries", "validation", "config", "skeleton", "phinx"],
-    "version": "1.0.7",
-    "homepage": "https://github.com/dappur/skeleton-php",
+    "name": "dappur/dappur-framework",
+    "description": "PHP App Framework built on the Slim PHP Micro Framework, Twig templating engine, Eloquent ORM database interactions, Phinx database migrations, Sentinel user management, Monolog w/ Logentries Support, form validation with CSRF protection, cookie management, database controlled config and Cloudinary CMS integration.",
+    "keywords": ["slim", "eloquent", "twig", "sentinel", "monolog", "logentries", "validation", "config", "skeleton", "phinx", "cloudinary"],
+    "version": "1.0.0",
+    "homepage": "https://github.com/dappur/dappur-framework",
     "authors": [
         {
             "name": "Jeff Thomas",
@@ -30,7 +30,6 @@
         "monolog/monolog": "^1.22",
         "logentries/logentries-monolog-handler": "^2.1",
         "dflydev/fig-cookies": "^1.0",
-        "cloudinary/cloudinary_php": "^1.7",
-        "dappur/dappur-php-blog": "^1.0"
+        "cloudinary/cloudinary_php": "^1.7"     
     }
 }

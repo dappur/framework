@@ -71,7 +71,6 @@ $container['view'] = function ($container) {
         $view->getEnvironment()->addGlobal('hasCloudinary', 0);
     }
     
-
     $view->getEnvironment()->addGlobal('flash', $container['flash']);
     $view->getEnvironment()->addGlobal('auth', $container['auth']);
     $view->getEnvironment()->addGlobal('config', $container['config']);
@@ -103,7 +102,6 @@ $container['logger'] = function($container) {
     return $logger;
 };
 
-// Bind Cloudinary
 // Cloudinary PHP API
 $container['cloudinary'] = function($container) {
     

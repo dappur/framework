@@ -117,7 +117,8 @@ class InitDatabase extends Migration
                 'user.*' => true,
                 'config.*' => true,
                 'role.*' => true,
-                'permission.*' => true
+                'permission.*' => true,
+                'media.*' => true
             )
         ));
 
