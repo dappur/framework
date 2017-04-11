@@ -124,7 +124,7 @@ This will clone the Dappur Framework into a new project directory called `new_ap
     		|-- twig (Twig Cache - If Enabled)
     	|-- log (Log Folder)
     		|-- monolog (Monolog Logs)
-    |-- phinx.php (Phinx Config File)
+    |-- phinx.php (Phinx Config File) 
 
 ----------
 
