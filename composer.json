@@ -1,0 +1,35 @@
+{
+    "name": "dappur/framework",
+    "description": "PHP App Framework built on the Slim PHP Micro Framework, Twig templating engine, Eloquent ORM database interactions, Phinx database migrations, Sentinel user management, Monolog w/ Logentries Support, form validation with CSRF protection, cookie management, database controlled config and Cloudinary CMS integration.",
+    "keywords": ["slim", "eloquent", "twig", "sentinel", "monolog", "logentries", "validation", "config", "skeleton", "phinx", "cloudinary"],
+    "version": "1.1",
+    "homepage": "https://github.com/dappur/framework",
+    "authors": [
+        {
+            "name": "Jeff Thomas",
+            "email": "jeff@dappur.io",
+            "homepage": "https://github.com/dappur"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/src"
+        }
+    },
+    "require": {
+        "slim/slim": "^3.6",
+        "slim/twig-view": "^2.1",
+        "slim/flash": "^0.2.0",
+        "slim/csrf": "^0.8.0",
+        "illuminate/database": "^5.3",
+        "respect/validation": "^1.1",
+        "cartalyst/sentinel": "^2.0",
+        "illuminate/events": "^5.3",
+        "symfony/http-foundation": "^3.2",
+        "awurth/slim-validation": "^1.2",
+        "monolog/monolog": "^1.22",
+        "logentries/logentries-monolog-handler": "^2.1",
+        "dflydev/fig-cookies": "^1.0",
+        "cloudinary/cloudinary_php": "^1.7"     
+    }
+}

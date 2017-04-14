@@ -1,0 +1,24 @@
+{% extends 'app.twig' %}
+
+{% block title %}
+{{config['site-name']}}
+{% endblock %}
+
+{% block body %}
+
+<div class="container">
+    <div class="jumbotron">
+    	{% if auth.user() %}
+        Welcome, {{auth.user.first_name}} {{ auth.user.last_name }}!
+        {% else %}
+        <h1>Home Page</h1>
+        {% endif %}
+    </div>
+</div>
+
+{% for user in userlist %}
+{{user.username}}<br />
+{% for role in user.roles %}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ role.slug }}<br />{% endfor %}
+{% endfor %}
+
+{% endblock %}
