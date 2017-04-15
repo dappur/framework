@@ -48,6 +48,9 @@ This will clone the Dappur Framework into a new project directory called `new_ap
     		|-- sentinel.php (Sentinel Configuration)
     		|-- settings.php.dist (App Configuration Template)
         |-- routes (Routes)
+            |-- admin.php
+            |-- app.php
+            |-- auth.php
         |-- src (Source Folder)
     	    |-- Controller (Route Controllers - Source)
     		    |-- AdminController.php 
@@ -71,6 +74,7 @@ This will clone the Dappur Framework into a new project directory called `new_ap
     	    |-- Model (Database Models)
     		    |-- Config
     		    |-- Roles
+                |-- RoleUsers
     		    |-- Users
     	    |-- TwigExtension (Twig Extensions)
     		    |-- Asset.php
