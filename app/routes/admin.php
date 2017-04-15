@@ -1,9 +1,10 @@
 <?php
 
 $app->group('/dashboard', function () use($app) {
-    // Dashboard Home
+
+	// Dashboard Home
     $app->get('', 'AdminController:dashboard')
-        ->setName('dashboard');
+    	->setName('dashboard');
 
     // Users Routes
     $app->group('/users', function() use ($app) {
@@ -23,11 +24,11 @@ $app->group('/dashboard', function () use($app) {
         //User Roles
         $app->group('/roles', function() use ($app) {
             $app->post('/delete', 'AdminController:rolesDelete')
-            ->setName('admin-roles-delete');
+                ->setName('admin-roles-delete');
             $app->map(['GET', 'POST'], '/edit[/{role}]', 'AdminController:rolesEdit')
-            ->setName('admin-roles-edit');
+                ->setName('admin-roles-edit');
             $app->post('/add', 'AdminController:rolesAdd')
-            ->setName('admin-roles-add');
+                ->setName('admin-roles-add');
         });
     });
 

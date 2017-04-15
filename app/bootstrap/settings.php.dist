@@ -24,8 +24,8 @@ return [
             ],
         ],
         'logger' => [
-            'name' => 'Skeleton',
-            'log_path' => __DIR__ . '/../../storage/log/monolog/skeleton.log', // PATH_TO_LOG
+            'name' => 'Dappur',
+            'log_path' => __DIR__ . '/../../storage/log/monolog/dappur.log', // PATH_TO_LOG
             'le_token' => false, // Logentries Access Token
         ],
         'cloudinary' => [

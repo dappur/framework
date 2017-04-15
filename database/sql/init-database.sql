@@ -17,7 +17,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `skeleton`
+-- Database: `dappur`
 --
 
 -- --------------------------------------------------------
@@ -65,9 +65,9 @@ CREATE TABLE `config` (
 
 INSERT INTO `config` (`id`, `name`, `type`, `value`, `created_at`, `updated_at`) VALUES
 (1, 'timezone', 'PHP Timezone', 'timezone', 'America/Los_Angeles', '2017-01-18 10:55:39', '2017-01-18 10:55:39'),
-(2, 'site-name', 'Site Name', 'string', 'Skeleton-PHP', '2017-01-18 10:55:39', '2017-01-18 10:55:39'),
-(3, 'domain', 'Site Domain', 'string', 'skeleton.dev', '2017-01-18 10:55:39', '2017-01-18 10:55:39'),
-(4, 'replyto-email', 'Reply To Email', 'string', 'noreply@skeleton.dev', '2017-01-18 10:55:39', '2017-01-18 10:55:39'),
+(2, 'site-name', 'Site Name', 'string', 'Dappur-FW', '2017-01-18 10:55:39', '2017-01-18 10:55:39'),
+(3, 'domain', 'Site Domain', 'string', 'dappur.dev', '2017-01-18 10:55:39', '2017-01-18 10:55:39'),
+(4, 'replyto-email', 'Reply To Email', 'string', 'noreply@dappur.dev', '2017-01-18 10:55:39', '2017-01-18 10:55:39'),
 (5, 'theme', 'Theme', 'theme', 'default', '2017-01-18 10:55:39', '2017-01-18 10:55:39'),
 (6, 'ga', 'Google Analytics UA', 'string', '', '2017-01-18 10:55:39', '2017-01-18 10:55:39');
 

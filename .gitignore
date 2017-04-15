@@ -7,7 +7,7 @@ storage/log/monolog/*
 !storage/log/monolog/.gitkeep
 
 public/uploads/*
-!public/uploads/.gitkeep
+!public/uploads/.index
 
 app/bootstrap/settings.php
 bower_components

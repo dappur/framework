@@ -9,7 +9,7 @@ class $className extends $baseClassName
     *
     * Write your reversible migrations using this method.
     * 
-    * Dappur Skeleton uses Laravel Eloquent ORM as it's database connector.
+    * Dappur Framework uses Laravel Eloquent ORM as it's database connector.
     *
     * More information on writing eloquent migrations is available here:
     * https://laravel.com/docs/5.4/migrations

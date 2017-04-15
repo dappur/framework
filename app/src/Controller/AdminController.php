@@ -61,7 +61,7 @@ class AdminController extends Controller{
     }
 
     public function rolesDelete(Request $request, Response $response){
-        
+
         if (!$this->auth->hasAccess('role.delete')) {
 
             $loggedUser = $this->auth->check();
@@ -82,6 +82,7 @@ class AdminController extends Controller{
 
             $remove_role = new \App\Model\Roles;
             $remove_role = $remove_role->find($requestParams['role_id']);
+
 
             if ($remove_role->delete()) {
                 $this->flash('success', 'Role has been removed.');
@@ -542,6 +543,7 @@ class AdminController extends Controller{
             return $this->redirect($response, 'dashboard');
             
         }
+
 
         $user = $this->auth->findById($request->getParam('user_id'));
 

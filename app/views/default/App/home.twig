@@ -16,9 +16,4 @@
     </div>
 </div>
 
-{% for user in userlist %}
-{{user.username}}<br />
-{% for role in user.roles %}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ role.slug }}<br />{% endfor %}
-{% endfor %}
-
 {% endblock %}

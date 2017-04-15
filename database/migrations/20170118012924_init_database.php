@@ -20,9 +20,9 @@ class InitDatabase extends Migration
         //Initial Config Table Options
         $init_config = array(
             array('timezone', 'PHP Timezone', 'timezone', 'America/Los_Angeles'),
-            array('site-name', 'Site Name', 'string', 'Skeleton-PHP'),
-            array('domain', 'Site Domain', 'string', 'skeleton.dev'),
-            array('replyto-email', 'Reply To Email', 'string', 'noreply@skeleton.dev'),
+            array('site-name', 'Site Name', 'string', 'Dappur-FW'),
+            array('domain', 'Site Domain', 'string', 'dappur.dev'),
+            array('replyto-email', 'Reply To Email', 'string', 'noreply@dappur.dev'),
             array('theme', 'Theme', 'theme', 'default'),
             array('ga', 'Google Analytics UA', 'string', ''));
 
