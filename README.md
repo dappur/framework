@@ -170,7 +170,7 @@ You can then navigate to [http://localhost:8181](http://localhost:8181) to view 
 ----------
 
 ### Pre-Made Bootstrap Template
-This framework comes with several pre-made pages to help get your project moving. These basic pages include:
+This framework comes with several pre-made Bootstrap 3 pages to help get your project moving. These basic pages include:
 
  - Home Page 
  - Login Page 
@@ -188,7 +188,7 @@ All of these pages and their respective controllers/views provide you an insight
 ----------
 
 ### Admin Interface
-In addition to the few basic front end templates, this framework also comes pre-built with a basic Bootstrap admin dashboard.  The dashboard allows an admin to:
+In addition to the few basic front end templates, this framework also comes pre-built with a basic Bootstrap 3 admin dashboard.  The dashboard allows an admin to:
 
 - Create/View/Update/Delete Users
 - Create/View/Update/Delete Roles
@@ -202,15 +202,15 @@ This dashboard can be accessed automatically by logging in with the admin user c
 **Default Admin Password:** admin123
 
 It is HIGHLY recommended that you change the default admin password to one of your choosing by modifying line 138 of `database/migrations/20170118012924_init_database.php`.
-
+** Admin Dashboard **
 ![Admin Dashboard](http://res.cloudinary.com/dappur/image/upload/v1492305016/framework/screenshots/admin-dashboard.png)
-
+** My Account **
 ![My Account](http://res.cloudinary.com/dappur/image/upload/v1492305016/framework/screenshots/my-account.png)
-
+** User Management **
 ![Users](http://res.cloudinary.com/dappur/image/upload/v1492305016/framework/screenshots/users.png)
-
+** Add User **
 ![Add User](http://res.cloudinary.com/dappur/image/upload/v1492305016/framework/screenshots/users-add.png)
-
+** Edit User Roles **
 ![Roles Edit](http://res.cloudinary.com/dappur/image/upload/v1492305016/framework/screenshots/roles-edit.png)
-
+** Global Settings **
 ![Settings](http://res.cloudinary.com/dappur/image/upload/v1492305016/framework/screenshots/settings.png)
