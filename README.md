@@ -178,12 +178,12 @@ This framework comes with several pre-made Bootstrap 3 pages to help get your pr
 
 All of these pages and their respective controllers/views provide you an insight into how the framework functions including form validation, CSRF, working with Eloquent ORM and other plugins.  You can expand on the default template or create a completely new template using Twig and the front-end framework of your choosing.
 
+**Home Page**
 ![Home Page](http://res.cloudinary.com/dappur/image/upload/v1492305016/framework/screenshots/home-page.png)
+**Registration Page**
 ![Registration](http://res.cloudinary.com/dappur/image/upload/v1492305016/framework/screenshots/register.png)
+**Login Page**
 ![Login](http://res.cloudinary.com/dappur/image/upload/v1492305016/framework/screenshots/login.png)
-
-
-
 
 ----------
 
@@ -198,19 +198,19 @@ In addition to the few basic front end templates, this framework also comes pre-
 This dashboard can be accessed automatically by logging in with the admin user credentials.
 
 **Default Admin Username:** admin
-
 **Default Admin Password:** admin123
 
 It is HIGHLY recommended that you change the default admin password to one of your choosing by modifying line 138 of `database/migrations/20170118012924_init_database.php`.
-** Admin Dashboard **
+
+**Admin Dashboard**
 ![Admin Dashboard](http://res.cloudinary.com/dappur/image/upload/v1492305016/framework/screenshots/admin-dashboard.png)
-** My Account **
+**My Account**
 ![My Account](http://res.cloudinary.com/dappur/image/upload/v1492305016/framework/screenshots/my-account.png)
-** User Management **
+**User Management**
 ![Users](http://res.cloudinary.com/dappur/image/upload/v1492305016/framework/screenshots/users.png)
-** Add User **
+**Add User**
 ![Add User](http://res.cloudinary.com/dappur/image/upload/v1492305016/framework/screenshots/users-add.png)
-** Edit User Roles **
+**Edit User Roles**
 ![Roles Edit](http://res.cloudinary.com/dappur/image/upload/v1492305016/framework/screenshots/roles-edit.png)
-** Global Settings **
+**Global Settings**
 ![Settings](http://res.cloudinary.com/dappur/image/upload/v1492305016/framework/screenshots/settings.png)
