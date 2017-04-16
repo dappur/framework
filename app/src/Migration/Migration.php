@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Migration;
+namespace Dappur\Migration;
 
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Capsule\Manager as Capsule;

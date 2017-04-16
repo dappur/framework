@@ -1,5 +1,5 @@
 <?php
-namespace App\Model;
+namespace Dappur\Model;
 
 use Illuminate\Database\Eloquent\Model;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\TwigExtension;
+namespace Dappur\TwigExtension;
 
 /**
  * Cloudinary twig extension.

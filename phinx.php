@@ -11,7 +11,7 @@ return [
   	'templates' => [
         'file' => '%%PHINX_CONFIG_DIR%%/database/templates/create-template.php'
   	],
-  	'migration_base_class' => '\App\Migration\Migration',
+  	'migration_base_class' => '\Dappur\Migration\Migration',
   	'environments' => [
     'default_migration_table' => 'phinxlog',
     'default_database' => 'dev',

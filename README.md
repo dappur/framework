@@ -5,7 +5,7 @@ This is a lightweight full featured framework intended for PHP developers who ne
 
 ----------
 
-## Created Using
+### Created Using
 * [Slim](https://github.com/slimphp/Slim) - Slim is a PHP micro framework that helps you quickly write simple yet powerful web applications and APIs
 * [Slim Twig-View](https://github.com/slimphp/Twig-View) - Slim Framework 3 view helper built on top of the Twig 2 templating component
 * [Slim Flash Messaging](https://github.com/slimphp/Slim-Flash) - Slim Framework Flash message service provider
@@ -20,7 +20,7 @@ This is a lightweight full featured framework intended for PHP developers who ne
 
 ----------
 
-## Pre-Requisites
+### Pre-Requisites
 [Composer](https://getcomposer.org/) - Dependency manager is required in order to use the Dappur PHP Framework.  Installation instructions are [located here](https://getcomposer.org/doc/00-intro.md).
 
 [Phinx](https://phinx.org/) - Phinx is required in order to utilize the database migrations.  It is recommended that you install Phinx globally via composer by running:
@@ -29,7 +29,7 @@ This is a lightweight full featured framework intended for PHP developers who ne
 
 ----------
 
-## Install Via Composer Create-Project
+### Install Via Composer Create-Project
 You can start a new project user the Composer `create-project` command.
 
     composer create-project dappur/dappur-framework new_app
@@ -39,100 +39,100 @@ This will clone the Dappur Framework into a new project directory called `new_ap
 
 ----------
 
-## Project Structure
+### Project Structure
     |-- app (Non-Public App Files)
         |-- bootstrap (Container Bootstrap Folder)
-    		|-- controllers.php (Bind Route Controllers)
-    		|-- dependencies.php (Bind All Dependencies)
-    		|-- middleware.php (Add Global Middleware)
-    		|-- sentinel.php (Sentinel Configuration)
-    		|-- settings.php.dist (App Configuration Template)
+            |-- controllers.php (Bind Route Controllers)
+            |-- dependencies.php (Bind All Dependencies)
+            |-- middleware.php (Add Global Middleware)
+            |-- sentinel.php (Sentinel Configuration)
+            |-- settings.php.dist (App Configuration Template)
         |-- routes (Routes)
             |-- admin.php
             |-- app.php
             |-- auth.php
         |-- src (Source Folder)
-    	    |-- Controller (Route Controllers - Source)
-    		    |-- AdminController.php 
-    		    |-- AuthController.php
-    		    |-- Controller.php
-    		    |-- AppController.php
-    	    |-- Customware (Custom Php Classes)
-    		    |-- Customware.php
-    	    |-- Dappurware (Official Dappur Classes)
-    		    |-- Dappurware.php
-    		    |-- Sentinel.php
-    		    |-- SiteConfig.php
-    	    |-- Middleware (Slim Middleware Classes)
-    		    |-- AdminMiddleware.php
-    		    |-- AuthMiddleware.php
-    		    |-- CsrfMiddleware.php
-    		    |-- GuestMiddleware.php
-    		    |-- Middleware.php
-    	    |-- Migration (Eloquent Migration Class)
-    		    |-- Migration.php
-    	    |-- Model (Database Models)
-    		    |-- Config
-    		    |-- Roles
+            |-- Controller (Route Controllers - Source)
+                |-- AdminController.php 
+                |-- AuthController.php
+                |-- Controller.php
+                |-- AppController.php
+            |-- Customware (Custom Php Classes)
+                |-- Customware.php
+            |-- Dappurware (Official Dappur Classes)
+                |-- Dappurware.php
+                |-- Sentinel.php
+                |-- SiteConfig.php
+            |-- Middleware (Slim Middleware Classes)
+                |-- AdminMiddleware.php
+                |-- AuthMiddleware.php
+                |-- CsrfMiddleware.php
+                |-- GuestMiddleware.php
+                |-- Middleware.php
+            |-- Migration (Eloquent Migration Class)
+                |-- Migration.php
+            |-- Model (Database Models)
+                |-- Config
+                |-- Roles
                 |-- RoleUsers
-    		    |-- Users
-    	    |-- TwigExtension (Twig Extensions)
-    		    |-- Asset.php
+                |-- Users
+            |-- TwigExtension (Twig Extensions)
+                |-- Asset.php
                 |-- Cloudinary.php
-    		    |-- Csrf.php
-    		    |-- JsonDecode.php
+                |-- Csrf.php
+                |-- JsonDecode.php
         |-- views (Twig Templates)
-    	    |-- default (Default Template Folder)
-    		    |-- Admin (Default Template Admin)
-    			    |-- inc
-    				    |-- flash.twig
-    				    |-- header.twig
-    				    |-- navi.twig
-    				    |-- sidebar.twig
-    			    |-- macros
-    				    |-- global-config.twig
-    			    |-- dashboard.twig
-    			    |-- global-settings.twig
-    			    |-- roles-edit.twig
-    			    |-- users-add.twig
-    			    |-- users-edit.twig
-    			    |-- users.twig
-    		    |-- App (Default Template App)
-    			    |-- inc
-    				    |-- flash.twig
-    				    |-- navbar.twig
-    			    |-- macros
-    				    |-- form.twig
-    			    |-- home.twig
-    			    |-- login.twig
-    			    |-- register.twig
-    		    |-- admin.twig
-    		    |-- app.twig
+            |-- default (Default Template Folder)
+                |-- Admin (Default Template Admin)
+                    |-- inc
+                        |-- flash.twig
+                        |-- header.twig
+                        |-- navi.twig
+                        |-- sidebar.twig
+                    |-- macros
+                        |-- global-config.twig
+                    |-- dashboard.twig
+                    |-- global-settings.twig
+                    |-- roles-edit.twig
+                    |-- users-add.twig
+                    |-- users-edit.twig
+                    |-- users.twig
+                |-- App (Default Template App)
+                    |-- inc
+                        |-- flash.twig
+                        |-- navbar.twig
+                    |-- macros
+                        |-- form.twig
+                    |-- home.twig
+                    |-- login.twig
+                    |-- register.twig
+                |-- admin.twig
+                |-- app.twig
     |-- database (Database/Migration Files)
-    	|-- migrations (Phinx Migrations Folder)
-    		|-- 20170118012924_init_database.php
-    	|-- sql (Raw SQL Folder)
-    		|-- init-database.sql
-    	|-- templates (Phinx Migration Template)
-    		|-- create-template.php
+        |-- migrations (Phinx Migrations Folder)
+            |-- 20170118012924_init_database.php
+        |-- sql (Raw SQL Folder)
+            |-- init-database.sql
+        |-- templates (Phinx Migration Template)
+            |-- create-template.php
     |-- public (Public Directory)
-    	|-- assets (Public Template Assets)
-    		|-- default (Default template Public Assets)
-    			|-- css (CSS Scripts)
-    			|-- fonts (Fonts)
-    			|-- js (Javascript)
-    	|-- .htaccess
-    	|-- index.php
+        |-- assets (Public Template Assets)
+            |-- default (Default template Public Assets)
+                |-- css (CSS Scripts)
+                |-- fonts (Fonts)
+                |-- js (Javascript)
+        |-- .htaccess
+        |-- index.php
     |-- storage (Log and Cache Storage)
-    	|-- cache (Cache Folder)
-    		|-- twig (Twig Cache - If Enabled)
-    	|-- log (Log Folder)
-    		|-- monolog (Monolog Logs)
+        |-- cache (Cache Folder)
+            |-- twig (Twig Cache - If Enabled)
+        |-- log (Log Folder)
+            |-- monolog (Monolog Logs)
     |-- phinx.php (Phinx Config File) 
 
 ----------
 
-## Configure Project and Database
+### Configure Project and Database
 Configuring your new project is simple.  Rename `settings.php.dist` to `settings.php` and configure the following options:
 ```
 db->host
@@ -152,7 +152,7 @@ phinx migrate
 
 ----------
 
-## Run & Test Project
+### Run & Test Project
 Once you have successfully done the initial migration, you can simply use PHP's built in web server to test your application by running the following from your root project directory:
 ```bash
 php -S localhost:8181 -t public/
@@ -169,7 +169,7 @@ You can then navigate to [http://localhost:8181](http://localhost:8181) to view 
 
 ----------
 
-## Pre-Made Bootstrap Template
+### Pre-Made Bootstrap Template
 This framework comes with several pre-made pages to help get your project moving. These basic pages include:
 
  - Home Page 
@@ -178,9 +178,16 @@ This framework comes with several pre-made pages to help get your project moving
 
 All of these pages and their respective controllers/views provide you an insight into how the framework functions including form validation, CSRF, working with Eloquent ORM and other plugins.  You can expand on the default template or create a completely new template using Twig and the front-end framework of your choosing.
 
+![Home Page](http://res.cloudinary.com/dappur/image/upload/v1492305016/framework/screenshots/home-page.png)
+![Registration](http://res.cloudinary.com/dappur/image/upload/v1492305016/framework/screenshots/register.png)
+![Login](http://res.cloudinary.com/dappur/image/upload/v1492305016/framework/screenshots/login.png)
+
+
+
+
 ----------
 
-## Admin Interface
+### Admin Interface
 In addition to the few basic front end templates, this framework also comes pre-built with a basic Bootstrap admin dashboard.  The dashboard allows an admin to:
 
 - Create/View/Update/Delete Users
@@ -195,3 +202,15 @@ This dashboard can be accessed automatically by logging in with the admin user c
 **Default Admin Password:** admin123
 
 It is HIGHLY recommended that you change the default admin password to one of your choosing by modifying line 138 of `database/migrations/20170118012924_init_database.php`.
+
+![Admin Dashboard](http://res.cloudinary.com/dappur/image/upload/v1492305016/framework/screenshots/admin-dashboard.png)
+
+![My Account](http://res.cloudinary.com/dappur/image/upload/v1492305016/framework/screenshots/my-account.png)
+
+![Users](http://res.cloudinary.com/dappur/image/upload/v1492305016/framework/screenshots/users.png)
+
+![Add User](http://res.cloudinary.com/dappur/image/upload/v1492305016/framework/screenshots/users-add.png)
+
+![Roles Edit](http://res.cloudinary.com/dappur/image/upload/v1492305016/framework/screenshots/roles-edit.png)
+
+![Settings](http://res.cloudinary.com/dappur/image/upload/v1492305016/framework/screenshots/settings.png)

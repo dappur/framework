@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller;
+namespace Dappur\Controller;
 
 use Awurth\Slim\Validation\Validator;
 use Cartalyst\Sentinel\Sentinel;

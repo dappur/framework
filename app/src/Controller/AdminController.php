@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller;
+namespace Dappur\Controller;
 
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -25,7 +25,7 @@ class AdminController extends Controller{
             
         }
         if ($request->isPost()) {
-            $roles = new \App\Model\Roles;
+            $roles = new \Dappur\Model\Roles;
 
             $role_name = $request->getParam('role_name');
             $role_slug = $request->getParam('role_slug');
@@ -76,11 +76,11 @@ class AdminController extends Controller{
 
         if (is_numeric($requestParams['role_id']) && $role != 1) {
 
-            $remove_user_roles = new \App\Model\RoleUsers;
+            $remove_user_roles = new \Dappur\Model\RoleUsers;
 
             $remove_user_roles->where('role_id', '=', $requestParams['role_id'])->delete();
 
-            $remove_role = new \App\Model\Roles;
+            $remove_role = new \Dappur\Model\Roles;
             $remove_role = $remove_role->find($requestParams['role_id']);
 
 
@@ -111,7 +111,7 @@ class AdminController extends Controller{
             
         }
 
-        $roles = new \App\Model\Roles;
+        $roles = new \Dappur\Model\Roles;
         $role = $roles->find($roleid);
 
         if ($role) {
@@ -207,8 +207,8 @@ class AdminController extends Controller{
             
         }
 
-        $users = new \App\Model\Users;
-        $roles = new \App\Model\Roles;
+        $users = new \Dappur\Model\Users;
+        $roles = new \Dappur\Model\Roles;
 
         return $this->view->render($response, 'Admin/users.twig', ["users" => $users->get(), "roles" => $roles->get()]);
 
@@ -228,9 +228,9 @@ class AdminController extends Controller{
             
         }
 
-        $users = new \App\Model\Users;
+        $users = new \Dappur\Model\Users;
 
-        $roles = new \App\Model\Roles;
+        $roles = new \Dappur\Model\Roles;
 
         if ($request->isPost()) {
             $user_id = $request->getParam('user_id');
@@ -390,10 +390,10 @@ class AdminController extends Controller{
 
         $requestParams = $request->getParams();
 
-        $users = new \App\Model\Users;
+        $users = new \Dappur\Model\Users;
         $user = $users->where('id', '=', $userid)->first();
 
-        $roles = new \App\Model\Roles;
+        $roles = new \Dappur\Model\Roles;
 
         if ($user) {
             if ($request->isPost()) {
@@ -573,7 +573,7 @@ class AdminController extends Controller{
 
         $timezones = $this->getTimezones();
         $theme_list = $this->getThemeList();
-        $config = new \App\Model\Config;
+        $config = new \Dappur\Model\Config;
         $global_config = $config->get();
 
         if ($request->isPost()) {
@@ -611,7 +611,7 @@ class AdminController extends Controller{
             if ($this->validator->isValid()) {
 
                 foreach ($allPostVars as $key => $value) {
-                    $updateRow = new \App\Model\Config;
+                    $updateRow = new \Dappur\Model\Config;
                     $updateRow->where('name', $key)->update(['value' => $value]);
                 }
 
@@ -640,7 +640,7 @@ class AdminController extends Controller{
 
         $timezones = $this->getTimezones();
         $theme_list = $this->getThemeList();
-        $config = new \App\Model\Config;
+        $config = new \Dappur\Model\Config;
         $global_config = $config->get();
 
         if ($request->isPost()) {
@@ -667,7 +667,7 @@ class AdminController extends Controller{
 
             if ($this->validator->isValid()) {
 
-                $configOption = new \App\Model\Config;
+                $configOption = new \Dappur\Model\Config;
                 $configOption->name = $allPostVars['add_name'];
                 $configOption->description = $allPostVars['add_description'];
                 $configOption->type = $allPostVars['add_type'];
@@ -692,7 +692,7 @@ class AdminController extends Controller{
 
         $loggedUser = $this->auth->check();
 
-        $users = new \App\Model\Users;
+        $users = new \Dappur\Model\Users;
 
         if (!$loggedUser) {
             

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Dappurware;
+namespace Dappur\Dappurware;
 
 class Sentinel extends Dappurware
 {

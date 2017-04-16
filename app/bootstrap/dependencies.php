@@ -15,7 +15,7 @@ $container['db'] = function () use ($capsule) {
 
 // Bind config table from database
 $container['config'] = function () use ($container) {
-    $config = new \App\Dappurware\SiteConfig($container);
+    $config = new \Dappur\Dappurware\SiteConfig($container);
     return $config->getConfig();
 };
 
@@ -30,7 +30,7 @@ $container['auth'] = function () {
 
 // Bind User Permissions
 $container['userAccess'] = function($container) {
-    return (new \App\Dappurware\Sentinel($container))->userAccess();
+    return (new \Dappur\Dappurware\Sentinel($container))->userAccess();
 };
 
 // Bind Flash Messages
@@ -45,7 +45,7 @@ $container['validator'] = function () {
 
 // Bind Cookies
 $container['cookies'] = function ($container){
-    return new \App\Dappurware\Cookies($container);
+    return new \Dappur\Dappurware\Cookies($container);
 };
 
 // Bind Twig View
@@ -60,13 +60,13 @@ $container['view'] = function ($container) {
         $container['request']->getUri()
     ));
     $view->addExtension(new \Twig_Extension_Debug());
-    $view->addExtension(new \App\TwigExtension\Asset($container['request']));
-    $view->addExtension(new \App\TwigExtension\JsonDecode($container['request']));
+    $view->addExtension(new \Dappur\TwigExtension\Asset($container['request']));
+    $view->addExtension(new \Dappur\TwigExtension\JsonDecode($container['request']));
     $view->addExtension(new \Awurth\Slim\Validation\ValidatorExtension($container['validator']));
     if ($container['cloudinary']) {
-        $view->addExtension(new \App\TwigExtension\Cloudinary());
+        $view->addExtension(new \Dappur\TwigExtension\Cloudinary());
         $view->getEnvironment()->addGlobal('hasCloudinary', 1);
-        $view->getEnvironment()->addGlobal('cloudinaryCmsUrl', \App\Controller\AdminController::getCloudinaryCMS($container));
+        $view->getEnvironment()->addGlobal('cloudinaryCmsUrl', \Dappur\Controller\AdminController::getCloudinaryCMS($container));
     }else{
         $view->getEnvironment()->addGlobal('hasCloudinary', 0);
     }

@@ -43,6 +43,6 @@ $app->group('/dashboard', function () use($app) {
     // Media Manager
     $app->get('/media', 'AdminController:media')->setName('admin-media');
 })
-->add(new App\Middleware\AdminMiddleware($container))
-->add(new App\Middleware\AuthMiddleware($container));
+->add(new Dappur\Middleware\AdminMiddleware($container))
+->add(new Dappur\Middleware\AuthMiddleware($container));
 

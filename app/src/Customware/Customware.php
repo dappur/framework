@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Customware;
+namespace Dappur\Customware;
 
 use Interop\Container\ContainerInterface;
 

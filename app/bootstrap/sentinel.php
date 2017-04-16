@@ -53,7 +53,7 @@ return [
 
     'users' => [
 
-        'model' => 'App\Model\Users',
+        'model' => 'Dappur\Model\Users',
 
     ],
 

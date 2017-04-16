@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller;
+namespace Dappur\Controller;
 
 use Cartalyst\Sentinel\Checkpoints\ThrottlingException;
 use Psr\Http\Message\ServerRequestInterface as Request;

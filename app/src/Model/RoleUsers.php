@@ -1,5 +1,5 @@
 <?php
-namespace App\Model;
+namespace Dappur\Model;
 use Cartalyst\Sentinel\Users\EloquentUser;
 class RoleUsers extends EloquentUser {
 

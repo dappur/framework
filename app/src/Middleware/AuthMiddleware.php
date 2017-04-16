@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Middleware;
+namespace Dappur\Middleware;
 
 class AuthMiddleware extends Middleware {
     public function __invoke($request, $response, $next) {

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Dappurware;
+namespace Dappur\Dappurware;
 
 use Dflydev\FigCookies\FigRequestCookies;
 use Dflydev\FigCookies\FigResponseCookies;

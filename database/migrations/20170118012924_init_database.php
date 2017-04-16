@@ -1,6 +1,6 @@
 <?php
 
-use \App\Migration\Migration;
+use \Dappur\Migration\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
 class InitDatabase extends Migration
@@ -142,7 +142,7 @@ class InitDatabase extends Migration
 
         // Seed Config Table
         foreach ($init_config as $key => $value) {
-            $config = new App\Model\Config;
+            $config = new Dappur\Model\Config;
             $config->name = $value[0];
             $config->description = $value[1];
             $config->type = $value[2];

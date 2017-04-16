@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Middleware;
+namespace Dappur\Middleware;
 
-use App\TwigExtension\Csrf;
+use Dappur\TwigExtension\Csrf;
 
 class CsrfMiddleware extends Middleware
 {

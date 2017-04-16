@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Middleware;
+namespace Dappur\Middleware;
 
 use Interop\Container\ContainerInterface;
 
