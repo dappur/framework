@@ -32,7 +32,7 @@ This is a lightweight full featured framework intended for PHP developers who ne
 ### Install Via Composer Create-Project
 You can start a new project user the Composer `create-project` command.
 
-    composer create-project dappur/dappur-framework new_app
+    composer create-project dappur/framework new_app
 
 
 This will clone the Dappur Framework into a new project directory called `new_app`.   It will also automatically install and update all of the required dependencies.
