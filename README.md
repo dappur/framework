@@ -180,8 +180,10 @@ All of these pages and their respective controllers/views provide you an insight
 
 **Home Page**
 ![Home Page](http://res.cloudinary.com/dappur/image/upload/v1492305016/framework/screenshots/home-page.png)
+
 **Registration Page**
 ![Registration](http://res.cloudinary.com/dappur/image/upload/v1492305016/framework/screenshots/register.png)
+
 **Login Page**
 ![Login](http://res.cloudinary.com/dappur/image/upload/v1492305016/framework/screenshots/login.png)
 
@@ -204,13 +206,18 @@ It is HIGHLY recommended that you change the default admin password to one of yo
 
 **Admin Dashboard**
 ![Admin Dashboard](http://res.cloudinary.com/dappur/image/upload/v1492305016/framework/screenshots/admin-dashboard.png)
+
 **My Account**
 ![My Account](http://res.cloudinary.com/dappur/image/upload/v1492305016/framework/screenshots/my-account.png)
+
 **User Management**
 ![Users](http://res.cloudinary.com/dappur/image/upload/v1492305016/framework/screenshots/users.png)
+
 **Add User**
 ![Add User](http://res.cloudinary.com/dappur/image/upload/v1492305016/framework/screenshots/users-add.png)
+
 **Edit User Roles**
 ![Roles Edit](http://res.cloudinary.com/dappur/image/upload/v1492305016/framework/screenshots/roles-edit.png)
+
 **Global Settings**
 ![Settings](http://res.cloudinary.com/dappur/image/upload/v1492305016/framework/screenshots/settings.png)
