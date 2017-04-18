@@ -136,7 +136,8 @@ class InitDatabase extends Migration
             'last_name' => "User",
             'username' => 'admin',
             'email' => "admin@example.com",
-            'password' => "admin123"
+            'password' => "admin123",
+            'permissions' => array()
         ]);
         $role->users()->attach($admin);
 
