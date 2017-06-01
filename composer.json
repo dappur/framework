@@ -4,6 +4,7 @@
     "keywords": ["slim", "eloquent", "twig", "sentinel", "monolog", "logentries", "validation", "config", "framework", "phinx", "cloudinary"],
     "version": "1.1.1",
     "homepage": "https://github.com/dappur/framework",
+    "license": "MIT",
     "authors": [
         {
             "name": "Jeff Thomas",
