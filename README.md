@@ -21,7 +21,9 @@ This is a lightweight full featured framework intended for PHP developers who ne
 ----------
 
 ### //TODO
+* Start documentation for the Dappur CLI
 * Create Usage Pages
+* Implement a better open source BS3 theme for the admin interface
 
 ----------
 
