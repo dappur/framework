@@ -51,7 +51,7 @@ This will clone the Dappur Framework into a new project directory called `new_ap
             |-- dependencies.php (Bind All Dependencies)
             |-- middleware.php (Add Global Middleware)
             |-- sentinel.php (Sentinel Configuration)
-            |-- settings.php.dist (App Configuration Template)
+            |-- settings.dist.php (App Configuration Template)
         |-- routes (Routes)
             |-- admin.php
             |-- app.php
@@ -138,7 +138,7 @@ This will clone the Dappur Framework into a new project directory called `new_ap
 ----------
 
 ### Configure Project and Database
-Configuring your new project is simple.  Rename `settings.php.dist` to `settings.php` and configure the following options:
+Configuring your new project is simple.  Rename `settings.dist.php` to `settings.php` and configure the following options:
 ```
 db->host
 db->port

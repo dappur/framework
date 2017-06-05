@@ -1,7 +1,10 @@
 <?php
 require __DIR__ . '/vendor/autoload.php';
 $settings = require __DIR__ . '/app/bootstrap/settings.php';
-$dbconf = $settings['settings']['db'];
+
+$database = $settings['db']['use'];
+
+$dbconf = $settings['db'][$database];
 
 
 return [

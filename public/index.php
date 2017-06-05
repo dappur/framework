@@ -6,7 +6,7 @@ require __DIR__ . '/../vendor/autoload.php';
 
 // Load Settings
 $settings = require __DIR__ . '/../app/bootstrap/settings.php';
-$app = new Slim\App($settings);
+$app = new Slim\App(array('settings' => $settings));
 
 // Load Dependancies
 require __DIR__ . '/../app/bootstrap/dependencies.php';
