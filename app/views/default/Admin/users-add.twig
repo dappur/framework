@@ -68,7 +68,7 @@ javascript
                         </div>
                         
                         <div class="col-md-6">
-                            <div class="form-group{% if has_error() %} has-error{% endif %}">
+                            <div class="form-group{% if has_error('roles') %} has-error{% endif %}">
                                 <label>User Roles</label>
 
                                 {% for role in roles %}
