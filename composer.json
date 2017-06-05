@@ -31,6 +31,7 @@
         "monolog/monolog": "^1.22",
         "logentries/logentries-monolog-handler": "^2.1",
         "dflydev/fig-cookies": "^1.0",
-        "cloudinary/cloudinary_php": "^1.7"     
+        "cloudinary/cloudinary_php": "^1.7",
+        "robmorgan/phinx": "^0.8.0"     
     }
 }

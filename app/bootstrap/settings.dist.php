@@ -39,21 +39,21 @@ return [
         'twig' => [
             'cache' => false, //__DIR__ . '/../../storage/cache/twig'
             'debug' => false,
-            'auto_reload' => true,
+            'auto_reload' => true
         ],
     ],
     // Logging Options
     'logger' => [
         'name' => 'Dappur',
         'log_path' => __DIR__ . '/../../storage/log/monolog/dappur.log', // PATH_TO_LOG
-        'le_token' => false, // Logentries Access Token
+        'le_token' => false // Logentries Access Token
     ],
     // Cloudinary Options
     'cloudinary' => [
         'enabled' => false, // Enable Cloudinary
         'cloud_name' => '', // Cloud Name
         'api_key' => '', // API Key
-        'api_secret' => '', // API Secret
+        'api_secret' => '' // API Secret
     ],
     // Deployment Options
     'deployment' => [
