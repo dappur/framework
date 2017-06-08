@@ -254,7 +254,7 @@ class Deployment {
         // Fetch any new changes
         $git_fetch = shell_exec('cd ' . $this->repo_dir . ' && ' . $this->git_bin_path  . ' fetch 2>&1');
         if (empty($git_fetch)) {
-            echo $this->logEntry("There is nothing new to fetch from this repository.");
+            die($this->logEntry("There is nothing new to fetch from this repository."));
         }else{
             echo $this->logEntry($git_fetch);
             // Do the checkout
