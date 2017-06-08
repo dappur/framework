@@ -11,3 +11,7 @@ $container['AuthController'] = function ($container) {
 $container['AdminController'] = function ($container) {
     return new Dappur\Controller\AdminController($container);
 };
+
+$container['DeployController'] = function ($container) { 
+	return new Dappur\Controller\DeployController($container); 
+};
