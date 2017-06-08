@@ -238,8 +238,15 @@ class Deployment {
         echo $this->logEntry($create_repo_mirror);
         if (strpos($create_repo_mirror, 'ermission denied (publickey)')) {
             echo $this->logEntry("Access denied to repository... Creating deployment key now...");
-            echo $this->logEntry("Please add the following public key between the dashes to your deployment keys for the repository and run this script again.\n" . str_repeat("-", 80) . "\n" . $this->getDeployKey() . "\n" . str_repeat("-", 80));
+            die($this->logEntry("Please add the following public key between the dashes to your deployment keys for the repository and run this script again.\n" . str_repeat("-", 80) . "\n" . $this->getDeployKey() . "\n" . str_repeat("-", 80)));
         }
+
+        // Do the initial checkout
+        $git_checkout = shell_exec('cd ' . $this->repo_dir . ' && GIT_WORK_TREE=' . dirname($this->document_root) . ' ' . $this->git_bin_path  . ' checkout -f 2>&1');
+        echo $this->logEntry($git_checkout);
+        // Get the deployment commit hash
+        $commit_hash = shell_exec('cd ' . $this->repo_dir . ' && ' . $this->git_bin_path  . ' rev-parse --short HEAD 2>&1');
+        echo $this->logEntry("Deployed Commit: " . $commit_hash);
     }
 
     private function updateRepository(){
@@ -326,9 +333,9 @@ class Deployment {
     private function checkSettings(){
 
         // Check that the user home has a settings.php file. If not, then create it.
-        if (!is_dir($this->document_root . '/app/bootstrap')) {
+        if (!is_dir(dirname($this->document_root) . '/app/bootstrap')) {
             echo $this->logEntry("Creating bootstrap folder for settings...");
-            mkdir($this->document_root . '/app/bootstrap', 0755, true);
+            mkdir(dirname($this->document_root) . '/app/bootstrap', 0755, true);
         }
         
         if (!is_file(dirname($this->document_root) . '/app/bootstrap/settings.php')) {
@@ -350,7 +357,7 @@ class Deployment {
     }
 
     private function updateDatabase(){
-
+        
         if (!empty($this->settings_array)) {
 
             $check_connection = $this->checkConnection();
@@ -371,6 +378,7 @@ class Deployment {
                 die("Database connection parameters defined, but a connection could not be made.  Please check your settings and run this script again.");
             }
         }
+        
     }
 
     private function checkConnection(){
@@ -385,14 +393,16 @@ class Deployment {
         $output['check_file'] = false;
         $output['check_construct'] = false;
 
-        // Check the mysql database in the settings file.
-        if (!@mysqli_connect($file_database['host'], $file_database['username'], $file_database['password'], $file_database['database'])) {
-            echo $this->logEntry("MySQL Connection Error: " . mysqli_connect_error());
-        }else{
-            echo $this->logEntry("Successfully connected to the settings.php selected database.");
-            $output['check_file'] = true;
-        }
 
+        // Check the mysql database in the settings file.
+        if ($file_database['host'] != "" && $file_database['database'] != "" && $file_database['username'] != "" && $file_database['password'] != "") {
+            if (!@mysqli_connect($file_database['host'], $file_database['username'], $file_database['password'], $file_database['database'])) {
+                echo $this->logEntry("MySQL Connection Error: " . mysqli_connect_error());
+            }else{
+                echo $this->logEntry("Successfully connected to the settings.php selected database.");
+                $output['check_file'] = true;
+            }
+        }
         if ($construct_database) {
             if (!@mysqli_connect($construct_database['host'], $construct_database['username'], $construct_database['password'], $construct_database['database'])) {
                 echo $this->logEntry("MySQL Connection Error: " . mysqli_connect_error());
