@@ -258,8 +258,7 @@ class Deployment {
         }else{
             echo $this->logEntry($git_fetch);
             // Do the checkout
-            $git_checkout = shell_exec('cd ' . $this->repo_dir . ' && GIT_WORK_TREE=' . dirname($this->document_root) . ' ' . $this->git_bin_path  . ' checkout -f 2>&1');
-            echo $this->logEntry($git_checkout);
+            shell_exec('cd ' . $this->repo_dir . ' && GIT_WORK_TREE=' . dirname($this->document_root) . ' ' . $this->git_bin_path  . ' checkout -f 2>&1');
             // Get the deployment commit hash
             $commit_hash = shell_exec('cd ' . $this->repo_dir . ' && ' . $this->git_bin_path  . ' rev-parse --short HEAD 2>&1');
             echo $this->logEntry("Deployed Commit: " . $commit_hash);
