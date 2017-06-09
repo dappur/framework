@@ -245,23 +245,26 @@ class AdminController extends Controller{
 
             $permissions_array = array();
 
-
-            foreach ($perm_name as $pkey => $pvalue) {
-                if ($perm_value[$pkey] == "true") {
-                    $val = true;
-                }else{
-                    $val = false;
+            if (is_array($perm_name)) {
+                foreach ($perm_name as $pkey => $pvalue) {
+                    if ($perm_value[$pkey] == "true") {
+                        $val = true;
+                    }else{
+                        $val = false;
+                    }
+                    $permissions_array[$pvalue] = $val;
                 }
-                $permissions_array[$pvalue] = $val;
             }
 
             // Check if roles exist
             $roles_array = array();
-            foreach ($user_roles as $rkey => $rvalue) {
-                if (!$this->auth->findRoleBySlug($rvalue)) {
-                    $this->validator->addError('roles', 'Role does not exist.');
-                }else{
-                    $roles_array[] = $rvalue;
+            if (is_array($user_roles)) {
+                foreach ($user_roles as $rkey => $rvalue) {
+                    if (!$this->auth->findRoleBySlug($rvalue)) {
+                        $this->validator->addError('roles', 'Role does not exist.');
+                    }else{
+                        $roles_array[] = $rvalue;
+                    }
                 }
             }
 
