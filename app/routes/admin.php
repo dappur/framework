@@ -2,9 +2,9 @@
 
 $app->group('/dashboard', function () use($app) {
 
-	// Dashboard Home
+    // Dashboard Home
     $app->get('', 'AdminController:dashboard')
-    	->setName('dashboard');
+        ->setName('dashboard');
 
     // Users Routes
     $app->group('/users', function() use ($app) {
@@ -44,5 +44,7 @@ $app->group('/dashboard', function () use($app) {
     $app->get('/media', 'AdminController:media')->setName('admin-media');
 })
 ->add(new Dappur\Middleware\AdminMiddleware($container))
-->add(new Dappur\Middleware\AuthMiddleware($container));
+->add(new Dappur\Middleware\AuthMiddleware($container))
+->add(new \Dappur\Middleware\CsrfMiddleware($container))
+->add($container->get('csrf'));
 

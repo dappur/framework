@@ -49,6 +49,11 @@ $container['cookies'] = function ($container){
     return new \Dappur\Dappurware\Cookies($container);
 };
 
+// CSRF
+$container['csrf'] = function ($container) {
+    return new \Slim\Csrf\Guard;
+};
+
 // Bind Twig View
 $container['view'] = function ($container) {
     $view = new \Slim\Views\Twig(

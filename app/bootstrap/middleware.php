@@ -1,4 +1,4 @@
 <?php
 
-$app->add(new \Dappur\Middleware\CsrfMiddleware($container));
-$app->add(new \Slim\Csrf\Guard());
+// This is where you will all your global Middleware using:
+// $app->add();
