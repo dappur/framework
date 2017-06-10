@@ -58,6 +58,7 @@ return [
     // Deployment Options
     'deployment' => [
         'enabled' => false, // Enable Deployment
+        'manual' => true, // Allow manual deployment
         'page_name' => 'deploy', 
         'deploy_token' => '', // Deployment Token (Recommend random SHA-1 Key)
         'repo_url' => '' // URL of the Git Repository (Make sure your PHP user has access to the repo)
