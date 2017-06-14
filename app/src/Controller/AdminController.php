@@ -222,9 +222,9 @@ class AdminController extends Controller{
 
             $loggedUser = $this->auth->check();
             
-            $this->flash('danger', 'You do not have permission to access the settings.');
+            $this->flash('danger', 'You do not have permission to add users.');
             $this->logger->addError("Unauthorized Access", array("message" => "Unauthorized access was attempted on the add user page", "user_id" => $loggedUser['id']));
-            return $this->redirect($response, 'dashboard');
+            return $this->redirect($response, 'admin-users');
             
         }
 
@@ -387,7 +387,7 @@ class AdminController extends Controller{
             
             $this->flash('danger', 'You do not have permission to edit users.');
             $this->logger->addError("Unauthorized Access", array("message" => "Unauthorized access was attempted on the edit user page", "user_id" => $loggedUser['id']));
-            return $this->redirect($response, 'dashboard');
+            return $this->redirect($response, 'admin-users');
             
         }
 
@@ -543,7 +543,7 @@ class AdminController extends Controller{
             
             $this->flash('danger', 'You do not have permission to delete users.');
             $this->logger->addError("Unauthorized Access", array("message" => "Unauthorized access was attempted on the edit user page", "user_id" => $loggedUser['id']));
-            return $this->redirect($response, 'dashboard');
+            return $this->redirect($response, 'admin-users');
             
         }
 
@@ -560,133 +560,6 @@ class AdminController extends Controller{
             return $this->redirect($response, 'admin-users');
         }
         
-    }
-
-    public function settingsGlobal(Request $request, Response $response){
-
-        if (!$this->auth->hasAccess('config.global')) {
-
-            $loggedUser = $this->auth->check();
-            
-            $this->flash('danger', 'You do not have permission to access the settings.');
-            $this->logger->addError("Unauthorized Access", array("message" => "Unauthorized access was attempted on the global settings page", "user_id" => $loggedUser['id']));
-            return $this->redirect($response, 'dashboard');
-            
-        }
-
-        $timezones = $this->getTimezones();
-        $theme_list = $this->getThemeList();
-        $config = new \Dappur\Model\Config;
-        $global_config = $config->get();
-
-        if ($request->isPost()) {
-
-            $allPostVars = $request->getParsedBody();
-
-            // Validate Domain
-            if (array_key_exists('domain', $allPostVars)){
-                $this->validator->validate($request, ['domain' => array('rules' => V::domain(), 'messages' => array('domain' => 'Please enter a valid domain.'))]);
-            }
-
-            // Validate Reply To Email
-            if (array_key_exists('replyto-email', $allPostVars)){
-                $this->validator->validate($request, ['replyto-email' => array('rules' => V::noWhitespace()->email(), 'messages' => array('noWhitespace' => 'Must not contain any spaces.', 'email' => 'Enter a valid email address.'))]);
-            }
-
-            // Validate Google Analytics
-            if (isset($allPostVars['ga']) && !empty($allPostVars['ga'])){
-                $this->validator->validate($request, ['ga' => array('rules' => V::regex('/(UA|YT|MO)-\d+-\d+/'), 'messages' => array('regex' => 'Enter a valid UA Tracking Code'))]);
-            }
-
-            // Additional Validation
-            foreach ($allPostVars as $key => $value) {
-                if (strip_tags($value) != $value) {
-                    $this->validator->addError($key, 'Please do not use any HTML Tags');
-                    $this->logger->addWarning("possible scripting attack", array("message" => "HTML tags were blocked from being put into the config."));
-                }
-
-                if ($key == "theme" && !in_array($value, $theme_list)) {
-                    $this->validator->addError($key, 'Not a valid global setting.');
-                }
-            }
-
-
-            if ($this->validator->isValid()) {
-
-                foreach ($allPostVars as $key => $value) {
-                    $updateRow = new \Dappur\Model\Config;
-                    $updateRow->where('name', $key)->update(['value' => $value]);
-                }
-
-                $this->flash('success', 'Global settings have been updated successfully.');
-                return $this->redirect($response, 'settings-global');
-            }
-
-            
-        }
-
-        return $this->view->render($response, 'Admin/global-settings.twig', array("globalConfig" => $global_config, "themeList" => $theme_list, "timezones" => $timezones));
-
-    }
-
-    public function settingsGlobalAdd(Request $request, Response $response){
-
-        if (!$this->auth->hasAccess('config.global')) {
-
-            $loggedUser = $this->auth->check();
-            
-            $this->flash('danger', 'You do not have permission to add settings.');
-            $this->logger->addError("Unauthorized Access", array("message" => "Unauthorized access was attempted on the global settings add page", "user_id" => $loggedUser['id']));
-            return $this->redirect($response, 'dashboard');
-            
-        }
-
-        $timezones = $this->getTimezones();
-        $theme_list = $this->getThemeList();
-        $config = new \Dappur\Model\Config;
-        $global_config = $config->get();
-
-        if ($request->isPost()) {
-
-            $allPostVars = $request->getParsedBody();
-
-            $this->validator->validate($request, array('add_name' => array('rules' => V::slug()->length(4, 32), 'messages' => array('slug' => 'May only contain lowercase letters, numbers and hyphens.', 'length' => 'Must be between 4 and 32 characters.'))));
-            $this->validator->validate($request, array('add_description' => array('rules' => V::alnum()->length(4, 32), 'messages' => array('alnum' => 'May only contain letters and numbers.', 'length' => 'Must be between 4 and 32 characters.'))));
-            
-            if ($allPostVars['add_type'] == "string") {
-                // Check for HTML Tags
-                if (strip_tags($allPostVars['add_value']) != $allPostVars['add_value']) {
-                    $this->validator->addError('add_value', 'Please do not use any HTML Tags');
-                    $this->logger->addWarning("possible scripting attack", array("message" => "HTML tags were blocked from being put into the config."));
-                }
-            } else {
-                $this->validator->addError('add_value', 'Not a valid global setting.');
-            }
-
-            $check_config = $config->where('name', '=', $allPostVars['add_name'])->get()->count();
-            if ($check_config > 0) {
-                $this->validator->addError('add_name', 'Name is already in use.');
-            }
-
-            if ($this->validator->isValid()) {
-
-                $configOption = new \Dappur\Model\Config;
-                $configOption->name = $allPostVars['add_name'];
-                $configOption->description = $allPostVars['add_description'];
-                $configOption->type = $allPostVars['add_type'];
-                $configOption->value = $allPostVars['add_value'];
-                $configOption->save();
-
-
-                $this->flash('success', 'Global settings successfully added.');
-                return $this->redirect($response, 'settings-global');
-            }
-
-            
-        }
-
-        return $this->view->render($response, 'Admin/global-settings.twig', array("globalConfig" => $global_config, "themeList" => $theme_list, "timezones" => $timezones));
-
     }
 
     public function myAccount(Request $request, Response $response){
@@ -860,41 +733,5 @@ class AdminController extends Controller{
         }
         
     }
-
-    private function getThemeList(){
-        $public_assets = array_filter(glob('../public/assets/*'), 'is_dir');
-        $internal_assets = array_filter(glob('../app/views/*'), 'is_dir');
-
-        $public_array = array();
-        $internal_array = array();
-        foreach ($public_assets as $key => $value) {
-            $public_array[] = substr($value, strrpos($value, '/') + 1);
-        }
-
-        foreach ($internal_assets as $key => $value) {
-            $internal_array[] = substr($value, strrpos($value, '/') + 1);
-        }
-
-        foreach ($internal_array as $key => $value) {
-            if (!in_array($value, $public_array)) {
-                unset($internal_array[$key]);
-            }
-        }
-
-        return $internal_array;
-    }
-
-    private function getTimezones(){
-
-        $zones_array = array();
-        $timestamp = time();
-        foreach(timezone_identifiers_list() as $key => $zone) {
-            date_default_timezone_set($zone);
-            $zones_array[$key]['zone'] = $zone;
-            $zones_array[$key]['diff_from_GMT'] = 'UTC/GMT ' . date('P', $timestamp);
-        }
-        return $zones_array;
-    }
-
 
 }

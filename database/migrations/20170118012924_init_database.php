@@ -23,7 +23,8 @@ class InitDatabase extends Migration
             array('site-name', 'Site Name', 'string', 'Dappur-FW'),
             array('domain', 'Site Domain', 'string', 'dappur.dev'),
             array('replyto-email', 'Reply To Email', 'string', 'noreply@dappur.dev'),
-            array('theme', 'Theme', 'theme', 'default'),
+            array('theme', 'Site Theme', 'theme', 'default'),
+            array('admin-theme', 'Admin Theme', 'theme', 'default'),
             array('ga', 'Google Analytics UA', 'string', ''));
 
         // Create Users Table
@@ -118,7 +119,8 @@ class InitDatabase extends Migration
                 'config.*' => true,
                 'role.*' => true,
                 'permission.*' => true,
-                'media.*' => true
+                'media.*' => true,
+                'blog.*' => true
             )
         ));
 

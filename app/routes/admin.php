@@ -33,9 +33,12 @@ $app->group('/dashboard', function () use($app) {
     });
 
     // Global Settings
-    $app->map(['GET', 'POST'], '/settings', 'AdminController:settingsGlobal')->setName('settings-global');
-    $app->post('/settings/add', 'AdminController:settingsGlobalAdd')
+    $app->map(['GET', 'POST'], '/settings', 'SettingsController:settingsGlobal')->setName('settings-global');
+    $app->post('/settings/add', 'SettingsController:settingsGlobalAdd')
         ->setName('settings-global-add');
+    
+    // Edit Settings.php
+    $app->map(['GET', 'POST'], '/developer/settings', 'SettingsController:settingsDeveloper')->setName('settings-developer');
 
     // My Account
     $app->map(['GET', 'POST'], '/my-account', 'AdminController:myAccount')->setName('my-account');

@@ -4,7 +4,7 @@ $settings = require __DIR__ . '/app/bootstrap/settings.php';
 
 $database = $settings['db']['use'];
 
-$dbconf = $settings['db'][$database];
+$dbconf = $settings['db']['databases'][$database];
 
 
 return [

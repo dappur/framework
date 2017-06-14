@@ -19,13 +19,14 @@
     {% if hasCloudinary and auth.hasAccess('media.manage') %}
         <link href="/assets/default/css/lity.min.css" rel="stylesheet">
     {% endif %}
+    <link href="/assets/default/css/sweetalert2.min.css" rel="stylesheet">
     <!-- End Global CSS -->
 
     <!-- Page Level CSS -->
     {% block stylesheets %}{% endblock %}
 
     <!-- Custom CSS -->
-    <link href="/assets/default/css/sb-admin-2.min.css" rel="stylesheet">
+    <link href="/assets/default/css/sb-admin.min.css" rel="stylesheet">
     <link href="/assets/default/css/custom-admin.min.css" rel="stylesheet">
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -62,12 +63,7 @@
             {% include 'Admin/inc/flash.twig' %}
 
             {% block body %}
-            <div class="row">
-                <div class="col-lg-12">
-                    <h1 class="page-header">Dashboard</h1>
-                </div>
-                <!-- /.col-lg-12 -->
-            </div>
+            
             {% endblock %}
 
         </div>
@@ -82,6 +78,9 @@
     {% if hasCloudinary and auth.hasAccess('media.manage') %}
         <script src="/assets/default/js/lity.min.js"></script>
     {% endif %}
+    <script src="/assets/default/js/sweetalert2.min.js"></script>
+    <script src="/assets/default/js/core.min.js"></script>
+    <script src="/assets/default/js/custom.admin.min.js"></script>
     <!-- End Global JS -->
 
     <script>

@@ -385,9 +385,9 @@ class Deployment {
         $output == array();
 
         $settings = require(dirname($this->document_root) . '/app/bootstrap/settings.php');
-        $file_database = $settings['db'][$settings['db']['use']];
+        $file_database = $settings['db']['databases'][$settings['db']['use']];
 
-        $construct_database = $this->settings_array['db'][$this->settings_array['db']['use']];
+        $construct_database = $this->settings_array['db']['databases'][$this->settings_array['db']['use']];
 
         $output['check_file'] = false;
         $output['check_construct'] = false;

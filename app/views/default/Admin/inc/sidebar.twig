@@ -1,29 +1,42 @@
-<div class="navbar-default sidebar" role="navigation">
-    <div class="sidebar-nav navbar-collapse collapse">
-        <ul class="nav" id="side-menu">
-            <li>
-                <a href="{{ path_for('dashboard')}}"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
-            </li>
+<!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
+<div class="collapse navbar-collapse navbar-ex1-collapse">
+    <ul class="nav navbar-nav side-nav">
+        <li {% if currentRoute == '/dashboard' %}class="active"{% endif %}>
+            <a href="{{ path_for('dashboard')}}"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
+        </li>
 
-            {% if auth.hasAccess('user.create') %}
-            <li>
-                <a href="{{ path_for('admin-users')}}"><i class="fa fa-fw fa-users"></i> User Management</a>
-            </li>
-            {% endif %}
+        {% if auth.hasAccess('user.view') %}
+        <li {% if currentRoute starts with '/dashboard/users' %}class="active"{% endif %}>
+            <a href="{{ path_for('admin-users')}}"><i class="fa fa-fw fa-users"></i> User Management</a>
+        </li>
+        {% endif %}
 
-            {% if auth.hasAccess('config.global') %}
-            <li>
-                <a href="{{ path_for('settings-global')}}"><i class="fa fa-cogs fa-fw"></i> Global Settings</a>
-            </li>
-            {% endif %}
+        {% if auth.hasAccess('config.view') %}
+        <li {% if currentRoute starts with '/dashboard/settings' %}class="active"{% endif %}>
+            <a href="{{ path_for('settings-global')}}"><i class="fa fa-cogs fa-fw"></i> Global Settings</a>
+        </li>
+        {% endif %}
 
-            {% if hasCloudinary and auth.hasAccess('media.manage') %}
-            <li>
-                <a style="cursor: pointer;" id="openCloudinaryCms"><i class="fa fa-camera-retro fa-fw"></i> Media Library</a>
-            </li>
-            {% endif %}
-        </ul>
-    </div>
-    <!-- /.sidebar-collapse -->
+        
+
+        {% if auth.hasAccess('developer.view') %}
+        <li>
+            <a href="javascript:;" data-toggle="collapse" data-target="#demo"><i class="fa fa-fw fa-wrench"></i> Developer Tools <i class="fa fa-fw fa-caret-down"></i></a>
+            <ul id="demo" class="collapse">
+                {% if hasCloudinary and auth.hasAccess('developer.cloudinary') %}
+                <li>
+                    <a style="cursor: pointer;" id="openCloudinaryCms"><i class="fa fa-cloud fa-fw"></i> Cloudinary CMS</a>
+                </li>
+                {% endif %}
+                {% if auth.hasAccess('developer.settings.view') %}
+                    <li>
+                        <a href="{{ path_for('settings-developer')}}"><i class="fa fa-life-ring fa-fw"></i> Edit settings.php</a>
+                    </li>
+                {% endif %}
+
+            </ul>
+        </li>
+        {% endif %}
+    </ul>
 </div>
-<!-- /.navbar-static-side -->
+<!-- /.navbar-collapse -->
