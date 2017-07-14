@@ -11,9 +11,6 @@ $app = new Slim\App(array('settings' => $settings));
 // Load Dependancies
 require __DIR__ . '/../app/bootstrap/dependencies.php';
 
-// Load Middleware
-require __DIR__ . '/../app/bootstrap/middleware.php';
-
 // Load Controllers
 require __DIR__ . '/../app/bootstrap/controllers.php';
 

@@ -1,20 +1,21 @@
 <?php
 
-$container['AppController'] = function ($container) {
-    return new Dappur\Controller\AppController($container);
+$container['App'] = function ($container) {
+    return new Dappur\Controller\App($container);
 };
 
-$container['AuthController'] = function ($container) {
-    return new Dappur\Controller\AuthController($container);
+$container['Auth'] = function ($container) {
+    return new Dappur\Controller\Auth($container);
 };
 
-$container['AdminController'] = function ($container) {
-    return new Dappur\Controller\AdminController($container);
+$container['Admin'] = function ($container) {
+    return new Dappur\Controller\Admin($container);
 };
 
-$container['DeployController'] = function ($container) { 
-	return new Dappur\Controller\DeployController($container); 
+$container['Deploy'] = function ($container) { 
+	return new Dappur\Controller\Deploy($container); 
 };
-$container['SettingsController'] = function ($container) { 
-	return new Dappur\Controller\SettingsController($container); 
+
+$container['Settings'] = function ($container) { 
+	return new Dappur\Controller\Settings($container); 
 };

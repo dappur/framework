@@ -49,7 +49,7 @@ return [
         'log_name' => 'Dappur', // App name in log entry
         'log_path' => '../storage/log/monolog/', // PATH_TO_LOG **Add trailing Slash**
         'log_file_name' => 'dappur.log', // Log File Name
-        'le_token' => false, // Logentries Access Token
+        'le_token' => '', // Logentries Access Token
     ],
     // Cloudinary Options
     'cloudinary' => [

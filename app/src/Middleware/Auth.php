@@ -2,7 +2,7 @@
 
 namespace Dappur\Middleware;
 
-class AuthMiddleware extends Middleware {
+class Auth extends Middleware {
     public function __invoke($request, $response, $next) {
         if (!$this->auth->check()) {
             $this->flash->addMessage('danger', 'You must be logged in to access this page!');

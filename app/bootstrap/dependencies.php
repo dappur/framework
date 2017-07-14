@@ -76,10 +76,11 @@ $container['view'] = function ($container) {
     $view->addExtension(new \Dappur\TwigExtension\Asset($container['request']));
     $view->addExtension(new \Dappur\TwigExtension\JsonDecode($container['request']));
     $view->addExtension(new \Awurth\Slim\Validation\ValidatorExtension($container['validator']));
+    $view->addExtension(new \Dappur\TwigExtension\Csrf($container['csrf']));
     if ($container['cloudinary']) {
         $view->addExtension(new \Dappur\TwigExtension\Cloudinary());
         $view->getEnvironment()->addGlobal('hasCloudinary', 1);
-        $view->getEnvironment()->addGlobal('cloudinaryCmsUrl', \Dappur\Controller\AdminController::getCloudinaryCMS($container));
+        $view->getEnvironment()->addGlobal('cloudinaryCmsUrl', \Dappur\Controller\Admin::getCloudinaryCMS($container));
     }else{
         $view->getEnvironment()->addGlobal('hasCloudinary', 0);
     }

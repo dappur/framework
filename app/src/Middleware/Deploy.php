@@ -2,7 +2,7 @@
 
 namespace Dappur\Middleware;
 
-class DeployMiddleware extends Middleware {
+class Deploy extends Middleware {
     public function __invoke($request, $response, $next) {
 
     	$hook_secret = $this->container->settings['deployment']['deploy_token'];

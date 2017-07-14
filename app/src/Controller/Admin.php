@@ -6,7 +6,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use Respect\Validation\Validator as V;
 
-class AdminController extends Controller{
+class Admin extends Controller{
 
     public function dashboard(Request $request, Response $response){
 
@@ -39,7 +39,8 @@ class AdminController extends Controller{
 
                 $role = $this->auth->getRoleRepository()->createModel()->create([
                     'name' => $role_name,
-                    'slug' => $role_slug
+                    'slug' => $role_slug,
+                    'permissions' => []
                 ]);
 
                 if ($role) {

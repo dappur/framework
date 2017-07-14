@@ -5,13 +5,35 @@ namespace Dappur\TwigExtension;
 use Psr\Http\Message\RequestInterface as Request;
 
 class Csrf extends \Twig_Extension {
-    private $csrfName;
 
-    private $csrfValue;
+    /**
+     * @var \Slim\Csrf\Guard
+     */
+    protected $csrf;
+    
+    public function __construct($csrf)
+    {
+        $this->csrf = $csrf;
+    }
 
-    public function __construct(Request $request) {
-        $this->csrfName = $request->getAttribute('csrf_name');
-        $this->csrfValue = $request->getAttribute('csrf_value');
+    public function getGlobals()
+    {
+        // CSRF token name and value
+        $csrfNameKey = $this->csrf->getTokenNameKey();
+        $csrfValueKey = $this->csrf->getTokenValueKey();
+        $csrfName = $this->csrf->getTokenName();
+        $csrfValue = $this->csrf->getTokenValue();
+        
+        return [
+            'csrf'   => [
+                'keys' => [
+                    'name'  => $csrfNameKey,
+                    'value' => $csrfValueKey
+                ],
+                'name'  => $csrfName,
+                'value' => $csrfValue
+            ]
+        ];
     }
 
     public function getName() {
@@ -25,9 +47,10 @@ class Csrf extends \Twig_Extension {
     }
 
     public function csrf() {
+
         return '
-            <input type="hidden" name="csrf_name" value="' . $this->csrfName . '">
-            <input type="hidden" name="csrf_value" value="' . $this->csrfValue . '">
+            <input type="hidden" name="' . $this->csrf->getTokenNameKey() .'" value="' . $this->csrf->getTokenName() . '">
+            <input type="hidden" name="' . $this->csrf->getTokenValueKey() . '" value="' . $this->csrf->getTokenValue() . '">
         ';
     }
 }

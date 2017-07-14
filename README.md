@@ -60,21 +60,21 @@ This will clone the Dappur Framework into a new project directory called `new_ap
             |-- auth.php
         |-- src (Source Folder)
             |-- Controller (Route Controllers - Source)
-                |-- AdminController.php 
-                |-- AuthController.php
+                |-- Admin.php 
+                |-- Auth.php
                 |-- Controller.php
-                |-- AppController.php
-            |-- Customware (Custom Php Classes)
-                |-- Customware.php
+                |-- App.php
+            |-- App (App Level Php Classes)
+                |-- App.php
             |-- Dappurware (Official Dappur Classes)
                 |-- Dappurware.php
                 |-- Sentinel.php
                 |-- SiteConfig.php
             |-- Middleware (Slim Middleware Classes)
-                |-- AdminMiddleware.php
-                |-- AuthMiddleware.php
+                |-- Admin.php
+                |-- Auth.php
                 |-- CsrfMiddleware.php
-                |-- GuestMiddleware.php
+                |-- Guest.php
                 |-- Middleware.php
             |-- Migration (Eloquent Migration Class)
                 |-- Migration.php

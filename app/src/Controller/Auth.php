@@ -7,7 +7,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use Respect\Validation\Validator as V;
 
-class AuthController extends Controller{
+class Auth extends Controller{
     
     //Login Controller
     public function login(Request $request, Response $response){

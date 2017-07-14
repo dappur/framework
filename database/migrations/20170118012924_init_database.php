@@ -120,7 +120,9 @@ class InitDatabase extends Migration
                 'role.*' => true,
                 'permission.*' => true,
                 'media.*' => true,
-                'blog.*' => true
+                'blog.*' => true,
+                'developer.*' => true,
+                'dashboard.*' => true
             )
         ));
 
