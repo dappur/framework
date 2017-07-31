@@ -1,0 +1,76 @@
+
+{
+    "framework": "dappur",
+    "displayErrorDetails": true,
+    "showInAdmin": true, 
+    "db": {
+        "use": "development",
+        "databases": {
+            "development": {
+                "driver": "mysql",
+                "host": "localhost",
+                "port": 3306,
+                "database": "",
+                "username": "",
+                "password": "",
+                "charset": "utf8",
+                "collation": "utf8_general_ci",
+                "prefix": ""
+            },
+            "production": {
+                "driver": "mysql",
+                "host": "localhost",
+                "port": 3306,
+                "database": "",
+                "username": "",
+                "password": "",
+                "charset": "utf8",
+                "collation": "utf8_general_ci",
+                "prefix": ""
+            }
+        }
+    },
+    "view": {
+        "template_path": "../app/views/",
+        "twig": {
+            "cache": false,
+            "debug": false,
+            "auto_reload": true
+        }
+    },
+    "logger": {
+        "log_name": "Dappur",
+        "log_path": "../storage/log/monolog/",
+        "log_file_name": "dappur.log",
+        "le_token": ""
+    },
+    "cloudinary": {
+        "enabled": false,
+        "cloud_name": "",
+        "api_key": "",
+        "api_secret": ""
+    },
+    "deployment": {
+        "enabled": false,
+        "manual": false,
+        "deploy_url": "deploy",
+        "deploy_token": "",
+        "repo_url": ""
+    },
+    "mail": {
+        "enabled": false,
+        "relay": "phpmail",
+        "mailgun": {
+            "username": "",
+            "password": ""
+        },
+        "mandrill": {
+            "username": "",
+            "password": ""
+        }
+    },
+    "recaptcha": {
+        "site_key": "",
+        "secret_key": ""
+    }
+}

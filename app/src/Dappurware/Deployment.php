@@ -270,7 +270,7 @@ class Deployment {
 
     private function updateComposer(){
 
-        $update_composer = shell_exec('cd ' . dirname($this->document_root) . ' && ' . dirname($this->document_root) . '/composer.phar update 2>&1');
+        $update_composer = shell_exec('cd ' . dirname($this->document_root) . ' && ' . dirname($this->document_root) . '/composer.phar install 2>&1');
         echo $this->logEntry($update_composer);
         if (!strpos($update_composer, 'Generating autoload files')) {
             echo $this->logEntry("An error might have occured while updating composer.  Please check the deployment log to confirm.");
@@ -331,22 +331,22 @@ class Deployment {
 
     private function checkSettings(){
 
-        // Check that the user home has a settings.php file. If not, then create it.
+        // Check that the user home has a settings.json file. If not, then create it.
         if (!is_dir(dirname($this->document_root) . '/app/bootstrap')) {
             echo $this->logEntry("Creating bootstrap folder for settings...");
             mkdir(dirname($this->document_root) . '/app/bootstrap', 0755, true);
         }
-        
-        if (!is_file(dirname($this->document_root) . '/app/bootstrap/settings.php')) {
+        if (!is_file(dirname($this->document_root) . '/app/bootstrap/settings.json')) {
             
-            $this->logEntry("Dappur settings.php not found.  Creating now...");
-            //Get current settings.php from github
-            $this->logEntry("Downloading current settings.dist.php file from Github and cloning to app/bootstrap/settings.php");
-            $settings_file = file_get_contents("https://raw.githubusercontent.com/dappur/framework/master/app/bootstrap/settings.dist.php");
+            $this->logEntry("Dappur settings.json not found.  Creating now...");
+            //Get current settings.json from github
+            $this->logEntry("Downloading current settings.dist.json file from Github and cloning to app/bootstrap/settings.json");
+            $settings_file = file_get_contents("https://raw.githubusercontent.com/dappur/framework/master/app/bootstrap/settings.dist.json");
 
-            file_put_contents(dirname($this->document_root) . '/app/bootstrap/settings.php', "$settings_file");
+            file_put_contents(dirname($this->document_root) . '/app/bootstrap/settings.json', "$settings_file");
         }else{
-            $settings = require(dirname($this->document_root) . '/app/bootstrap/settings.php');
+            $settings = file_get_contents(dirname($this->document_root) . '/app/bootstrap/settings.json');
+            $settings = json_decode($settings, TRUE);
             if ($settings['framework'] != 'dappur') {
                 die($this->logEntry("You do not appear to have a valid settings file.  Please check and try again."));
             }else{
@@ -365,9 +365,10 @@ class Deployment {
 
                 // Update the settings file with the array from the input
                 echo $this->logEntry("Updating the settings file with the new database connection.");
-                $settings = require(dirname($this->document_root) . '/app/bootstrap/settings.php');
+                $settings = file_get_contents(dirname($this->document_root) . '/app/bootstrap/settings.json');
+                $settings = json_decode($settings, TRUE);
                 $settings_new = array_replace_recursive($settings, $this->settings_array);
-                if(file_put_contents(dirname($this->document_root) . '/app/bootstrap/settings.php', "<?php\n//Updated by Auto-Deployment at: " . date('m/d/Y h:i:s a') . "\n\nreturn " . var_export( $settings_new, true ) . ";\n")){
+                if(file_put_contents(dirname($this->document_root) . '/app/bootstrap/settings.json', json_encode($settings, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE))){
                     echo $this->logEntry("Settings file successfully updated.");
                 }else{
                     die($this->logEntry("There was an error updating the settings file."));
@@ -384,7 +385,8 @@ class Deployment {
 
         $output == array();
 
-        $settings = require(dirname($this->document_root) . '/app/bootstrap/settings.php');
+        $settings = file_get_contents(dirname($this->document_root) . '/app/bootstrap/settings.json');
+        $settings = json_decode($settings, TRUE);
         $file_database = $settings['db']['databases'][$settings['db']['use']];
 
         $construct_database = $this->settings_array['db']['databases'][$this->settings_array['db']['use']];
@@ -398,7 +400,7 @@ class Deployment {
             if (!@mysqli_connect($file_database['host'], $file_database['username'], $file_database['password'], $file_database['database'])) {
                 echo $this->logEntry("MySQL Connection Error: " . mysqli_connect_error());
             }else{
-                echo $this->logEntry("Successfully connected to the settings.php selected database.");
+                echo $this->logEntry("Successfully connected to the settings.json selected database.");
                 $output['check_file'] = true;
             }
         }

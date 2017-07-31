@@ -9,7 +9,7 @@ storage/log/monolog/*
 public/uploads/*
 !public/uploads/.index
 
-app/bootstrap/settings.php
+app/bootstrap/settings.json
 bower_components
 node_modules
 

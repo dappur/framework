@@ -9,42 +9,58 @@ $app->group('/dashboard', function () use($app) {
     // Users Routes
     $app->group('/users', function() use ($app) {
         // User List
-        $app->get('', 'Admin:users')
+        $app->get('', 'AdminUsers:users')
             ->setName('admin-users');
         // Add New User
-        $app->map(['GET', 'POST'], '/add', 'Admin:usersAdd')
+        $app->map(['GET', 'POST'], '/add', 'AdminUsers:usersAdd')
             ->setName('admin-users-add');
         // Edit User
-        $app->map(['GET', 'POST'], '/edit[/{user_id}]', 'Admin:usersEdit')
+        $app->map(['GET', 'POST'], '/edit[/{user_id}]', 'AdminUsers:usersEdit')
             ->setName('admin-users-edit');
         // Delete User
-        $app->post('/delete', 'Admin:usersDelete')
+        $app->post('/delete', 'AdminUsers:usersDelete')
             ->setName('admin-users-delete');
 
         //User Roles
         $app->group('/roles', function() use ($app) {
-            $app->post('/delete', 'Admin:rolesDelete')
+            $app->post('/delete', 'AdminRoles:rolesDelete')
                 ->setName('admin-roles-delete');
-            $app->map(['GET', 'POST'], '/edit[/{role}]', 'Admin:rolesEdit')
+            $app->map(['GET', 'POST'], '/edit[/{role}]', 'AdminRoles:rolesEdit')
                 ->setName('admin-roles-edit');
-            $app->post('/add', 'Admin:rolesAdd')
+            $app->post('/add', 'AdminRoles:rolesAdd')
                 ->setName('admin-roles-add');
         });
     });
 
     // Global Settings
-    $app->map(['GET', 'POST'], '/settings', 'Settings:settingsGlobal')->setName('settings-global');
-    $app->post('/settings/add', 'Settings:settingsGlobalAdd')
+    $app->map(['GET', 'POST'], '/settings/global', 'AdminSettings:settingsGlobal')->setName('settings-global');
+    $app->post('/settings/add', 'AdminSettings:settingsGlobalAdd')
         ->setName('settings-global-add');
     
-    // Edit Settings.php
-    $app->map(['GET', 'POST'], '/developer/settings', 'Settings:settingsDeveloper')->setName('settings-developer');
+    // Edit Settings.json
+    $app->map(['GET', 'POST'], '/developer/settings', 'AdminSettings:settingsDeveloper')->setName('settings-developer');
 
     // My Account
     $app->map(['GET', 'POST'], '/my-account', 'Admin:myAccount')->setName('my-account');
 
     // Media Manager
-    $app->get('/media', 'Admin:media')->setName('admin-media');
+    $app->group('/media', function () use($app) {
+        // Media
+        $app->map(['GET'], '', 'AdminMedia:media')
+            ->setName('admin-media');
+        // Media
+        $app->map(['POST'], '/folder', 'AdminMedia:mediaFolder')
+            ->setName('admin-media-folder');
+
+        $app->map(['POST'], '/folder/new', 'AdminMedia:mediaFolderNew')
+            ->setName('admin-media-folder-new');
+
+        $app->map(['POST'], '/upload', 'AdminMedia:mediaUpload')
+            ->setName('admin-media-upload');
+
+        $app->map(['POST'], '/delete', 'AdminMedia:mediaDelete')
+            ->setName('admin-media-delete');
+    });
 })
 ->add(new Dappur\Middleware\Auth($container))
 ->add(new Dappur\Middleware\Admin($container))

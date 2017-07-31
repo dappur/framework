@@ -1,6 +1,7 @@
 <?php
 require __DIR__ . '/vendor/autoload.php';
-$settings = require __DIR__ . '/app/bootstrap/settings.php';
+$settings = file_get_contents( __DIR__ . '/app/bootstrap/settings.json');
+$settings = json_decode($settings, TRUE);
 
 $database = $settings['db']['use'];
 

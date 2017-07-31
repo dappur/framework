@@ -40,9 +40,23 @@ class Settings extends Dappurware
     }
 
     public function getSettingsFile(){
-    	$settings_file = include(__DIR__ . '/../../bootstrap/settings.php');
+    	$settings = file_get_contents( __DIR__ . '/../../bootstrap/settings.json');
 
-    	return $settings_file;
+        $settings = json_decode($settings, TRUE);
+
+    	return $settings;
+    }
+
+    public function getBootswatch(){
+
+        $bootswatch = json_decode(file_get_contents($this->container->settings['view']['bootswatch']['api_url']));
+
+        $output = array();
+        foreach ($bootswatch->themes as $key => $value) {
+            $output[] = $value->name;
+        }
+
+        return $output;
     }
 
 }

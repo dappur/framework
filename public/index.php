@@ -5,7 +5,9 @@ session_start();
 require __DIR__ . '/../vendor/autoload.php';
 
 // Load Settings
-$settings = require __DIR__ . '/../app/bootstrap/settings.php';
+$settings_file = file_get_contents(__DIR__ . '/../app/bootstrap/settings.json');
+$settings = json_decode($settings_file, TRUE);
+
 $app = new Slim\App(array('settings' => $settings));
 
 // Load Dependancies

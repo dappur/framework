@@ -50,7 +50,7 @@ class Auth extends Controller{
             return $this->redirect($response, 'login');
         }
 
-        return $this->view->render($response, 'App/login.twig');
+        return $this->view->render($response, 'login.twig');
     }
 
     // Register Controller
@@ -63,17 +63,68 @@ class Auth extends Controller{
             $username = $request->getParam('username');
             $password = $request->getParam('password');
 
-            $this->validator->validate($request, [
-                'first_name' => V::length(2, 25)->alpha('\''),
-                'last_name' => V::length(2, 25)->alpha('\''),
-                'email' => V::noWhitespace()->email(),
-                'username' => V::noWhitespace()->alnum(),
-                'password' => V::noWhitespace()->length(6, 25),
-                'password-confirm' => V::equals($password)
-            ]);
+            // Validate Data
+            $validate_data = array(
+                'first_name' => array(
+                    'rules' => V::alnum('\'-')->length(2, 25), 
+                    'messages' => array(
+                        'alnum' => 'May contain letters, numbers, \' and hyphens.',
+                        'length' => "Must be between 2 and 25 characters."
+                        )
+                ),
+                'last_name' => array(
+                    'rules' => V::alnum('\'-')->length(2, 25), 
+                    'messages' => array(
+                        'alnum' => 'May contain letters, numbers, \' and hyphens.',
+                        'length' => "Must be between 2 and 25 characters."
+                        )
+                ),
+                'email' => array(
+                    'rules' => V::noWhitespace()->email(), 
+                    'messages' => array(
+                        'noWhitespace' => 'Must not contain spaces.',
+                        'email' => 'Must be a valid email address.'
+                        )
+                ),
+                'username' => array(
+                    'rules' => V::noWhitespace()->alnum()->length(2, 25), 
+                    'messages' => array(
+                        'noWhitespace' => 'Must not contain spaces.',
+                        'alnum' => 'Must be letters and numbers only.',
+                        'length' => "Must be between 2 and 25 characters."
+                        )
+                ),
+                'password' => array(
+                    'rules' => V::noWhitespace()->length(6, 25), 
+                    'messages' => array(
+                        'noWhitespace' => 'Must not contain spaces.',
+                        'length' => "Must be between 2 and 25 characters."
+                        )
+                ),
+                'password-confirm' => array(
+                    'rules' => V::equals($password), 
+                    'messages' => array(
+                        'equals' => 'Passwords must match.'
+                        )
+                )
+            );
+            $this->validator->validate($request, $validate_data);
 
+            // Validate Recaptcha
+            $recaptcha = new \Dappur\Dappurware\Recaptcha($this->container);
+            $recaptcha = $recaptcha->validate($request->getParam('g-recaptcha-response'));
+            if (!$recaptcha) {
+                $this->validator->addError('recaptcha', 'Recaptcha was invalid.');
+            }
+
+            // Validate Username
             if ($this->auth->findByCredentials(['login' => $username])) {
                 $this->validator->addError('username', 'User already exists with this username.');
+            }
+
+            // Validate Email
+            if ($this->auth->findByCredentials(['login' => $email])) {
+                $this->validator->addError('email', 'User already exists with this email.');
             }
 
             if ($this->validator->isValid()) {
@@ -100,7 +151,7 @@ class Auth extends Controller{
             }
         }
 
-        return $this->view->render($response, 'App/register.twig');
+        return $this->view->render($response, 'register.twig');
     }
 
     // Forgot Password
@@ -158,7 +209,7 @@ class Auth extends Controller{
 
         }
 
-        return $this->view->render($response, 'App/forgot-password.twig', array("requestParams" => $request->getParams()));
+        return $this->view->render($response, 'forgot-password.twig', array("requestParams" => $request->getParams()));
     }
 
     // Logout Controller

@@ -1,0 +1,335 @@
+{% extends 'base.twig' %}
+
+{% import 'macros/global-config.twig' as configMacro %}
+
+{#
+title
+stylesheets
+navi
+body
+javascript
+#}
+
+
+{% block title %}{{config['site-name']}} || Developer Settings{% endblock %}
+
+{% block stylesheets %}
+    <link href="/assets/default/css/dataTables.bootstrap.css" rel="stylesheet">
+    <link href="/assets/default/css/dataTables.responsive.css" rel="stylesheet">
+{% endblock %}
+
+{% block body %}
+    <div class="container-fluid">
+        <!-- Page Heading -->
+        <div class="row">
+            <div class="col-md-12">
+                <h1 class="page-header">
+                    Developer <small>Settings.json</small>
+                </h1>
+                <ol class="breadcrumb">
+                    <li>
+                        <i class="fa fa-dashboard"></i> Dashboard
+                    </li>
+                    <li class="active">
+                        <i class="fa fa-wrench"></i> Developer Tools
+                    </li>
+                    <li class="active">
+                        <i class="fa fa-life-ring"></i> Settings.json
+                    </li>
+                </ol>
+            </div>
+        </div>
+        <!-- /.row -->
+        <form action="{{ path_for('settings-developer') }}" method="post">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            Framework Settings
+                        </div>
+                        <div class="panel-body">
+                            <div class="form-group{% if has_error('framework') %} has-error{% endif %}">
+                                <label for="name">Framework</label>
+                                <input type="text" name="framework" id="framework" class="form-control" value="{{settingsFile.framework}}" disabled placeholder="Framework">
+                                <span class="help-block">{{ error('framework') }}</span>
+                            </div>
+
+                            <div class="form-group{% if has_error('displayErrorDetails') %} has-error{% endif %}">
+                                <label for="name">Show Error Details</label>
+                                <select name="displayErrorDetails" id="displayErrorDetails" class="form-control" required="required">
+                                    <option value="false"{% if settingsFile.displayErrorDetails == false %} selected{% endif %}>false</option>
+                                    <option value="true"{% if settingsFile.displayErrorDetails == true %} selected{% endif %}>true</option>
+                                </select>
+                                <span class="help-block">{{ error('displayErrorDetails') }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-8">
+                    <div class="panel panel-info">
+                        <div class="panel-heading">
+                            Databases
+                        </div>
+
+                        <div class="panel-body">
+                            
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Host</th>
+                                            <th>Port</th>
+                                            <th>Database</th>
+                                            <th>Username</th>
+                                            <th>Password</th>
+                                            <th>Prefix</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+
+                                        {% for key, db in settingsFile.db.databases %}
+                                            <tr {% if key == settingsFile.db.use %}class="active"{% endif %}>
+                                                <td>{{key}}</td>
+                                                <td>{{ db.host }}</td>
+                                                <td>{{ db.port }}</td>
+                                                <td>{{ db.database }}</td>
+                                                <td>{{ db.username }}</td>
+                                                <td>{{ db.password }}</td>
+                                                <td>{{ db.prefix }}</td>
+                                            </tr>
+                                        {% endfor %}
+                                        
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+
+                <div class="col-lg-4">
+                    <div class="panel panel-warning">
+                        <div class="panel-heading">
+                            Template Settings
+                        </div>
+                        <div class="panel-body">
+                            <div class="form-group{% if has_error('template_path') %} has-error{% endif %}">
+                                <label for="name">Framework</label>
+                                <input type="text" name="template_path" id="template_path" class="form-control" value="{{settingsFile.view.template_path}}" required="required" disabled placeholder="Template Path">
+                                <span class="help-block">{{ error('template_path') }}</span>
+                            </div>
+
+                            <div class="form-group{% if has_error('twig_cache') %} has-error{% endif %}">
+                                <label for="name">Cache</label>
+                                <select name="twig_cache" id="twig_cache" class="form-control" required="required">
+                                    <option value="false"{% if settingsFile.view.twig.cache == false %} selected{% endif %}>false</option>
+                                    <option value="true"{% if settingsFile.view.twig.cache == true %} selected{% endif %}>true</option>
+                                </select>
+                                <span class="help-block">{{ error('twig_cache') }}</span>
+                            </div>
+
+                            <div class="form-group{% if has_error('twig_debug') %} has-error{% endif %}">
+                                <label for="name">Debugging</label>
+                                <select name="twig_debug" id="twig_debug" class="form-control" required="required">
+                                    <option value="false"{% if settingsFile.view.twig.debug == false %} selected{% endif %}>false</option>
+                                    <option value="true"{% if settingsFile.view.twig.debug == true %} selected{% endif %}>true</option>
+                                </select>
+                                <span class="help-block">{{ error('twig_debug') }}</span>
+                            </div>
+
+                            <div class="form-group{% if has_error('twig_auto_reload') %} has-error{% endif %}">
+                                <label for="name">Auto Reloading</label>
+                                <select name="twig_auto_reload" id="twig_auto_reload" class="form-control" required="required">
+                                    <option value="false"{% if settingsFile.view.twig.auto_reload == false %} selected{% endif %}>false</option>
+                                    <option value="true"{% if settingsFile.view.twig.auto_reload == true %} selected{% endif %}>true</option>
+                                </select>
+                                <span class="help-block">{{ error('twig_auto_reload') }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel panel-success">
+                        <div class="panel-heading">
+                            Auto Deployment
+                        </div>
+                        <div class="panel-body">
+                            
+                            <div class="form-group{% if has_error('deploy_enabled') %} has-error{% endif %}">
+                                <label for="name">Enabled</label>
+                                <select name="deploy_enabled" id="deploy_enabled" class="form-control" required="required">
+                                    <option value="false"{% if settingsFile.deployment.enabled == false %} selected{% endif %}>false</option>
+                                    <option value="true"{% if settingsFile.deployment.enabled == true %} selected{% endif %}>true</option>
+                                </select>
+                                <span class="help-block">{{ error('deploy_enabled') }}</span>
+                            </div>
+
+                            <div class="form-group{% if has_error('deploy_manual') %} has-error{% endif %}">
+                                <label for="name">Manual Deployment</label>
+                                <select name="deploy_manual" id="deploy_manual" class="form-control" required="required">
+                                    <option value="false"{% if settingsFile.deployment.manual == false %} selected{% endif %}>false</option>
+                                    <option value="true"{% if settingsFile.deployment.manual == true %} selected{% endif %}>true</option>
+                                </select>
+                                <span class="help-block">{{ error('deploy_manual') }}</span>
+                            </div>
+
+                           <div class="form-group{% if has_error('depoy_url') %} has-error{% endif %}">
+                                <label for="name">Deploy URL</label>
+                                <input type="text" name="depoy_url" id="depoy_url" class="form-control" value="{{settingsFile.deployment.deploy_url}}" placeholder="Deploy Page Name">
+                                <span class="help-block">{{ error('depoy_url') }}</span>
+                            </div>
+
+                            <div class="form-group{% if has_error('deploy_token') %} has-error{% endif %}">
+                                <label for="name">Security Token</label>
+                                <input type="text" name="deploy_token" id="deploy_token" class="form-control" value="{{settingsFile.deployment.deploy_token}}" placeholder="Deployment Token">
+                                <span class="help-block">{{ error('deploy_token') }}</span>
+                            </div>
+
+                            <div class="form-group{% if has_error('deploy_repo_url') %} has-error{% endif %}">
+                                <label for="name">Repository URL</label>
+                                <input type="text" name="deploy_repo_url" id="deploy_repo_url" class="form-control" value="{{settingsFile.deployment.repo_url}}" placeholder="Repository URL">
+                                <span class="help-block">{{ error('deploy_repo_url') }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+                    <div class="panel panel-warning">
+                        <div class="panel-heading">
+                            Logging Settings
+                        </div>
+                        <div class="panel-body">
+                            <div class="form-group{% if has_error('log_name') %} has-error{% endif %}">
+                                <label for="name">Name</label>
+                                <input type="text" name="log_name" id="log_name" class="form-control" value="{{settingsFile.logger.log_name}}" required="required" placeholder="Log Name">
+                                <span class="help-block">{{ error('log_name') }}</span>
+                            </div>
+
+                            <div class="form-group{% if has_error('log_path') %} has-error{% endif %}">
+                                <label for="name">Log Path</label>
+                                    <input type="text" name="log_path" id="log_path" class="form-control" value="{{settingsFile.logger.log_path}}" placeholder="Log Path" disabled>
+                                <span class="help-block">{{ error('log_path') }}</span>
+                            </div>
+
+                            <div class="form-group{% if has_error('log_file_name') %} has-error{% endif %}">
+                                <label for="name">File Name</label>
+                                    <input type="text" name="log_file_name" id="log_file_name" class="form-control" value="{{settingsFile.logger.log_file_name}}" required="required" placeholder="File Name">
+                                <span class="help-block">{{ error('log_file_name') }}</span>
+                            </div>
+
+                            <div class="form-group{% if has_error('le_token') %} has-error{% endif %}">
+                                <label for="name">Logentries Token</label>
+                                    <input type="text" name="le_token" id="le_token" class="form-control" value="{{settingsFile.logger.le_token}}" placeholder="Logentries Token">
+                                <span class="help-block">{{ error('le_token') }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel panel-success">
+                        <div class="panel-heading">
+                            Mail Relay
+                        </div>
+                        <div class="panel-body">
+                            
+                            <div class="form-group{% if has_error('mail_relay') %} has-error{% endif %}">
+                                <label for="name">Enabled</label>
+                                <select name="mail_relay" id="mail_relay" class="form-control" required="required">
+                                    <option value="phpmail"{% if settingsFile.mail.relay == 'phpmail' %} selected{% endif %}>PHP mail()</option>
+                                    <option value="mandrill"{% if settingsFile.mail.relay == 'mandrill' %} selected{% endif %}>Mandrill</option>
+                                    <option value="mailgun"{% if settingsFile.mail.relay == 'mailgun' %} selected{% endif %}>Mailgun</option>
+                                </select>
+                                <span class="help-block">{{ error('mail_relay') }}</span>
+                            </div>
+
+                            <div class="form-group{% if has_error('mailgun_username') %} has-error{% endif %}">
+                                <label for="name">Mailgun Username</label>
+                                <input type="text" name="mailgun_username" id="mailgun_username" class="form-control" value="{{settingsFile.mail.mailgun.username}}" placeholder="Mailgun Username">
+                                <span class="help-block">{{ error('mailgun_username') }}</span>
+                            </div>
+
+                            <div class="form-group{% if has_error('mailgun_password') %} has-error{% endif %}">
+                                <label for="name">Mailgun Password</label>
+                                <input type="text" name="mailgun_password" id="mailgun_password" class="form-control" value="{{settingsFile.mail.mailgun.password}}" placeholder="Mailgun Password">
+                                <span class="help-block">{{ error('mailgun_password') }}</span>
+                            </div>
+
+                            <div class="form-group{% if has_error('mandrill_username') %} has-error{% endif %}">
+                                <label for="name">Mandrill Username</label>
+                                <input type="text" name="mandrill_username" id="mandrill_username" class="form-control" value="{{settingsFile.mail.mandrill.username}}" placeholder="Mandrill Username">
+                                <span class="help-block">{{ error('mandrill_username') }}</span>
+                            </div>
+
+                            <div class="form-group{% if has_error('mandrill_password') %} has-error{% endif %}">
+                                <label for="name">Mandrill Password</label>
+                                <input type="text" name="mandrill_password" id="mandrill_password" class="form-control" value="{{settingsFile.mail.mandrill.password}}" placeholder="Mandrill Password">
+                                <span class="help-block">{{ error('mandrill_password') }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+                    <div class="panel panel-success">
+                        <div class="panel-heading">
+                            Cloudinary Settings
+                        </div>
+                        <div class="panel-body">
+
+                            <div class="form-group{% if has_error('cl_enabled') %} has-error{% endif %}">
+                                <label for="name">Enabled</label>
+                                <select name="cl_enabled" id="cl_enabled" class="form-control" required="required">
+                                    <option value="false"{% if settingsFile.cloudinary.enabled == false %} selected{% endif %}>false</option>
+                                    <option value="true"{% if settingsFile.cloudinary.enabled == true %} selected{% endif %}>true</option>
+                                </select>
+                                <span class="help-block">{{ error('cl_enabled') }}</span>
+                            </div>
+
+                           <div class="form-group{% if has_error('cl_cloud_name') %} has-error{% endif %}">
+                                <label for="name">Cloud Name</label>
+                                <input type="text" name="cl_cloud_name" id="cl_cloud_name" class="form-control" value="{{settingsFile.cloudinary.cloud_name}}" placeholder="Cloud Name">
+                                <span class="help-block">{{ error('cl_cloud_name') }}</span>
+                            </div>
+
+                            <div class="form-group{% if has_error('cl_api_key') %} has-error{% endif %}">
+                                <label for="name">API Key</label>
+                                <input type="text" name="cl_api_key" id="cl_api_key" class="form-control" value="{{settingsFile.cloudinary.api_key}}"  placeholder="API Key">
+                                <span class="help-block">{{ error('cl_api_key') }}</span>
+                            </div>
+
+                            <div class="form-group{% if has_error('cl_api_secret') %} has-error{% endif %}">
+                                <label for="name">API Secret</label>
+                                <input type="text" name="cl_api_secret" id="cl_api_secret" class="form-control" value="{{settingsFile.cloudinary.api_secret}}" placeholder="API Secret">
+                                <span class="help-block">{{ error('cl_api_secret') }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel panel-danger">
+                        <div class="panel-heading">
+                            Save Settings
+                        </div>
+                        <div class="panel-body">
+
+                            <div class="alert alert-danger">
+                                <strong>Warning!</strong> This page contains settings that can disable your site.  These should only be modified by an experienced developer.  Please make sure that you know what you are doing before saving these
+                            </div>
+
+                            <div class="form-group{% if has_error('cl_enabled') %} has-error{% endif %}">
+                                <center><button class="btn btn-warning btn-large"><i class="icon-white icon-ban-circle"></i> Save Settings</button></center>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {{csrf()}}
+        </form>
+    </div>
+{% endblock %}
+
+{% block javascript %}
+
+{% endblock %}

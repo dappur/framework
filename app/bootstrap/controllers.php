@@ -12,10 +12,23 @@ $container['Admin'] = function ($container) {
     return new Dappur\Controller\Admin($container);
 };
 
+$container['AdminRoles'] = function ($container) {
+    return new Dappur\Controller\AdminRoles($container);
+};
+
+$container['AdminUsers'] = function ($container) {
+    return new Dappur\Controller\AdminUsers($container);
+};
+
+$container['AdminMedia'] = function ($container) {
+    return new Dappur\Controller\AdminMedia($container);
+};
+
+$container['AdminSettings'] = function ($container) { 
+	return new Dappur\Controller\AdminSettings($container); 
+};
+
 $container['Deploy'] = function ($container) { 
 	return new Dappur\Controller\Deploy($container); 
 };
 
-$container['Settings'] = function ($container) { 
-	return new Dappur\Controller\Settings($container); 
-};

@@ -14,6 +14,21 @@ $container['db'] = function () use ($capsule) {
     return $capsule;
 };
 
+$container['project_dir'] = function ($container) { 
+    $directory = __DIR__ . "/../../"; 
+    return realpath($directory); 
+};
+
+$container['public_dir'] = function ($container) { 
+    $directory = __DIR__ . "/../../public/"; 
+    return realpath($directory); 
+};
+
+$container['upload_dir'] = function ($container) { 
+    $directory = __DIR__ . "/../../public/uploads/"; 
+    return realpath($directory); 
+};
+
 // Bind config table from database
 $container['config'] = function () use ($container) {
     $config = new \Dappur\Dappurware\SiteConfig($container);
@@ -51,13 +66,19 @@ $container['cookies'] = function ($container){
 
 // CSRF
 $container['csrf'] = function ($container) {
-    return new \Slim\Csrf\Guard;
+    return new \Slim\Csrf\Guard(
+        $container->settings['csrf']['prefix'], 
+        $storage, 
+        null, 
+        $container->settings['csrf']['storage_limit'], 
+        $container->settings['csrf']['strength'], 
+        $container->settings['csrf']['persist_tokens']);
 };
 
 // Bind Twig View
 $container['view'] = function ($container) {
     if (substr($container['request']->getUri()->getPath(), 0, 10 ) === "/dashboard") {
-        $template_path = $container['settings']['view']['template_path'] . $container->config['admin-theme'];
+        $template_path = $container['settings']['view']['template_path'] . $container->config['dashboard-theme'];
     }else{
         $template_path = $container['settings']['view']['template_path'] . $container->config['theme'];
     }
@@ -75,8 +96,9 @@ $container['view'] = function ($container) {
     $view->addExtension(new \Twig_Extension_Debug());
     $view->addExtension(new \Dappur\TwigExtension\Asset($container['request']));
     $view->addExtension(new \Dappur\TwigExtension\JsonDecode($container['request']));
-    $view->addExtension(new \Awurth\Slim\Validation\ValidatorExtension($container['validator']));
+    $view->addExtension(new \Dappur\TwigExtension\Recaptcha($container['settings']['recaptcha']));
     $view->addExtension(new \Dappur\TwigExtension\Csrf($container['csrf']));
+    $view->addExtension(new \Awurth\Slim\Validation\ValidatorExtension($container['validator']));
     if ($container['cloudinary']) {
         $view->addExtension(new \Dappur\TwigExtension\Cloudinary());
         $view->getEnvironment()->addGlobal('hasCloudinary', 1);
@@ -90,6 +112,9 @@ $container['view'] = function ($container) {
     $view->getEnvironment()->addGlobal('config', $container['config']);
     $view->getEnvironment()->addGlobal('userAccess', $container['userAccess']);
     $view->getEnvironment()->addGlobal('currentRoute', $container['request']->getUri()->getPath());
+    $view->getEnvironment()->addGlobal('projectDir', $container['project_dir']);
+    $view->getEnvironment()->addGlobal('publicDir', $container['public_dir']);
+    $view->getEnvironment()->addGlobal('uploadDir', $container['upload_dir']);
 
     return $view;
 };

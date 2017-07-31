@@ -16,17 +16,7 @@ class InitDatabase extends Migration
     */
    
     public function up()
-    {
-        //Initial Config Table Options
-        $init_config = array(
-            array('timezone', 'PHP Timezone', 'timezone', 'America/Los_Angeles'),
-            array('site-name', 'Site Name', 'string', 'Dappur-FW'),
-            array('domain', 'Site Domain', 'string', 'dappur.dev'),
-            array('replyto-email', 'Reply To Email', 'string', 'noreply@dappur.dev'),
-            array('theme', 'Site Theme', 'theme', 'default'),
-            array('admin-theme', 'Admin Theme', 'theme', 'default'),
-            array('ga', 'Google Analytics UA', 'string', ''));
-
+    {   
         // Create Users Table
         $this->schema->create('users', function (Blueprint $table) {
             $table->increments('id');
@@ -48,7 +38,7 @@ class InitDatabase extends Migration
             $table->boolean('completed')->default(0);
             $table->timestamp('completed_at')->nullable();
             $table->timestamps();
-            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('user_id')->references('id')->on('users')onDelete('cascade');
         });
 
         // Create Persistences Table
@@ -57,7 +47,7 @@ class InitDatabase extends Migration
             $table->integer('user_id')->unsigned();
             $table->string('code')->unique();
             $table->timestamps();
-            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('user_id')->references('id')->on('users')onDelete('cascade');
         });
 
         // Create Reminders Table
@@ -68,7 +58,7 @@ class InitDatabase extends Migration
             $table->boolean('completed')->default(0);
             $table->timestamp('completed_at')->nullable();
             $table->timestamps();
-            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('user_id')->references('id')->on('users')onDelete('cascade');
         });
 
         // Create Roles Table
@@ -86,8 +76,8 @@ class InitDatabase extends Migration
             $table->integer('role_id')->unsigned();
             $table->timestamps();
             $table->primary(['user_id', 'role_id']);
-            $table->foreign('user_id')->references('id')->on('users');
-            $table->foreign('role_id')->references('id')->on('roles');
+            $table->foreign('user_id')->references('id')->on('users')onDelete('cascade');
+            $table->foreign('role_id')->references('id')->on('roles')onDelete('cascade');
         });
 
         // Create Throttle Table
@@ -97,18 +87,28 @@ class InitDatabase extends Migration
             $table->string('type');
             $table->string('ip')->nullable();
             $table->timestamps();
-            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('user_id')->references('id')->on('users')onDelete('cascade');
+        });
+
+        // Create Config Table
+        $this->schema->create('config_groups', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('name')->unique();
+            $table->timestamps();
         });
 
         // Create Config Table
         $this->schema->create('config', function (Blueprint $table) {
             $table->increments('id');
+            $table->integer('group_id')->unsigned()->nullable();
             $table->string('name')->unique();
             $table->string('description')->nullable();
             $table->string('type')->nullable();
             $table->text('value')->nullable();
             $table->timestamps();
+            $table->foreign('group_id')->references('id')->on('config_groups')onDelete('cascade');
         });
+
 
         // Create Admin Role
         $this->sentinel->getRoleRepository()->createModel()->create(array(
@@ -126,11 +126,46 @@ class InitDatabase extends Migration
             )
         ));
 
+        // Create Manager Role
+        $this->sentinel->getRoleRepository()->createModel()->create(array(
+            'name' => 'Manager',
+            'slug' => 'manager',
+            'permissions' => array(
+                'user.*' => true,
+                'user.delete' => true,
+                'config.*' => false,
+                'role.*' => true,
+                'permission.*' => true,
+                'media.*' => true,
+                'blog.*' => true,
+                'developer.*' => false,
+                'dashboard.*' => true
+            )
+        ));
+
         //Create User Role
         $this->sentinel->getRoleRepository()->createModel()->create(array(
             'name' => 'User',
             'slug' => 'user',
-            'permissions' => array()
+            'permissions' => array(
+                'user.create' => false
+                )
+        ));
+
+        // Create Auditor Role
+        $this->sentinel->getRoleRepository()->createModel()->create(array(
+            'name' => 'Auditor',
+            'slug' => 'auditor',
+            'permissions' => array(
+                'user.view' => true,
+                'config.view' => true,
+                'role.view' => true,
+                'permission.view' => true,
+                'media.view' => true,
+                'blog.view' => true,
+                'developer.view' => true,
+                'dashboard.view' => true
+            )
         ));
 
         //Create Admin User
@@ -144,6 +179,35 @@ class InitDatabase extends Migration
             'permissions' => array()
         ]);
         $role->users()->attach($admin);
+
+        //Initial Config Groups
+        $init_config_groups = array(
+            array(1, "Site Settings"),
+            array(2, "Theme Settings"),
+            array(3, "Site Settings")
+        );
+
+        // Seed Config Table
+        foreach ($init_config_groups as $key => $value) {
+            $config = new Dappur\Model\ConfigGroups;
+            $config->id = $value[0];
+            $config->name = $value[1];
+            $config->type = $value[2];
+            $config->value = $value[3];
+            $config->save();
+        }
+
+        //Initial Config Table Options
+        $init_config = array(
+            array('timezone', 'PHP Timezone', 'timezone', 'America/Los_Angeles'),
+            array('site-name', 'Site Name', 'string', 'Dappur'),
+            array('domain', 'Site Domain', 'string', 'dappur.dev'),
+            array('replyto-email', 'Reply To Email', 'string', 'noreply@dappur.dev'),
+            array('theme', 'Site Theme', 'theme', 'dappur'),
+            array('dashboard-theme', 'Dashboard Theme', 'theme', 'dashboard'),
+            array('bootswatch-dashboard', 'Dashboard Bootswatch', 'bootswatch', 'cyborg'),
+            array('ga', 'Google Analytics UA', 'string', '')
+        );
 
         // Seed Config Table
         foreach ($init_config as $key => $value) {
