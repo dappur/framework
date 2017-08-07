@@ -60,21 +60,21 @@ This will clone the Dappur Framework into a new project directory called `new_ap
             |-- auth.php
         |-- src (Source Folder)
             |-- Controller (Route Controllers - Source)
-                |-- AdminController.php 
-                |-- AuthController.php
+                |-- Admin.php 
+                |-- Auth.php
                 |-- Controller.php
-                |-- AppController.php
-            |-- Customware (Custom Php Classes)
-                |-- Customware.php
+                |-- App.php
+            |-- App (App Level Php Classes)
+                |-- App.php
             |-- Dappurware (Official Dappur Classes)
                 |-- Dappurware.php
                 |-- Sentinel.php
                 |-- SiteConfig.php
             |-- Middleware (Slim Middleware Classes)
-                |-- AdminMiddleware.php
-                |-- AuthMiddleware.php
+                |-- Admin.php
+                |-- Auth.php
                 |-- CsrfMiddleware.php
-                |-- GuestMiddleware.php
+                |-- Guest.php
                 |-- Middleware.php
             |-- Migration (Eloquent Migration Class)
                 |-- Migration.php
@@ -114,7 +114,7 @@ This will clone the Dappur Framework into a new project directory called `new_ap
                     |-- login.twig
                     |-- register.twig
                 |-- admin.twig
-                |-- app.twig
+                |-- base.twig
     |-- database (Database/Migration Files)
         |-- migrations (Phinx Migrations Folder)
             |-- 20170118012924_init_database.php
@@ -140,7 +140,7 @@ This will clone the Dappur Framework into a new project directory called `new_ap
 ----------
 
 ### Configure Project and Database
-Configuring your new project is simple.  Rename `settings.dist.php` to `settings.php` and configure the following options:
+Configuring your new project is simple.  Rename `settings.dist.json` to `settings.json` and configure the following options:
 ```
 db->host
 db->port
@@ -152,7 +152,7 @@ logger->log_path
 logger->le_token (Optional)
 cloudinary (Optional)
 ```
-Once you have the `settings.php` file configured, all you have to do is navigate to your root project directory from a terminal and run the first migration:
+Once you have the `settings.json` file configured, all you have to do is navigate to your root project directory from a terminal and run the first migration:
 ```
 phinx migrate
 ```

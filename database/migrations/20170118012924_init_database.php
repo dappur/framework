@@ -16,16 +16,7 @@ class InitDatabase extends Migration
     */
    
     public function up()
-    {
-        //Initial Config Table Options
-        $init_config = array(
-            array('timezone', 'PHP Timezone', 'timezone', 'America/Los_Angeles'),
-            array('site-name', 'Site Name', 'string', 'Dappur-FW'),
-            array('domain', 'Site Domain', 'string', 'dappur.dev'),
-            array('replyto-email', 'Reply To Email', 'string', 'noreply@dappur.dev'),
-            array('theme', 'Theme', 'theme', 'default'),
-            array('ga', 'Google Analytics UA', 'string', ''));
-
+    {   
         // Create Users Table
         $this->schema->create('users', function (Blueprint $table) {
             $table->increments('id');
@@ -47,7 +38,7 @@ class InitDatabase extends Migration
             $table->boolean('completed')->default(0);
             $table->timestamp('completed_at')->nullable();
             $table->timestamps();
-            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
 
         // Create Persistences Table
@@ -56,7 +47,7 @@ class InitDatabase extends Migration
             $table->integer('user_id')->unsigned();
             $table->string('code')->unique();
             $table->timestamps();
-            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
 
         // Create Reminders Table
@@ -67,7 +58,7 @@ class InitDatabase extends Migration
             $table->boolean('completed')->default(0);
             $table->timestamp('completed_at')->nullable();
             $table->timestamps();
-            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
 
         // Create Roles Table
@@ -85,8 +76,8 @@ class InitDatabase extends Migration
             $table->integer('role_id')->unsigned();
             $table->timestamps();
             $table->primary(['user_id', 'role_id']);
-            $table->foreign('user_id')->references('id')->on('users');
-            $table->foreign('role_id')->references('id')->on('roles');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('role_id')->references('id')->on('roles')->onDelete('cascade');
         });
 
         // Create Throttle Table
@@ -96,18 +87,36 @@ class InitDatabase extends Migration
             $table->string('type');
             $table->string('ip')->nullable();
             $table->timestamps();
-            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+        });
+
+        // Create Config Groups Table
+        $this->schema->create('config_groups', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('name')->unique();
+            $table->timestamps();
+        });
+
+        // Create Config Types Table
+        $this->schema->create('config_types', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('name')->unique();
+            $table->timestamps();
         });
 
         // Create Config Table
         $this->schema->create('config', function (Blueprint $table) {
             $table->increments('id');
+            $table->integer('group_id')->unsigned()->nullable();
+            $table->integer('type_id')->unsigned()->nullable();
             $table->string('name')->unique();
             $table->string('description')->nullable();
-            $table->string('type')->nullable();
             $table->text('value')->nullable();
             $table->timestamps();
+            $table->foreign('group_id')->references('id')->on('config_groups')->onDelete('cascade');
+            $table->foreign('type_id')->references('id')->on('config_types')->onDelete('cascade');
         });
+
 
         // Create Admin Role
         $this->sentinel->getRoleRepository()->createModel()->create(array(
@@ -118,7 +127,27 @@ class InitDatabase extends Migration
                 'config.*' => true,
                 'role.*' => true,
                 'permission.*' => true,
-                'media.*' => true
+                'media.*' => true,
+                'blog.*' => true,
+                'developer.*' => true,
+                'dashboard.*' => true
+            )
+        ));
+
+        // Create Manager Role
+        $this->sentinel->getRoleRepository()->createModel()->create(array(
+            'name' => 'Manager',
+            'slug' => 'manager',
+            'permissions' => array(
+                'user.*' => true,
+                'user.delete' => true,
+                'config.*' => false,
+                'role.*' => true,
+                'permission.*' => true,
+                'media.*' => true,
+                'blog.*' => true,
+                'developer.*' => false,
+                'dashboard.*' => true
             )
         ));
 
@@ -126,7 +155,25 @@ class InitDatabase extends Migration
         $this->sentinel->getRoleRepository()->createModel()->create(array(
             'name' => 'User',
             'slug' => 'user',
-            'permissions' => array()
+            'permissions' => array(
+                'user.create' => false
+                )
+        ));
+
+        // Create Auditor Role
+        $this->sentinel->getRoleRepository()->createModel()->create(array(
+            'name' => 'Auditor',
+            'slug' => 'auditor',
+            'permissions' => array(
+                'user.view' => true,
+                'config.view' => true,
+                'role.view' => true,
+                'permission.view' => true,
+                'media.view' => true,
+                'blog.view' => true,
+                'developer.view' => true,
+                'dashboard.view' => true
+            )
         ));
 
         //Create Admin User
@@ -141,13 +188,60 @@ class InitDatabase extends Migration
         ]);
         $role->users()->attach($admin);
 
+        //Initial Config Types
+        $init_config_types = array(
+            array(1, "timezone"),
+            array(2, "string"),
+            array(3, "theme"),
+            array(4, "bootswatch"),
+            array(5, "image")
+        );
+
+        // Seed Config Table
+        foreach ($init_config_types as $key => $value) {
+            $config = new Dappur\Model\ConfigTypes;
+            $config->id = $value[0];
+            $config->name = $value[1];
+            $config->save();
+        }
+
+        //Initial Config Groups
+        $init_config_groups = array(
+            array(1, "Site Settings"),
+            array(2, "Dashboard Settings")
+        );
+
+        // Seed Config Table
+        foreach ($init_config_groups as $key => $value) {
+            $config = new Dappur\Model\ConfigGroups;
+            $config->id = $value[0];
+            $config->name = $value[1];
+            $config->save();
+        }
+
+        //Initial Config Table Options
+        $init_config = array(
+            array(1, 'timezone', 'PHP Timezone', 1, 'America/Los_Angeles'),
+            array(1, 'site-name', 'Site Name', 2, 'Dappur'),
+            array(1, 'domain', 'Site Domain', 2, 'dappur.dev'),
+            array(1, 'replyto-email', 'Reply To Email', 2, 'noreply@dappur.dev'),
+            array(1, 'theme', 'Site Theme', 3, 'dappur'),
+            array(1, 'bootswatch', 'Site Bootswatch', 4, 'cyborg'),
+            array(1, 'logo', 'Site Logo', 5, ''),
+            array(2, 'dashboard-theme', 'Dashboard Theme', 3, 'dashboard'),
+            array(2, 'dashboard-bootswatch', 'Dashboard Bootswatch', 4, 'cyborg'),
+            array(2, 'dashboard-logo', 'Dashboard Logo', 5, ''),
+            array(1, 'ga', 'Google Analytics UA', 2, '')
+        );
+
         // Seed Config Table
         foreach ($init_config as $key => $value) {
             $config = new Dappur\Model\Config;
-            $config->name = $value[0];
-            $config->description = $value[1];
-            $config->type = $value[2];
-            $config->value = $value[3];
+            $config->group_id = $value[0];
+            $config->name = $value[1];
+            $config->description = $value[2];
+            $config->type_id = $value[3];
+            $config->value = $value[4];
             $config->save();
         }
 

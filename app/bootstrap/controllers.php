@@ -1,17 +1,34 @@
 <?php
 
-$container['AppController'] = function ($container) {
-    return new Dappur\Controller\AppController($container);
+$container['App'] = function ($container) {
+    return new Dappur\Controller\App($container);
 };
 
-$container['AuthController'] = function ($container) {
-    return new Dappur\Controller\AuthController($container);
+$container['Auth'] = function ($container) {
+    return new Dappur\Controller\Auth($container);
 };
 
-$container['AdminController'] = function ($container) {
-    return new Dappur\Controller\AdminController($container);
+$container['Admin'] = function ($container) {
+    return new Dappur\Controller\Admin($container);
 };
 
-$container['DeployController'] = function ($container) { 
-	return new Dappur\Controller\DeployController($container); 
+$container['AdminRoles'] = function ($container) {
+    return new Dappur\Controller\AdminRoles($container);
 };
+
+$container['AdminUsers'] = function ($container) {
+    return new Dappur\Controller\AdminUsers($container);
+};
+
+$container['AdminMedia'] = function ($container) {
+    return new Dappur\Controller\AdminMedia($container);
+};
+
+$container['AdminSettings'] = function ($container) { 
+	return new Dappur\Controller\AdminSettings($container); 
+};
+
+$container['Deploy'] = function ($container) { 
+	return new Dappur\Controller\Deploy($container); 
+};
+

@@ -1,8 +1,10 @@
 <?php
 $app->group('/', function () {
-	$this->map(['GET'], '', 'AppController:home')
+	$this->map(['GET'], '', 'App:home')
 		->setName('home');
-})
-->add(new \Dappur\Middleware\CsrfMiddleware($container))
-->add($container->get('csrf'));
 
+	$this->map(['GET'], 'csrf', 'App:csrf')
+		->setName('csrf');
+
+})
+->add($container->get('csrf'));
