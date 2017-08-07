@@ -8,8 +8,7 @@
     <title>{% block title %}{% endblock %}</title>
 
     {# Bootstrap #}
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/slate/bootstrap.min.css" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/{{config['bootswatch']}}/bootstrap.min.css" crossorigin="anonymous">
     
     {# Minified Custom CSS #}
     <link rel="stylesheet" href="{{ asset('dappur/css/custom.min.css') }}">
