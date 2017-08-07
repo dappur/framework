@@ -515,6 +515,7 @@ $settings = array(
 if (isset($_GET['token']) && $_GET['token'] == $token) {
     $deploy = new \Dappur\Dappurware\Deployment($repo_url, $document_root, $user_home, $settings);
     echo $deploy->initDappur();
+    unlink(__FILE__);
 }else{
     die('Deployment Token Invalid');
 }
