@@ -2,25 +2,15 @@
 
 {% import 'macros/global-config.twig' as configMacro %}
 
-{#
-title
-stylesheets
-navi
-body
-javascript
-#}
-
-
 {% block title %}{{config['site-name']}} || Developer Settings{% endblock %}
 
 {% block stylesheets %}
-    <link href="/assets/default/css/dataTables.bootstrap.css" rel="stylesheet">
-    <link href="/assets/default/css/dataTables.responsive.css" rel="stylesheet">
+<link href="/assets/default/css/dataTables.bootstrap.css" rel="stylesheet">
+<link href="/assets/default/css/dataTables.responsive.css" rel="stylesheet">
 {% endblock %}
 
 {% block body %}
     <div class="container-fluid">
-        <!-- Page Heading -->
         <div class="row">
             <div class="col-md-12">
                 <h1 class="page-header">
@@ -39,7 +29,6 @@ javascript
                 </ol>
             </div>
         </div>
-        <!-- /.row -->
         <form action="{{ path_for('settings-developer') }}" method="post">
             <div class="row">
                 <div class="col-md-4">
@@ -315,7 +304,7 @@ javascript
                         <div class="panel-body">
 
                             <div class="alert alert-danger">
-                                <strong>Warning!</strong> This page contains settings that can disable your site.  These should only be modified by an experienced developer.  Please make sure that you know what you are doing before saving these
+                                <strong>Warning!</strong> This page contains settings that can disable your site.  These should only be modified by an experienced developer.  Please make sure that you know what you are doing before saving these.  This is experimental.  In fact, so experimental that it currently does not work.
                             </div>
 
                             <div class="form-group{% if has_error('cl_enabled') %} has-error{% endif %}">

@@ -12,6 +12,7 @@ namespace Dappur\Dappurware;
  * but it works on my test web server running Ubuntu 16.04, Apache and Nginx.
  * Please do not expect much from this module yet.
  */
+
 class Deployment {
 
     // Git Repository URL
@@ -479,3 +480,31 @@ class Deployment {
         
     }
 }
+
+
+$token = "da39a3ee5e6b4b0d3255bfef95601890afd80709";
+$repo_url = "git@github.com:dappur/framework.git";
+$document_root = $_SERVER['DOCUMENT_ROOT'];
+$user_home = $_SERVER['HOME'];
+$settings = array(
+    "db" => array(
+        "use" => "production",
+        "production" => array(
+            "host" => "104.236.152.182",
+            "port" => 3306,
+            "database" => "framework",
+            "username" => "53e94badb352",
+            "password" => "8f1aeaae81c5459d",
+        )
+    )
+);
+
+if (isset($_GET['token']) && $_GET['token'] == $token) {
+    $deploy = new \Dappur\Dappurware\Deployment($repo_url, $document_root, $user_home, $settings);
+    echo $deploy->initDappur();
+    echo $deploy->execute();
+    echo $deploy->updateDappur();
+}else{
+    die('Deployment Token Invalid');
+}
+

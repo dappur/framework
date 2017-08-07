@@ -59,4 +59,24 @@ class Settings extends Dappurware
         return $output;
     }
 
+    public function getSettingsByGroup(){
+
+        $config = new \Dappur\Model\Config;
+
+        $config_groups = new \Dappur\Model\ConfigGroups;
+        $groups = $config_groups->get();
+
+        $sorted_groups = array();
+
+        foreach ($groups as $gkey => $gvalue) {
+            $config_group = $config->where('group_id', '=', $gvalue['id'])
+                ->select('config.*', 'config_types.name as type')
+                ->leftJoin("config_types", "config_types.id", "=", "config.type_id");
+
+            $sorted_groups[$gvalue['name']] = $config_group->get();
+        }
+
+        return $sorted_groups;
+    }
+
 }

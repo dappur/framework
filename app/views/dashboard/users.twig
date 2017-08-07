@@ -1,24 +1,14 @@
 {% extends 'base.twig' %}
 
-{#
-title
-stylesheets
-navi
-body
-javascript
-#}
-
-
 {% block title %}{{config['site-name']}} || User Management{% endblock %}
 
 {% block stylesheets %}
-    <link href="https://cdn.datatables.net/1.10.15/css/dataTables.bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.datatables.net/responsive/2.1.1/css/responsive.bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.datatables.net/1.10.15/css/dataTables.bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.datatables.net/responsive/2.1.1/css/responsive.bootstrap.min.css" rel="stylesheet">
 {% endblock %}
 
 {% block body %}
     <div class="container-fluid">
-        <!-- Page Heading -->
         <div class="row">
             <div class="col-lg-12">
                 <h1 class="page-header">
@@ -34,7 +24,6 @@ javascript
                 </ol>
             </div>
         </div>
-        <!-- /.row -->
 
         <div class="row">
             <div class="col-lg-12">
@@ -187,26 +176,26 @@ javascript
 {% endblock %}
 
 {% block javascript %}
-    <script src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/1.10.15/js/dataTables.bootstrap.min.js"></script>
-    <script src="https://cdn.datatables.net/responsive/2.1.1/js/dataTables.responsive.min.js"></script>
-    <script src="https://cdn.datatables.net/responsive/2.1.1/js/responsive.bootstrap.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.15/js/dataTables.bootstrap.min.js"></script>
+<script src="https://cdn.datatables.net/responsive/2.1.1/js/dataTables.responsive.min.js"></script>
+<script src="https://cdn.datatables.net/responsive/2.1.1/js/responsive.bootstrap.min.js"></script>
 
-    <!-- Page-Level Demo Scripts - Tables - Use for reference -->
-    <script>
-    $(document).ready(function() {
-        
-        $('#users_table').DataTable({
-            responsive: true,
-            stateSave: true
+<!-- Page-Level Demo Scripts - Tables - Use for reference -->
+<script>
+$(document).ready(function() {
+    
+    $('#users_table').DataTable({
+        responsive: true,
+        stateSave: true
 
-        });
-
-        $('#roles_table').DataTable({
-            responsive: true,
-            stateSave: true
-
-        });
     });
-    </script>
+
+    $('#roles_table').DataTable({
+        responsive: true,
+        stateSave: true
+
+    });
+});
+</script>
 {% endblock %}

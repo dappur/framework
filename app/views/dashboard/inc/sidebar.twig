@@ -9,7 +9,7 @@
     </li>
     {% endif %}
 
-    {% if not hasCloudinary and auth.hasAccess('media.local') %}
+    {% if auth.hasAccess('media.local') %}
     <li {% if currentRoute starts with '/dashboard/media' %}class="active"{% endif %}>
         <a style="cursor: pointer;" id="media-menu"><i class="fa fa-cloud fa-fw"></i> Local CMS</a>
     </li>
@@ -23,7 +23,7 @@
 
     {% if auth.hasAccess('config.view') %}
     <li {% if currentRoute starts with '/dashboard/settings' %}class="active"{% endif %}>
-        <a href="{{ path_for('settings-global')}}"><i class="fa fa-cogs fa-fw"></i> Global Settings</a>
+        <a href="{{ path_for('settings-global')}}"><i class="fa fa-cogs fa-fw"></i> Settings</a>
     </li>
     {% endif %}
 

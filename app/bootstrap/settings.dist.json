@@ -1,8 +1,8 @@
 
 {
     "framework": "dappur",
-    "displayErrorDetails": true,
-    "showInAdmin": true, 
+    "displayErrorDetails": false,
+    "showInAdmin": true,
     "db": {
         "use": "development",
         "databases": {
@@ -36,7 +36,16 @@
             "cache": false,
             "debug": false,
             "auto_reload": true
+        },
+        "bootswatch": {
+            "api_url" : "https://bootswatch.com/api/3.json"
         }
+    },
+    "csrf": {
+        "prefix": "dappurcsrf",
+        "storage_limit": 200,
+        "strength": 32,
+        "persist_tokens": false
     },
     "logger": {
         "log_name": "Dappur",
@@ -58,7 +67,7 @@
         "repo_url": ""
     },
     "mail": {
-        "enabled": false,
+        "enabled": false, 
         "relay": "phpmail",
         "mailgun": {
             "username": "",

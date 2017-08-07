@@ -29,9 +29,13 @@ class AdminSettings extends Controller
         $timezones = $settings->getTimezones();
         $theme_list = $settings->getThemeList();
         $bootswatch = $settings->getBootswatch();
+        $settings_grouped = $settings->getSettingsByGroup();
 
-        $config = new \Dappur\Model\Config;
-        $global_config = $config->get();
+        $types = new \Dappur\Model\ConfigTypes;
+        $types = $types->orderBy('name')->get();
+
+        $groups = new \Dappur\Model\ConfigGroups;
+        $groups = $groups->orderBy('name')->get();
 
         if ($request->isPost()) {
             if (!$this->auth->hasAccess('config.global')) {
@@ -86,7 +90,7 @@ class AdminSettings extends Controller
             
         }
 
-        return $this->view->render($response, 'settings-global.twig', array("globalConfig" => $global_config, "themeList" => $theme_list, "timezones" => $timezones, "bsThemes" => $bootswatch));
+        return $this->view->render($response, 'settings-global.twig', array("settingsGrouped" => $settings_grouped, "configTypes" => $types, "configGroups" => $groups, "themeList" => $theme_list, "timezones" => $timezones, "bsThemes" => $bootswatch));
 
     }
 
@@ -102,6 +106,106 @@ class AdminSettings extends Controller
             
         }
 
+
+        $allPostVars = $request->getParsedBody();
+
+        $this->validator->validate($request, 
+            array(
+                'add_name' => array(
+                    'rules' => V::slug()->length(4, 32), 
+                    'messages' => array(
+                        'slug' => 'May only contain lowercase letters, numbers and hyphens.', 
+                        'length' => 'Must be between 4 and 32 characters.'
+                    )
+                ),
+                'add_description' => array(
+                    'rules' => V::alnum()->length(4, 32), 
+                    'messages' => array(
+                        'alnum' => 'May only contain letters and numbers.', 
+                        'length' => 'Must be between 4 and 32 characters.'
+                    )
+                )
+            )
+        );
+
+        $check_config = $config->where('name', '=', $allPostVars['add_name'])->get()->count();
+        if ($check_config > 0) {
+            $this->validator->addError('add_name', 'Name is already in use.');
+        }
+
+        if ($this->validator->isValid()) {
+
+            $configOption = new \Dappur\Model\Config;
+            $configOption->name = $allPostVars['add_name'];
+            $configOption->description = $allPostVars['add_description'];
+            $configOption->type_id = $allPostVars['add_type'];
+            $configOption->group_id = $allPostVars['add_group'];
+            $configOption->value = $allPostVars['add_value'];
+            $configOption->save();
+
+            $this->flash('success', 'Global settings successfully added.');
+            return $this->redirect($response, 'settings-global');
+        }
+
+        $settings = new \Dappur\Dappurware\Settings($this->container);
+        $timezones = $settings->getTimezones();
+        $theme_list = $settings->getThemeList();
+        $bootswatch = $settings->getBootswatch();
+        $settings_grouped = $settings->getSettingsByGroup();
+
+        $types = new \Dappur\Model\ConfigTypes;
+        $types = $types->orderBy('name')->get();
+
+        $groups = new \Dappur\Model\ConfigGroups;
+        $groups = $groups->orderBy('name')->get();
+
+        return $this->view->render($response, 'settings-global.twig', array("settingsGrouped" => $settings_grouped, "configTypes" => $types, "configGroups" => $groups, "themeList" => $theme_list, "timezones" => $timezones));
+
+    }
+
+    public function settingsGlobalAddGroup(Request $request, Response $response){
+
+        if (!$this->auth->hasAccess('config.group')) {
+
+            $loggedUser = $this->auth->check();
+            
+            $this->flash('danger', 'You do not have permission to add config groups.');
+            $this->logger->addError("Unauthorized Access", array("message" => "Unauthorized access was attempted on the config group add page", "user_id" => $loggedUser['id']));
+            return $this->redirect($response, 'settings-global');
+            
+        }
+
+
+        $allPostVars = $request->getParsedBody();
+
+        $this->validator->validate($request, 
+            array(
+                'group_name' => array(
+                    'rules' => V::alnum()->length(4, 32), 
+                    'messages' => array(
+                        'alnum' => 'May only contain lowercase letters, numbers and hyphens.', 
+                        'length' => 'Must be between 4 and 32 characters.'
+                    )
+                )
+            )
+        );
+
+        $check_group = new \Dappur\Model\ConfigGroups;
+        $check_group = $check_group->where('name', '=', $allPostVars['group_name'])->get()->count();
+        if ($check_group > 0) {
+            $this->validator->addError('group_name', 'Name is already in use.');
+        }
+
+        if ($this->validator->isValid()) {
+
+            $configOption = new \Dappur\Model\ConfigGroups;
+            $configOption->name = $allPostVars['group_name'];
+            $configOption->save();
+
+            $this->flash('success', 'Config group successfully added.');
+            return $this->redirect($response, 'settings-global');
+        }
+
         $settings = new \Dappur\Dappurware\Settings($this->container);
         $timezones = $settings->getTimezones();
         $theme_list = $settings->getThemeList();
@@ -110,46 +214,44 @@ class AdminSettings extends Controller
         $config = new \Dappur\Model\Config;
         $global_config = $config->get();
 
-        if ($request->isPost()) {
+        return $this->view->render($response, 'settings-global.twig', array("settingsGrouped" => $settings_grouped, "configTypes" => $types, "configGroups" => $groups, "themeList" => $theme_list, "timezones" => $timezones));
 
-            $allPostVars = $request->getParsedBody();
+    }
 
-            $this->validator->validate($request, array('add_name' => array('rules' => V::slug()->length(4, 32), 'messages' => array('slug' => 'May only contain lowercase letters, numbers and hyphens.', 'length' => 'Must be between 4 and 32 characters.'))));
-            $this->validator->validate($request, array('add_description' => array('rules' => V::alnum()->length(4, 32), 'messages' => array('alnum' => 'May only contain letters and numbers.', 'length' => 'Must be between 4 and 32 characters.'))));
+    public function settingsGlobalDeleteGroup(Request $request, Response $response){
+
+        if (!$this->auth->hasAccess('config.group')) {
+
+            $loggedUser = $this->auth->check();
             
-            if ($allPostVars['add_type'] == "string") {
-                // Check for HTML Tags
-                if (strip_tags($allPostVars['add_value']) != $allPostVars['add_value']) {
-                    $this->validator->addError('add_value', 'Please do not use any HTML Tags');
-                    $this->logger->addWarning("possible scripting attack", array("message" => "HTML tags were blocked from being put into the config."));
-                }
-            } else {
-                $this->validator->addError('add_value', 'Not a valid global setting.');
-            }
-
-            $check_config = $config->where('name', '=', $allPostVars['add_name'])->get()->count();
-            if ($check_config > 0) {
-                $this->validator->addError('add_name', 'Name is already in use.');
-            }
-
-            if ($this->validator->isValid()) {
-
-                $configOption = new \Dappur\Model\Config;
-                $configOption->name = $allPostVars['add_name'];
-                $configOption->description = $allPostVars['add_description'];
-                $configOption->type = $allPostVars['add_type'];
-                $configOption->value = $allPostVars['add_value'];
-                $configOption->save();
-
-
-                $this->flash('success', 'Global settings successfully added.');
-                return $this->redirect($response, 'settings-global');
-            }
-
+            $this->flash('danger', 'You do not have permission to add config groups.');
+            $this->logger->addError("Unauthorized Access", array("message" => "Unauthorized access was attempted on the config group add page", "user_id" => $loggedUser['id']));
+            return $this->redirect($response, 'settings-global');
             
         }
 
-        return $this->view->render($response, 'settings-global.twig', array("globalConfig" => $global_config, "themeList" => $theme_list, "timezones" => $timezones));
+
+        $allPostVars = $request->getParsedBody();
+
+        $check_group = new \Dappur\Model\ConfigGroups;
+        $check_group = $check_group->find($allPostVars['group_id']);
+
+        if (!$check_group) {
+            $this->flash('danger', 'Group does not exist.');
+            return $this->redirect($response, 'settings-global');
+        }else{
+            $check_config = new \Dappur\Model\Config;
+            $check_config = $check_config->where('group_id', '=', $allPostVars['group_id'])->get()->count();
+
+            if ($check_config > 0) {
+                $this->flash('danger', 'You cannot delete a group with config items in it.');
+                return $this->redirect($response, 'settings-global');
+            }else{
+                $check_group->delete();
+                $this->flash('success', 'Group was successfully deleted.');
+                return $this->redirect($response, 'settings-global');
+            }
+        }
 
     }
 

@@ -6,7 +6,7 @@ var DappurMedia = new function() {
     this.deleteMediaUrl = null;
 
     // Load the Local CMS Window
-    this.loadMedia = function (type) {
+    this.loadMedia = function (type, target) {
     	$('#media-modal-body').html('');
         switch (type) {
             case "menu":
@@ -18,7 +18,7 @@ var DappurMedia = new function() {
             case "input":
                 $("#media-modal-body").html('<iframe id="dappurmedia" width="100%" height="475px" frameborder="0" marginheight="0" marginwidth="0" src="'+
                     this.managerUrl+
-                    '?source=input"></iframe>'
+                    '?source=input&target='+target+'"></iframe>'
                 );
                 break;
         }
@@ -203,10 +203,24 @@ var DappurMedia = new function() {
         );
     }
 
-    this.copyToClipboard = function(someText) {
+    this.getUrlParameter = function(sParam) {
         
+        var sPageURL = decodeURIComponent(window.location.search.substring(1)),
+            sURLVariables = sPageURL.split('&'),
+            sParameterName,
+            i;
+
+        for (i = 0; i < sURLVariables.length; i++) {
+            sParameterName = sURLVariables[i].split('=');
+
+            if (sParameterName[0] === sParam) {
+                return sParameterName[1] === undefined ? true : sParameterName[1];
+            }
+        }
 
     };
+
+
 
     $(document).on('click', '#media-menu', function(){
         DappurMedia.loadMedia('menu', null);
@@ -314,11 +328,86 @@ var DappurMedia = new function() {
         
     });
 
-    $(document).on('click', '#media-info-btn-insert', function(){
 
-        var filePath = $("#file-info").data("filepath");
+    $(document).on('click', '.image-preview', function(e){
+        e.preventDefault();
+        var target = $(this).attr('data-target');
+        swal({
+            html: '<img src="'+ $("#"+target).val() +'" style="width: 100%;">'
+        }).catch(swal.noop);
+        
+    });
+
+    $(document).on('click', '#upload-button', function(){ 
+        var currentFolder = $("#breadcrumb").data("current");
+        $("#current_folder").val(currentFolder);
+        $('#fileupload').trigger('click'); 
+
+        $('#fileupload').fileupload({
+            dataType: 'json',
+            done: function (e, data) {
+                
+                /*
+                $.each(data.result.files, function (index, file) {
+                    $('<p/>').text(file.name).appendTo(document.body);
+                });
+                */
+
+                DappurMedia.getFolder(currentFolder);
+            }
+        });
+    });
+
+    $(document).ready(function() {
+
+        $(".dm-input").each(function() {
+            var inputName = $(this).data("name");
+            var inputValue = $(this).data("value");
+
+            $(this).html(
+                '<span class="input-group-btn">'+
+                    '<img id="'+inputName+'-thumbnail" src="'+inputValue+'" style="max-height: 30px; max-width: 30px;" />'+
+                '</span>'+
+                '<input type="text" name="'+inputName+'" id="'+inputName+'" class="form-control" value="'+inputValue+'">'+
+                '<span class="input-group-btn">'+
+                    '<button type="button" class="btn btn-default image-preview" data-target="'+inputName+'"><i class="fa fa-eye"></i></button>'+
+                    '<button type="button" class="btn btn-default image-select" data-target="'+inputName+'"><i class="fa fa-picture-o"></i></button>'+
+                '</span>'
+            );
+
+        });
+
+        var clExists;
+        try { DappurCloudinary; clExists = true;} catch(e) {}
+        if (clExists) {
+            $(".image-select").on('click', function(e){
+                e.preventDefault();
+                DappurCloudinary.loadCloudinary("input", $(this).attr('data-target'));
+            });
+        }else{
+            $(".image-select").on('click', function(e){
+                e.preventDefault();
+                DappurMedia.loadMedia("input", $(this).attr('data-target'));
+
+            });
+
+            
+        }
+
+        $(document).on('click', '#media-info-btn-insert', function(){
+
+            var filePath = $("#file-info").data("filepath");
+
+            var target = DappurMedia.getUrlParameter('target');
+
+            $(parent.document).find("#"+target).val(filePath);
+            $(parent.document).find("#"+target+"-thumbnail").attr("src", filePath);
+            window.parent.$("#media-modal").modal("hide");
+           
+        });
 
         
     });
+
 
 };

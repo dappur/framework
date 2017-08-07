@@ -1,19 +1,9 @@
 {% extends 'base.twig' %}
 
-{#
-title
-stylesheets
-navi
-body
-javascript
-#}
-
-
 {% block title %}{{config['site-name']}} || My Account {% endblock %}
 
 {% block body %}
     <div class="container-fluid">
-        <!-- Page Heading -->
         <div class="row">
             <div class="col-lg-12">
                 <h1 class="page-header">
@@ -29,7 +19,6 @@ javascript
                 </ol>
             </div>
         </div>
-        <!-- /.row -->
 
         <div class="row">
             <div class="col-lg-12">
@@ -39,89 +28,82 @@ javascript
                     </div>
 
                     <div class="panel-body">
-                            <div class="col-md-6">
-                                <form action="{{ currentRoute }}" method="POST" role="form">
-                                    <div class="form-group{% if has_error('first_name') %} has-error{% endif %}">
-                                        <label for="first_name">First Name</label>
-                                        <input type="text" name="first_name" class="form-control" id="first_name" placeholder="First Name" value="{% if requestParams.first_name %}{{requestParams.first_name}}{% else %}{{auth.user.first_name}}{% endif %}" required="required">
-                                        <span class="help-block">{{ error('first_name') }}</span>
-                                    </div>
-
-                                    <div class="form-group{% if has_error('last_name') %} has-error{% endif %}">
-                                        <label for="last_name">Last name</label>
-                                        <input type="text" name="last_name" class="form-control" id="last_name" placeholder="Last name" value="{% if requestParams.last_name %}{{requestParams.last_name}}{% else %}{{auth.user.last_name}}{% endif %}" required="required">
-                                        <span class="help-block">{{ error('last_name') }}</span>
-                                    </div>
-
-                                    <div class="form-group{% if has_error('email') %} has-error{% endif %}">
-                                        <label for="email">Email</label>
-                                        <input type="email" name="email" class="form-control" id="email" placeholder="Email" value="{% if requestParams.email %}{{requestParams.email}}{% else %}{{auth.user.email}}{% endif %}" required="required">
-                                        <span class="help-block">{{ error('email') }}</span>
-                                    </div>
-
-                                    <div class="form-group{% if has_error('username') %} has-error{% endif %}">
-                                        <label for="username">Username</label>
-                                        <input type="text" name="username" class="form-control" id="username" placeholder="Username" value="{% if requestParams.username %}{{requestParams.username}}{% else %}{{auth.user.username}}{% endif %}" required="required">
-                                        <span class="help-block">{{ error('username') }}</span>
-                                    </div>
-
-                                    <div class="form-group">
-                                        {{ csrf() }} 
-                                        <input type="submit" name="update_account" value="Update Account" class="btn btn-primary form-control" />
-                                    </div>
-
-                                </form>
-
-                            </div>
-                            
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>User Roles</label>
-                                    <ul>
-                                    {% for role in userAccess.roles %}
-                                        <li>{{role}}</li>
-                                    {% endfor %}
-                                    </ul>
+                        <div class="col-md-6">
+                            <form action="{{ currentRoute }}" method="POST" role="form">
+                                <div class="form-group{% if has_error('first_name') %} has-error{% endif %}">
+                                    <label for="first_name">First Name</label>
+                                    <input type="text" name="first_name" class="form-control" id="first_name" placeholder="First Name" value="{% if requestParams.first_name %}{{requestParams.first_name}}{% else %}{{auth.user.first_name}}{% endif %}" required="required">
+                                    <span class="help-block">{{ error('first_name') }}</span>
                                 </div>
-                                <div class="form-group">
-                                    <label>User Permissions</label>
-                                    <ul>
-                                    {% for permission in userAccess.permissions %}
-                                        <li>{{permission}}</li>
-                                    {% endfor %}
-                                    </ul>
+
+                                <div class="form-group{% if has_error('last_name') %} has-error{% endif %}">
+                                    <label for="last_name">Last name</label>
+                                    <input type="text" name="last_name" class="form-control" id="last_name" placeholder="Last name" value="{% if requestParams.last_name %}{{requestParams.last_name}}{% else %}{{auth.user.last_name}}{% endif %}" required="required">
+                                    <span class="help-block">{{ error('last_name') }}</span>
                                 </div>
-                                <form action="{{ currentRoute }}" method="POST" role="form">
-                                    <div class="form-group{% if has_error('password') %} has-error{% endif %}">
-                                        <label for="password">Change Password</label>
-                                        <input type="password" name="password" class="form-control" id="password" placeholder="Password" >
-                                        <span class="help-block">{{ error('password') }}</span>
-                                    </div>
 
-                                    <div class="form-group{% if has_error('password_confirm') %} has-error{% endif %}">
-                                        <label for="password_confirm">Confirm Password</label>
-                                        <input type="password" name="password_confirm" class="form-control" id="password_confirm" placeholder="Confirm Password" >
-                                        <span class="help-block">{{ error('password_confirm') }}</span>
-                                    </div>
+                                <div class="form-group{% if has_error('email') %} has-error{% endif %}">
+                                    <label for="email">Email</label>
+                                    <input type="email" name="email" class="form-control" id="email" placeholder="Email" value="{% if requestParams.email %}{{requestParams.email}}{% else %}{{auth.user.email}}{% endif %}" required="required">
+                                    <span class="help-block">{{ error('email') }}</span>
+                                </div>
 
-                                    <div class="form-group">
-                                        {{ csrf() }}
-                                        <input type="submit" name="change_password" value="Change Password" class="btn btn-success form-control" />
-                                    </div>
+                                <div class="form-group{% if has_error('username') %} has-error{% endif %}">
+                                    <label for="username">Username</label>
+                                    <input type="text" name="username" class="form-control" id="username" placeholder="Username" value="{% if requestParams.username %}{{requestParams.username}}{% else %}{{auth.user.username}}{% endif %}" required="required">
+                                    <span class="help-block">{{ error('username') }}</span>
+                                </div>
 
-                                </form>
-                            </div>
+                                <div class="form-group">
+                                    {{ csrf() }} 
+                                    <input type="submit" name="update_account" value="Update Account" class="btn btn-primary form-control" />
+                                </div>
 
-                            
+                            </form>
+
+                        </div>
                         
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>User Roles</label>
+                                <ul>
+                                {% for role in userAccess.roles %}
+                                    <li>{{role}}</li>
+                                {% endfor %}
+                                </ul>
+                            </div>
+                            <div class="form-group">
+                                <label>User Permissions</label>
+                                <ul>
+                                {% for permission in userAccess.permissions %}
+                                    <li>{{permission}}</li>
+                                {% endfor %}
+                                </ul>
+                            </div>
+                            <form action="{{ currentRoute }}" method="POST" role="form">
+                                <div class="form-group{% if has_error('password') %} has-error{% endif %}">
+                                    <label for="password">Change Password</label>
+                                    <input type="password" name="password" class="form-control" id="password" placeholder="Password" >
+                                    <span class="help-block">{{ error('password') }}</span>
+                                </div>
+
+                                <div class="form-group{% if has_error('password_confirm') %} has-error{% endif %}">
+                                    <label for="password_confirm">Confirm Password</label>
+                                    <input type="password" name="password_confirm" class="form-control" id="password_confirm" placeholder="Confirm Password" >
+                                    <span class="help-block">{{ error('password_confirm') }}</span>
+                                </div>
+
+                                <div class="form-group">
+                                    {{ csrf() }}
+                                    <input type="submit" name="change_password" value="Change Password" class="btn btn-success form-control" />
+                                </div>
+
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-{% endblock %}
-
-{% block javascript %}
-
 {% endblock %}
 

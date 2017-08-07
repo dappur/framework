@@ -94,20 +94,6 @@ var DappurCloudinary = new function() {
 
     };
 
-    $(".image-select").on('click', function(e){
-        e.preventDefault();
-        DappurCloudinary.loadCloudinary("input", $(this).attr('data-target'));
-    });
-
-    $(".image-preview").on('click', function(e){
-        e.preventDefault();
-        var target = $(this).attr('data-target');
-        swal({
-            html: '<img src="'+ $("#"+target).val() +'" style="width: 100%;">'
-        }).catch(swal.noop);
-        
-    });
-
     $("#cloudinary-menu").on('click', function(){
         DappurCloudinary.loadCloudinary('menu', null);
     });

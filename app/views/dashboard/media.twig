@@ -9,10 +9,10 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Dappur-FW || Local CMS</title>
+    <title>{{ config['site-name'] }} || Local CMS</title>
 
     {# Global CSS #}
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.7/{{config['bootswatch-dashboard']}}/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.7/{{config['dashboard-bootswatch']}}/bootstrap.min.css">
     {# FontAwesome #}
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/lity/2.2.2/lity.css" rel="stylesheet">
@@ -38,12 +38,10 @@
         ga('send', 'pageview');
         </script>
     {% endif %}
-    {# End Google Analytics #}
 </head>
 
 <body>
         <div>
-            <!-- tool box -->
             <div class="well-sm pull-left" id="tools">
                 <a class="btn btn-default" id="back-button" style="display: none;"><i class="fa fa-arrow-left"></i> Back</a>
             </div>
@@ -56,7 +54,6 @@
             <div style="clear: both;"></div>
         </div>
 
-        <!-- breadcrumb -->
         <ol class="breadcrumb" id="breadcrumb" data-current="">/</ol>
 
         <div class="row" style="margin: 0 10px 0 10px; text-align: center;">
@@ -65,6 +62,7 @@
                 <i class="fa fa-spinner fa-5x fa-spin"></i><br />
                 <span style="font-size: 30px;">Loading...</span>
             </div>
+
             {# List folders #}
             <span id="folder_list"></span>
 
@@ -118,7 +116,7 @@
     {# Global JS #}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/lity/2.2.2/lity.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lity/2.2.2/lity.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/6.6.6/sweetalert2.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/core-js/2.4.1/core.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.nicescroll/3.7.5/jquery.nicescroll.min.js"></script>
@@ -126,14 +124,12 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/9.18.0/js/jquery.iframe-transport.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/9.18.0/js/jquery.fileupload.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js"></script>
-    {# End Global JS #}
 
     {# Jquery CSRF #}
-    <script src="{{ asset('_global/js/csrf.js') }}"></script>
+    <script src="{{ asset('_global/js/csrf.min.js') }}"></script>
     <script type="text/javascript">DappurCSRF.csrfUrl = "{{ path_for('csrf') }}";</script>
-    {# End Jquery CSRF #}
 
-    <script src="{{ asset('dashboard/js/media.js') }}"></script>
+    <script src="{{ asset('dashboard/js/media.min.js') }}"></script>
     <script type="text/javascript">
     DappurMedia.getFolderUrl = "{{ path_for('admin-media-folder') }}";
     DappurMedia.addFolderUrl = "{{ path_for('admin-media-folder-new') }}";
@@ -143,31 +139,6 @@
 
     {# Custom JS #}
     <script src="{{ asset('dashboard/js/custom.min.js') }}"></script>
-
-    <script>
-    $(function () {
-
-        $(document).on('click', '#upload-button', function(){ 
-            var currentFolder = $("#breadcrumb").data("current");
-            $("#current_folder").val(currentFolder);
-            $('#fileupload').trigger('click'); 
-
-            $('#fileupload').fileupload({
-                dataType: 'json',
-                done: function (e, data) {
-                    
-                    /*
-                    $.each(data.result.files, function (index, file) {
-                        $('<p/>').text(file.name).appendTo(document.body);
-                    });
-                    */
-
-                    DappurMedia.getFolder(currentFolder);
-                }
-            });
-        });
-    });
-    </script>
 </body>
 
 </html>

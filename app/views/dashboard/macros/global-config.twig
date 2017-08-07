@@ -1,76 +1,55 @@
 {% macro configString(name, description, type, value) %}
-		<div class="form-group{% if has_error(name) %} has-error{% endif %}">
-			<div class="col-xs-12 col-md-6">
+		<div class="col-md-6 form-group{% if has_error(name) %} has-error{% endif %}">
 				<label for="{{ name }}">{{ description }}</label>
 			    <input type="text" name="{{ name }}" id="{{ name }}" class="form-control" value="{{ value }}">
 			    <span id="{{ id }}-help-block" class="help-block">{{ error(name) }}</span>
-		    </div>
 		</div>
 {% endmacro %}
 {% macro configTheme(name, description, type, value, themeList) %}
-		<div class="form-group{% if has_error(name) %} has-error{% endif %}">
-			<div class="col-xs-12 col-md-6">
-				<label for="{{ name }}">{{ description }}</label>
-			    <select name="{{ name }}" id="{{ name }}" class="form-control" required="required">
-			    	{% for theme in themeList %}
-			    	    <option value="{{ theme }}" {% if theme == value %}SELECTED{% endif %}>{{ theme }}</option>
-			    	{% endfor %}
-			    </select>
-			    <span id="{{ id }}-help-block" class="help-block">{{ error(name) }}</span>
-		    </div>
+		<div class="col-md-6 form-group{% if has_error(name) %} has-error{% endif %}">
+			<label for="{{ name }}">{{ description }}</label>
+		    <select name="{{ name }}" id="{{ name }}" class="form-control" required="required">
+		    	{% for theme in themeList %}
+		    	    <option value="{{ theme }}" {% if theme == value %}SELECTED{% endif %}>{{ theme }}</option>
+		    	{% endfor %}
+		    </select>
+		    <span id="{{ id }}-help-block" class="help-block">{{ error(name) }}</span>
 		</div>
 {% endmacro %}
 {% macro configTimezone(name, description, type, value, timezones) %}
-		<div class="form-group{% if has_error(name) %} has-error{% endif %}">
-			<div class="col-xs-12 col-md-6">
-				<label for="{{ name }}">{{ description }}</label>
-			    <select name="{{ name }}" id="{{ name }}" class="form-control" required="required">
-			    	
-			    	{% for timezone in timezones %}
-			    	    <option value="{{ timezone.zone }}" {% if timezone.zone == config.timezone %}SELECTED{% endif %}>{{ timezone.zone }} {{ timezone.diff_from_GMT }}</option>
-			    	{% endfor %}
-			    </select>
-			    <span id="{{ id }}-help-block" class="help-block">{{ error(name) }}</span>
-		    </div>
+		<div class="col-md-6 form-group{% if has_error(name) %} has-error{% endif %}">
+			<label for="{{ name }}">{{ description }}</label>
+		    <select name="{{ name }}" id="{{ name }}" class="form-control" required="required">
+		    	
+		    	{% for timezone in timezones %}
+		    	    <option value="{{ timezone.zone }}" {% if timezone.zone == config.timezone %}SELECTED{% endif %}>{{ timezone.zone }} {{ timezone.diff_from_GMT }}</option>
+		    	{% endfor %}
+		    </select>
+		    <span id="{{ id }}-help-block" class="help-block">{{ error(name) }}</span>
 		</div>
 {% endmacro %}
 {% macro configDefault(name, description, type, value) %}
-	    <div class="form-group{% if has_error(name) %} has-error{% endif %}">
-		    <div class="col-xs-12 col-md-6">
-				<label for="{{ name }}">{{ description }}</label>
-			    <input type="text" name="{{ name }}" id="{{ name }}" class="form-control" value="{{ value }}">
-			    <span id="{{ id }}-help-block" class="help-block">{{ error(name) }}</span>
-		    </div>
+	    <div class="col-md-6 form-group{% if has_error(name) %} has-error{% endif %}">
+			<label for="{{ name }}">{{ description }}</label>
+		    <input type="text" name="{{ name }}" id="{{ name }}" class="form-control" value="{{ value }}">
+		    <span id="{{ id }}-help-block" class="help-block">{{ error(name) }}</span>
 		</div>
 {% endmacro %}
 {% macro configBootswatch(name, description, type, value, bsThemes) %}
-	    <div class="form-group{% if has_error(name) %} has-error{% endif %}">
-		    <div class="col-xs-12 col-md-6">
-				<label for="{{ name }}">{{ description }}</label>
-			    <select name="{{ name }}" id="{{ name }}" class="form-control" required="required">
-			    	{% for theme in bsThemes %}
-			    	    <option value="{{ theme|lower }}" {% if theme|lower == config['bootswatch-dashboard'] %}SELECTED{% endif %}>{{ theme }}</option>
-			    	{% endfor %}
-			    </select>
-			    <span id="{{ id }}-help-block" class="help-block">{{ error(name) }}</span>
-		    </div>
+	    <div class="col-md-6 form-group{% if has_error(name) %} has-error{% endif %}">
+			<label for="{{ name }}">{{ description }}</label>
+		    <select name="{{ name }}" id="{{ name }}" class="form-control" required="required">
+		    	{% for theme in bsThemes %}
+		    	    <option value="{{ theme|lower }}" {% if theme|lower == config['dashboard-bootswatch'] %}SELECTED{% endif %}>{{ theme }}</option>
+		    	{% endfor %}
+		    </select>
+		    <span id="{{ id }}-help-block" class="help-block">{{ error(name) }}</span>
 		</div>
 {% endmacro %}
 {% macro configImage(name, description, type, value) %}
-	    <div class="form-group{% if has_error(name) %} has-error{% endif %}">
-		    <div class="col-xs-12 col-md-6">
-				<label for="{{ name }}">{{ description }}</label>
-			    <div class="input-group">
-			    	<span class="input-group-btn">
-			    		<img id="{{name}}-thumbnail" src="{{ value }}" style="max-height: 30px; max-width: 30px;" />
-			    	</span>
-			    	<input type="text" name="{{ name }}" id="{{ name }}" class="form-control" value="{{ value }}">
-			    	<span class="input-group-btn">
-			    		<button type="button" class="btn btn-default image-preview" data-target="{{ name }}"><i class="fa fa-eye"></i></button>
-			    		<button type="button" class="btn btn-default image-select" data-target="{{ name }}"><i class="fa fa-picture-o"></i></button>
-			    	</span>
-			    </div>
-			    <span id="{{ id }}-help-block" class="help-block">{{ error(name) }}</span>
-		    </div>
+	    <div class="col-md-6 form-group{% if has_error(name) %} has-error{% endif %}">
+			<label for="{{ name }}">{{ description }}</label>
+		    <div class="input-group dm-input" data-name="{{name}}" data-value="{{ value }}"></div>
+		    <span id="{{ id }}-help-block" class="help-block">{{ error(name) }}</span>
 		</div>
 {% endmacro %}
