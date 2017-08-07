@@ -5,6 +5,9 @@ namespace Dappur\Controller;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Respect\Validation\Validator as V;
+use Dappur\Model\ConfigTypes;
+use Dappur\Model\ConfigGroups;
+use Dappur\Model\Config;
 
 /**
  * Dappur Framework Controller
@@ -31,11 +34,9 @@ class AdminSettings extends Controller
         $bootswatch = $settings->getBootswatch();
         $settings_grouped = $settings->getSettingsByGroup();
 
-        $types = new \Dappur\Model\ConfigTypes;
-        $types = $types->orderBy('name')->get();
+        $types = ConfigTypes::orderBy('name')->get();
 
-        $groups = new \Dappur\Model\ConfigGroups;
-        $groups = $groups->orderBy('name')->get();
+        $groups = ConfigGroups::orderBy('name')->get();
 
         if ($request->isPost()) {
             if (!$this->auth->hasAccess('config.global')) {
@@ -79,8 +80,7 @@ class AdminSettings extends Controller
             if ($this->validator->isValid()) {
 
                 foreach ($allPostVars as $key => $value) {
-                    $updateRow = new \Dappur\Model\Config;
-                    $updateRow->where('name', $key)->update(['value' => $value]);
+                    Config::where('name', $key)->update(['value' => $value]);
                 }
 
                 $this->flash('success', 'Global settings have been updated successfully.');
@@ -128,7 +128,7 @@ class AdminSettings extends Controller
             )
         );
 
-        $check_config = $config->where('name', '=', $allPostVars['add_name'])->get()->count();
+        $check_config = Config::where('name', '=', $allPostVars['add_name'])->get()->count();
         if ($check_config > 0) {
             $this->validator->addError('add_name', 'Name is already in use.');
         }
@@ -153,11 +153,9 @@ class AdminSettings extends Controller
         $bootswatch = $settings->getBootswatch();
         $settings_grouped = $settings->getSettingsByGroup();
 
-        $types = new \Dappur\Model\ConfigTypes;
-        $types = $types->orderBy('name')->get();
+        $types = ConfigTypes::orderBy('name')->get();
 
-        $groups = new \Dappur\Model\ConfigGroups;
-        $groups = $groups->orderBy('name')->get();
+        $groups = ConfigGroups::orderBy('name')->get();
 
         return $this->view->render($response, 'settings-global.twig', array("settingsGrouped" => $settings_grouped, "configTypes" => $types, "configGroups" => $groups, "themeList" => $theme_list, "timezones" => $timezones));
 
@@ -190,8 +188,7 @@ class AdminSettings extends Controller
             )
         );
 
-        $check_group = new \Dappur\Model\ConfigGroups;
-        $check_group = $check_group->where('name', '=', $allPostVars['group_name'])->get()->count();
+        $check_group = ConfigGroups::where('name', '=', $allPostVars['group_name'])->get()->count();
         if ($check_group > 0) {
             $this->validator->addError('group_name', 'Name is already in use.');
         }
@@ -211,8 +208,7 @@ class AdminSettings extends Controller
         $theme_list = $settings->getThemeList();
         $bootswatch = $settings->getBootswatch();
 
-        $config = new \Dappur\Model\Config;
-        $global_config = $config->get();
+        $global_config = Config::get();
 
         return $this->view->render($response, 'settings-global.twig', array("settingsGrouped" => $settings_grouped, "configTypes" => $types, "configGroups" => $groups, "themeList" => $theme_list, "timezones" => $timezones));
 
@@ -233,15 +229,13 @@ class AdminSettings extends Controller
 
         $allPostVars = $request->getParsedBody();
 
-        $check_group = new \Dappur\Model\ConfigGroups;
-        $check_group = $check_group->find($allPostVars['group_id']);
+        $check_group = ConfigGroups::find($allPostVars['group_id']);
 
         if (!$check_group) {
             $this->flash('danger', 'Group does not exist.');
             return $this->redirect($response, 'settings-global');
         }else{
-            $check_config = new \Dappur\Model\Config;
-            $check_config = $check_config->where('group_id', '=', $allPostVars['group_id'])->get()->count();
+            $check_config = Config::where('group_id', '=', $allPostVars['group_id'])->get()->count();
 
             if ($check_config > 0) {
                 $this->flash('danger', 'You cannot delete a group with config items in it.');
@@ -272,38 +266,7 @@ class AdminSettings extends Controller
 
         $allPostVars = $request->getParsedBody();
 
-        /*
-        if ($request->isPost()) {
-            if ($allPostVars['add_type'] == "string") {
-                // Check for HTML Tags
-                if (strip_tags($allPostVars['add_value']) != $allPostVars['add_value']) {
-                    $this->validator->addError('add_value', 'Please do not use any HTML Tags');
-                    $this->logger->addWarning("possible scripting attack", array("message" => "HTML tags were blocked from being put into the config."));
-                }
-            } else {
-                $this->validator->addError('add_value', 'Not a valid global setting.');
-            }
-
-            $check_config = $config->where('name', '=', $allPostVars['add_name'])->get()->count();
-            if ($check_config > 0) {
-                $this->validator->addError('add_name', 'Name is already in use.');
-            }
-
-            if ($this->validator->isValid()) {
-
-                $configOption = new \Dappur\Model\Config;
-                $configOption->name = $allPostVars['add_name'];
-                $configOption->description = $allPostVars['add_description'];
-                $configOption->type = $allPostVars['add_type'];
-                $configOption->value = $allPostVars['add_value'];
-                $configOption->save();
-
-
-                $this->flash('success', 'Global settings successfully added.');
-                return $this->redirect($response, 'settings-global');
-            }
-        }
-        */
+        
     	return $this->view->render($response, 'settings-developer.twig', array("settingsFile" => $settings_file, "postVars" => $allPostVars));
     }
 

@@ -5,6 +5,8 @@ namespace Dappur\Controller;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use Respect\Validation\Validator as V;
+use Dappur\Model\Users;
+use Dappur\Model\Roles;
 
 class AdminUsers extends Controller{
 
@@ -20,10 +22,7 @@ class AdminUsers extends Controller{
             
         }
 
-        $users = new \Dappur\Model\Users;
-        $roles = new \Dappur\Model\Roles;
-
-        return $this->view->render($response, 'users.twig', ["users" => $users->get(), "roles" => $roles->get()]);
+        return $this->view->render($response, 'users.twig', ["users" => Users::get(), "roles" => Roles::get()]);
 
     }
     
@@ -41,9 +40,6 @@ class AdminUsers extends Controller{
             
         }
 
-        $users = new \Dappur\Model\Users;
-
-        $roles = new \Dappur\Model\Roles;
 
         if ($request->isPost()) {
             $user_id = $request->getParam('user_id');
@@ -184,7 +180,7 @@ class AdminUsers extends Controller{
             }
         }
 
-        return $this->view->render($response, 'users-add.twig', ['roles' => $roles->get(), 'requestParams' => $requestParams]);
+        return $this->view->render($response, 'users-add.twig', ['roles' => Roles::get(), 'requestParams' => $requestParams]);
 
         
     }
@@ -203,10 +199,7 @@ class AdminUsers extends Controller{
 
         $requestParams = $request->getParams();
 
-        $users = new \Dappur\Model\Users;
-        $user = $users->where('id', '=', $userid)->first();
-
-        $roles = new \Dappur\Model\Roles;
+        $user = Users::find($userid);
 
         if ($user) {
             if ($request->isPost()) {
@@ -277,16 +270,14 @@ class AdminUsers extends Controller{
                 );
                 $this->validator->validate($request, $validate_data);
 
-                //Check username
-                $check_username = $users->where('id', '!=', $user_id)->where('username', '=', $username)->get()->count();
-                if ($check_username > 0) {
-                    $this->validator->addError('username', 'Username is already in use.');
+                // Validate Username
+                if ($this->auth->findByCredentials(['login' => $username])) {
+                    $this->validator->addError('username', 'User already exists with this username.');
                 }
 
-                //Check Email
-                $check_email = $users->where('id', '!=', $user_id)->where('email', '=', $email)->get()->count();
-                if ($check_email > 0) {
-                    $this->validator->addError('email', 'Email address is already in use.');
+                // Validate Email
+                if ($this->auth->findByCredentials(['login' => $email])) {
+                    $this->validator->addError('email', 'User already exists with this email.');
                 }
 
                 if ($this->validator->isValid()) {
@@ -336,7 +327,7 @@ class AdminUsers extends Controller{
                 }
             }
 
-            return $this->view->render($response, 'users-edit.twig', ['user' => $user, 'roles' => $roles->get(), 'requestParams' => $requestParams]);
+            return $this->view->render($response, 'users-edit.twig', ['user' => $user, 'roles' => Roles::get(), 'requestParams' => $requestParams]);
         }else{
             $this->flash('danger', 'Sorry, that user was not found.');
             return $response->withRedirect($this->router->pathFor('admin-users'));

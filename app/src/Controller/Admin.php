@@ -5,6 +5,7 @@ namespace Dappur\Controller;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use Respect\Validation\Validator as V;
+use Dappur\Model\Users;
 
 class Admin extends Controller{
 
@@ -31,8 +32,6 @@ class Admin extends Controller{
         $requestParams = $request->getParams();
 
         $loggedUser = $this->auth->check();
-
-        $users = new \Dappur\Model\Users;
 
         if (!$loggedUser) {
             
@@ -84,7 +83,7 @@ class Admin extends Controller{
                 );
                 //Check username
                 if ($loggedUser['username'] != $username) {
-                    $check_username = $users->where('id', '!=', $user_id)->where('username', '=', $username)->get()->count();
+                    $check_username = Users::where('id', '!=', $user_id)->where('username', '=', $username)->get()->count();
                     if ($check_username > 0) {
                         $this->validator->addError('username', 'Username is already in use.');
                     }
@@ -93,7 +92,7 @@ class Admin extends Controller{
 
                 //Check Email
                 if ($loggedUser['email'] != $email) {
-                    $check_email = $users->where('id', '!=', $user_id)->where('email', '=', $email)->get()->count();
+                    $check_email = Users::where('id', '!=', $user_id)->where('email', '=', $email)->get()->count();
                     if ($check_email > 0) {
                         $this->validator->addError('email', 'Email address is already in use.');
                     }

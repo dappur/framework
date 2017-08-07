@@ -5,6 +5,8 @@ namespace Dappur\Controller;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use Respect\Validation\Validator as V;
+use Dappur\Model\RoleUsers;
+use Dappur\Model\Roles;
 
 class AdminRoles extends Controller{
 
@@ -21,7 +23,6 @@ class AdminRoles extends Controller{
         }
 
         if ($request->isPost()) {
-            $roles = new \Dappur\Model\Roles;
 
             $role_name = $request->getParam('role_name');
             $role_slug = $request->getParam('role_slug');
@@ -73,12 +74,10 @@ class AdminRoles extends Controller{
 
         if (is_numeric($requestParams['role_id']) && $role != 1) {
 
-            $remove_user_roles = new \Dappur\Model\RoleUsers;
 
-            $remove_user_roles->where('role_id', '=', $requestParams['role_id'])->delete();
+            RoleUsers::where('role_id', '=', $requestParams['role_id'])->delete();
 
-            $remove_role = new \Dappur\Model\Roles;
-            $remove_role = $remove_role->find($requestParams['role_id']);
+            $remove_role = Roles::find($requestParams['role_id']);
 
 
             if ($remove_role->delete()) {
@@ -108,8 +107,7 @@ class AdminRoles extends Controller{
             
         }
 
-        $roles = new \Dappur\Model\Roles;
-        $role = $roles->find($roleid);
+        $role = Roles::find($roleid);
 
         if ($role) {
             if ($request->isPost()) {
