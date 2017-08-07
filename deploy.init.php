@@ -518,4 +518,3 @@ if (isset($_GET['token']) && $_GET['token'] == $token) {
 }else{
     die('Deployment Token Invalid');
 }
-
