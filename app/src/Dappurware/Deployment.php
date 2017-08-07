@@ -12,6 +12,7 @@ namespace Dappur\Dappurware;
  * but it works on my test web server running Ubuntu 16.04, Apache and Nginx.
  * Please do not expect much from this module yet.
  */
+
 class Deployment {
 
     // Git Repository URL
@@ -116,8 +117,12 @@ class Deployment {
     }
 
     public function initDappur(){
+        $this->validateDocumentRoot();
+        $this->installUpdateComposer();
+        $this->checkGit();
         $this->checkSettings();
         $this->updateSettings();
+        $this->checkInstallRepo();
         $this->checkPhinx();
         $this->migrateUp();
 
@@ -192,9 +197,12 @@ class Deployment {
                 die($this->logEntry("There was an error creating the repository directory.  Please check your PHP user's permissions and try again."));
             }else{
                 echo $this->logEntry("Repository directory created successfully.");
+                
                 // Initialize and prepare the git repository
                 $this->initializeRepository();
-                //$this->updateRepository();
+
+                // Update composer
+                $this->updateComposer();
             }
         }else{
             if (!is_file($this->repo_dir . '/config')) {
@@ -207,6 +215,8 @@ class Deployment {
 
                 // Update composer
                 $this->updateComposer();
+
+
             }else{
 
                 // Update the repository.
@@ -245,22 +255,22 @@ class Deployment {
         $git_checkout = shell_exec('cd ' . $this->repo_dir . ' && GIT_WORK_TREE=' . dirname($this->document_root) . ' ' . $this->git_bin_path  . ' checkout -f 2>&1');
         echo $this->logEntry($git_checkout);
         // Get the deployment commit hash
-        $commit_hash = shell_exec('cd ' . $this->repo_dir . ' && ' . $this->git_bin_path  . ' rev-parse --short HEAD 2>&1');
+        $commit_hash = exec('cd ' . $this->repo_dir . ' && ' . $this->git_bin_path  . ' rev-parse --short HEAD 2>&1');
         echo $this->logEntry("Deployed Commit: " . $commit_hash);
     }
 
     private function updateRepository(){
 
         // Fetch any new changes
-        $git_fetch = shell_exec('cd ' . $this->repo_dir . ' && ' . $this->git_bin_path  . ' fetch 2>&1');
+        $git_fetch = exec('cd ' . $this->repo_dir . ' && ' . $this->git_bin_path  . ' fetch 2>&1');
         if (empty($git_fetch)) {
-            die($this->logEntry("There is nothing new to fetch from this repository."));
+            echo $this->logEntry("There is nothing new to fetch from this repository.");
         }else{
             echo $this->logEntry($git_fetch);
             // Do the checkout
             shell_exec('cd ' . $this->repo_dir . ' && GIT_WORK_TREE=' . dirname($this->document_root) . ' ' . $this->git_bin_path  . ' checkout -f 2>&1');
             // Get the deployment commit hash
-            $commit_hash = shell_exec('cd ' . $this->repo_dir . ' && ' . $this->git_bin_path  . ' rev-parse --short HEAD 2>&1');
+            $commit_hash = exec('cd ' . $this->repo_dir . ' && ' . $this->git_bin_path  . ' rev-parse --short HEAD 2>&1');
             echo $this->logEntry("Deployed Commit: " . $commit_hash);
         }
 
@@ -269,6 +279,8 @@ class Deployment {
     }
 
     private function updateComposer(){
+
+        echo 'test';
 
         $update_composer = shell_exec('cd ' . dirname($this->document_root) . ' && ' . dirname($this->document_root) . '/composer.phar install 2>&1');
         echo $this->logEntry($update_composer);
@@ -289,7 +301,7 @@ class Deployment {
             return file_get_contents($this->cert_folder . '/' . $this->cert_file_name . ".pub");
         } else if (!file_exists($this->cert_folder . '/' . $this->cert_file_name)) {
             // Create the deploy key with ssh-keygen
-            $generate_key = shell_exec("ssh-keygen -q -N '' -t rsa -b 4096 -f " . $this->cert_folder . "/" . $this->cert_file_name);
+            $generate_key = exec("ssh-keygen -q -N '' -t rsa -b 4096 -f " . $this->cert_folder . "/" . $this->cert_file_name);
             echo $this->logEntry($generate_key);
             // Get the contents of the public key
             $public_key = file_get_contents($this->cert_folder . '/' . $this->cert_file_name . '.pub');
@@ -368,7 +380,7 @@ class Deployment {
                 $settings = file_get_contents(dirname($this->document_root) . '/app/bootstrap/settings.json');
                 $settings = json_decode($settings, TRUE);
                 $settings_new = array_replace_recursive($settings, $this->settings_array);
-                if(file_put_contents(dirname($this->document_root) . '/app/bootstrap/settings.json', json_encode($settings, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE))){
+                if(file_put_contents(dirname($this->document_root) . '/app/bootstrap/settings.json', json_encode($settings_new, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE))){
                     echo $this->logEntry("Settings file successfully updated.");
                 }else{
                     die($this->logEntry("There was an error updating the settings file."));
