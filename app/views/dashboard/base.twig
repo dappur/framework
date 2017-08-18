@@ -39,6 +39,7 @@
     })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
     ga('create', '{{ config.ga }}', 'auto');
     ga('send', 'pageview');
+    {% if auth.user %}ga('set', 'userId', {{auth.user.id}});{% endif %}
     </script>
     {% endif %}
 </head>

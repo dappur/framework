@@ -8,6 +8,9 @@ use Respect\Validation\Validator as V;
 use Dappur\Model\ConfigTypes;
 use Dappur\Model\ConfigGroups;
 use Dappur\Model\Config;
+use Dappur\Dappurware\Settings;
+use Dappur\Dappurware\Sentinel as S;
+
 
 /**
  * Dappur Framework Controller
@@ -17,17 +20,10 @@ class AdminSettings extends Controller
 {
 	public function settingsGlobal(Request $request, Response $response){
 
-        if (!$this->auth->hasAccess('config.view')) {
+        $sentinel = new S($this->container);
+        $sentinel->hasPerm('settings.view');
 
-            $loggedUser = $this->auth->check();
-            
-            $this->flash('danger', 'You do not have permission to access the settings.');
-            $this->logger->addError("Unauthorized Access", array("message" => "Unauthorized access was attempted on the global settings page", "user_id" => $loggedUser['id']));
-            return $this->redirect($response, 'dashboard');
-            
-        }
-
-        $settings = new \Dappur\Dappurware\Settings($this->container);
+        $settings = new Settings($this->container);
 
         $timezones = $settings->getTimezones();
         $theme_list = $settings->getThemeList();
@@ -39,13 +35,8 @@ class AdminSettings extends Controller
         $groups = ConfigGroups::orderBy('name')->get();
 
         if ($request->isPost()) {
-            if (!$this->auth->hasAccess('config.global')) {
-
-                $this->flash('danger', 'You do not have permission to update settings.');
-                $this->logger->addError("Unauthorized Access", array("message" => "Unauthorized access was attempted on the global settings page", "user_id" => $loggedUser['id']));
-                return $this->redirect($response, 'settings-global');
-
-            }
+            $sentinel = new S($this->container);
+            $sentinel->hasPerm('settings.update');
 
             $allPostVars = $request->getParsedBody();
 
@@ -55,8 +46,8 @@ class AdminSettings extends Controller
             }
 
             // Validate Reply To Email
-            if (array_key_exists('replyto-email', $allPostVars)){
-                $this->validator->validate($request, ['replyto-email' => array('rules' => V::noWhitespace()->email(), 'messages' => array('noWhitespace' => 'Must not contain any spaces.', 'email' => 'Enter a valid email address.'))]);
+            if (array_key_exists('from-email', $allPostVars)){
+                $this->validator->validate($request, ['from-email' => array('rules' => V::noWhitespace()->email(), 'messages' => array('noWhitespace' => 'Must not contain any spaces.', 'email' => 'Enter a valid email address.'))]);
             }
 
             // Validate Google Analytics
@@ -96,16 +87,8 @@ class AdminSettings extends Controller
 
     public function settingsGlobalAdd(Request $request, Response $response){
 
-        if (!$this->auth->hasAccess('config.global')) {
-
-            $loggedUser = $this->auth->check();
-            
-            $this->flash('danger', 'You do not have permission to add settings.');
-            $this->logger->addError("Unauthorized Access", array("message" => "Unauthorized access was attempted on the global settings add page", "user_id" => $loggedUser['id']));
-            return $this->redirect($response, 'settings-global');
-            
-        }
-
+        $sentinel = new S($this->container);
+        $sentinel->hasPerm('settings.add');
 
         $allPostVars = $request->getParsedBody();
 
@@ -135,7 +118,7 @@ class AdminSettings extends Controller
 
         if ($this->validator->isValid()) {
 
-            $configOption = new \Dappur\Model\Config;
+            $configOption = new Config;
             $configOption->name = $allPostVars['add_name'];
             $configOption->description = $allPostVars['add_description'];
             $configOption->type_id = $allPostVars['add_type'];
@@ -147,7 +130,7 @@ class AdminSettings extends Controller
             return $this->redirect($response, 'settings-global');
         }
 
-        $settings = new \Dappur\Dappurware\Settings($this->container);
+        $settings = new Settings($this->container);
         $timezones = $settings->getTimezones();
         $theme_list = $settings->getThemeList();
         $bootswatch = $settings->getBootswatch();
@@ -163,16 +146,8 @@ class AdminSettings extends Controller
 
     public function settingsGlobalAddGroup(Request $request, Response $response){
 
-        if (!$this->auth->hasAccess('config.group')) {
-
-            $loggedUser = $this->auth->check();
-            
-            $this->flash('danger', 'You do not have permission to add config groups.');
-            $this->logger->addError("Unauthorized Access", array("message" => "Unauthorized access was attempted on the config group add page", "user_id" => $loggedUser['id']));
-            return $this->redirect($response, 'settings-global');
-            
-        }
-
+        $sentinel = new S($this->container);
+        $sentinel->hasPerm('settings.group.add');
 
         $allPostVars = $request->getParsedBody();
 
@@ -195,7 +170,7 @@ class AdminSettings extends Controller
 
         if ($this->validator->isValid()) {
 
-            $configOption = new \Dappur\Model\ConfigGroups;
+            $configOption = new ConfigGroups;
             $configOption->name = $allPostVars['group_name'];
             $configOption->save();
 
@@ -203,7 +178,7 @@ class AdminSettings extends Controller
             return $this->redirect($response, 'settings-global');
         }
 
-        $settings = new \Dappur\Dappurware\Settings($this->container);
+        $settings = new Settings($this->container);
         $timezones = $settings->getTimezones();
         $theme_list = $settings->getThemeList();
         $bootswatch = $settings->getBootswatch();
@@ -216,16 +191,8 @@ class AdminSettings extends Controller
 
     public function settingsGlobalDeleteGroup(Request $request, Response $response){
 
-        if (!$this->auth->hasAccess('config.group')) {
-
-            $loggedUser = $this->auth->check();
-            
-            $this->flash('danger', 'You do not have permission to add config groups.');
-            $this->logger->addError("Unauthorized Access", array("message" => "Unauthorized access was attempted on the config group add page", "user_id" => $loggedUser['id']));
-            return $this->redirect($response, 'settings-global');
-            
-        }
-
+        $sentinel = new S($this->container);
+        $sentinel->hasPerm('settings.group.delete');
 
         $allPostVars = $request->getParsedBody();
 
@@ -251,23 +218,15 @@ class AdminSettings extends Controller
 
     public function settingsDeveloper(Request $request, Response $response){
 
-    	if (!$this->auth->hasAccess('developer.settings')) {
+    	$sentinel = new S($this->container);
+        $sentinel->hasPerm('settings.developer');
 
-            $loggedUser = $this->auth->check();
-            
-            $this->flash('danger', 'You do not have permission to access the developer settings.');
-            $this->logger->addError("Unauthorized Access", array("message" => "Unauthorized access was attempted on the developer settings page", "user_id" => $loggedUser['id']));
-            return $this->redirect($response, 'dashboard');
-            
-        }
-
-        $settings = new \Dappur\Dappurware\Settings($this->container);
+        $settings = new Settings($this->container);
         $settings_file = $settings->getSettingsFile();
 
-        $allPostVars = $request->getParsedBody();
-
+        $requestParams = $request->getParsedBody();
         
-    	return $this->view->render($response, 'settings-developer.twig', array("settingsFile" => $settings_file, "postVars" => $allPostVars));
+    	return $this->view->render($response, 'settings-developer.twig', array("settingsFile" => $settings_file, "postVars" => $requestParams));
     }
 
 }

@@ -7,20 +7,14 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Respect\Validation\Validator as V;
 use Dappur\Model\RoleUsers;
 use Dappur\Model\Roles;
+use Dappur\Dappurware\Sentinel as S;
 
 class AdminRoles extends Controller{
 
     public function rolesAdd(Request $request, Response $response){
         
-        if (!$this->auth->hasAccess('role.create')) {
-
-            $loggedUser = $this->auth->check();
-            
-            $this->flash('danger', 'You do not have permission to create roles.');
-            $this->logger->addError("Unauthorized Access", array("message" => "Unauthorized access was attempted on the create role page", "user_id" => $loggedUser['id']));
-            return $this->redirect($response, 'admin-users');
-            
-        }
+        $sentinel = new S($this->container);
+        $sentinel->hasPerm('role.create');
 
         if ($request->isPost()) {
 
@@ -60,15 +54,8 @@ class AdminRoles extends Controller{
 
     public function rolesDelete(Request $request, Response $response){
 
-        if (!$this->auth->hasAccess('role.delete')) {
-
-            $loggedUser = $this->auth->check();
-            
-            $this->flash('danger', 'You do not have permission to delete roles.');
-            $this->logger->addError("Unauthorized Access", array("message" => "Unauthorized access was attempted on the delete role page", "user_id" => $loggedUser['id']));
-            return $this->redirect($response, 'admin-users');
-            
-        }
+        $sentinel = new S($this->container);
+        $sentinel->hasPerm('role.delete');
 
         $requestParams = $request->getParams();
 
@@ -97,15 +84,9 @@ class AdminRoles extends Controller{
     }
 
     public function rolesEdit(Request $request, Response $response, $roleid){
-        if (!$this->auth->hasAccess('role.update')) {
-
-            $loggedUser = $this->auth->check();
-            
-            $this->flash('danger', 'You do not have permission to edit roles.');
-            $this->logger->addError("Unauthorized Access", array("message" => "Unauthorized access was attempted on the edit role page", "user_id" => $loggedUser['id']));
-            return $this->redirect($response, 'admin-users');
-            
-        }
+        
+        $sentinel = new S($this->container);
+        $sentinel->hasPerm('role.update');
 
         $role = Roles::find($roleid);
 

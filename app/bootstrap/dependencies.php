@@ -102,7 +102,10 @@ $container['view'] = function ($container) {
     if ($container['cloudinary']) {
         $view->addExtension(new \Dappur\TwigExtension\Cloudinary());
         $view->getEnvironment()->addGlobal('hasCloudinary', 1);
-        $view->getEnvironment()->addGlobal('cloudinaryCmsUrl', \Dappur\Controller\Admin::getCloudinaryCMS($container));
+        if ($container->auth->check() && $container->auth->hasAccess('media.cloudinary')) {
+            $view->getEnvironment()->addGlobal('cloudinaryCmsUrl', \Dappur\Controller\Admin::getCloudinaryCMS($container));
+        }
+        
     }else{
         $view->getEnvironment()->addGlobal('hasCloudinary', 0);
     }

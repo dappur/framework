@@ -117,21 +117,29 @@ class InitDatabase extends Migration
             $table->foreign('type_id')->references('id')->on('config_types')->onDelete('cascade');
         });
 
-
         // Create Admin Role
         $this->sentinel->getRoleRepository()->createModel()->create(array(
             'name' => 'Admin',
             'slug' => 'admin',
             'permissions' => array(
                 'user.*' => true,
-                'config.*' => true,
+                'email.*' => true,
+                'settings.*' => true,
                 'role.*' => true,
                 'permission.*' => true,
                 'media.*' => true,
                 'blog.*' => true,
-                'developer.*' => true,
                 'dashboard.*' => true
             )
+        ));
+
+        // Create Developer Role
+        $this->sentinel->getRoleRepository()->createModel()->create(array(
+            'name' => 'Developer',
+            'slug' => 'developer',
+            'permissions' => array(
+                'developer.*' => true
+                )
         ));
 
         // Create Manager Role
@@ -140,13 +148,15 @@ class InitDatabase extends Migration
             'slug' => 'manager',
             'permissions' => array(
                 'user.*' => true,
-                'user.delete' => true,
-                'config.*' => false,
+                'user.delete' => false,
                 'role.*' => true,
+                'role.delete' => false,
                 'permission.*' => true,
+                'permission.delete' => false,
                 'media.*' => true,
+                'media.delete' => false,
                 'blog.*' => true,
-                'developer.*' => false,
+                'blog.delete' => false,
                 'dashboard.*' => true
             )
         ));
@@ -156,7 +166,7 @@ class InitDatabase extends Migration
             'name' => 'User',
             'slug' => 'user',
             'permissions' => array(
-                'user.create' => false
+                'user.account' => true
                 )
         ));
 
@@ -166,18 +176,17 @@ class InitDatabase extends Migration
             'slug' => 'auditor',
             'permissions' => array(
                 'user.view' => true,
-                'config.view' => true,
+                'settings.view' => true,
                 'role.view' => true,
                 'permission.view' => true,
-                'media.view' => true,
                 'blog.view' => true,
-                'developer.view' => true,
                 'dashboard.view' => true
             )
         ));
 
         //Create Admin User
-        $role = $this->sentinel->findRoleByName('Admin');
+        $admin_role = $this->sentinel->findRoleByName('Admin');
+        $developer_role = $this->sentinel->findRoleByName('Developer');
         $admin = $this->sentinel->registerAndActivate([
             'first_name' => "Admin",
             'last_name' => "User",
@@ -186,7 +195,8 @@ class InitDatabase extends Migration
             'password' => "admin123",
             'permissions' => array()
         ]);
-        $role->users()->attach($admin);
+        $admin_role->users()->attach($admin);
+        $developer_role->users()->attach($admin);
 
         //Initial Config Types
         $init_config_types = array(
@@ -194,7 +204,8 @@ class InitDatabase extends Migration
             array(2, "string"),
             array(3, "theme"),
             array(4, "bootswatch"),
-            array(5, "image")
+            array(5, "image"),
+            array(6, "boolean")
         );
 
         // Seed Config Table
@@ -224,7 +235,7 @@ class InitDatabase extends Migration
             array(1, 'timezone', 'PHP Timezone', 1, 'America/Los_Angeles'),
             array(1, 'site-name', 'Site Name', 2, 'Dappur'),
             array(1, 'domain', 'Site Domain', 2, 'dappur.dev'),
-            array(1, 'replyto-email', 'Reply To Email', 2, 'noreply@dappur.dev'),
+            array(1, 'from-email', 'From Email', 2, 'noreply@dappur.dev'),
             array(1, 'theme', 'Site Theme', 3, 'dappur'),
             array(1, 'bootswatch', 'Site Bootswatch', 4, 'cyborg'),
             array(1, 'logo', 'Site Logo', 5, ''),

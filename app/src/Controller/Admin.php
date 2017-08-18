@@ -6,20 +6,14 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use Respect\Validation\Validator as V;
 use Dappur\Model\Users;
+use Dappur\Dappurware\Sentinel as S;
 
 class Admin extends Controller{
 
     public function dashboard(Request $request, Response $response){
 
-        if (!$this->auth->hasAccess('dashboard.view')) {
-
-            $loggedUser = $this->auth->check();
-            
-            $this->flash('danger', 'You do not have permission to access the dashboard.');
-            $this->logger->addError("Unauthorized Access", array("message" => "Unauthorized access was attempted on the dashboard", "user_id" => $loggedUser['id']));
-            return $this->redirect($response, 'home');
-            
-        }
+        $sentinel = new S($this->container);
+        $sentinel->hasPerm('dashboard.view');
 
         return $this->view->render($response, 'dashboard.twig');
 
@@ -29,25 +23,20 @@ class Admin extends Controller{
 
     public function myAccount(Request $request, Response $response){
 
+        $sentinel = new S($this->container);
+        $sentinel->hasPerm('user.account');
+
         $requestParams = $request->getParams();
 
-        $loggedUser = $this->auth->check();
-
-        if (!$loggedUser) {
-            
-            $this->flash('danger', 'You need to be logged in to access this page.');
-            $this->logger->addError("Unauthorized Access", array("message" => "Unauthorized access was attempted on the my account page", "user_id" => $loggedUser['id']));
-            return $this->redirect($response, 'dashboard');
-            
-        }
-
+        $user = $this->auth->check();
         if ($request->isPost()) {
-            $first_name = $request->getParam('first_name');
-            $last_name = $request->getParam('last_name');
-            $email = $request->getParam('email');
-            $username = $request->getParam('username');
-            $password = $request->getParam('password');
-            $password_confirm = $request->getParam('password_confirm');
+
+            $first_name = $requestParams['first_name'];
+            $last_name = $requestParams['last_name'];
+            $email = $requestParams['email'];
+            $username = $requestParams['username'];
+            $password = $requestParams['password'];
+            $password_confirm = $requestParams['password_confirm'];
 
             if (null !== $request->getParam('update_account')) {
                  // Validate Data
@@ -82,8 +71,8 @@ class Admin extends Controller{
                     )
                 );
                 //Check username
-                if ($loggedUser['username'] != $username) {
-                    $check_username = Users::where('id', '!=', $user_id)->where('username', '=', $username)->get()->count();
+                if ($user->username != $username) {
+                    $check_username = Users::where('id', '!=', $user->id)->where('username', '=', $username)->get()->count();
                     if ($check_username > 0) {
                         $this->validator->addError('username', 'Username is already in use.');
                     }
@@ -91,8 +80,8 @@ class Admin extends Controller{
                 
 
                 //Check Email
-                if ($loggedUser['email'] != $email) {
-                    $check_email = Users::where('id', '!=', $user_id)->where('email', '=', $email)->get()->count();
+                if ($user->email != $email) {
+                    $check_email = Users::where('id', '!=', $user->id)->where('email', '=', $email)->get()->count();
                     if ($check_email > 0) {
                         $this->validator->addError('email', 'Email address is already in use.');
                     }
@@ -109,15 +98,15 @@ class Admin extends Controller{
                         'username' => $username
                     ];
 
-                    $update_user = $this->auth->update($loggedUser, $new_information);
+                    $update_user = $this->auth->update($user, $new_information);
 
                     if ($update_user) {
                         $this->flash('success', 'Your account has been updated successfully.');
-                        $this->logger->addInfo("My Account: User successfully updated.", array("first_name" => $first_name, "last_name" => $last_name, "email" => $email, "username" => $username, "user_id" => $loggedUser['id']));
+                        $this->logger->addInfo("My Account: User successfully updated.", array("first_name" => $first_name, "last_name" => $last_name, "email" => $email, "username" => $username, "user_id" => $user->id));
                         return $this->redirect($response, 'my-account');
                     }else{
                         $this->flash('danger', 'There was an error updating your account information.');
-                        $this->logger->addInfo("My Account: An unknown error occured updating user.", array("first_name" => $first_name, "last_name" => $last_name, "email" => $email, "username" => $username, "user_id" => $loggedUser['id']));
+                        $this->logger->addInfo("My Account: An unknown error occured updating user.", array("first_name" => $first_name, "last_name" => $last_name, "email" => $email, "username" => $username, "user_id" => $user->id));
                     }
                 }
             }
@@ -148,15 +137,15 @@ class Admin extends Controller{
                         'password' => $password,
                     ];
 
-                    $update_user = $this->auth->update($loggedUser, $new_information);
+                    $update_user = $this->auth->update($user, $new_information);
 
                     if ($update_user) {
                         $this->flash('success', 'Your password has been updated successfully.');
-                        $this->logger->addInfo("My Account: Password successfully changed", array("user_id" => $loggedUser['id']));
+                        $this->logger->addInfo("My Account: Password successfully changed", array("user_id" => $user->id));
                         return $this->redirect($response, 'my-account');
                     }else{
                         $this->flash('danger', 'There was an error changing your password.');
-                        $this->logger->addInfo("My Account: An unknown error occured changing a password.", array("user_id" => $loggedUser['id']));
+                        $this->logger->addInfo("My Account: An unknown error occured changing a password.", array("user_id" => $user->id));
                     }
                 }
             }
@@ -167,6 +156,9 @@ class Admin extends Controller{
     }
 
     public function getCloudinaryCMS($container){
+
+        $sentinel = new S($container);
+        $sentinel->hasPerm('media.cloudinary');
 
         // Generate Timestamp
         $date = new \DateTime();

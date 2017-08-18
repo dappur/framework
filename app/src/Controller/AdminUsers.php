@@ -7,20 +7,14 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Respect\Validation\Validator as V;
 use Dappur\Model\Users;
 use Dappur\Model\Roles;
+use Dappur\Dappurware\Sentinel as S;
 
 class AdminUsers extends Controller{
 
 	public function users(Request $request, Response $response){
 
-        if (!$this->auth->hasAccess('user.view')) {
-
-            $loggedUser = $this->auth->check();
-            
-            $this->flash('danger', 'You do not have permission to view users.');
-            $this->logger->addError("Unauthorized Access", array("message" => "Unauthorized access was attempted on the users page", "user_id" => $loggedUser['id']));
-            return $this->redirect($response, 'dashboard');
-            
-        }
+        $sentinel = new S($this->container);
+        $sentinel->hasPerm('user.view');
 
         return $this->view->render($response, 'users.twig', ["users" => Users::get(), "roles" => Roles::get()]);
 
@@ -28,18 +22,10 @@ class AdminUsers extends Controller{
     
     public function usersAdd(Request $request, Response $response){
 
+        $sentinel = new S($this->container);
+        $sentinel->hasPerm('user.create');
+
         $requestParams = $request->getParams();
-
-        if (!$this->auth->hasAccess('user.create')) {
-
-            $loggedUser = $this->auth->check();
-            
-            $this->flash('danger', 'You do not have permission to add users.');
-            $this->logger->addError("Unauthorized Access", array("message" => "Unauthorized access was attempted on the add user page", "user_id" => $loggedUser['id']));
-            return $this->redirect($response, 'admin-users');
-            
-        }
-
 
         if ($request->isPost()) {
             $user_id = $request->getParam('user_id');
@@ -187,15 +173,8 @@ class AdminUsers extends Controller{
 
     public function usersEdit(Request $request, Response $response, $userid){
 
-        if (!$this->auth->hasAccess('user.update')) {
-
-            $loggedUser = $this->auth->check();
-            
-            $this->flash('danger', 'You do not have permission to edit users.');
-            $this->logger->addError("Unauthorized Access", array("message" => "Unauthorized access was attempted on the edit user page", "user_id" => $loggedUser['id']));
-            return $this->redirect($response, 'admin-users');
-            
-        }
+        $sentinel = new S($this->container);
+        $sentinel->hasPerm('user.update');
 
         $requestParams = $request->getParams();
 
@@ -337,16 +316,8 @@ class AdminUsers extends Controller{
 
     public function usersDelete(Request $request, Response $response){
 
-        if (!$this->auth->hasAccess('user.delete')) {
-
-            $loggedUser = $this->auth->check();
-            
-            $this->flash('danger', 'You do not have permission to delete users.');
-            $this->logger->addError("Unauthorized Access", array("message" => "Unauthorized access was attempted on the edit user page", "user_id" => $loggedUser['id']));
-            return $this->redirect($response, 'admin-users');
-            
-        }
-
+        $sentinel = new S($this->container);
+        $sentinel->hasPerm('user.delete');
 
         $user = $this->auth->findById($request->getParam('user_id'));
 

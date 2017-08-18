@@ -32,3 +32,6 @@ $container['Deploy'] = function ($container) {
 	return new Dappur\Controller\Deploy($container); 
 };
 
+$container['AdminEmail'] = function ($container) { 
+	return new Dappur\Controller\AdminEmail($container); 
+};

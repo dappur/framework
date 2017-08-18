@@ -6,6 +6,7 @@ use Cartalyst\Sentinel\Checkpoints\ThrottlingException;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use Respect\Validation\Validator as V;
+use Dappur\Dappurware\Recaptcha;
 
 class Auth extends Controller{
     
@@ -111,7 +112,7 @@ class Auth extends Controller{
             $this->validator->validate($request, $validate_data);
 
             // Validate Recaptcha
-            $recaptcha = new \Dappur\Dappurware\Recaptcha($this->container);
+            $recaptcha = new Recaptcha($this->container);
             $recaptcha = $recaptcha->validate($request->getParam('g-recaptcha-response'));
             if (!$recaptcha) {
                 $this->validator->addError('recaptcha', 'Recaptcha was invalid.');
@@ -143,6 +144,16 @@ class Auth extends Controller{
 
                 $role->users()->attach($user);
 
+                if($send_email->send()){
+                    $this->flash('success', 'Your new password has been emailed to: ' . $request->getParam('email'));
+                    $this->logger->addInfo("Forgot Password: Password successfully reset.", array("email" => $request->getParam('email')));
+                    return $this->redirect($response, 'login');
+                }else{
+                    $this->flash('danger', 'An error occured sending your email, please try again.');
+                    $this->logger->addError("Forgot Password: An unknown error occured sending the email.", array("response" => $send_email, "mail_error" => $send_email->ErrorInfo));
+                    return $this->redirect($response, 'forgot-password');
+                }
+
                 $this->flash('success', 'Your account has been created.');
                 $this->logger->addInfo("user registration success", array("first_name" => $first_name, "last_name" => $last_name, "email" => $email));
                 return $this->redirect($response, 'login');
@@ -156,6 +167,7 @@ class Auth extends Controller{
 
     // Forgot Password
     public function forgotPassword(Request $request, Response $response){
+
         if ($request->isPost()) {
 
             if(filter_var($request->getParam('email'), FILTER_VALIDATE_EMAIL)) {
@@ -167,7 +179,7 @@ class Auth extends Controller{
              $user = $this->auth->findByCredentials($credentials);
 
              if ($user) {
-                $password = $this->randomPassword();
+                $password = $this->randomAlnum();
                  $new_password = [
                     'password' => $password
                 ];
@@ -176,22 +188,23 @@ class Auth extends Controller{
 
                 if ($update_password) {
 
-                    $email = $request->getParam('email');
-                    $subject = $this->config['site-name'] . " - Password Reset";
                     $message = "Here is your new password for " . $this->config['site-name'] . ":" . "\n\n";
                     $message .= $password . "\n\n";
                     $message .= "To log on, please visit: https://" . $this->config['domain'] . "/login to sign into your account.";
-                    $headers = "From: " . $this->config['replyto-email'] . "\r\n";
 
-                    $send_email = mail($email,$subject,$message,$headers);
+                    $send_email = $this->mail;
+                    $send_email->setFrom($this->config['from-email']);
+                    $send_email->addAddress($request->getParam('email'));
+                    $send_email->Subject = $this->config['site-name'] . " - Password Reset";
+                    $send_email->Body    = $message;
 
-                    if($send_email){
-                        $this->flash('success', 'Your new password has been emailed to: ' . $email);
-                        $this->logger->addInfo("Forgot Password: Password successfully reset.", array("email" => $email));
+                    if($send_email->send()){
+                        $this->flash('success', 'Your new password has been emailed to: ' . $request->getParam('email'));
+                        $this->logger->addInfo("Forgot Password: Password successfully reset.", array("email" => $request->getParam('email')));
                         return $this->redirect($response, 'login');
                     }else{
                         $this->flash('danger', 'An error occured sending your email, please try again.');
-                        $this->logger->addError("Forgot Password: An unknown error occured sending the email.", array("response" => $send_email));
+                        $this->logger->addError("Forgot Password: An unknown error occured sending the email.", array("response" => $send_email, "mail_error" => $send_email->ErrorInfo));
                         return $this->redirect($response, 'forgot-password');
                     }
 
@@ -223,11 +236,11 @@ class Auth extends Controller{
 
 
     // Generate Random Password
-    private function randomPassword() {
+    private function randomAlnum($length = 10) {
         $alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
         $pass = array(); //remember to declare $pass as an array
         $alphaLength = strlen($alphabet) - 1; //put the length -1 in cache
-        for ($i = 0; $i < 8; $i++) {
+        for ($i = 0; $i < $length; $i++) {
             $n = rand(0, $alphaLength);
             $pass[] = $alphabet[$n];
         }

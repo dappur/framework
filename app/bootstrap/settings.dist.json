@@ -64,7 +64,8 @@
         "manual": false,
         "deploy_url": "deploy",
         "deploy_token": "",
-        "repo_url": ""
+        "repo_url": "",
+        "repo_branch": ""
     },
     "mail": {
         "enabled": false, 

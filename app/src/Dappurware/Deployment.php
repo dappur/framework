@@ -54,6 +54,7 @@ class Deployment {
                         $repo_url = null,
                         $document_root = null, 
                         $user_home = null,
+                        $repo_branch = null, 
                         $settings_array = array(), 
                         $repo_dir = null, 
                         $git_bin_path = null, 
@@ -75,6 +76,9 @@ class Deployment {
         if (is_null($repo_url)) {
             die('Repository URL is required');
         }
+        if (is_null($repo_branch)) {
+            die('Repository branch is required');
+        }
         if (is_null($git_bin_path)) {
             $git_bin_path = 'git';
         }
@@ -93,6 +97,7 @@ class Deployment {
 
         // Set Class Variables
         $this->repo_url = $repo_url;
+        $this->repo_branch = $repo_branch;
         $this->git_bin_path = $git_bin_path;
         $this->document_root = $document_root;
         $this->log_file = $log_file;
@@ -252,7 +257,7 @@ class Deployment {
         }
 
         // Do the initial checkout
-        $git_checkout = shell_exec('cd ' . $this->repo_dir . ' && GIT_WORK_TREE=' . dirname($this->document_root) . ' ' . $this->git_bin_path  . ' checkout -f 2>&1');
+        $git_checkout = shell_exec('cd ' . $this->repo_dir . ' && GIT_WORK_TREE=' . dirname($this->document_root) . ' ' . $this->git_bin_path  . ' checkout ' . $this->repo_branch . ' -f 2>&1');
         echo $this->logEntry($git_checkout);
         // Get the deployment commit hash
         $commit_hash = exec('cd ' . $this->repo_dir . ' && ' . $this->git_bin_path  . ' rev-parse --short HEAD 2>&1');
@@ -268,7 +273,7 @@ class Deployment {
         }else{
             echo $this->logEntry($git_fetch);
             // Do the checkout
-            shell_exec('cd ' . $this->repo_dir . ' && GIT_WORK_TREE=' . dirname($this->document_root) . ' ' . $this->git_bin_path  . ' checkout -f 2>&1');
+            shell_exec('cd ' . $this->repo_dir . ' && GIT_WORK_TREE=' . dirname($this->document_root) . ' ' . $this->git_bin_path  . ' checkout ' . $this->repo_branch . ' -f 2>&1');
             // Get the deployment commit hash
             $commit_hash = exec('cd ' . $this->repo_dir . ' && ' . $this->git_bin_path  . ' rev-parse --short HEAD 2>&1');
             echo $this->logEntry("Deployed Commit: " . $commit_hash);

@@ -5,20 +5,14 @@ namespace Dappur\Controller;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use Respect\Validation\Validator as V;
+use Dappur\Dappurware\Sentinel as S;
 
 class AdminMedia extends Controller{
 
 	private function getFiles($directory){
 
-        if (!$this->auth->hasAccess('media.local')) {
-
-            $loggedUser = $this->auth->check();
-            
-            $this->flash('danger', 'You do not have permission to access the local CMS.');
-            $this->logger->addError("Unauthorized Access", array("message" => "Unauthorized access was attempted on the local CMS", "user_id" => $loggedUser['id']));
-            return $this->redirect($response, 'dashboard');
-            
-        }
+        $sentinel = new S($this->container);
+        $sentinel->hasPerm('media.local');
 
         $listing = scandir($directory);
 
@@ -60,14 +54,8 @@ class AdminMedia extends Controller{
 
     public function mediaFolder(Request $request, Response $response){
 
-        if (!$this->auth->hasAccess('media.folder')) {
-
-            $loggedUser = $this->auth->check();
-            
-            $this->logger->addError("Unauthorized Access", array("message" => "Unauthorized access was attempted on the create folder local cms", "user_id" => $loggedUser['id']));
-            return $response->write(json_encode(array("status" => "error")), 201);
-            
-        }
+        $sentinel = new S($this->container);
+        $sentinel->hasPerm('media.folder');
 
         $requestParams = $request->getParams();
 
@@ -85,14 +73,8 @@ class AdminMedia extends Controller{
 
     public function mediaDelete(Request $request, Response $response){
 
-        if (!$this->auth->hasAccess('media.delete')) {
-
-            $loggedUser = $this->auth->check();
-            
-            $this->logger->addError("Unauthorized Access", array("message" => "Unauthorized access was attempted on the delete media", "user_id" => $loggedUser['id']));
-            return $response->write(json_encode(array("result" => "error", "data" => array(""))), 201);
-            
-        }
+        $sentinel = new S($this->container);
+        $sentinel->hasPerm('media.delete');
 
         $requestParams = $request->getParams();
 
@@ -146,13 +128,8 @@ class AdminMedia extends Controller{
 
     public function mediaUpload(Request $request, Response $response){
 
-        if (!$this->auth->hasAccess('media.upload')) {
-
-            $loggedUser = $this->auth->check();
-            $this->logger->addError("Unauthorized Access", array("message" => "Unauthorized access was attempted on the local CMS", "user_id" => $loggedUser['id']));
-            return $response->write(json_encode(array("status" => "error")), 201);
-            
-        }
+        $sentinel = new S($this->container);
+        $sentinel->hasPerm('media.upload');
 
         $requestParams = $request->getParams();
 
@@ -183,15 +160,8 @@ class AdminMedia extends Controller{
 
     public function mediaFolderNew(Request $request, Response $response){
 
-        if (!$this->auth->hasAccess('media.local')) {
-
-            $loggedUser = $this->auth->check();
-            
-            $this->flash('danger', 'You do not have permission to access the local CMS.');
-            $this->logger->addError("Unauthorized Access", array("message" => "Unauthorized access was attempted on the local CMS", "user_id" => $loggedUser['id']));
-            return $this->redirect($response, 'dashboard');
-            
-        }
+        $sentinel = new S($this->container);
+        $sentinel->hasPerm('media.local');
 
         $requestParams = $request->getParams();
         $current_folder = $requestParams['current_folder'];
@@ -273,15 +243,8 @@ class AdminMedia extends Controller{
 
     public function media(Request $request, Response $response){
 
-        if (!$this->auth->hasAccess('media.local')) {
-
-            $loggedUser = $this->auth->check();
-            
-            $this->flash('danger', 'You do not have permission to access the local CMS.');
-            $this->logger->addError("Unauthorized Access", array("message" => "Unauthorized access was attempted on the local CMS", "user_id" => $loggedUser['id']));
-            return $this->redirect($response, 'dashboard');
-            
-        }
+        $sentinel = new S($this->container);
+        $sentinel->hasPerm('media.local');
 
         $requestParams = $request->getParams();
 
