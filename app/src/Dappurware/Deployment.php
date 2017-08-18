@@ -285,8 +285,6 @@ class Deployment {
 
     private function updateComposer(){
 
-        echo 'test';
-
         $update_composer = shell_exec('cd ' . dirname($this->document_root) . ' && ' . dirname($this->document_root) . '/composer.phar install 2>&1');
         echo $this->logEntry($update_composer);
         if (!strpos($update_composer, 'Generating autoload files')) {
