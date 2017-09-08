@@ -47,7 +47,6 @@
 <body>
 
     <div id="wrapper">
-
         <!-- Sidebar -->
         <div id="sidebar-wrapper">
             {% include 'inc/sidebar.twig' %}
@@ -56,7 +55,7 @@
 
         <!-- Page Content -->
         <div id="page-content-wrapper">
-            <div class="container-fluid" style="margin-top: 40px;">
+            <div class="container-fluid">
                 {% include 'inc/flash.twig' %}
                 {% block body %}{% endblock %}
             </div>
@@ -107,13 +106,6 @@
     <script src="{{ asset('dashboard/js/media.min.js') }}"></script>
     <script type="text/javascript">DappurMedia.managerUrl = "{{path_for('admin-media')}}";</script>
     {% endif %}
-
-    <script type="text/javascript">
-        $("#navbar-toggle").click(function(e) {
-            e.preventDefault();
-            $("#wrapper").toggleClass("toggled");
-        });
-    </script>
     
     {# Page Level JS #}
     {% block javascript %}{% endblock %}

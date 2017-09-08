@@ -64,7 +64,6 @@
     -moz-transition: all 0.5s ease;
     -o-transition: all 0.5s ease;
     transition: all 0.5s ease;
-    margin-top: 70px;
 }
 
 #wrapper.toggled #sidebar-wrapper {
@@ -144,7 +143,7 @@
     }
 
     #page-content-wrapper {
-        padding: 20px;
+        padding: 10px;
         position: relative;
     }
 
