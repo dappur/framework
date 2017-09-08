@@ -68,8 +68,9 @@
         "repo_branch": ""
     },
     "mail": {
-        "enabled": false, 
         "relay": "phpmail",
+        "logging": true,
+        "log_details": ["html", "plain_text"],
         "mailgun": {
             "username": "",
             "password": ""
