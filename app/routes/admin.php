@@ -15,7 +15,7 @@ $app->group('/dashboard', function () use($app) {
         $app->map(['GET', 'POST'], '/add', 'AdminUsers:usersAdd')
             ->setName('admin-users-add');
         // Edit User
-        $app->map(['GET', 'POST'], '/edit[/{user_id}]', 'AdminUsers:usersEdit')
+        $app->map(['GET', 'POST'], '/edit/{user_id}', 'AdminUsers:usersEdit')
             ->setName('admin-users-edit');
         // Delete User
         $app->post('/delete', 'AdminUsers:usersDelete')
@@ -25,7 +25,7 @@ $app->group('/dashboard', function () use($app) {
         $app->group('/roles', function() use ($app) {
             $app->post('/delete', 'AdminRoles:rolesDelete')
                 ->setName('admin-roles-delete');
-            $app->map(['GET', 'POST'], '/edit[/{role}]', 'AdminRoles:rolesEdit')
+            $app->map(['GET', 'POST'], '/edit/{role}', 'AdminRoles:rolesEdit')
                 ->setName('admin-roles-edit');
             $app->post('/add', 'AdminRoles:rolesAdd')
                 ->setName('admin-roles-add');
@@ -72,7 +72,7 @@ $app->group('/dashboard', function () use($app) {
         $app->map(['GET'], '', 'AdminEmail:email')
             ->setName('admin-email');
 
-        $app->map(['GET'], 'details[/{email}]', 'AdminEmail:emailDetails')
+        $app->map(['GET'], 'details/{email}', 'AdminEmail:emailDetails')
             ->setName('admin-email-details');
 
         $app->map(['GET','POST'], '/new', 'AdminEmail:emailNew')
@@ -84,11 +84,14 @@ $app->group('/dashboard', function () use($app) {
         $app->map(['GET','POST'], '/templates/add', 'AdminEmail:templatesAdd')
             ->setName('admin-email-template-add');
 
-        $app->map(['GET','POST'], '/templates/edit/[/{template}]', 'AdminEmail:templatesEdit')
+        $app->map(['GET','POST'], '/templates/edit/{template_id}', 'AdminEmail:templatesEdit')
             ->setName('admin-email-template-edit');
 
         $app->map(['POST'], '/templates/delete', 'AdminEmail:templatesDelete')
             ->setName('admin-email-template-delete');
+
+        $app->map(['POST'], '/test', 'AdminEmail:testEmail')
+            ->setName('admin-email-test');
     });
 })
 ->add(new Dappur\Middleware\Auth($container))
