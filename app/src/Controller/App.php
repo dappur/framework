@@ -13,6 +13,25 @@ class App extends Controller{
 
     }
 
+
+    public function privacy(Request $request, Response $response){
+
+        return $this->view->render($response, 'privacy.twig');
+
+    }
+
+    public function terms(Request $request, Response $response){
+
+        return $this->view->render($response, 'terms.twig');
+
+    }
+
+    public function maintenance(Request $request, Response $response){
+
+        return $this->view->render($response, 'maintenance.twig');
+
+    }
+
     public function csrf(Request $request, Response $response){
 
     	$csrf = array(

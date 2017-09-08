@@ -14,4 +14,5 @@ class Users extends EloquentUser {
         'permissions',
     ];
     protected $loginNames = ['username', 'email'];
+    protected $hidden = array('pivot');
 }

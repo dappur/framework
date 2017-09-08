@@ -1,6 +1,6 @@
 {% extends 'base.twig' %}
 
-{% block title %}{{config['site-name']}} || User Management{% endblock %}
+{% block title %}{{config['site-name']}} || Email Templates{% endblock %}
 
 {% block stylesheets %}
 <link href="https://cdn.datatables.net/1.10.15/css/dataTables.bootstrap.min.css" rel="stylesheet">
@@ -57,7 +57,7 @@
                                         <td>{{ template.placeholders }}</td>
                                         <td>
                                             {% if auth.hasAccess('email.template.edit') %}
-                                            <a href="{{ path_for('admin-email-template-edit', {'template': template.id}) }}" class="btn btn-primary btn-xs">
+                                            <a href="{{ path_for('admin-email-template-edit', {'template_id': template.id}) }}" class="btn btn-primary btn-xs">
                                                 <span class="fa fa-fw fa-pencil"></span>
                                             </a>
                                             {% endif %}

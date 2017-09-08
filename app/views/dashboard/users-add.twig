@@ -158,11 +158,13 @@ $(document).on('click', '#addPermButton', function() {
                                         </div>
                                     </div>
                                 `);
+    $("body").getNiceScroll().resize();
 
 
 });
 $(document).on('click', '.removePerm', function() {
     $(this).parent().parent().remove();
+    $("body").getNiceScroll().resize();
 })
 </script>
 {% endblock %}

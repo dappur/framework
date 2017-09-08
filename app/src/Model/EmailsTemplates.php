@@ -9,7 +9,9 @@ class EmailsTemplates extends Model {
     protected $primaryKey = 'id';
     protected $fillable = [
     	'name',
+    	'slug', 
     	'description',
+        'subject', 
     	'html',
     	'plain_text',
         'placeholders'
