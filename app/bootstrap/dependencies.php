@@ -66,13 +66,23 @@ $container['cookies'] = function ($container){
 
 // CSRF
 $container['csrf'] = function ($container) {
-    return new \Slim\Csrf\Guard(
+
+    $guard = new \Slim\Csrf\Guard(
         $container->settings['csrf']['prefix'], 
         $storage, 
         null, 
         $container->settings['csrf']['storage_limit'], 
         $container->settings['csrf']['strength'], 
         $container->settings['csrf']['persist_tokens']);
+
+    $guard->setFailureCallable(function ($request, $response, $next) use ($container) {
+         return $container['view']
+            ->render($response, 'errors/csrf.twig')
+            ->withHeader('Content-type', 'text/html')
+            ->withStatus(404);
+    });
+
+    return $guard;
 };
 
 // Bind Twig View
@@ -113,6 +123,7 @@ $container['view'] = function ($container) {
     $view->getEnvironment()->addGlobal('flash', $container['flash']);
     $view->getEnvironment()->addGlobal('auth', $container['auth']);
     $view->getEnvironment()->addGlobal('config', $container['config']);
+    $view->getEnvironment()->addGlobal('displayErrorDetails', $container['settings']['displayErrorDetails']);
     $view->getEnvironment()->addGlobal('userAccess', $container['userAccess']);
     $view->getEnvironment()->addGlobal('currentRoute', $container['request']->getUri()->getPath());
     $view->getEnvironment()->addGlobal('projectDir', $container['project_dir']);
@@ -195,6 +206,5 @@ $container['mail'] = function($container) {
         default:
             break;
     }
-    
     return $mail; 
 };
