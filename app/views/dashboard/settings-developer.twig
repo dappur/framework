@@ -4,11 +4,6 @@
 
 {% block title %}{{config['site-name']}} || Developer Settings{% endblock %}
 
-{% block stylesheets %}
-<link href="/assets/default/css/dataTables.bootstrap.css" rel="stylesheet">
-<link href="/assets/default/css/dataTables.responsive.css" rel="stylesheet">
-{% endblock %}
-
 {% block body %}
     <div class="container-fluid">
         <div class="row">
@@ -317,8 +312,4 @@
             {{csrf()}}
         </form>
     </div>
-{% endblock %}
-
-{% block javascript %}
-
 {% endblock %}

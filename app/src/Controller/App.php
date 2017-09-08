@@ -13,7 +13,6 @@ class App extends Controller{
 
     }
 
-
     public function privacy(Request $request, Response $response){
 
         return $this->view->render($response, 'privacy.twig');

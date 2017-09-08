@@ -5,20 +5,20 @@
 
     {% if auth.hasAccess('user.view') %}
     <li {% if currentRoute starts with '/dashboard/users' %}class="active"{% endif %}>
-        <a href="{{ path_for('admin-users')}}"><i class="fa fa-fw fa-users"></i> User Management</a>
+        <a href="{{ path_for('admin-users')}}"><i class="fa fa-fw fa-users"></i> Users</a>
     </li>
     {% endif %}
 
     {% if auth.hasAccess('email.view') %}
-    <li {% if currentRoute starts with '/dashboard/email' %}class="active"{% endif %}>
-        <a href="javascript:;" data-toggle="collapse" data-target="#email-menu"><i class="fa fa-fw fa-envelope"></i> Email Management <i class="fa fa-fw fa-caret-down"></i></a>
+    <li>
+        <a href="javascript:;" data-toggle="collapse" data-target="#email-menu"><i class="fa fa-fw fa-envelope"></i> Emails <i class="fa fa-fw fa-caret-down"></i></a>
         <ul id="email-menu" class="collapse {% if currentRoute starts with '/dashboard/email' %}in{% endif %} nav">
-            <li class="active">
-                <a href="{{ path_for('admin-email')}}"><i class="fa fa-envelope fa-fw"></i> Emails</a>
+            <li  {% if currentRoute == '/dashboard/email' %}class="active"{% endif %}>
+                <a href="{{ path_for('admin-email')}}"><i class="fa fa-envelope fa-fw"></i> Sent Emails</a>
             </li>
             {% if auth.hasAccess('email.templates.view') %}
-                <li class="active">
-                    <a href="{{ path_for('admin-email-template')}}"><i class="fa fa-envelope fa-fw"></i> Email Templates</a>
+                <li  {% if currentRoute starts with '/dashboard/email/templates' %}class="active"{% endif %}>
+                    <a href="{{ path_for('admin-email-template')}}"><i class="fa fa-envelope fa-fw"></i> Templates</a>
                 </li>
             {% endif %}
         </ul>
@@ -44,7 +44,7 @@
     {% endif %}
 
     {% if auth.hasAccess('developer.view') %}
-    <li {% if currentRoute starts with '/dashboard/developer/settings' %}class="active"{% endif %}>
+    <li>
         <a href="javascript:;" data-toggle="collapse" data-target="#developer-tools-menu"><i class="fa fa-fw fa-wrench"></i> Developer Tools <i class="fa fa-fw fa-caret-down"></i></a>
         <ul id="developer-tools-menu" class="collapse {% if currentRoute starts with '/dashboard/developer/settings' %}in{% endif %} nav">
             {% if auth.hasAccess('settings.developer.view') %}
@@ -55,4 +55,13 @@
         </ul>
     </li>
     {% endif %}
+
+    <li class="nav-divider visible-xs"></li>
+
+    <li class="visible-xs{% if currentRoute starts with '/dashboard/my-account' %}active{% endif %}" style="margin-right: 0px;">
+        <a href="{{ path_for('my-account') }}"><i class="fa fa-gear fa-fw"></i> My Account</a>
+    </li>
+    <li class="visible-xs" style="margin-right: 0px;">
+        <a href="{{ path_for('logout') }}"><i class="fa fa-power-off fa-fw"></i> Logout</a>
+    </li>
 </ul>

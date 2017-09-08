@@ -23,5 +23,8 @@ foreach (glob(__DIR__ . '/../app/routes/*.php') as $filename)
     require $filename;
 }
 
+//Load Error Handlers
+require __DIR__ . '/../app/bootstrap/errors.php';
+
 // Run App
 $app->run();

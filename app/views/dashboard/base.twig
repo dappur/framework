@@ -46,24 +46,27 @@
 
 <body>
 
-    {# Navigation #}
-    {% include 'inc/navi.twig' %}
+    <div id="wrapper">
 
-    <div class="container-fluid">
-        <div class="row row-offcanvas row-offcanvas-left">
+        <!-- Sidebar -->
+        <div id="sidebar-wrapper">
+            {% include 'inc/sidebar.twig' %}
+        </div>
+        <!-- /#sidebar-wrapper -->
 
-            {# Sidebar #}
-            <div class="col-sm-3 col-lg-2 sidebar-offcanvas" style="margin-top: 10px;">
-                {% include 'inc/sidebar.twig' %}
-            </div>
-
-            {# Main Content #}
-            <div class="col-sm-9 col-lg-10">
+        <!-- Page Content -->
+        <div id="page-content-wrapper">
+            <div class="container-fluid" style="margin-top: 40px;">
                 {% include 'inc/flash.twig' %}
                 {% block body %}{% endblock %}
             </div>
         </div>
+        <!-- /#page-content-wrapper -->
+
     </div>
+
+    {# Navigation #}
+    {% include 'inc/navi.twig' %}
 
     {# Media Manager Modal #}
     <div class="modal fade" id="media-modal">
@@ -104,6 +107,13 @@
     <script src="{{ asset('dashboard/js/media.min.js') }}"></script>
     <script type="text/javascript">DappurMedia.managerUrl = "{{path_for('admin-media')}}";</script>
     {% endif %}
+
+    <script type="text/javascript">
+        $("#navbar-toggle").click(function(e) {
+            e.preventDefault();
+            $("#wrapper").toggleClass("toggled");
+        });
+    </script>
     
     {# Page Level JS #}
     {% block javascript %}{% endblock %}

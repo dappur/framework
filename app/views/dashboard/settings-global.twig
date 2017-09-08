@@ -5,8 +5,8 @@
 {% block title %}{{config['site-name']}} || Settings{% endblock %}
 
 {% block stylesheets %}
-<link href="/assets/default/css/dataTables.bootstrap.css" rel="stylesheet">
-<link href="/assets/default/css/dataTables.responsive.css" rel="stylesheet">
+<link href="https://cdn.datatables.net/1.10.15/css/dataTables.bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.datatables.net/responsive/2.1.1/css/responsive.bootstrap.min.css" rel="stylesheet">
 {% endblock %}
 
 {% block body %}
@@ -51,6 +51,8 @@
                                             {{ configMacro.configBootswatch(item.name, item.description, item.type, item.value, bsThemes) }}
                                         {% elseif item.type == "image" %}
                                             {{ configMacro.configImage(item.name, item.description, item.type, item.value) }}
+                                        {% elseif item.type == "boolean" %}
+                                            {{ configMacro.configBoolean(item.name, item.description, item.value) }}
                                         {% else %}
                                             {{ configMacro.configDefault(item.name, item.description, item.type, item.value) }}
                                         {% endif %}
@@ -59,20 +61,14 @@
                         </div>
                     {% endfor %}
 
-                    <div class="panel panel-primary">
-                        <div class="panel-heading">
-                            Save Settings
-                        </div>
-                        <div class="panel-body">
-                            <div class="row" style="margin-top: 20px;">
-                                <div class="form-group">
-                                    <div class="col-xs-12 col-sm-12 col-md-4 col-md-offset-4">
-                                        <button type="submit" class="btn btn-primary form-control">Save Settings</button>
-                                    </div>
+                        <div class="row" style="margin-top: 20px;">
+                            <div class="form-group">
+                                <div class="col-xs-12 col-sm-12 col-md-4 col-md-offset-4">
+                                    <button type="submit" class="btn btn-primary form-control">Save Settings</button>
                                 </div>
                             </div>
                         </div>
-                    </div>
+
 
                     {{ csrf() }}
                 </form>
