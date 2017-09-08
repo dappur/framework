@@ -1,4 +1,5 @@
 # Dappur PHP Framework
+# TODO: Update for V2.0.0
 PHP App Framework built on the Slim PHP Micro Framework, Twig templating engine, Eloquent ORM database interactions, Phinx database migrations, Sentinel user management, Monolog w/ Logentries Support, form validation with CSRF protection, cookie management, database controlled config and Cloudinary CMS integration.
 
 This is a lightweight full featured framework intended for PHP developers who need an open source fast and reliable framework.  Have your new projects up and running in minutes with the provided basic bootstrap pages and basic bootstrap admin.
@@ -46,99 +47,6 @@ This will clone the Dappur Framework into a new project directory called `new_ap
 
 ----------
 
-### Project Structure
-    |-- app (Non-Public App Files)
-        |-- bootstrap (Container Bootstrap Folder)
-            |-- controllers.php (Bind Route Controllers)
-            |-- dependencies.php (Bind All Dependencies)
-            |-- middleware.php (Add Global Middleware)
-            |-- sentinel.php (Sentinel Configuration)
-            |-- settings.dist.php (App Configuration Template)
-        |-- routes (Routes)
-            |-- admin.php
-            |-- app.php
-            |-- auth.php
-        |-- src (Source Folder)
-            |-- Controller (Route Controllers - Source)
-                |-- Admin.php 
-                |-- Auth.php
-                |-- Controller.php
-                |-- App.php
-            |-- App (App Level Php Classes)
-                |-- App.php
-            |-- Dappurware (Official Dappur Classes)
-                |-- Dappurware.php
-                |-- Sentinel.php
-                |-- SiteConfig.php
-            |-- Middleware (Slim Middleware Classes)
-                |-- Admin.php
-                |-- Auth.php
-                |-- CsrfMiddleware.php
-                |-- Guest.php
-                |-- Middleware.php
-            |-- Migration (Eloquent Migration Class)
-                |-- Migration.php
-            |-- Model (Database Models)
-                |-- Config
-                |-- Roles
-                |-- RoleUsers
-                |-- Users
-            |-- TwigExtension (Twig Extensions)
-                |-- Asset.php
-                |-- Cloudinary.php
-                |-- Csrf.php
-                |-- JsonDecode.php
-        |-- views (Twig Templates)
-            |-- default (Default Template Folder)
-                |-- Admin (Default Template Admin)
-                    |-- inc
-                        |-- flash.twig
-                        |-- header.twig
-                        |-- navi.twig
-                        |-- sidebar.twig
-                    |-- macros
-                        |-- global-config.twig
-                    |-- dashboard.twig
-                    |-- global-settings.twig
-                    |-- roles-edit.twig
-                    |-- users-add.twig
-                    |-- users-edit.twig
-                    |-- users.twig
-                |-- App (Default Template App)
-                    |-- inc
-                        |-- flash.twig
-                        |-- navbar.twig
-                    |-- macros
-                        |-- form.twig
-                    |-- home.twig
-                    |-- login.twig
-                    |-- register.twig
-                |-- admin.twig
-                |-- base.twig
-    |-- database (Database/Migration Files)
-        |-- migrations (Phinx Migrations Folder)
-            |-- 20170118012924_init_database.php
-        |-- sql (Raw SQL Folder)
-            |-- init-database.sql
-        |-- templates (Phinx Migration Template)
-            |-- create-template.php
-    |-- public (Public Directory)
-        |-- assets (Public Template Assets)
-            |-- default (Default template Public Assets)
-                |-- css (CSS Scripts)
-                |-- fonts (Fonts)
-                |-- js (Javascript)
-        |-- .htaccess
-        |-- index.php
-    |-- storage (Log and Cache Storage)
-        |-- cache (Cache Folder)
-            |-- twig (Twig Cache - If Enabled)
-        |-- log (Log Folder)
-            |-- monolog (Monolog Logs)
-    |-- phinx.php (Phinx Config File) 
-
-----------
-
 ### Configure Project and Database
 Configuring your new project is simple.  Rename `settings.dist.json` to `settings.json` and configure the following options:
 ```
@@ -162,7 +70,7 @@ phinx migrate
 ### Run & Test Project
 Once you have successfully done the initial migration, you can simply use PHP's built in web server to test your application by running the following from your root project directory:
 ```bash
-php -S localhost:8181 -t public/
+php -S localhost:8181 -t public
 ```
 
 You should then see a confirmation similar to: 
