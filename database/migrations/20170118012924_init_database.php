@@ -107,8 +107,8 @@ class InitDatabase extends Migration
         // Create Config Table
         $this->schema->create('config', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('group_id')->unsigned()->nullable();
-            $table->integer('type_id')->unsigned()->nullable();
+            $table->integer('group_id')->unsigned();
+            $table->integer('type_id')->unsigned();
             $table->string('name')->unique();
             $table->string('description')->nullable();
             $table->text('value')->nullable();
@@ -219,7 +219,8 @@ class InitDatabase extends Migration
         //Initial Config Groups
         $init_config_groups = array(
             array(1, "Site Settings"),
-            array(2, "Dashboard Settings")
+            array(2, "Dashboard Settings"),
+            array(3, "Contact Information")
         );
 
         // Seed Config Table
@@ -234,15 +235,27 @@ class InitDatabase extends Migration
         $init_config = array(
             array(1, 'timezone', 'PHP Timezone', 1, 'America/Los_Angeles'),
             array(1, 'site-name', 'Site Name', 2, 'Dappur'),
-            array(1, 'domain', 'Site Domain', 2, 'dappur.dev'),
-            array(1, 'from-email', 'From Email', 2, 'noreply@dappur.dev'),
+            array(1, 'domain', 'Site Domain', 2, 'example.com'),
+            array(1, 'support-email', 'Support Email', 2, 'support@example.com'),
+            array(1, 'from-email', 'From Email', 2, 'noreply@example.com'),
             array(1, 'theme', 'Site Theme', 3, 'dappur'),
-            array(1, 'bootswatch', 'Site Bootswatch', 4, 'cyborg'),
-            array(1, 'logo', 'Site Logo', 5, ''),
+            array(1, 'bootswatch', 'Site Bootswatch', 4, 'cerulean'),
+            array(1, 'logo', 'Site Logo', 5, 'https://res.cloudinary.com/dappur/image/upload/c_scale,w_600/v1479072913/site-images/logo-horizontal.png'),
+            array(1, 'header-logo', 'Header Logo', 5, 'https://res.cloudinary.com/dappur/image/upload/c_scale,h_75/v1479072913/site-images/logo-horizontal.png'),
             array(2, 'dashboard-theme', 'Dashboard Theme', 3, 'dashboard'),
-            array(2, 'dashboard-bootswatch', 'Dashboard Bootswatch', 4, 'cyborg'),
-            array(2, 'dashboard-logo', 'Dashboard Logo', 5, ''),
-            array(1, 'ga', 'Google Analytics UA', 2, '')
+            array(2, 'dashboard-bootswatch', 'Dashboard Bootswatch', 4, 'yeti'),
+            array(2, 'dashboard-logo', 'Dashboard Logo', 5, 'https://res.cloudinary.com/dappur/image/upload/c_scale,h_75/v1479072913/site-images/logo-horizontal.png'),
+            array(1, 'ga', 'Google Analytics UA', 2, ''),
+            array(1, 'activation', 'Activation Required', 6, 1),
+            array(1, 'maintenance-mode', 'Maintenance Mode', 6, 0),
+            array(1, 'privacy-service', 'Privacy Service Statement', 2, 'SERVICE'),
+            array(3, 'contact-email', 'Contact Email', 2, 'contact@example.com'),
+            array(3, 'contact-phone', 'Contact Phone', 2, '(000) 000-0000'),
+            array(3, 'contact-street', 'Contact Street', 2, '123 Harbor Blvd.'),
+            array(3, 'contact-city', 'Contact City', 2, 'Oxnard'),
+            array(3, 'contact-state', 'Contact State', 2, 'CA'),
+            array(3, 'contact-zip', 'Contact Zip', 2, '93035'),
+            array(3, 'contact-country', 'Contact Country', 2, 'USA')
         );
 
         // Seed Config Table
@@ -255,7 +268,6 @@ class InitDatabase extends Migration
             $config->value = $value[4];
             $config->save();
         }
-
     }
 
     public function down()
