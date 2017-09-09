@@ -294,7 +294,7 @@ class Email extends Dappurware
 
 
             // Send Email to Email Addresses
-            if ($recipients['users']) {
+            if ($recipients['email']) {
                 foreach ($recipients['email'] as $evalue) {
 
                     $placeholders_temp = $this->preparePlaceholders($placeholders);
