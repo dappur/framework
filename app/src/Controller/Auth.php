@@ -50,7 +50,7 @@ class Auth extends Controller{
                 $this->flash('danger', 'Too many invalid attempts on your ' . $e->getType() . '!  Please wait ' . $e->getDelay() . ' seconds before trying again.');
                 $this->logger->addError("Login: Throttling Exception", array("login" => $request->getParam('login')));
 
-            } catch (NotActivatedException $e) {
+            } catch (\Cartalyst\Sentinel\Checkpoints\NotActivatedException $e) {
 
                 $this->flash('danger', 'Please check your email for instructions on activating your account.');
                 $this->logger->addError("Login:  Account Not Activated", array("exception" => $request->getParam('login')));
