@@ -136,7 +136,7 @@ class AdminUsers extends Controller{
                 $user_perms->permissions = $permissions_array;
                 $user_perms->save();
 
-                foreach ($roles->get() as $rolekey => $rolevalue) {
+                foreach (Roles::get() as $rolekey => $rolevalue) {
                     echo $rolevalue['slug'] . "<br>";
                     
                     if (!in_array($rolevalue['slug'], $roles_array)) {
@@ -250,12 +250,12 @@ class AdminUsers extends Controller{
                 $this->validator->validate($request, $validate_data);
 
                 // Validate Username
-                if ($this->auth->findByCredentials(['login' => $username])) {
+                if ($this->auth->findByCredentials(['login' => $username]) && $user->username != $username) {
                     $this->validator->addError('username', 'User already exists with this username.');
                 }
 
                 // Validate Email
-                if ($this->auth->findByCredentials(['login' => $email])) {
+                if ($this->auth->findByCredentials(['login' => $email]) && $user->email != $email) {
                     $this->validator->addError('email', 'User already exists with this email.');
                 }
 
@@ -263,6 +263,7 @@ class AdminUsers extends Controller{
 
                     // Get User Info
                     $user = $this->auth->findById($user_id);
+
 
                     // Update User Info
                     $update_user = $user;
@@ -276,7 +277,7 @@ class AdminUsers extends Controller{
                     $user_perms->permissions = $permissions_array;
                     $user_perms->save();
 
-                    foreach ($roles->get() as $rolekey => $rolevalue) {
+                    foreach (Roles::get() as $rolekey => $rolevalue) {
                         echo $rolevalue['slug'] . "<br>";
                         
                         if (!in_array($rolevalue['slug'], $roles_array)) {
