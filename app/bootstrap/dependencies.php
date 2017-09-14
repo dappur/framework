@@ -79,7 +79,7 @@ $container['csrf'] = function ($container) {
          return $container['view']
             ->render($response, 'errors/csrf.twig')
             ->withHeader('Content-type', 'text/html')
-            ->withStatus(404);
+            ->withStatus(401);
     });
 
     return $guard;
