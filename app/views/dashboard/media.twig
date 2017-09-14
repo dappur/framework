@@ -69,7 +69,7 @@
             {# List files #}
             <span id="file_list"></span>
         </div>
-        <form action="{{path_for('admin-media-upload')}}" method="POST" role="form" id="uploadform" style="display: none;">
+        <form action="{{path_for('admin-media-upload')}}" method="POST" role="form" id="uploadform" style="display: none;" enctype="multipart/form-data">
             <input id="fileupload" type="file" name="files[]" multiple>
             {{csrf()}}
             <input type="hidden" name="current_folder" id="current_folder" value="" />

@@ -111,7 +111,7 @@ var DappurMedia = new function() {
             swal({
                 type: 'success',
                 title: 'File was removed successfully! Yay you!',
-                html: currentFolder + '/' + newFolderName
+                html: currentFolder + '/' + currentFile
             })
         }).catch(swal.noop);
     }
@@ -381,16 +381,14 @@ var DappurMedia = new function() {
         $('#fileupload').trigger('click'); 
 
         $('#fileupload').fileupload({
-            dataType: 'json',
+            autoUpload : true,
+            singleFileUploads: false,
             done: function (e, data) {
-                
-                /*
-                $.each(data.result.files, function (index, file) {
-                    $('<p/>').text(file.name).appendTo(document.body);
-                });
-                */
-
                 DappurMedia.getFolder(currentFolder);
+                $.getJSON( "/csrf", function( data ) {
+                    $('input[name='+data.name_key+']').val(data.name);
+                    $('input[name='+data.value_key+']').val(data.value);
+                });
             }
         });
     });
