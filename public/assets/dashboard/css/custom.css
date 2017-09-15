@@ -55,15 +55,14 @@
 #sidebar-wrapper {
     z-index: 1000;
     position: fixed;
-    left: 250px;
     width: 0;
     height: 100%;
     margin-left: -250px;
-    overflow-y: auto;
     -webkit-transition: all 0.5s ease;
     -moz-transition: all 0.5s ease;
     -o-transition: all 0.5s ease;
     transition: all 0.5s ease;
+    padding-bottom: 75px;
 }
 
 #wrapper.toggled #sidebar-wrapper {
@@ -72,19 +71,19 @@
 
 #page-content-wrapper {
     width: 100%;
-    position: absolute;
+    position: relative;
     padding: 15px;
 }
 
 #wrapper.toggled #page-content-wrapper {
-    position: absolute;
+    position: fixed;
     margin-right: -250px;
 }
 
 /* Sidebar Styles */
 
 .sidebar-nav {
-    position: absolute;
+    position: fixed;
     top: 0;
     width: 250px;
     margin: 0;
@@ -151,12 +150,30 @@
         position: relative;
         margin-right: 0;
     }
+
 }
 
 .page-header {
   margin: 10px 0 20px;
 }
 
-.nav>li.active {
+.nav>li.active>a {
   background-color: #777;
 }
+
+.nav>li {
+    padding-left: 20px;
+}
+
+.navbar-toggle {
+    float: none;
+}
+
+.nav.navbar-nav.pull-right {
+   float: none;
+ }
+
+ .navbar-toggle {
+    margin-right: 0px;
+    margin-left: 5px;
+ }
