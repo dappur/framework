@@ -26,7 +26,7 @@ class Admin extends Controller{
     public function contact(Request $request, Response $response){
 
         $sentinel = new S($this->container);
-        if(!$sentinel->hasPerm('contact.view')){
+        if(!$sentinel->hasPerm('email.view')){
             return $this->redirect($response, 'dashboard');
         }
 
