@@ -243,7 +243,7 @@ class InitDatabase extends Migration
             array(1, 'logo', 'Site Logo', 5, 'https://res.cloudinary.com/dappur/image/upload/c_scale,w_600/v1479072913/site-images/logo-horizontal.png'),
             array(1, 'header-logo', 'Header Logo', 5, 'https://res.cloudinary.com/dappur/image/upload/c_scale,h_75/v1479072913/site-images/logo-horizontal.png'),
             array(2, 'dashboard-theme', 'Dashboard Theme', 3, 'dashboard'),
-            array(2, 'dashboard-bootswatch', 'Dashboard Bootswatch', 4, 'yeti'),
+            array(2, 'dashboard-bootswatch', 'Dashboard Bootswatch', 4, 'slate'),
             array(2, 'dashboard-logo', 'Dashboard Logo', 5, 'https://res.cloudinary.com/dappur/image/upload/c_scale,h_75/v1479072913/site-images/logo-horizontal.png'),
             array(1, 'ga', 'Google Analytics UA', 2, ''),
             array(1, 'activation', 'Activation Required', 6, 1),

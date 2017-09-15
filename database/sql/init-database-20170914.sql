@@ -432,7 +432,7 @@ INSERT INTO config VALUES
 (8, 1, 5, 'logo', 'Site Logo', 'https://res.cloudinary.com/dappur/image/upload/c_scale,w_600/v1479072913/site-images/logo-horizontal.png', '2017-09-15 00:57:56', '2017-09-15 00:57:56'),
 (9, 1, 5, 'header-logo', 'Header Logo', 'https://res.cloudinary.com/dappur/image/upload/c_scale,h_75/v1479072913/site-images/logo-horizontal.png', '2017-09-15 00:57:56', '2017-09-15 00:57:56'),
 (10, 2, 3, 'dashboard-theme', 'Dashboard Theme', 'dashboard', '2017-09-15 00:57:56', '2017-09-15 00:57:56'),
-(11, 2, 4, 'dashboard-bootswatch', 'Dashboard Bootswatch', 'yeti', '2017-09-15 00:57:56', '2017-09-15 00:57:56'),
+(11, 2, 4, 'dashboard-bootswatch', 'Dashboard Bootswatch', 'slate', '2017-09-15 00:57:56', '2017-09-15 00:57:56'),
 (12, 2, 5, 'dashboard-logo', 'Dashboard Logo', 'https://res.cloudinary.com/dappur/image/upload/c_scale,h_75/v1479072913/site-images/logo-horizontal.png', '2017-09-15 00:57:56', '2017-09-15 00:57:56'),
 (13, 1, 2, 'ga', 'Google Analytics UA', '', '2017-09-15 00:57:56', '2017-09-15 00:57:56'),
 (14, 1, 6, 'activation', 'Activation Required', '1', '2017-09-15 00:57:56', '2017-09-15 00:57:56'),
