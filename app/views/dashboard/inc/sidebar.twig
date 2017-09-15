@@ -54,7 +54,7 @@
         <a href="javascript:;" data-toggle="collapse" data-target="#developer-tools-menu"><i class="fa fa-fw fa-wrench"></i> Developer Tools <i class="fa fa-fw fa-caret-down"></i></a>
         <ul id="developer-tools-menu" class="collapse {% if currentRoute starts with '/dashboard/developer/settings' %}in{% endif %} nav">
             {% if auth.hasAccess('settings.developer.view') %}
-                <li class="active">
+                <li class="{% if currentRoute starts with '/dashboard/developer/settings' %}active{% endif %}">
                     <a href="{{ path_for('settings-developer')}}"><i class="fa fa-life-ring fa-fw"></i> Edit settings.json</a>
                 </li>
             {% endif %}
