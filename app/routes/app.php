@@ -1,10 +1,13 @@
 <?php
 $app->group('/', function () {
-	$this->map(['GET', 'POST'], '', 'App:home')
+	$this->map(['GET'], '', 'App:home')
 		->setName('home');
 
 	$this->map(['GET'], 'privacy', 'App:privacy')
 		->setName('privacy');
+
+	$this->map(['GET', 'POST'], 'contact', 'App:contact')
+		->setName('contact');
 
 	$this->map(['GET'], 'terms', 'App:terms')
 		->setName('terms');

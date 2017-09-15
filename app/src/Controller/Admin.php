@@ -6,6 +6,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use Respect\Validation\Validator as V;
 use Dappur\Model\Users;
+use Dappur\Model\ContactRequests;
 use Dappur\Dappurware\Sentinel as S;
 
 class Admin extends Controller{
@@ -13,9 +14,23 @@ class Admin extends Controller{
     public function dashboard(Request $request, Response $response){
 
         $sentinel = new S($this->container);
-        $sentinel->hasPerm('dashboard.view');
+        if(!$sentinel->hasPerm('dashboard.view')){
+            return $this->redirect($response, 'home');
+        }
 
         return $this->view->render($response, 'dashboard.twig');
+
+    }
+
+
+    public function contact(Request $request, Response $response){
+
+        $sentinel = new S($this->container);
+        if(!$sentinel->hasPerm('contact.view')){
+            return $this->redirect($response, 'dashboard');
+        }
+
+        return $this->view->render($response, 'contact.twig', array("contact_requests" => ContactRequests::orderBy('created_at', 'desc')->get()));
 
     }
 
@@ -24,7 +39,9 @@ class Admin extends Controller{
     public function myAccount(Request $request, Response $response){
 
         $sentinel = new S($this->container);
-        $sentinel->hasPerm('user.account');
+        if(!$sentinel->hasPerm('user.account')){
+            return $this->redirect($response, 'my-account');
+        }
 
         $requestParams = $request->getParams();
 

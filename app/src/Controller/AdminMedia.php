@@ -12,7 +12,9 @@ class AdminMedia extends Controller{
 	private function getFiles($directory){
 
         $sentinel = new S($this->container);
-        $sentinel->hasPerm('media.local');
+        if(!$sentinel->hasPerm('media.local')){
+            return $this->redirect($response, 'dashboard');
+        }
 
         $listing = scandir($directory);
 
@@ -55,7 +57,9 @@ class AdminMedia extends Controller{
     public function mediaFolder(Request $request, Response $response){
 
         $sentinel = new S($this->container);
-        $sentinel->hasPerm('media.folder');
+        if(!$sentinel->hasPerm('media.folder')){
+            return $this->redirect($response, 'dashboard');
+        }
 
         $requestParams = $request->getParams();
 
@@ -74,7 +78,9 @@ class AdminMedia extends Controller{
     public function mediaDelete(Request $request, Response $response){
 
         $sentinel = new S($this->container);
-        $sentinel->hasPerm('media.delete');
+        if(!$sentinel->hasPerm('media.delete')){
+            return $this->redirect($response, 'dashboard');
+        }
 
         $requestParams = $request->getParams();
 
@@ -129,7 +135,9 @@ class AdminMedia extends Controller{
     public function mediaUpload(Request $request, Response $response){
 
         $sentinel = new S($this->container);
-        $sentinel->hasPerm('media.upload');
+        if(!$sentinel->hasPerm('media.upload')){
+            return $this->redirect($response, 'dashboard');
+        }
 
         $requestParams = $request->getParams();
 
@@ -161,7 +169,9 @@ class AdminMedia extends Controller{
     public function mediaFolderNew(Request $request, Response $response){
 
         $sentinel = new S($this->container);
-        $sentinel->hasPerm('media.local');
+        if(!$sentinel->hasPerm('media.local')){
+            return $this->redirect($response, 'dashboard');
+        }
 
         $requestParams = $request->getParams();
         $current_folder = $requestParams['current_folder'];
@@ -244,7 +254,9 @@ class AdminMedia extends Controller{
     public function media(Request $request, Response $response){
 
         $sentinel = new S($this->container);
-        $sentinel->hasPerm('media.local');
+        if(!$sentinel->hasPerm('media.local')){
+            return $this->redirect($response, 'dashboard');
+        }
 
         $requestParams = $request->getParams();
 

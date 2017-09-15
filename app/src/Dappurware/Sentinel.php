@@ -41,18 +41,21 @@ class Sentinel extends Dappurware
         return array('roles' => $rolesSlugs, 'permissions' => $permissions);
     }
 
-    public function hasPerm($permission, $redirect = "home", $flash = false){
+    public function hasPerm($permission, $flash = true){
         
         if (!$this->container->auth->hasAccess($permission)) {
 
             $user = $this->container->auth->check();
 
             if ($flash) {
-                $this->flash('danger', 'You do not have permission to access that page.');
+                $error = new \Slim\Flash\Messages();
+                $error->addMessage('danger', 'You do not have permission to access that page.');
             }
             
-            $this->logger->addError("Unauthorized Access", array("message" => "Unauthorized access was attempted on the dashboard", "user_id" => $user->id));
-            return $this->redirect($response, $redirect);
+            $this->container->logger->addWarning("Unauthorized Access", array("user_id" => $user->id));
+            return false;
+        }else{
+            return true;
         }
     }
 }

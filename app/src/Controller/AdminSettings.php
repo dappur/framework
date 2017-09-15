@@ -21,7 +21,9 @@ class AdminSettings extends Controller
 	public function settingsGlobal(Request $request, Response $response){
 
         $sentinel = new S($this->container);
-        $sentinel->hasPerm('settings.view');
+        if(!$sentinel->hasPerm('settings.view')){
+            return $this->redirect($response, 'dashboard');
+        }
 
         $settings = new Settings($this->container);
 
@@ -88,7 +90,9 @@ class AdminSettings extends Controller
     public function settingsGlobalAdd(Request $request, Response $response){
 
         $sentinel = new S($this->container);
-        $sentinel->hasPerm('settings.add');
+        if(!$sentinel->hasPerm('settings.add')){
+            return $this->redirect($response, 'dashboard');
+        }
 
         $allPostVars = $request->getParsedBody();
 
@@ -147,7 +151,9 @@ class AdminSettings extends Controller
     public function settingsGlobalAddGroup(Request $request, Response $response){
 
         $sentinel = new S($this->container);
-        $sentinel->hasPerm('settings.group.add');
+        if(!$sentinel->hasPerm('settings.group.add')){
+            return $this->redirect($response, 'dashboard');
+        }
 
         $allPostVars = $request->getParsedBody();
 
@@ -192,7 +198,9 @@ class AdminSettings extends Controller
     public function settingsGlobalDeleteGroup(Request $request, Response $response){
 
         $sentinel = new S($this->container);
-        $sentinel->hasPerm('settings.group.delete');
+        if(!$sentinel->hasPerm('settings.group.delete')){
+            return $this->redirect($response, 'dashboard');
+        }
 
         $allPostVars = $request->getParsedBody();
 
@@ -219,7 +227,9 @@ class AdminSettings extends Controller
     public function settingsDeveloper(Request $request, Response $response){
 
     	$sentinel = new S($this->container);
-        $sentinel->hasPerm('settings.developer');
+        if(!$sentinel->hasPerm('settings.developer')){
+            return $this->redirect($response, 'dashboard');
+        }
 
         $settings = new Settings($this->container);
         $settings_file = $settings->getSettingsFile();

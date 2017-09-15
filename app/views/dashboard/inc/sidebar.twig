@@ -37,6 +37,12 @@
     </li>
     {% endif %}
 
+    {% if auth.hasAccess('contact.view') %}
+    <li {% if currentRoute starts with '/dashboard/contact' %}class="active"{% endif %}>
+        <a href="{{ path_for('admin-contact')}}"><i class="fa fa-address-book fa-fw"></i> Contact Requests</a>
+    </li>
+    {% endif %}
+
     {% if auth.hasAccess('settings.view') %}
     <li {% if currentRoute starts with '/dashboard/settings' %}class="active"{% endif %}>
         <a href="{{ path_for('settings-global')}}"><i class="fa fa-cogs fa-fw"></i> Settings</a>

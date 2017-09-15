@@ -72,9 +72,9 @@ class AddEmailSystem extends Migration
                 "id" => 1,
                 "name" => 'Password Reset',
                 "slug" => 'password-reset',
-                "description" => 'Password Reset Email',
+                "description" => 'Password reset email to user',
                 "subject" => 'Password Reset Request from {{  settings_site_name  }}',
-                "html" => '<h1>{{ settings_site_name }}</h1>' . "\r\n\r\n" . '<p>Hello&nbsp;{{ user_first_name }},</p>' . "\r\n\r\n" . '<p>You are receiving this email because you recently requested a password reset. &nbsp;</p>' . "\r\n\r\n" . '<h3><a href="{{ reset_url }}">Reset Password Now</a></h3>' . "\r\n\r\n" . '<p>If you did not request this reset, then please disregard this email.</p>' . "\r\n\r\n" . '<p>Thank You,</p>' . "\r\n\r\n" . '<p>{{ settings_site_name }}</p>\r\n', 'Hello {{ user_first_name }},' . "\r\n\r\n" . 'You are receiving this email because you recently requested a password reset.  To continue resetting your password, please click the following link:' . "\r\n\r\n" . '{{ reset_url }}' . "\r\n\r\n" . 'If you did not request this reset, then please disregard this email.' . "\r\n\r\n" . 'Thank You,' . "\r\n\r\n" . '{{ settings_site_name }}',
+                "html" => '<h1>{{ settings_site_name }}</h1>' . "\r\n\r\n" . '<p>Hello&nbsp;{{ user_first_name }},</p>' . "\r\n\r\n" . '<p>You are receiving this email because you recently requested a password reset. &nbsp;</p>' . "\r\n\r\n" . '<h3><a href="{{ reset_url }}">Reset Password Now</a></h3>'."\r\n\r\n".'<p>If you did not request this reset, then please disregard this email.</p>' . "\r\n\r\n" . '<p>Thank You,</p>' . "\r\n\r\n" . '<p>{{ settings_site_name }}</p>' . "\r\n\r\n",
                 "plain_text" => 'Hello {{ user_first_name }},' . "\r\n\r\n" . 'You are receiving this email because you recently requested a password reset.  To continue resetting your password, please click the following link:' . "\r\n\r\n" . '{{ reset_url }}' . "\r\n\r\n" . 'If you did not request this reset, then please disregard this email.' . "\r\n\r\n" . 'Thank You,' . "\r\n\r\n" . '{{ settings_site_name }}',
                 "placeholders" => '["reset_url"]'
             ),
@@ -84,7 +84,7 @@ class AddEmailSystem extends Migration
                 "slug" => 'registration',
                 "description" => 'Registration Complete Email',
                 "subject" => 'Welcome to {{  settings_site_name  }}, {{  user_first_name  }}!',
-                "html" => '<h1>{{ settings_site_name }}</h1>' . "\r\n\r\n" . '<p>Hello&nbsp;{{ user_first_name }},</p>' . "\r\n\r\n" . '<p>Welcome to &nbsp;{{ settings_site_name }}. &nbsp;Here are your login details:</p>' . "\r\n\r\n" . '<p>Username:&nbsp;{{ user_username }}<br />' . "\r\n" . 'Password: Chosen at Registration</p>' . "\r\n\r\n" . '<h3><a href="https://{{ settings_domain }}">Visit&nbsp;{{ settings_site_name }}</a></h3>' . "\r\n\r\n" . '<p>Thank You,</p>' . "\r\n\r\n" . '<p>{{ settings_site_name }}</p>',
+                "html" => '<h1>{{ settings_site_name }}</h1>' . "\r\n\r\n" . '<p>Hello&nbsp;{{ user_first_name }},</p>' . "\r\n\r\n" . '<p>Welcome to &nbsp;{{ settings_site_name }}. &nbsp;Here are your login details:</p>' . "\r\n\r\n" . '<p>Username:&nbsp;{{ user_username }}<br />' . "\r\n" . 'Password: Chosen at Registration</p>' . "\r\n\r\n" . '<h3><a href="https://{{ settings_domain }}">Visit&nbsp;{{ settings_site_name }}</a></h3>' . "\r\n\r\n" . '<p>Thank You,</p>'."\r\n\r\n".'<p>{{ settings_site_name }}</p>',
                 "plain_text" => 'Hello {{ user_first_name }},' . "\r\n\r\n" . 'Welcome to {{  settings_site_name  }}.  Here are your login details:' . "\r\n\r\n" . 'Username: {{  user_username  }}' . "\r\n" . 'Password: Chosen at Registration' . "\r\n\r\n" . 'Visit https://{{  settings_domain  }}' . "\r\n\r\n" . 'Thank You,' . "\r\n\r\n" . '{{ settings_site_name }}',
                 "placeholders" => null
             ),
@@ -94,9 +94,19 @@ class AddEmailSystem extends Migration
                 "slug" => 'activation',
                 "description" => 'Account Activation Email',
                 "subject" => 'Activate Your {{  settings_site_name  }} Account',
-                "html" => '<h1>{{ settings_site_name }}</h1>' . "\r\n\r\n" . '<p>Hello&nbsp;{{ user_first_name }},</p>' . "\r\n\r\n" . '<p>Thank you for creating your account. &nbsp;In order to ensure the best possible experience, we require that you verify your email address before you can begin using your account. &nbsp;To do so, simply click the following link and you will be immediately logged in to your account.</p>' . "\r\n\r\n" . '<h3><a href="{{ confirm_url }}">Confirm Email Now</a></h3>' . "\r\n\r\n" . '<p>Thank You,</p>' . "\r\n\r\n" . '<p>{{ settings_site_name }} Team</p>',
+                "html" => '<h1>{{ settings_site_name }}</h1>'."\r\n\r\n".'<p>Hello&nbsp;{{ user_first_name }},</p>'."\r\n\r\n".'<p>Thank you for creating your account. &nbsp;In order to ensure the best possible experience, we require that you verify your email address before you can begin using your account. &nbsp;To do so, simply click the following link and you will be immediately logged in to your account.</p>'."\r\n\r\n".'<h3><a href="{{ confirm_url }}">Confirm Email Now</a></h3>'."\r\n\r\n".'<p>Thank You,</p>'."\r\n\r\n".'<p>{{ settings_site_name }} Team</p>',
                 "plain_text" => '{{ settings_site_name }}' . "\r\n\r\n" . 'Hello {{  user_first_name  }},' . "\r\n\r\n" . 'Thank you for creating your account.  In order to ensure the best possible experience, we require that you verify your email address before you can begin using your account.  To do so, simply click the following link and you will be immediately logged in to your account.' . "\r\n\r\n" . '{{ confirm_url }}' . "\r\n\r\n" . 'Thank You,' . "\r\n\r\n" . '{{ settings_site_name }} Team',
                 "placeholders" => '["confirm_url"]'
+            ),
+            array(
+                "id" => 4,
+                "name" => 'User Contact Confirmation',
+                "slug" => 'contact-confirmation',
+                "description" => 'Contact confirmation sent to the user',
+                "subject" => 'Contact Confirmation from {{  settings_site_name  }}',
+                "html" => '<h1>{{ settings_site_name }}</h1>'."\r\n\r\n".'<p>Hello {{ name }},</p>'."\r\n\r\n".'<p>We have received your contact request and if it requires a reply, we will be in touch with you soon. &nbsp;here is the information that you submitted:</p>'."\r\n\r\n".'<p><strong>Phone:</strong>&nbsp;{{ phone }}<br />'."\r\n".'<strong>Comment:</strong>&nbsp;{{ comment }}</p>'."\r\n\r\n".'<h3><a href="https://{{ settings_domain }}">Visit {{ settings_site_name }}</a></h3>'."\r\n\r\n".'<p>Thank You,</p>'."\r\n\r\n".'<p>{{ settings_site_name }} Team</p>',
+                "plain_text" => '{{ settings_site_name }}'."\r\n\r\n".'Hello {{ name }},'."\r\n\r\n".'We have received your contact request and if it requires a reply, we will be in touch with you soon. Here is the information that you submitted:'."\r\n\r\n".'Name: {{ name }}'."\r\n".'Phone: {{ phone }}'."\r\n".'Comment: {{ comment }}'."\r\n\r\n".'Visit https://{{  settings_domain  }}'."\r\n\r\n".'Thank You,'."\r\n\r\n".'{{ settings_site_name }} Team',
+                "placeholders" => '["name","phone","comment"]'
             )
         );
 

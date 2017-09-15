@@ -14,7 +14,9 @@ class AdminUsers extends Controller{
 	public function users(Request $request, Response $response){
 
         $sentinel = new S($this->container);
-        $sentinel->hasPerm('user.view');
+        if(!$sentinel->hasPerm('user.view')){
+            return $this->redirect($response, 'dashboard');
+        }
 
         return $this->view->render($response, 'users.twig', ["users" => Users::get(), "roles" => Roles::get()]);
 
@@ -23,7 +25,9 @@ class AdminUsers extends Controller{
     public function usersAdd(Request $request, Response $response){
 
         $sentinel = new S($this->container);
-        $sentinel->hasPerm('user.create');
+        if(!$sentinel->hasPerm('user.create')){
+            return $this->redirect($response, 'dashboard');
+        }
 
         $requestParams = $request->getParams();
 
@@ -174,7 +178,9 @@ class AdminUsers extends Controller{
     public function usersEdit(Request $request, Response $response, $userid){
 
         $sentinel = new S($this->container);
-        $sentinel->hasPerm('user.update');
+        if(!$sentinel->hasPerm('user.update')){
+            return $this->redirect($response, 'dashboard');
+        }
 
         $requestParams = $request->getParams();
 
@@ -318,7 +324,9 @@ class AdminUsers extends Controller{
     public function usersDelete(Request $request, Response $response){
 
         $sentinel = new S($this->container);
-        $sentinel->hasPerm('user.delete');
+        if(!$sentinel->hasPerm('user.delete')){
+            return $this->redirect($response, 'dashboard');
+        }
 
         $user = $this->auth->findById($request->getParam('user_id'));
 

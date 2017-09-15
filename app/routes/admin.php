@@ -93,6 +93,10 @@ $app->group('/dashboard', function () use($app) {
         $app->map(['POST'], '/test', 'AdminEmail:testEmail')
             ->setName('admin-email-test');
     });
+
+    // Contact Requests
+    $app->map(['GET'], '/contact', 'Admin:contact')
+        ->setName('admin-contact');
 })
 ->add(new Dappur\Middleware\Auth($container))
 ->add(new Dappur\Middleware\Admin($container))

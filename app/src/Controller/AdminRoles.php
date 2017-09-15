@@ -14,7 +14,9 @@ class AdminRoles extends Controller{
     public function rolesAdd(Request $request, Response $response){
         
         $sentinel = new S($this->container);
-        $sentinel->hasPerm('role.create');
+        if(!$sentinel->hasPerm('role.create')){
+            return $this->redirect($response, 'dashboard');
+        }
 
         if ($request->isPost()) {
 
@@ -55,7 +57,9 @@ class AdminRoles extends Controller{
     public function rolesDelete(Request $request, Response $response){
 
         $sentinel = new S($this->container);
-        $sentinel->hasPerm('role.delete');
+        if(!$sentinel->hasPerm('role.delete')){
+            return $this->redirect($response, 'dashboard');
+        }
 
         $requestParams = $request->getParams();
 
@@ -86,7 +90,9 @@ class AdminRoles extends Controller{
     public function rolesEdit(Request $request, Response $response, $roleid){
         
         $sentinel = new S($this->container);
-        $sentinel->hasPerm('role.update');
+        if(!$sentinel->hasPerm('role.update')){
+            return $this->redirect($response, 'dashboard');
+        }
 
         $role = Roles::find($roleid);
 
