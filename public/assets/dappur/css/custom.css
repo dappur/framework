@@ -114,3 +114,42 @@ body {
 .box .space {
     height: 30px;
 }
+
+/* Floating Labels
+/* https://github.com/fauxparse/bootstrap-floating-labels
+-------------------------------------------------- */
+.floating-label-form-group input,
+.floating-label-form-group textarea {
+  border: none;
+  border-bottom: 3px solid;
+  box-shadow: none;
+  -webkit-box-shadow: none;
+  background-color: transparent;
+}
+
+.floating-label-form-group input:focus,
+.floating-label-form-group textarea:focus {
+  box-shadow: none;
+  -webkit-box-shadow: none;
+  background-color: transparent;
+}
+  
+.floating-label-form-group label {
+  position: relative;
+  top: 2em;
+  opacity: 0;
+  z-index: 0;
+  margin: 0;
+  -webkit-transition: top 0.5s ease, opacity 0.5s ease;
+     -moz-transition: top 0.5s ease, opacity 0.5s ease;
+      -ms-transition: top 0.5s ease, opacity 0.5s ease;
+          transition: top 0.5s ease, opacity 0.5s ease;
+}
+
+.floating-label-form-group-with-value label {
+  top: 0;
+  opacity: 1;
+}
+
+form .row:first-child .floating-label-form-group {
+}
