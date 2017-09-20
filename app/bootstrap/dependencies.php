@@ -56,7 +56,7 @@ $container['flash'] = function () {
 
 // Bind Respect Validation
 $container['validator'] = function () {
-    return new \Awurth\Slim\Validation\Validator();
+    return new \Awurth\SlimValidation\Validator();
 };
 
 // Bind Cookies
@@ -108,7 +108,7 @@ $container['view'] = function ($container) {
     $view->addExtension(new \Dappur\TwigExtension\JsonDecode($container['request']));
     $view->addExtension(new \Dappur\TwigExtension\Recaptcha($container['settings']['recaptcha']));
     $view->addExtension(new \Dappur\TwigExtension\Csrf($container['csrf']));
-    $view->addExtension(new \Awurth\Slim\Validation\ValidatorExtension($container['validator']));
+    $view->addExtension(new \Awurth\SlimValidation\ValidatorExtension($container['validator']));
     if ($container['cloudinary']) {
         $view->addExtension(new \Dappur\TwigExtension\Cloudinary());
         $view->getEnvironment()->addGlobal('hasCloudinary', 1);
