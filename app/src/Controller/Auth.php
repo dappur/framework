@@ -3,6 +3,7 @@
 namespace Dappur\Controller;
 
 use Cartalyst\Sentinel\Checkpoints\ThrottlingException;
+use Cartalyst\Sentinel\Checkpoints\NotActivatedException;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use Respect\Validation\Validator as V;
@@ -44,16 +45,19 @@ class Auth extends Controller{
                 } else {
                     $this->flash('danger', 'Invalid username or password.');
                     $this->logger->addNotice("Login: Invalid login info.", array("login" => $request->getParam('login')));
+                    return $this->redirect($response, 'login');
                 }
             } catch (ThrottlingException $e) {
 
                 $this->flash('danger', 'Too many invalid attempts on your ' . $e->getType() . '!  Please wait ' . $e->getDelay() . ' seconds before trying again.');
                 $this->logger->addError("Login: Throttling Exception", array("login" => $request->getParam('login')));
+                return $this->redirect($response, 'login');
 
-            } catch (\Cartalyst\Sentinel\Checkpoints\NotActivatedException $e) {
+            } catch (NotActivatedException $e) {
 
                 $this->flash('danger', 'Please check your email for instructions on activating your account.');
                 $this->logger->addError("Login:  Account Not Activated", array("exception" => $request->getParam('login')));
+                return $this->redirect($response, 'login');
 
             }
 
@@ -201,7 +205,7 @@ class Auth extends Controller{
             }
         }
 
-        return $this->view->render($response, 'register.twig');
+        return $this->view->render($response, 'register.twig', array("requestParams" => $request->getParams()));
     }
 
     // Forgot Password
