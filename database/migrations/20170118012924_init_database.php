@@ -38,7 +38,7 @@ class InitDatabase extends Migration
             $table->boolean('completed')->default(0);
             $table->timestamp('completed_at')->nullable();
             $table->timestamps();
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
         });
 
         // Create Persistences Table
@@ -47,7 +47,7 @@ class InitDatabase extends Migration
             $table->integer('user_id')->unsigned()->nullable();
             $table->string('code')->unique();
             $table->timestamps();
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
         });
 
         // Create Reminders Table
@@ -58,7 +58,7 @@ class InitDatabase extends Migration
             $table->boolean('completed')->default(0);
             $table->timestamp('completed_at')->nullable();
             $table->timestamps();
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
         });
 
         // Create Roles Table
@@ -87,7 +87,7 @@ class InitDatabase extends Migration
             $table->string('type');
             $table->string('ip')->nullable();
             $table->timestamps();
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
         });
 
         // Create Config Groups Table
@@ -113,8 +113,8 @@ class InitDatabase extends Migration
             $table->string('description')->nullable();
             $table->text('value')->nullable();
             $table->timestamps();
-            $table->foreign('group_id')->references('id')->on('config_groups')->onDelete('cascade');
-            $table->foreign('type_id')->references('id')->on('config_types')->onDelete('cascade');
+            $table->foreign('group_id')->references('id')->on('config_groups')->onDelete('set null');
+            $table->foreign('type_id')->references('id')->on('config_types')->onDelete('set null');
         });
 
         // Create Admin Role

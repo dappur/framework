@@ -212,3 +212,7 @@ $container['mail'] = function($container) {
     }
     return $mail; 
 };
+
+$container['blog'] = function ($container){
+    return new \Dappur\Dappurware\Blog($container);
+};

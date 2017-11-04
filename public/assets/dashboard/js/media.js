@@ -21,6 +21,12 @@ var DappurMedia = new function() {
                     '?source=input&target='+target+'"></iframe>'
                 );
                 break;
+            case "blog":
+                $("#media-modal-body").html('<iframe id="dappurmedia" width="100%" height="475px" frameborder="0" marginheight="0" marginwidth="0" src="'+
+                    this.managerUrl+
+                    '?source=blog&target='+target+'"></iframe>'
+                );
+                break;
         }
         $('#media-modal').modal('show');
     };
@@ -322,7 +328,7 @@ var DappurMedia = new function() {
         var file = $(this).data("file");
         var filetype = $(this).data("filetype");
 
-        var filePath = document.origin+'/uploads'+currentFolder+'/'+file;
+        var filePath = '/uploads'+currentFolder+'/'+file;
 
         $("#file-info")
             .data("file", file)
@@ -451,10 +457,22 @@ var DappurMedia = new function() {
         var filePath = $("#file-info").data("filepath");
 
         var target = DappurMedia.getUrlParameter('target');
+        var source = DappurMedia.getUrlParameter('source');
 
-        $(parent.document).find("#"+target).val(filePath);
-        $(parent.document).find("#"+target+"-thumbnail").attr("src", filePath);
-        window.parent.$("#media-modal").modal("hide");
+        if (source == "input") {
+            $(parent.document).find("#"+target).val(filePath);
+            $(parent.document).find("#"+target+"-thumbnail").attr("src", filePath);
+            window.parent.$("#media-modal").modal("hide");
+        }else if (source == "blog") {
+            $(parent.document).find("#"+target).append(filePath);
+            $('textarea.tinymce').tinymce({
+                
+            });
+            tinyMCE.activeEditor.dom.get('post_content').execCommand('mceInsertContent', false, filePath);
+            window.parent.$("#media-modal").modal("hide");
+        }
+
+        
        
     });
 

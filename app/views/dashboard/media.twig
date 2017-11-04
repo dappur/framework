@@ -75,7 +75,7 @@
             <input type="hidden" name="current_folder" id="current_folder" value="" />
         </form>
 
-        <div class="modal fade" id="media-modal-info">
+        <div class="modal fade" id="media-modal-info" style="z-index:500000;">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-body" style="padding-top: 5px; text-align: center;">
@@ -101,7 +101,7 @@
                                 <input type="text" id="media-clipboard" value="" style="width: 1px; height: 1px; border: 0px; padding: 0px; position: absolute; top: 5px; z-index: -1000;" />
                             </div>
                             <div class="col-xs-6 form-group">
-                                {% if requestParams['source'] == "input" %}
+                                {% if requestParams['source'] == "input" or requestParams['source'] == "blog" %}
                                 <button class="btn btn-primary form-control" type="button" id="media-info-btn-insert"><i class="fa fa-plus"></i> &nbsp;Insert URL</button>
                                 {% endif %}
                             </div>

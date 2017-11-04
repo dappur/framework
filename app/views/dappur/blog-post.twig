@@ -1,0 +1,57 @@
+{% extends 'app.twig' %}
+
+{% block title %}
+{{config['site-name']}}
+{% endblock %}
+
+{% block body %}
+
+<div class="container">
+    <div class="col-md-9">
+    	<div class="row">
+    		<div class="col-xs-12">
+    			<img src="{{ cloudinary_url(blogPost.featured_image, {'width':'1200', 'height':'630', 'crop':'fill', 'gravity':'center'}) }}" class="img-responsive thumbnail" />
+    		</div>
+    		<div class="col-xs-12">
+    			<h2>{{blogPost.title}}</h2>
+    		</div>
+    		<div class="col-xs-12">
+    			{{blogPost.post_content|raw}}
+    		</div>
+    	</div>
+    </div>
+
+    <div class="col-md-3">
+    	<!-- Categories -->
+    	<div class="row">
+    		<div class="col-xs-12">
+		    	<h2>Categories</h2>
+		    	<ul class="list-group">
+		    		{% for category in blogCategories %}
+		    		    <li class="list-group-item">
+					    	<span class="badge">{{category.count}}</span>
+					    	{{category.name}}
+					  	</li>
+		    		{% endfor %}
+				</ul>
+			</div>
+		</div>
+
+		<!-- Tags -->
+		<div class="row">
+    		<div class="col-xs-12">
+		    	<h2>Tags</h2>
+	    		{% for tag in blogTags %}
+				  	<a style="text-decoration: none; cursor: pointer;">
+					  	<span class="label" style="font-size: 12px; height: 16px; line-height: 12px; color: #000;">
+					  		{{tag.name}} 
+					  		<span class="badge">{{tag.count}}</span>
+					  	</span>
+					</a>
+	    		{% endfor %}
+			</div>
+		</div>
+    </div>
+</div>
+
+{% endblock %}
