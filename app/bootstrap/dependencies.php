@@ -130,6 +130,10 @@ $container['view'] = function ($container) {
     $view->getEnvironment()->addGlobal('publicDir', $container['public_dir']);
     $view->getEnvironment()->addGlobal('uploadDir', $container['upload_dir']);
 
+    $page_settings = new \Dappur\Model\ConfigGroups;
+    $page_settings = $page_settings->whereNotNull('page_name')->get();
+    $view->getEnvironment()->addGlobal('pageSettings', $page_settings);
+
     return $view;
 };
 

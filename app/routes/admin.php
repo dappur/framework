@@ -40,6 +40,8 @@ $app->group('/dashboard', function () use($app) {
         ->setName('settings-global-group-add');
     $app->post('/settings/group/delete', 'AdminSettings:settingsGlobalDeleteGroup')
         ->setName('settings-global-group-delete');
+
+    $app->map(['GET', 'POST'], '/settings/page/{page_name}', 'AdminSettings:settingsPage')->setName('settings-page');
     
     // Edit Settings.json
     $app->map(['GET', 'POST'], '/developer/settings', 'AdminSettings:settingsDeveloper')->setName('settings-developer');

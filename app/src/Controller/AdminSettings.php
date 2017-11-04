@@ -131,7 +131,14 @@ class AdminSettings extends Controller
             $configOption->save();
 
             $this->flash('success', 'Global settings successfully added.');
-            return $this->redirect($response, 'settings-global');
+
+            if (isset($allPostVars['page_name'])) {
+                return $this->redirect($response, 'settings-page', array('page_name' => $allPostVars['page_name']));
+            }else{
+                return $this->redirect($response, 'settings-global');
+            }
+
+            
         }
 
         $settings = new Settings($this->container);
@@ -145,6 +152,72 @@ class AdminSettings extends Controller
         $groups = ConfigGroups::orderBy('name')->get();
 
         return $this->view->render($response, 'settings-global.twig', array("settingsGrouped" => $settings_grouped, "configTypes" => $types, "configGroups" => $groups, "themeList" => $theme_list, "timezones" => $timezones, "requestParams" => $allPostVars));
+
+    }
+
+    public function settingsPage(Request $request, Response $response, $page_name){
+
+        $page_settings = ConfigGroups::where('page_name', '=', $page_name)->first();
+
+        $settings = new Settings($this->container);
+
+        $timezones = $settings->getTimezones();
+        $theme_list = $settings->getThemeList();
+        $bootswatch = $settings->getBootswatch();
+        $settings_grouped = $settings->getSettingsByGroup();
+
+        $types = ConfigTypes::orderBy('name')->get();
+
+        $groups = ConfigGroups::orderBy('name')->get();
+
+        if ($request->isPost()) {
+            $sentinel = new S($this->container);
+            $sentinel->hasPerm('settings.update');
+
+            $allPostVars = $request->getParsedBody();
+
+            // Validate Domain
+            if (array_key_exists('domain', $allPostVars)){
+                $this->validator->validate($request, ['domain' => array('rules' => V::domain(), 'messages' => array('domain' => 'Please enter a valid domain.'))]);
+            }
+
+            // Validate Reply To Email
+            if (array_key_exists('from-email', $allPostVars)){
+                $this->validator->validate($request, ['from-email' => array('rules' => V::noWhitespace()->email(), 'messages' => array('noWhitespace' => 'Must not contain any spaces.', 'email' => 'Enter a valid email address.'))]);
+            }
+
+            // Validate Google Analytics
+            if (isset($allPostVars['ga']) && !empty($allPostVars['ga'])){
+                $this->validator->validate($request, ['ga' => array('rules' => V::regex('/(UA|YT|MO)-\d+-\d+/'), 'messages' => array('regex' => 'Enter a valid UA Tracking Code'))]);
+            }
+
+            // Additional Validation
+            foreach ($allPostVars as $key => $value) {
+                if (strip_tags($value) != $value) {
+                    $this->validator->addError($key, 'Please do not use any HTML Tags');
+                    $this->logger->addWarning("possible scripting attack", array("message" => "HTML tags were blocked from being put into the config."));
+                }
+
+                if ($key == "theme" && !in_array($value, $theme_list)) {
+                    $this->validator->addError($key, 'Not a valid global setting.');
+                }
+            }
+
+
+            if ($this->validator->isValid()) {
+
+                foreach ($allPostVars as $key => $value) {
+                    Config::where('name', $key)->update(['value' => $value]);
+                }
+
+                $this->flash('success', 'Global settings have been updated successfully.');
+                return $this->redirect($response, 'settings-page', array('page_name' => $page_name));
+            }
+
+            
+        }
+
+        return $this->view->render($response, 'settings-page.twig', array("settingsGrouped" => $page_settings, "configTypes" => $types, "configGroups" => $groups, "themeList" => $theme_list, "timezones" => $timezones, "requestParams" => $allPostVars));
 
     }
 
@@ -207,11 +280,14 @@ class AdminSettings extends Controller
             if ($allPostVars['page'] == 1) {
                 $configOption->page_name = $allPostVars['page_name'];
                 $configOption->description = $allPostVars['description'];
+                $configOption->save();
+                $this->flash('success', 'Config group successfully added.');
+                return $this->redirect($response, 'settings-page', array('page_name' => $allPostVars['page_name']));
+            }else{
+                $configOption->save();
+                $this->flash('success', 'Config group successfully added.');
+                return $this->redirect($response, 'settings-global');
             }
-            $configOption->save();
-
-            $this->flash('success', 'Config group successfully added.');
-            return $this->redirect($response, 'settings-global');
         }
 
         $settings = new Settings($this->container);
