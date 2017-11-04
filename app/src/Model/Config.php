@@ -14,4 +14,8 @@ class Config extends Model {
         'description',
         'value'
     ];
+
+    public function configGroups() {
+        return $this->belongsTo('\Dappur\Model\ConfigGroups', 'group_id');
+    }
 }

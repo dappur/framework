@@ -33,7 +33,7 @@ class InitDatabase extends Migration
         // Create Activations Table
         $this->schema->create('activations', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('user_id')->unsigned();
+            $table->integer('user_id')->unsigned()->nullable();
             $table->string('code');
             $table->boolean('completed')->default(0);
             $table->timestamp('completed_at')->nullable();
@@ -44,7 +44,7 @@ class InitDatabase extends Migration
         // Create Persistences Table
         $this->schema->create('persistences', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('user_id')->unsigned();
+            $table->integer('user_id')->unsigned()->nullable();
             $table->string('code')->unique();
             $table->timestamps();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
@@ -53,7 +53,7 @@ class InitDatabase extends Migration
         // Create Reminders Table
         $this->schema->create('reminders', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('user_id')->unsigned();
+            $table->integer('user_id')->unsigned()->nullable();
             $table->string('code');
             $table->boolean('completed')->default(0);
             $table->timestamp('completed_at')->nullable();
@@ -72,8 +72,8 @@ class InitDatabase extends Migration
 
         // Create Roles_Users Table
         $this->schema->create('role_users', function (Blueprint $table) {
-            $table->integer('user_id')->unsigned();
-            $table->integer('role_id')->unsigned();
+            $table->integer('user_id')->unsigned()->nullable();
+            $table->integer('role_id')->unsigned()->nullable();
             $table->timestamps();
             $table->primary(['user_id', 'role_id']);
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
@@ -107,8 +107,8 @@ class InitDatabase extends Migration
         // Create Config Table
         $this->schema->create('config', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('group_id')->unsigned();
-            $table->integer('type_id')->unsigned();
+            $table->integer('group_id')->unsigned()->nullable();
+            $table->integer('type_id')->unsigned()->nullable();
             $table->string('name')->unique();
             $table->string('description')->nullable();
             $table->text('value')->nullable();

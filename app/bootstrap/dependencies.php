@@ -32,7 +32,7 @@ $container['upload_dir'] = function ($container) {
 // Bind config table from database
 $container['config'] = function () use ($container) {
     $config = new \Dappur\Dappurware\SiteConfig($container);
-    return $config->getConfig();
+    return $config->getGlobalConfig();
 };
 
 // Bind Sentinel Authorization plugin

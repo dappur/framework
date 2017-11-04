@@ -144,7 +144,7 @@ class AdminSettings extends Controller
 
         $groups = ConfigGroups::orderBy('name')->get();
 
-        return $this->view->render($response, 'settings-global.twig', array("settingsGrouped" => $settings_grouped, "configTypes" => $types, "configGroups" => $groups, "themeList" => $theme_list, "timezones" => $timezones));
+        return $this->view->render($response, 'settings-global.twig', array("settingsGrouped" => $settings_grouped, "configTypes" => $types, "configGroups" => $groups, "themeList" => $theme_list, "timezones" => $timezones, "requestParams" => $allPostVars));
 
     }
 
@@ -174,10 +174,40 @@ class AdminSettings extends Controller
             $this->validator->addError('group_name', 'Name is already in use.');
         }
 
+        if ($allPostVars['page'] == 1) {
+            $this->validator->validate($request, 
+                array(
+                    'page_name' => array(
+                        'rules' => V::slug()->length(2, 32), 
+                        'messages' => array(
+                            'slug' => 'Alphanumeric and can contain hyphens.',
+                            'length' => 'Must be between 2 and 32 characters.'
+                        )
+                    ),
+                    'description' => array(
+                        'rules' => V::alnum('\'".')->length(2, 255), 
+                        'messages' => array(
+                            'alnum' => 'May only contain letters, numbers and \'".', 
+                            'length' => 'Must be between 2 and 255 characters.'
+                        )
+                    )
+                )
+            );
+        }
+
+        $check_name = ConfigGroups::where('page_name', '=', $allPostVars['page_name'])->get()->count();
+        if ($check_name > 0) {
+            $this->validator->addError('page_name', 'Name is already in use.');
+        }
+
         if ($this->validator->isValid()) {
 
             $configOption = new ConfigGroups;
             $configOption->name = $allPostVars['group_name'];
+            if ($allPostVars['page'] == 1) {
+                $configOption->page_name = $allPostVars['page_name'];
+                $configOption->description = $allPostVars['description'];
+            }
             $configOption->save();
 
             $this->flash('success', 'Config group successfully added.');
@@ -188,10 +218,11 @@ class AdminSettings extends Controller
         $timezones = $settings->getTimezones();
         $theme_list = $settings->getThemeList();
         $bootswatch = $settings->getBootswatch();
+        $settings_grouped = $settings->getSettingsByGroup();
 
         $global_config = Config::get();
 
-        return $this->view->render($response, 'settings-global.twig', array("settingsGrouped" => $settings_grouped, "configTypes" => $types, "configGroups" => $groups, "themeList" => $theme_list, "timezones" => $timezones));
+        return $this->view->render($response, 'settings-global.twig', array("settingsGrouped" => $settings_grouped, "configTypes" => $types, "configGroups" => $groups, "themeList" => $theme_list, "timezones" => $timezones, "requestParams" => $allPostVars));
 
     }
 

@@ -64,18 +64,9 @@ class Settings extends Dappurware
 
     public function getSettingsByGroup(){
 
-        $groups = ConfigGroups::get();
+        $groups = ConfigGroups::whereNull('page_name')->with('config')->get();
 
-        $sorted_groups = array();
-
-        foreach ($groups as $gkey => $gvalue) {
-            $sorted_groups[$gvalue['name']] = Config::where('group_id', '=', $gvalue['id'])
-                ->select('config.*', 'config_types.name as type')
-                ->leftJoin("config_types", "config_types.id", "=", "config.type_id")
-                ->get();
-        }
-
-        return $sorted_groups;
+        return $groups;
     }
 
 }

@@ -17,7 +17,8 @@ $app->group('/', function () {
 
 })
 ->add($container->get('csrf'))
-->add(new Dappur\Middleware\Maintenance($container));
+->add(new Dappur\Middleware\Maintenance($container))
+->add(new Dappur\Middleware\PageConfig($container));
 
 $app->map(['GET'], '/maintenance', 'App:maintenance')
 		->setName('maintenance-mode');

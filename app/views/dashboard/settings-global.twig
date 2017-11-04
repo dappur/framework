@@ -33,28 +33,28 @@
         <div class="row">
             <div class="col-lg-8">
                 <form action="{{ path_for('settings-global') }}" method="post">
-                    {% for key,value in settingsGrouped %}
+                    {% for item in settingsGrouped %}
                         <div class="panel panel-primary">
                             <div class="panel-heading">
-                                {{ key }}
+                                {{ item.name }}
                             </div>
                             
                             <div class="panel-body">
-                                    {% for item in value %}
-                                        {% if item.type == "theme" %}
-                                            {{ configMacro.configTheme(item.name, item.description, item.type, item.value, themeList) }}
-                                        {% elseif item.type == "string" %}
-                                            {{ configMacro.configString(item.name, item.description, item.type, item.value) }}
-                                        {% elseif item.type == "timezone" %}
-                                            {{ configMacro.configTimezone(item.name, item.description, item.type, item.value, timezones, cfg.timezone) }}
-                                        {% elseif item.type == "bootswatch" %}
-                                            {{ configMacro.configBootswatch(item.name, item.description, item.type, item.value, bsThemes) }}
-                                        {% elseif item.type == "image" %}
-                                            {{ configMacro.configImage(item.name, item.description, item.type, item.value) }}
-                                        {% elseif item.type == "boolean" %}
+                                    {% for item in item.config %}
+                                        {% if item.type_id == 3 %}
+                                            {{ configMacro.configTheme(item.name, item.description, "theme", item.value, themeList) }}
+                                        {% elseif item.type_id == 2 %}
+                                            {{ configMacro.configString(item.name, item.description, "string", item.value) }}
+                                        {% elseif item.type_id == 1 %}
+                                            {{ configMacro.configTimezone(item.name, item.description, "timezone", item.value, timezones, cfg.timezone) }}
+                                        {% elseif item.type_id == 4 %}
+                                            {{ configMacro.configBootswatch(item.name, item.description, "bootswatch", item.value, bsThemes) }}
+                                        {% elseif item.type_id == 5 %}
+                                            {{ configMacro.configImage(item.name, item.description, "image", item.value) }}
+                                        {% elseif item.type_id == 6 %}
                                             {{ configMacro.configBoolean(item.name, item.description, item.value) }}
                                         {% else %}
-                                            {{ configMacro.configDefault(item.name, item.description, item.type, item.value) }}
+                                            {{ configMacro.configDefault(item.name, item.description, item.value) }}
                                         {% endif %}
                                     {% endfor %}
                             </div>
@@ -84,12 +84,12 @@
                         <form action="{{ path_for('settings-global-add') }}" method="post">
                             <div class="form-group{% if has_error('add_name') %} has-error{% endif %}">
                                 <label for="name">Name</label>
-                                <input type="text" name="add_name" id="add_name" class="form-control" value="" required="required" placeholder="Name">
+                                <input type="text" name="add_name" id="add_name" class="form-control" value="{{ requestParams['add_name'] }}" required="required" placeholder="Name">
                                 <span class="help-block">{{ error('add_name') }}</span>
                             </div>
                             <div class="form-group{% if has_error('add_description') %} has-error{% endif %}">
                                 <label for="description">Description</label>
-                                <input type="text" name="add_description" id="add_description" class="form-control" value="" required="required" placeholder="Description">
+                                <input type="text" name="add_description" id="add_description" class="form-control" value="{{ requestParams['add_description'] }}" required="required" placeholder="Description">
                                 <span class="help-block">{{ error('add_description') }}</span>
                             </div>
                             <div class="form-group{% if has_error('add_group') %} has-error{% endif %}">
@@ -97,7 +97,7 @@
                                 <select name="add_group" id="add_group" class="form-control" required="required">
                                     <option value="">Select Group</option>
                                     {% for group in configGroups %}
-                                        <option value="{{ group.id }}">{{ group.name }}</option>
+                                        <option value="{{ group.id }}" {% if group.id == requestParams['add_group'] %}SELECTED{% endif %}>{{ group.name }}</option>
                                     {% endfor %}
                                 </select>
                                 <span class="help-block">{{ error('add_group') }}</span>
@@ -107,14 +107,16 @@
                                 <select name="add_type" id="add_type" class="form-control" required="required">
                                     <option value="">Select Type</option>
                                     {% for type in configTypes %}
-                                        <option value="{{ type.id }}">{{ type.name }}</option>
+                                        <option value="{{ type.id }}" {% if type.id == requestParams['add_type'] %}SELECTED{% endif %}>{{ type.name }}</option>
                                     {% endfor %}
                                 </select>
                                 <span class="help-block">{{ error('add_type') }}</span>
                             </div>
                             <div class="form-group{% if has_error('add_value') %} has-error{% endif %}">
                                 <label for="value">Value</label>
-                                <input type="text" name="add_value" id="add_value" class="form-control" value="" placeholder="Value">
+                                <span id="value_input">
+                                    <input type="text" name="add_value" id="add_value" class="form-control" value="{{ requestParams['add_value'] }}" placeholder="Value">
+                                </span>
                                 <span class="help-block">{{ error('add_value') }}</span>
                             </div>
 
@@ -139,10 +141,42 @@
 
                     <div class="panel-body">
                         <form action="{{ path_for('settings-global-group-add') }}" method="post">
-                            <div class="form-group{% if has_error('group_name') %} has-error{% endif %}">
-                                <label for="name">Name</label>
-                                <input type="text" name="group_name" id="group_name" class="form-control" value="" required="required" placeholder="Name">
-                                <span class="help-block">{{ error('group_name') }}</span>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group{% if has_error('group_name') %} has-error{% endif %}">
+                                        <label for="name">Name</label>
+                                        <input type="text" name="group_name" id="group_name" class="form-control" value="{{ requestParams['group_name'] }}" required="required" placeholder="Name">
+                                        <span class="help-block">{{ error('group_name') }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group{% if has_error('page') %} has-error{% endif %}">
+                                        <label for="type">Page</label>
+                                        <select name="page" id="page" class="form-control" required="required">
+                                            <option value="0">False</option>
+                                            <option value="1" {% if requestParams['page'] == 1 %}SELECTED{% endif %}>True</option>
+                                        </select>
+                                        <span class="help-block">{{ error('page') }}</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 ispage" style="display: none;">
+                                    <div class="form-group{% if has_error('page_name') %} has-error{% endif %}">
+                                        <label for="name">Page Name</label>
+                                        <input type="text" name="page_name" id="page_name" class="form-control" value="{{ requestParams['page_name'] }}" placeholder="Page Name" novalidate>
+                                        <span class="help-block">{{ error('page_name') }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12 ispage" style="display: none;">
+                                    <div class="form-group{% if has_error('description') %} has-error{% endif %}">
+                                        <label for="name">Description</label>
+                                        <input type="text" name="description" id="description" class="form-control" value="{{ requestParams['description'] }}" placeholder="Description" novalidate>
+                                        <span class="help-block">{{ error('description') }}</span>
+                                    </div>
+                                </div>
                             </div>
 
                             {{ csrf() }}
@@ -170,6 +204,7 @@
                                 <tr>
                                     <th>ID</th>
                                     <th>Name</th>
+                                    <th>Page</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
@@ -178,8 +213,9 @@
                                     <tr>
                                         <td>{{ group.id }}</td>
                                         <td>{{ group.name }}</td>
+                                        <td>{{ group.page_name }}</td>
                                         <td>
-                                            {% if auth.hasAccess('config.delete') and settingsGrouped[group.name]|length == 0 %}
+                                            {% if auth.hasAccess('settings.delete') and group.id != 1 and group.id != 2 %}
                                                 <form action="{{ path_for('settings-global-group-delete') }}" method="post" style="display: inline;">
                                                     <input type="hidden" name="group_id" value="{{ group.id }}" />
                                                     {{csrf()}}
@@ -216,6 +252,58 @@ $(document).ready(function() {
         stateSave: true
 
     });
+
+    if ($('#page').val() == 1) {
+        $('.ispage').show();
+    }else{
+        $('.ispage').hide();
+    }
+});
+
+$(document).on('change', '#page', function(){
+    if ($(this).val() == 1) {
+        $('.ispage').show();
+    }else{
+        $('.ispage').hide();
+    }
+});
+
+$(document).on('change', '#add_type', function(){
+    var type_id = $(this).val();
+    if (type_id == 6) {
+        $('#value_input').html('<select name="add_value" id="add_value" class="form-control" required="required">' +
+            '<option value="0">False</option>' +
+            '<option value="1" {% if requestParams['add_value'] == 1 %}SELECTED{% endif %}>True</option>' +
+        '</select>');
+    }else if (type_id == 5) {
+        $('#value_input').html('<div class="input-group dm-input" data-name="add_value" data-value="{{ requestParams['add_value'] }}"></div>');
+        DappurMedia.refreshInputs();
+        /*
+        $("#add_value").html(
+            '<span class="input-group-btn">'+
+                '<img id="'+inputName+'-thumbnail" src="'+inputValue+'" style="max-height: 30px; max-width: 30px;" />'+
+            '</span>'+
+            '<input type="text" name="'+inputName+'" id="'+inputName+'" class="form-control" value="'+inputValue+'">'+
+            '<span class="input-group-btn">'+
+                '<button type="button" class="btn btn-default image-preview" data-target="'+inputName+'"><i class="fa fa-eye"></i></button>'+
+                '<button type="button" class="btn btn-default image-select" data-target="'+inputName+'"><i class="fa fa-picture-o"></i></button>'+
+            '</span>'
+        );
+        */
+
+    }else if (type_id == 4) {
+        $('#value_input').html('<input type="text" name="add_value" id="add_value" class="form-control" value="{{ requestParams['add_value'] }}" placeholder="Value">');
+    }else if (type_id == 3) {
+        $('#value_input').html('<input type="text" name="add_value" id="add_value" class="form-control" value="{{ requestParams['add_value'] }}" placeholder="Value">');
+    }else if (type_id == 2) {
+        $('#value_input').html('<input type="text" name="add_value" id="add_value" class="form-control" value="{{ requestParams['add_value'] }}" placeholder="Value">');
+    }else if (type_id == 1) {
+        $('#value_input').html('<input type="text" name="add_value" id="add_value" class="form-control" value="{{ requestParams['add_value'] }}" placeholder="Value">');
+    }else{
+        $('#value_input').html('<input type="text" name="add_value" id="add_value" class="form-control" value="{{ requestParams['add_value'] }}" placeholder="Value">');
+    }
+
+
 });
 </script>
 {% endblock %}

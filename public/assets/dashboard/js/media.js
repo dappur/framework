@@ -257,6 +257,25 @@ var DappurMedia = new function() {
 
     };
 
+    this.refreshInputs = function() {
+        $(".dm-input").each(function() {
+            var inputName = $(this).data("name");
+            var inputValue = $(this).data("value");
+
+            $(this).html(
+                '<span class="input-group-btn">'+
+                    '<img id="'+inputName+'-thumbnail" src="'+inputValue+'" style="max-height: 30px; max-width: 30px;" />'+
+                '</span>'+
+                '<input type="text" name="'+inputName+'" id="'+inputName+'" class="form-control" value="'+inputValue+'">'+
+                '<span class="input-group-btn">'+
+                    '<button type="button" class="btn btn-default image-preview" data-target="'+inputName+'"><i class="fa fa-eye"></i></button>'+
+                    '<button type="button" class="btn btn-default image-select" data-target="'+inputName+'"><i class="fa fa-picture-o"></i></button>'+
+                '</span>'
+            );
+
+        });
+    }
+
 
 
     $(document).on('click', '#media-menu', function(){
@@ -415,33 +434,28 @@ var DappurMedia = new function() {
         var clExists;
         try { DappurCloudinary; clExists = true;} catch(e) {}
         if (clExists) {
-            $(".image-select").on('click', function(e){
+            $(document).on('click', ".image-select", function(e){
                 e.preventDefault();
                 DappurCloudinary.loadCloudinary("input", $(this).attr('data-target'));
             });
         }else{
-            $(".image-select").on('click', function(e){
+            $(document).on('click', ".image-select", function(e){
                 e.preventDefault();
                 DappurMedia.loadMedia("input", $(this).attr('data-target'));
-
             });
-
-            
         }
+    });
 
-        $(document).on('click', '#media-info-btn-insert', function(){
+    $(document).on('click', '#media-info-btn-insert', function(){
 
-            var filePath = $("#file-info").data("filepath");
+        var filePath = $("#file-info").data("filepath");
 
-            var target = DappurMedia.getUrlParameter('target');
+        var target = DappurMedia.getUrlParameter('target');
 
-            $(parent.document).find("#"+target).val(filePath);
-            $(parent.document).find("#"+target+"-thumbnail").attr("src", filePath);
-            window.parent.$("#media-modal").modal("hide");
-           
-        });
-
-        
+        $(parent.document).find("#"+target).val(filePath);
+        $(parent.document).find("#"+target+"-thumbnail").attr("src", filePath);
+        window.parent.$("#media-modal").modal("hide");
+       
     });
 
 
