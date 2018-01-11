@@ -27,7 +27,7 @@
     		<div class="col-xs-12">
 		    	<h2>Categories</h2>
 		    	<ul class="list-group">
-		    		{% for category in blogCategories %}
+		    		{% for category in categories %}
 		    		    <li class="list-group-item">
 					    	<span class="badge">{{category.count}}</span>
 					    	{{category.name}}
@@ -41,7 +41,7 @@
 		<div class="row">
     		<div class="col-xs-12">
 		    	<h2>Tags</h2>
-	    		{% for tag in blogTags %}
+	    		{% for tag in tags %}
 				  	<a style="text-decoration: none; cursor: pointer;">
 					  	<span class="label" style="font-size: 12px; height: 16px; line-height: 12px; color: #000;">
 					  		{{tag.name}} 

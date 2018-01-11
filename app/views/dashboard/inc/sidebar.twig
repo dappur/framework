@@ -25,6 +25,12 @@
     </li>
     {% endif %}
 
+    {% if auth.hasAccess('blog.view') %}
+    <li {% if currentRoute starts with '/dashboard/blog' %}class="active"{% endif %}>
+        <a href="{{ path_for('admin-blog')}}"><i class="fa fa-fw fa-newspaper-o"></i> Blog</a>
+    </li>
+    {% endif %}
+
     {% if auth.hasAccess('media.local') %}
     <li {% if currentRoute starts with '/dashboard/media' %}class="active"{% endif %}>
         <a style="cursor: pointer;" id="media-menu"><i class="fa fa-cloud fa-fw"></i> Local CMS</a>
@@ -58,7 +64,7 @@
 
     {% if auth.hasAccess('settings.view') %}
     <li {% if currentRoute == '/dashboard/settings/global' %}class="active"{% endif %}>
-        <a href="{{ path_for('settings-global')}}"><i class="fa fa-cogs fa-fw"></i> Settings</a>
+        <a href="{{ path_for('settings-global')}}"><i class="fa fa-cogs fa-fw"></i> Global Settings</a>
     </li>
     {% endif %}
 

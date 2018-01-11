@@ -66,6 +66,9 @@ $app->group('/dashboard', function () use($app) {
 
         $app->map(['POST'], '/delete', 'AdminMedia:mediaDelete')
             ->setName('admin-media-delete');
+
+        $app->map(['GET'], '/cloudinary-sign', 'AdminMedia:cloudinarySign')
+            ->setName('cloudinary-sign');
     });
 
     // Email Manager

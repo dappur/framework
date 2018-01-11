@@ -1,0 +1,18 @@
+<?php
+namespace Dappur\Model;
+use Illuminate\Database\Eloquent\Model;
+
+class BlogCategories extends Model {
+
+    protected $table = 'blog_categories';
+    protected $primaryKey = 'id';
+    protected $fillable = [
+        'name',
+        'slug'
+    ];
+
+    public function posts() {
+        return $this->hasMany('\Dappur\Model\BlogPosts', 'category_id');
+    }
+    
+}

@@ -1,6 +1,7 @@
 <?php
 
 namespace Dappur\Dappurware;
+use Dappur\Dappurware\Settings;
 
 class Recaptcha extends Dappurware
 {

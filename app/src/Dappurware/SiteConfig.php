@@ -3,7 +3,7 @@
 namespace Dappur\Dappurware;
 use Dappur\Model\ConfigGroups;
 
-Class SiteConfig extends Dappurware 
+Class SiteConfig
 {
 
 	public function getGlobalConfig() 
@@ -19,9 +19,6 @@ Class SiteConfig extends Dappurware
 	    }
 
 	    $cfg['copyright-year'] = date("Y");
-
-	    //Set Default Timezone
-	    date_default_timezone_set($cfg['timezone']);
 
 	    return $cfg;
 	}

@@ -45,6 +45,20 @@ var DappurCloudinary = new function() {
                                 break;
                         }
                         break;
+                    case "blog":
+                        switch (json.message) {
+                            case "insert_into_post":
+                                //$.getScript( "https://cdnjs.cloudflare.com/ajax/libs/tinymce/4.7.1/tinymce.min.js", function( data, textStatus, jqxhr ) {
+                                    top.tinymce.activeEditor.insertContent('<img src="'+json.src+'" class="img-responsive" style="width: 100%;" />');
+                                    window.parent.$("#media-modal").modal("hide");
+                                //});
+                                DappurCloudinary.closeCloudinary();
+                                break;
+                            case "done": 
+                                DappurCloudinary.closeCloudinary();
+                                break;
+                        }
+                        break;
                 }
             },
             onReady: function() {

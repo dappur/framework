@@ -97,8 +97,13 @@
                                 </div>
                                 <div class="col-md-6 ispage" style="display: none;">
                                     <div class="form-group{% if has_error('page_name') %} has-error{% endif %}">
-                                        <label for="name">Page Name</label>
-                                        <input type="text" name="page_name" id="page_name" class="form-control" value="{{ requestParams['page_name'] }}" placeholder="Page Name" novalidate>
+                                        <label for="page_name">Route Name</label>
+                                        <select name="page_name" id="page_name" class="form-control" novalidate>
+                                            <option value=""></option>
+                                            {% for item in allRoutes %}
+                                                <option value="{{item}}">{{item}}</option>
+                                            {% endfor %}
+                                        </select>
                                         <span class="help-block">{{ error('page_name') }}</span>
                                     </div>
                                 </div>

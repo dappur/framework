@@ -103,6 +103,8 @@
     <script type="text/javascript">DappurCloudinary.cmsUrl = "{{cloudinaryCmsUrl}}";</script>
     {% endif %}
 
+    <script type="text/javascript">var hasCloudinary = {% if hasCloudinary and auth.hasAccess('media.cloudinary') %}true{% else %}false{% endif %};</script>
+
     {# Load Media Manager #}
     {% if auth.hasAccess('media.local') %}
     <script src="{{ asset('dashboard/js/media.min.js') }}"></script>

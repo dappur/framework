@@ -27,6 +27,12 @@ var DappurMedia = new function() {
                     '?source=blog&target='+target+'"></iframe>'
                 );
                 break;
+            case "blog_featured":
+                $("#media-modal-body").html('<iframe id="dappurmedia" width="100%" height="475px" frameborder="0" marginheight="0" marginwidth="0" src="'+
+                    this.managerUrl+
+                    '?source=blog_featured&target='+target+'"></iframe>'
+                );
+                break;
         }
         $('#media-modal').modal('show');
     };
@@ -464,15 +470,15 @@ var DappurMedia = new function() {
             $(parent.document).find("#"+target+"-thumbnail").attr("src", filePath);
             window.parent.$("#media-modal").modal("hide");
         }else if (source == "blog") {
-            $(parent.document).find("#"+target).append(filePath);
-            $('textarea.tinymce').tinymce({
-                
+            $.getScript( "https://cdnjs.cloudflare.com/ajax/libs/tinymce/4.7.1/tinymce.min.js", function( data, textStatus, jqxhr ) {
+                top.tinymce.activeEditor.insertContent('<img src="'+filePath+'" class="img-responsive" style="width: 100%;" />');
+                window.parent.$("#media-modal").modal("hide");
             });
-            tinyMCE.activeEditor.dom.get('post_content').execCommand('mceInsertContent', false, filePath);
+            
+        }else if (source == "blog_featured") {
+            window.parent.$("#featured_thumbnail").html('<img src="'+filePath+'" class="img-responsive" alt="Featured Image" style="width: 100%;"><input type="hidden" name="featured_image" value="'+filePath+'">');            
             window.parent.$("#media-modal").modal("hide");
         }
-
-        
        
     });
 

@@ -13,8 +13,9 @@ javascript
 
 {% block stylesheets %}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/css/select2.min.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2-bootstrap-css/1.4.6/select2-bootstrap.min.css">
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2-bootstrap-theme/0.1.0-beta.10/select2-bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-daterangepicker/2.1.25/daterangepicker.min.css" />
+    <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
 {% endblock %}
 
 {% block body %}
@@ -41,15 +42,15 @@ javascript
                                 <span class="help-block">{{ error('title') }}</span>
                             </div>
 
-                            <div class="form-group{% if has_error('slug') %} has-error{% endif %}">
-                                <label for="slug">SEO Slug</label>
-                                <input type="text" name="slug" class="form-control" id="slug" placeholder="SEO Slug" value="{% if requestParams.slug %}{{requestParams.slug}}{% endif %}" required="required">
-                                <span class="help-block">{{ error('slug') }}</span>
+                            <div class="form-group{% if has_error('description') %} has-error{% endif %}">
+                                <label for="description">Description</label>
+                                <input type="text" name="description" class="form-control" id="description" placeholder="Description" value="{% if requestParams.description %}{{requestParams.description}}{% endif %}" required="required">
+                                <span class="help-block">{{ error('description') }}</span>
                             </div>
 
                             <div class="form-group{% if has_error('post_content') %} has-error{% endif %}">
                                 <label for="post_content">Content</label>
-                                <textarea name="post_content" class="form-control" id="post_content" placeholder="Post Content" required="required">
+                                <textarea name="post_content" class="form-control tinymce" id="post_content" placeholder="Post Content" required="required">
                                     {% if requestParams.post_content %}{{requestParams.post_content}}{% endif %}
                                 </textarea>
                                 <span class="help-block">{{ error('post_content') }}</span>
@@ -80,22 +81,53 @@ javascript
                                 </select>
                                 <span class="help-block">{{ error('tags') }}</span>
                             </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group{% if has_error('publish_at') %} has-error{% endif %}">
+                                        <label for="publish_at">Publish At <span style="font-weight: normal;">({{config['timezone']}})</span></label>
+                                        <input type="text" name="publish_at" class="form-control" id="publish_at" placeholder="Publish At" value="{% if requestParams.publish_at %}{{requestParams.publish_at}}{% endif %}" required="required">
+                                        <span class="help-block">{{ error('publish_at') }}</span>
+                                    </div>
+                                </div>
 
-                            <div class="form-group{% if has_error('featured_image') %} has-error{% endif %}">
-                                <label for="cl_upload">Featured Image (Resized to 1200px by 630px)</label>
-
-                                
-                                <div class="progress_percent" style="display: none;">0%</div>
-                                <div class="progress_bar" style="background-color: #000; width: 0px; border-radius: 30px; display: none;">&nbsp;</div>
-                                <input type="hidden" name="featured_image" id="featured_image" data-token="" value="{{requestParams.featured_image}}" required />
-                                <span class="help-block">{{ error('featured_image') }}</span>
-                                <div id="featured_preview" style="text-align: center;">
-                                    {% if requestParams.featured_image %}
-
-                                    {% endif %}
+                                <div class="col-md-6">
+                                    <div class="form-group{% if has_error('status') %} has-error{% endif %}">
+                                        <label for="status">Status </label>
+                                        <br /><input type="checkbox" name="status" class="form-control" id="status" {% if requestParams.status %}checked{% endif %}>
+                                        <span class="help-block">{{ error('status') }}</span>
+                                    </div>
                                 </div>
                             </div>
 
+                            <div class="form-group{% if has_error('featured_image') %} has-error{% endif %}">
+                                <label for="cl_upload">Featured Image (Recommended 1200px by 630px)</label>
+                                <div class="row">
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <a class="btn btn-block upload-featured-local">
+                                                <span class="fa fa-upload"></span> via Local CMS
+                                            </a>
+                                        </div>
+                                    </div>
+                                    {% if hasCloudinary %}
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <a class="btn btn-block upload-featured-cloudinary">
+                                                <span class="fa fa-upload"></span> via Cloudinary
+                                            </a>
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                <div class="row">
+                                    <div class="col-xs-12">
+                                        <div class="form-group" id="featured_thumbnail" delete-token="">
+                                              <img src="https://placehold.it/400x210?text=No+Featured+Photo" class="img-responsive" alt="Image" style="width: 100%;">
+                                        </div>
+                                    </div>
+                                </div> 
+
+                            </div>
                             <div class="form-group{% if has_error('video_id') or has_error('video_provider') %} has-error{% endif %}" id="fv_group">
                                 <label for="video_id">Featured Video</label>
                                 <div class="input-group">
@@ -145,53 +177,160 @@ javascript
         </div>
     </div>
 
-    <button type="button" class="btn btn-default" id="test-button">button</button>
 {% endblock %}
 
 {% block javascript %}
 <!-- Select2 Dropdowns -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/js/select2.min.js" type="text/javascript"></script>
-
-
-{#
-{{cloudinary_js_config()}}
-<script src="/assets/default/js/blog/featured.upload.min.js" type="text/javascript"></script>
-
-<!-- Featured Video -->
-<script src="/assets/default/js/jsVideoUrlParser.min.js" type="text/javascript"></script>
-<script src="/assets/default/js/blog/featuredvideo.min.js" type="text/javascript"></script>
-#}
-<script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/4.7.1/tinymce.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-daterangepicker/2.1.25/moment.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-daterangepicker/2.1.25/daterangepicker.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/4.7.1/tinymce.min.js" type="text/javascript"></script>
+<script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+<script src="{{ asset('dashboard/js/tinymce-init.min.js') }}" type="text/javascript"></script>
+<script src="{{ asset('dashboard/js/video-parser.min.js') }}" type="text/javascript"></script>
+{% if hasCloudinary %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cloudinary-jquery-file-upload/2.3.0/cloudinary-jquery-file-upload.min.js"></script>
+{{ cloudinary_js_config() }}
+<script src="//widget.cloudinary.com/global/all.js" type="text/javascript"></script>
 <script type="text/javascript">
 
+var generateSignature = function(callback, params_to_sign){
+    $.ajax({
+        url     : "/dashboard/media/cloudinary-sign",
+        type    : "GET",
+        dataType: "text",
+        data    : { data: params_to_sign},
+        success : function(signature, textStatus, xhr) { callback(signature); },
+        error   : function(xhr, status, error) { console.log(xhr, status, error); }
+    });
+}
+
+$('.upload-featured-cloudinary').cloudinary_upload_widget(
+    { 
+        cloud_name: 'dappur', 
+        thumbnails: false,
+        upload_signature: generateSignature,
+        api_key: '{{ cloudinarySignature.api_key|raw }}', 
+        button_class: 'btn btn-info form-control',
+        button_caption: '<span class="fa fa-upload"></span> via Cloudinary',
+        cropping: 'server',
+        cropping_aspect_ratio: 1.90476190476, 
+        cropping_validate_dimensions: true, 
+        cropping_show_dimensions: true,
+        cropping_coordinates_mode: 'custom',
+        folder: 'blog/',
+        min_image_width: 1200,
+        min_image_height: 630, 
+        show_powered_by: false,
+        sources: [
+            'local',
+            'url',
+            'camera',
+        ],
+        multiple: false,
+        theme: 'white'
+    },
+    function(error, result) { 
+        if (result) {
+
+            var deleteToken = $("#featured_thumbnail").attr('delete-token');
+            if (deleteToken != "") {
+                $.cloudinary.delete_by_token(deleteToken);
+            }
+
+            $("#featured_thumbnail").html('<img src="'+result[0].secure_url+'" class="img-responsive" alt="Featured Image" style="width: 100%;"><input type="hidden" name="featured_image" value="'+result[0].secure_url+'">');
+            $("#featured_thumbnail").attr('delete-token', result[0].delete_token);
+        }
+    }
+);
+</script>
+{% endif %}
+
+<script type="text/javascript">
 $(document).ready(function() {
 
-    tinymce.init({
-        selector: "textarea",
-        theme: "modern",
-        height: "300", 
-        paste_data_images: true,
-        plugins: [
-          "advlist autolink lists link charmap print preview hr anchor pagebreak image",
-          "searchreplace wordcount visualblocks visualchars code fullscreen",
-          "insertdatetime media nonbreaking save table contextmenu directionality",
-          "emoticons template paste textcolor colorpicker textpattern imagetools"
-        ],
-        toolbar1: "undo redo | styleselect forecolor backcolor | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link",
-        toolbar2: "image media",
-        bootstrapConfig: {
-            'imagesPath': '/uploads/' // replace with your images folder path
-        },
-        branding: false
+    $('#fvButton').on('click', function (e) {
+        e.preventDefault();
+    })
+
+    $('#video_url').on('keypress', function (e) {
+        if(e.which === 13){
+            e.preventDefault();
+            $('#video_url').blur();
+        }
+    });
+
+    $('#video_url').on('focusout', function (e) {
+        if ($(this).val() != "") {
+            $("#video_url").attr("disabled", true);
+
+            var featuredVideo = urlParser.parse($("#video_url").val());
+
+            if (featuredVideo) {
+                // Start the loading spinner
+                $("#video_preview").html('<span class="help-block">Processing Video... <i class="fa fa-spinner"></i></span>');
+
+                // Set the form video details
+                $("#video_provider").val(featuredVideo.provider);
+                $("#video_id").val(featuredVideo.id);
+
+                // Remove the error class from the form.
+                $("#fv_group").removeClass('has-error');
+
+                if (featuredVideo.provider === "youtube") {
+
+                    $("#video_preview").html('<div class="video-container"><iframe src="https://www.youtube.com/embed/'+featuredVideo.id+'" frameborder="0" allowfullscreen></iframe></div>');
+
+                } else if (featuredVideo.provider === "vimeo"){
+
+                    $("#video_preview").html('<div class="video-container"><iframe src="https://player.vimeo.com/video/'+featuredVideo.id+'" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowfullscreen></iframe></div>');
+
+                }else{
+                    $("#video_preview").html('<span class="help-block">That is not a supported video provider.</span>');
+                    $("#fv_group").addClass('has-error')
+                }
+
+
+            }else{
+                $("#video_preview").html('<span class="help-block">That is not a valid video url.</span>');
+                $("#fv_group").addClass('has-error');
+            }
+            $("#video_url").val("");
+            $("#video_url").attr("disabled", false);
+        }
+    });
+
+    $('#status').bootstrapToggle({
+      on: 'Published',
+      off: 'Draft',
+      width: '100%'
     });
 
     $('#tags').select2({
-        tags: true
+        tags: true,
+        width: '100%'
     });
+
+    $('#category').select2({
+        tags: true,
+        width: '100%'
+    });
+
+    
+    $('#publish_at').daterangepicker({
+        startDate: '{{ "now"|date("m/d/Y h:i A") }}',
+        singleDatePicker: true,
+        timePicker: true,
+        timePickerIncrement: 1,
+        locale: {
+            format: 'MM/DD/YYYY h:mm A'
+        }
+    });
+    
 });
 
-$(document).on('click', '#test-button', function(){
-    DappurMedia.loadMedia('blog', 'post_content');
+$(document).on('click', '.upload-featured-local', function(){
+    DappurMedia.loadMedia('blog_featured', null);
 });
 </script>
 {% endblock %}

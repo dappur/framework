@@ -7,6 +7,7 @@ use Dappur\Model\Config;
 use Dappur\Model\ConfigGroups;
 use Dappur\Model\EmailsTemplates;
 use Dappur\Model\Emails;
+use Carbon\Carbon;
 
 
 class Email extends Dappurware
@@ -27,18 +28,12 @@ class Email extends Dappurware
             $output['User Info'][] = array("name" => "user_" . str_replace("-", "_", $key));
         }
 
-        $config = Config::select('config.*')->leftJoin("config_groups", "config_groups.id", "=", "config.id")->get()->toArray();
-        $config_groups = ConfigGroups::get()->toArray();
-
-        foreach ($config as $cvalue) { 
-            $output[$cvalue['group_id']][] = array("name" => "settings_" . str_replace("-", "_", $cvalue['name']), "value" => $cvalue['value']);
-        }
+        $config_groups = ConfigGroups::with('config')->whereNull('page_name')->get();
 
         foreach ($config_groups as $cgvalue) {
 
-            if ($output[$cgvalue['id']]) {
-                $output[$cgvalue['name']] = $output[$cgvalue['id']];
-                unset($output[$cgvalue['id']]);
+            foreach ($cgvalue->config as $key2 => $value2) {
+                $output[$cgvalue->name][] = array("name" => "settings_" . str_replace("-", "_", $value2->name), "value" => $value2->value);
             }
             
         }
@@ -47,7 +42,7 @@ class Email extends Dappurware
     }
 
 
-    private function send($email, $subject, $html, $plain_text){
+    private function send($email, $subject, $html, $plain_text, $template_id = null){
 
         $output = array();
 
@@ -67,6 +62,12 @@ class Email extends Dappurware
             $output['error'] = $mail->ErrorInfo;
         } else {
             if ($this->settings['mail']['logging']) {
+
+                //Delete Old Emails
+                if ($this->settings['mail']['log_retention']) {
+                    Emails::where('created_at', '<', Carbon::now()->subDays($this->settings['mail']['log_retention']))->delete();
+                }
+
                 $add_email = new Emails;
                 $add_email->secure_id = bin2hex(mcrypt_create_iv(22, MCRYPT_DEV_URANDOM));
                 $add_email->template_id = $template_id;
@@ -88,6 +89,7 @@ class Email extends Dappurware
 
     private function parseRecipients(Array $send_to){
         $output = array();
+        $output['users'] = array();
         foreach ($send_to as $value) {
             if (is_int($value)) {
                 // If int, get user email
@@ -127,10 +129,14 @@ class Email extends Dappurware
         
         $output = array();
 
-        foreach ($placeholders as $key => $value) {
+        foreach ($placeholders as $value) {
+            
             foreach ($value as $key2 => $value2) {
-                $output[$value2['name']] = $value2['value'];
+                if (isset($value2['value'])) {
+                    $output[$value2['name']] = $value2['value'];
+                }
             }
+
         }
 
         return $output;
@@ -160,15 +166,17 @@ class Email extends Dappurware
                 // Process Custom Placeholders
                 $tplaceholders = json_decode($template->placeholders);
 
-                foreach ($tplaceholders as $value) {
-
-                    if (isset($params[$value])) {
-                        $placeholders['Template'][] = array("name" => $value, "value" => $params[$value]);
+                if ($tplaceholders) {
+                    foreach ($tplaceholders as $value) {
+                        if (isset($params[$value])) {
+                            $placeholders['Template'][] = array("name" => $value, "value" => $params[$value]);
+                        }
                     }
                 }
+                
 
                 // Send Email To Users
-                if ($recipients['users']) {
+                if (!empty($recipients['users'])) {
                     foreach ($recipients['users'] as $uvalue) {
                         // Process Bodies with Custom and System Placeholders
                         $user_temp = Users::find($uvalue);
@@ -194,7 +202,7 @@ class Email extends Dappurware
                         $subject_temp = new \Twig_Environment(new \Twig_Loader_Array([$template->slug . '_sub' => $subject]));
                         $subject_temp = $subject_temp->render($template->slug . '_sub', $placeholders_temp);
 
-                        $send = $this->send($user_temp->email, $subject_temp, $html_temp, $plain_text_temp, $template->id);
+                        $send = $this->send($user_temp->email, html_entity_decode($subject_temp), $html_temp, $plain_text_temp, $template->id);
 
                         if ($send['result']) {
                             $output['results']['success'][] = array("email" => $user_temp->email);
@@ -205,7 +213,7 @@ class Email extends Dappurware
                 }
 
                 // Send Email to Email Addresses
-                if ($recipients['email']) {
+                if (!empty($recipients['email'])) {
 
                     $placeholders_temp = $this->preparePlaceholders($placeholders);
                     
@@ -222,7 +230,7 @@ class Email extends Dappurware
                         $subject_temp = new \Twig_Environment(new \Twig_Loader_Array([$template->slug . '_sub' => $subject]));
                         $subject_temp = $subject_temp->render($template->slug . '_sub', $placeholders_temp);
 
-                        $send = $this->send($evalue, $subject_temp, $html_temp, $plain_text_temp, $template->id);
+                        $send = $this->send($evalue, html_entity_decode($subject_temp), $html_temp, $plain_text_temp, $template->id);
 
                         if ($send['result']){
                             $output['results']['success'][] = array("email" => $evalue);
@@ -284,7 +292,7 @@ class Email extends Dappurware
                     $subject_temp = new \Twig_Environment(new \Twig_Loader_Array([$template->slug . '_sub' => $subject]));
                     $subject_temp = $subject_temp->render($template->slug . '_sub', $placeholders_temp);
 
-                    if (Email::send($user_temp->email, $subject_temp, $html_temp, $plain_text_temp, $template->id)) {
+                    if (Email::send($user_temp->email, html_entity_decode($subject_temp), $html_temp, $plain_text_temp, $template->id)) {
                         $output['results']['success'][] = array("email" => $user_temp->email);
                     }else{
                         $output['results']['errors'][] = array("email" => $user_temp->email, "error" => $result['error']);

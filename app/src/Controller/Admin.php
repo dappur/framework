@@ -171,39 +171,4 @@ class Admin extends Controller{
 
         return $this->view->render($response, 'my-account.twig', array("requestParams" => $requestParams));
     }
-
-    public function getCloudinaryCMS($container){
-
-        $sentinel = new S($container);
-        $sentinel->hasPerm('media.cloudinary');
-
-        // Generate Timestamp
-        $date = new \DateTime();
-        $timestamp = $date->getTimestamp();
-        
-        // Prepare Cloudinary CMS Params
-        $params = array("timestamp" => $timestamp, "mode" => "tinymce");
-
-        // Prepare Cloudinary Options
-        $options = array("cloud_name" => $container->settings['cloudinary']['cloud_name'],
-            "api_key" => $container->settings['cloudinary']['api_key'],
-            "api_secret" => $container->settings['cloudinary']['api_secret']);
-
-        // Sign Request With Cloudinary
-        $output = \Cloudinary::sign_request($params, $options);
-
-        if ($output) {
-            // Build the http query
-            $api_params_cl = http_build_query($output);
-
-            // Complete the Cloudinary URL
-            $cloudinary_cms_url = "https://cloudinary.com/console/media_library/cms?$api_params_cl";
-
-            return $cloudinary_cms_url;
-        }else{
-            return false;
-        }
-        
-    }
-
 }

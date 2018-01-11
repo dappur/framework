@@ -15,7 +15,11 @@ class Config extends Model {
         'value'
     ];
 
-    public function configGroups() {
-        return $this->belongsTo('\Dappur\Model\ConfigGroups', 'group_id');
+    public function group(){
+        return $this->hasOne('\Dappur\Model\ConfigGroups', 'group_id');
+    }
+
+    public function type(){
+        return $this->hasOne('\Dappur\Model\ConfigTypes', 'type_id');
     }
 }

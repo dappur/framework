@@ -5,14 +5,14 @@ namespace Dappur\Dappurware;
 use Dappur\Model\Config;
 use Dappur\Model\ConfigGroups;
 
-class Settings extends Dappurware
+
+class Settings
 {
 	public function getTimezones(){
 
         $zones_array = array();
         $timestamp = time();
         foreach(timezone_identifiers_list() as $key => $zone) {
-            date_default_timezone_set($zone);
             $zones_array[$key]['zone'] = $zone;
             $zones_array[$key]['diff_from_GMT'] = 'UTC/GMT ' . date('P', $timestamp);
         }
@@ -52,7 +52,10 @@ class Settings extends Dappurware
 
     public function getBootswatch(){
 
-        $bootswatch = json_decode(file_get_contents($this->container->settings['view']['bootswatch']['api_url']));
+        $settings = Settings::getSettingsFile();
+
+
+        $bootswatch = json_decode(file_get_contents($settings['view']['bootswatch']['api_url']));
 
         $output = array();
         foreach ($bootswatch->themes as $key => $value) {

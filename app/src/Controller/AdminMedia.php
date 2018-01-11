@@ -6,6 +6,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use Respect\Validation\Validator as V;
 use Dappur\Dappurware\Sentinel as S;
+use Cloudinary;
 
 class AdminMedia extends Controller{
 
@@ -261,5 +262,84 @@ class AdminMedia extends Controller{
         $requestParams = $request->getParams();
 
         return $this->view->render($response, 'media.twig', array("requestParams" => $requestParams));
+    }
+
+    public function getCloudinaryCMS($container, $signature_only = false){
+
+        $sentinel = new S($container);
+        $sentinel->hasPerm('media.cloudinary');
+
+        // Generate Timestamp
+        $date = new \DateTime();
+        $timestamp = $date->getTimestamp();
+        
+        // Prepare Cloudinary CMS Params
+        
+
+        if ($signature_only) {
+            $params = array("timestamp" => $timestamp);
+        }else{
+            $params = array("timestamp" => $timestamp, "mode" => "tinymce");
+        }
+
+        // Prepare Cloudinary Options
+        $options = array("cloud_name" => $container->settings['cloudinary']['cloud_name'],
+            "api_key" => $container->settings['cloudinary']['api_key'],
+            "api_secret" => $container->settings['cloudinary']['api_secret']);
+
+        // Sign Request With Cloudinary
+        $output = \Cloudinary::sign_request($params, $options);
+
+        if ($output) {
+            // Build the http query
+            $api_params_cl = http_build_query($output);
+
+            // Complete the Cloudinary URL
+            $cloudinary_cms_url = "https://cloudinary.com/console/media_library/cms?$api_params_cl";
+            if ($signature_only) {
+                $output['signature'] = \Cloudinary:: api_sign_request(
+                    array(
+                        "timestamp" => $timestamp
+                    ), 
+                    $container->settings['cloudinary']['api_secret']
+                );
+
+                $output['api_key'] = $container->settings['cloudinary']['api_key'];
+                $output['timestamp'] = $timestamp;
+                return $output;
+            }else{
+                return $cloudinary_cms_url;
+            }
+        }else{
+            return false;
+        }
+        
+    }
+
+
+    public function cloudinarySign(Request $request, Response $response){
+
+        $sentinel = new S($this->container);
+        $sentinel->hasPerm('media.cloudinary');
+
+        $cloudinary = $this->cloudinary;
+
+        $params = array();
+        foreach ($request->getQueryParam('data') as $key => $value) {
+            $params[$key] = $value;
+        }
+
+        // Sign Request With Cloudinary
+        $signature = $cloudinary->api_sign_request(
+            $params, 
+            $cloudinary->config_get("api_secret")
+        );
+
+        if ($signature) {
+            return $signature;
+        }else{
+            return false;
+        }
+        
     }
 }

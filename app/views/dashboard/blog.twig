@@ -40,28 +40,30 @@ javascript
                                 <th>Title</th>
                                 <th>Slug</th>
                                 <th>Category</th>
+                                <th>Publish At</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             {% for post in posts %}
-                                <tr class="{% if post.published %}success{% else %}danger{% endif %}">
+                                <tr class="{% if post.status %}success{% else %}danger{% endif %}">
                                     <td>{{ post.created_at }}</td>
                                     <td>{{ post.title }}</td>
                                     <td>{{ post.slug }}</td>
-                                    <td>{{ post.category_name }}</td>
+                                    <td>{{ post.category.name }}</td>
+                                    <td>{{ post.publish_at }}</td>
                                     <td>
-                                        <a href="{{ path_for('admin-blog-preview', {'slug': post.slug}) }}" target="_blank" class="btn btn-info btn-xs">
+                                        {#<a href="{{ path_for('admin-blog-preview', {'slug': post.slug}) }}" target="_blank" class="btn btn-info btn-xs">
                                             <span class="fa fa-fw fa-search"></span>
-                                        </a>
+                                        </a>#}
                                         <a href="{{ path_for('admin-blog-edit', {'post_id': post.id}) }}" class="btn btn-primary btn-xs">
                                             <span class="fa fa-fw fa-pencil"></span>
                                         </a>
-                                        {% if post.published == 1 %}
+                                        {% if post.status == 1 %}
                                             <form action="{{ path_for('admin-blog-unpublish') }}" method="post" style="display: inline;">
                                                 <input type="hidden" name="post_id" value="{{ post.id }}" />
                                                 {{csrf()}}
-                                                <button type="submit" name="submit" class="btn btn-danger btn-xs" onClick="return confirm('Are you sure you could like to unpublish this blog?');">
+                                                <button class="btn btn-warning btn-xs swal-confirm" data-swtitle="Are you sure?" data-swmessage="This blog post will not be publicly viewable.">
                                                     <span class="fa fa-fw fa-close"></span>
                                                 </button>
                                             </form>
@@ -69,14 +71,14 @@ javascript
                                             <form action="{{ path_for('admin-blog-publish') }}" method="post" style="display: inline;">
                                                 <input type="hidden" name="post_id" value="{{ post.id }}" />
                                                 {{csrf()}}
-                                                <button type="submit" name="submit" class="btn btn-success btn-xs" onClick="return confirm('Are you sure you could like to publish this blog?');">
+                                                <button class="btn btn-success btn-xs swal-confirm" data-swtitle="Are you sure?" data-swmessage="This blog post will be published at the specified date/time.">
                                                     <span class="fa fa-fw fa-check"></span>
                                                 </button>
                                             </form>
                                             <form action="{{ path_for('admin-blog-delete') }}" method="post" style="display: inline;">
                                                 <input type="hidden" name="post_id" value="{{ post.id }}" />
                                                 {{csrf()}}
-                                                <button type="submit" name="submit" class="btn btn-warning btn-xs" onClick="return confirm('Are you sure you could like to delete this blog?  This cannot be undone.');">
+                                                <button class="btn btn-danger btn-xs swal-confirm" data-swtitle="Are you sure?" data-swmessage="This post will be permanently deleted and you will not be able to recover it.">
                                                     <span class="fa fa-fw fa-trash"></span>
                                                 </button>
                                             </form>
@@ -122,7 +124,7 @@ javascript
                                             <form action="{{ path_for('admin-blog-categories-delete') }}" method="post" style="display: inline;">
                                                 <input type="hidden" name="category_id" value="{{ category.id }}" />
                                                 {{csrf()}}
-                                                <button type="submit" name="submit" class="btn btn-danger btn-xs" onClick="return confirm('Are you sure you could like to delete this category?')">
+                                                <button class="btn btn-danger btn-xs swal-confirm" data-swtitle="Are you sure?" data-swmessage="This category will be permanently deleted.">
                                                     <span class="fa fa-fw fa-close"></span>
                                                 </button>
                                             </form>
@@ -198,7 +200,7 @@ javascript
                                             <form action="{{ path_for('admin-blog-tags-delete') }}" method="post" style="display: inline;">
                                                 <input type="hidden" name="tag_id" value="{{ tag.id }}" />
                                                 {{csrf()}}
-                                                <button type="submit" name="submit" class="btn btn-danger btn-xs" onClick="return confirm('Are you sure you could like to delete this tag?')">
+                                                <button class="btn btn-danger btn-xs swal-confirm" data-swtitle="Are you sure?" data-swmessage="This tag will be permanently deleted.">
                                                     <span class="fa fa-fw fa-close"></span>
                                                 </button>
                                             </form>
@@ -255,7 +257,8 @@ javascript
         
         $('#posts-table').DataTable({
             responsive: true,
-            stateSave: true
+            stateSave: true,
+            order: [[ 0, "desc" ]]
         });
 
         $('#tags-table').DataTable({

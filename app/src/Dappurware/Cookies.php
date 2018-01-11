@@ -8,7 +8,7 @@ use Dflydev\FigCookies\SetCookie;
 use Dflydev\FigCookies\Cookie;
 use Carbon\Carbon;
 
-class Cookies extends Dappurware
+class Cookies
 {
     // Get Response Cookie
     public function getResponseCookie($response, $name){

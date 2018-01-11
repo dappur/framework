@@ -9,13 +9,29 @@ use Dappur\Model\ContactRequests;
 use Dappur\Dappurware\Recaptcha;
 use Dappur\Dappurware\Email as E;
 
+use Illuminate\Database\Capsule\Manager as DB;
+
 class App extends Controller{
 
     public function home(Request $request, Response $response){
 
         return $this->view->render($response, 'home.twig');
-
+        
     }
+
+    public function test(Request $request, Response $response){
+        
+        $categories = new \Dappur\Model\BlogCategories;
+        $categories = $categories->withCount('posts')->whereHas('posts')->get();
+
+        $tags = new \Dappur\Model\BlogTags;
+        $tags = $tags->withCount('posts')->whereHas('posts')->get();
+
+        echo $tags;
+
+          
+    }
+
 
     public function contact(Request $request, Response $response){
 

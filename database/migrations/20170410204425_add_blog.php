@@ -31,11 +31,12 @@ class AddBlog extends Migration
     
     public function up()
     {
-        
+
         $this->schema->create('blog_categories', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name')->unique();
             $table->string('slug')->unique();
+            $table->boolean('status')->default(1);
             $table->timestamps();
         });
 
@@ -43,6 +44,7 @@ class AddBlog extends Migration
             $table->increments('id');
             $table->string('name')->unique();
             $table->string('slug')->unique();
+            $table->boolean('status')->default(1);
             $table->timestamps();
         });
 
@@ -50,20 +52,21 @@ class AddBlog extends Migration
             $table->increments('id');
             $table->integer('user_id')->unsigned()->nullable();
             $table->integer('category_id')->unsigned()->nullable();
-            $table->string('title');
+            $table->string('title')->nullable();
+            $table->string('description')->nullable();
             $table->string('slug')->unique();
-            $table->text('content');
-            $table->string('featured_image');
+            $table->text('content')->nullable();
+            $table->string('featured_image')->nullable();
             $table->string('video_provider')->nullable();
             $table->string('video_id')->nullable();
             $table->timestamp('publish_at')->nullable();
+            $table->boolean('status')->default(1);
             $table->timestamps();
             $table->foreign('category_id')->references('id')->on('blog_categories')->onDelete('set null');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
         });
-        
 
-        $this->schema->create('blog_comments', function (Blueprint $table) {
+        $this->schema->create('blog_posts_comments', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('user_id')->unsigned();
             $table->integer('post_id')->unsigned();
@@ -74,17 +77,35 @@ class AddBlog extends Migration
             $table->foreign('post_id')->references('id')->on('blog_posts')->onDelete('cascade');
         });
 
-        $this->schema->create('blog_posts_tags', function (Blueprint $table) {
+        $this->schema->create('blog_posts_replies', function (Blueprint $table) {
             $table->increments('id');
+            $table->integer('user_id')->unsigned();
+            $table->integer('comment_id')->unsigned();
+            $table->text('reply');
+            $table->boolean('status')->default(0);
+            $table->timestamps();
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('comment_id')->references('id')->on('blog_posts_comments')->onDelete('cascade');
+        });
+
+        $this->schema->create('blog_posts_tags', function (Blueprint $table) {
             $table->integer('post_id')->unsigned();
             $table->integer('tag_id')->unsigned();
+            $table->primary(['post_id', 'tag_id']);
             $table->timestamps();
             $table->foreign('post_id')->references('id')->on('blog_posts')->onDelete('cascade');
             $table->foreign('tag_id')->references('id')->on('blog_tags')->onDelete('cascade');
         });
 
+        $this->schema->create('users_profile', function (Blueprint $table) {
+            $table->increments('id');
+            $table->integer('user_id')->unsigned();
+            $table->text('about');
+            $table->timestamps();
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+        });
+
         $uncategorized = new Dappur\Model\BlogCategories;
-        $uncategorized->id = 1;
         $uncategorized->name = "Uncategorized";
         $uncategorized->slug = "uncategorized";
         $uncategorized->save();
@@ -93,10 +114,12 @@ class AddBlog extends Migration
 
     public function down()
     {
-        $this->schema->dropIfExists('posts_tags');
-        $this->schema->dropIfExists('blog_comments');
-        $this->schema->dropIfExists('posts');
+        $this->schema->dropIfExists('users_profile');
+        $this->schema->dropIfExists('blog_posts_tags');
+        $this->schema->dropIfExists('blog_posts_replies');
+        $this->schema->dropIfExists('blog_posts_comments');
+        $this->schema->dropIfExists('blog_posts');
         $this->schema->dropIfExists('blog_tags');
-        $this->schema->dropIfExists('blog_catgories');
+        $this->schema->dropIfExists('blog_categories');
     }
 }

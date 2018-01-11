@@ -1,0 +1,29 @@
+<!-- Categories -->
+<div class="row">
+	<div class="col-xs-12">
+    	<h2>Categories</h2>
+    	<ul class="list-group">
+    		{% for category in blogCategories %}
+    		    <li class="list-group-item">
+			    	<span class="badge">{{category.posts_count}}</span>
+			    	{{category.name}}
+			  	</li>
+    		{% endfor %}
+		</ul>
+	</div>
+</div>
+
+<!-- Tags -->
+<div class="row">
+	<div class="col-xs-12">
+    	<h2>Tags</h2>
+		{% for tag in blogTags %}
+		  	<a style="text-decoration: none; cursor: pointer;">
+			  	<span class="label" style="font-size: 12px; height: 16px; line-height: 12px; color: #000;">
+			  		{{tag.name}} 
+			  		<span class="badge">{{tag.posts_count}}</span>
+			  	</span>
+			</a>
+		{% endfor %}
+	</div>
+</div>

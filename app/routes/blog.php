@@ -7,7 +7,7 @@ $app->group('/dashboard/blog', function() use ($app) {
     ->setName('admin-blog');
 
     // Blog Post Actions
-    $app->group('/posts', function() use ($app) {
+    $app->group('', function() use ($app) {
         // Unpublish Blog
         $app->post('/unpublish', 'AdminBlog:blogUnpublish')
             ->setName('admin-blog-unpublish');
@@ -61,7 +61,7 @@ $app->group('/dashboard/blog', function() use ($app) {
 
 // Blog
 $app->group('/blog', function() use ($app) {
-    $app->get('', 'Blog:blog')
+    $app->get('[/{page}]', 'Blog:blog')
     ->setName('blog');
 
     $app->get('/{year}/{month}/{day}/{slug}', 'Blog:blogPost')

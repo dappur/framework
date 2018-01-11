@@ -16,7 +16,8 @@
                 "password": "",
                 "charset": "utf8",
                 "collation": "utf8_general_ci",
-                "prefix": ""
+                "prefix": "",
+                "timezone": "+00:00"
             },
             "production": {
                 "driver": "mysql",
@@ -27,7 +28,8 @@
                 "password": "",
                 "charset": "utf8",
                 "collation": "utf8_general_ci",
-                "prefix": ""
+                "prefix": "",
+                "timezone": "+00:00"
             }
         }
     },
@@ -72,6 +74,7 @@
         "relay": "phpmail",
         "logging": true,
         "log_details": ["html", "plain_text"],
+        "log_retention": 30,
         "mailgun": {
             "username": "",
             "password": ""

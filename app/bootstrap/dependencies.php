@@ -31,8 +31,10 @@ $container['upload_dir'] = function ($container) {
 
 // Bind config table from database
 $container['config'] = function () use ($container) {
-    $config = new \Dappur\Dappurware\SiteConfig($container);
-    return $config->getGlobalConfig();
+    $config = new \Dappur\Dappurware\SiteConfig;
+    $config = $config->getGlobalConfig();
+
+    return $config;
 };
 
 // Bind Sentinel Authorization plugin
@@ -59,11 +61,6 @@ $container['validator'] = function () {
     return new \Awurth\SlimValidation\Validator();
 };
 
-// Bind Cookies
-$container['cookies'] = function ($container){
-    return new \Dappur\Dappurware\Cookies($container);
-};
-
 // CSRF
 $container['csrf'] = function ($container) {
 
@@ -87,7 +84,7 @@ $container['csrf'] = function ($container) {
 
 // Bind Twig View
 $container['view'] = function ($container) {
-    if (substr($container['request']->getUri()->getPath(), 0, 10 ) === "/dashboard") {
+    if (strpos($container['request']->getUri()->getPath(), 'dashboard' ) !== false) {
         $template_path = $container['settings']['view']['template_path'] . $container->config['dashboard-theme'];
     }else{
         $template_path = $container['settings']['view']['template_path'] . $container->config['theme'];
@@ -113,10 +110,13 @@ $container['view'] = function ($container) {
         $view->addExtension(new \Dappur\TwigExtension\Cloudinary());
         $view->getEnvironment()->addGlobal('hasCloudinary', 1);
         if ($container->auth->check() && $container->auth->hasAccess('media.cloudinary')) {
-            $view->getEnvironment()->addGlobal('cloudinaryCmsUrl', \Dappur\Controller\Admin::getCloudinaryCMS($container));
+            $view->getEnvironment()->addGlobal('cloudinaryCmsUrl', \Dappur\Controller\AdminMedia::getCloudinaryCMS($container));
+            $view->getEnvironment()->addGlobal('cloudinarySignature', \Dappur\Controller\AdminMedia::getCloudinaryCMS($container, true));
+            $view->getEnvironment()->addGLobal('cloudinaryApiKey', $container['settings']['cloudinary']['api_key']);
         }
         
     }else{
+        $view->addExtension(new \Dappur\TwigExtension\Cloudinary());
         $view->getEnvironment()->addGlobal('hasCloudinary', 0);
     }
     
@@ -131,9 +131,11 @@ $container['view'] = function ($container) {
     $view->getEnvironment()->addGlobal('uploadDir', $container['upload_dir']);
 
     $page_settings = new \Dappur\Model\ConfigGroups;
-    $page_settings = $page_settings->whereNotNull('page_name')->get();
-    $view->getEnvironment()->addGlobal('pageSettings', $page_settings);
-
+    $page_name = $container['request']->getAttribute('name');
+    if (substr($container['request']->getUri()->getPath(), 0, 10 ) != "/dashboard") {
+        $page_settings = $page_settings->whereNotNull('page_name')->where('page_name', '=', $page_name)->get();
+        $view->getEnvironment()->addGlobal('pageSettings', $page_settings);
+    }
     return $view;
 };
 

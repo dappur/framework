@@ -14,6 +14,9 @@ $app = new Slim\App(array('settings' => $settings));
 // Load Dependancies
 require __DIR__ . '/../app/bootstrap/dependencies.php';
 
+// Set PHP Timezone
+date_default_timezone_set($container['config']['timezone']);
+
 // Load Controllers
 require __DIR__ . '/../app/bootstrap/controllers.php';
 
