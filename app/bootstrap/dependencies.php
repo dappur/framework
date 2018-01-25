@@ -155,10 +155,11 @@ $container['view'] = function ($container) {
     $view->getEnvironment()->addGlobal('publicDir', $container['public_dir']);
     $view->getEnvironment()->addGlobal('uploadDir', $container['upload_dir']);
 
-    $page_settings = new \Dappur\Model\ConfigGroups;
+    
     $page_name = $container['request']->getAttribute('name');
-    if (substr($container['request']->getUri()->getPath(), 0, 10 ) != "/dashboard") {
-        $page_settings = $page_settings->whereNotNull('page_name')->where('page_name', '=', $page_name)->get();
+    if (strpos($container['request']->getUri()->getPath(), 'dashboard' ) !== false) {
+        $page_settings = new \Dappur\Model\ConfigGroups;
+        $page_settings = $page_settings->whereNotNull('page_name')->get();
         $view->getEnvironment()->addGlobal('pageSettings', $page_settings);
     }
     return $view;
