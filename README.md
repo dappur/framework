@@ -4,6 +4,8 @@ PHP App Framework built on the Slim PHP Micro Framework, Twig templating engine,
 
 This is a lightweight full featured framework intended for PHP developers who need an open source, fast and reliable platform to build your apps from.  Have your new projects up and running in minutes with the provided basic bootstrap pages and basic bootstrap admin.
 
+The blog addon has now been integrated into the main repo and template files.  It can be easily enabled/disabled via the settings page in the dashboard.
+
 ----------
 
 ### Created Using
