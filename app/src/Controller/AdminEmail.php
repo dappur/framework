@@ -6,6 +6,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use Respect\Validation\Validator as V;
 use Dappur\Model\Emails;
+use Dappur\Model\Users;
 use Dappur\Model\EmailsTemplates;
 use Dappur\Dappurware\Sentinel as S;
 use Dappur\Dappurware\Email as E;
@@ -232,5 +233,77 @@ class AdminEmail extends Controller{
 
         return $this->view->render($response, 'emails-templates-edit.twig', array("template" => $template, "placeholders" => $placeholders));
 
+	}
+
+	public function emailNew(Request $request, Response $response){
+
+    	$sentinel = new S($this->container);
+        if(!$sentinel->hasPerm('email.template.create')){
+        	return $this->redirect($response, 'dashboard');
+        }
+
+        $placeholders = E::getPlaceholders();
+
+        $requestParams = $request->getParams();
+
+        $users = Users::orderBy('first_name')->orderBy('last_name')->select('first_name', 'last_name', 'id', 'email')->get();
+
+        if ($request->isPost()) {
+
+        	// Validate Text Fields
+        	$this->validator->validate($request, 
+	            array(
+	                'subject' => array(
+	                    'rules' => V::notEmpty(), 
+	                    'messages' => array(
+	                        'notEmpty' => 'Cannot be empty.'
+	                    )
+	                ),
+	                'html' => array(
+	                	'rules' => V::notEmpty(), 
+	                    'messages' => array(
+	                        'notEmpty' => 'Cannot be empty.'
+	                    )
+	                ),
+	                'plain_text' => array(
+	                    'rules' => V::notEmpty(), 
+	                    'messages' => array(
+	                        'notEmpty' => 'Cannot be empty.'
+	                    )
+	                )
+	            )
+	        );
+        	
+	        // Check user
+	        $user_check = Users::find($requestParams['send_to']);
+	        if (!$user_check) {
+	        	$this->validator->addError('slug', 'User does not exist.');
+	        }
+	        
+	        // Check Plain Text for HTML
+	        if (strip_tags($requestParams['plain_text']) != $requestParams['plain_text']) {
+	        	$this->validator->addError('plain_text', 'Plain Text cannot contain HTML.');
+	        }
+
+	        if ($this->validator->isValid()) {
+
+
+	        	$email = new E($this->container);
+				$email = $email->sendEmail(array($user_check->id), $request->getParam('subject'), $request->getParam('html'), $request->getParam('plain_text'));
+
+				print_r($email);
+
+	        	if ($email['results']['success']) {
+	        		$this->flash('success', 'Email has been successfully sent.');
+                    return $this->redirect($response, 'admin-email');
+	        	}else{
+	        		$this->flashNow('danger', 'There was a problem sending your email.');
+	        	}
+	        	
+	        }
+
+        }
+
+        return $this->view->render($response, 'emails-new.twig', array("placeholders" => $placeholders, "users" => $users));
 	}
 }
