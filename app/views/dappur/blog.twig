@@ -9,10 +9,16 @@
 		<div class="row">
 			<!-- Blog Entries Column -->
 			<div class="col-md-8">
-
-				{% for post in posts.results %}
+				{% if posts|length == 0 %}
+					<div class="text-center">
+						<h1>No Posts Found</h1>
+					</div>
+				{% endif %}
+				{% for post in posts %}
 				    <div class="card mb-4">
-				    	<h2 class="card-title">{{post.title}}</h2>
+				    	<a href="{{path_for('blog-post', {'year': post.publish_at|date("Y"), 'month': post.publish_at|date("m"), 'day': post.publish_at|date("d"), 'slug': post.slug})}}">
+				    		<h2 class="card-title">{{post.title}}</h2>
+				    	</a>
 
 				    	{% if post.video_id and post.video_provider %}
                             {% if post.video_provider == "youtube" %}
@@ -27,29 +33,33 @@
                                 </div>
                             {% endif %}
 						{% elseif post.featured_image %}
-							<img alt="Card image cap" class="card-img-top img-responsive" src="{{post.featured_image}}">
+							<a href="{{path_for('blog-post', {'year': post.publish_at|date("Y"), 'month': post.publish_at|date("m"), 'day': post.publish_at|date("d"), 'slug': post.slug})}}">
+								<img alt="Card image cap" class="card-img-top img-responsive" src="{{post.featured_image}}">
+							</a>
 						{% endif %}
 						<div class="card-footer text-muted">
-							Posted on January 1, 2017 by <a href="#">Start Bootstrap</a>
+							Posted on {{post.publish_at|date('m/d/Y h:i a')}} by <a href="{{path_for('blog-author', {'username': post.author.username})}}">{{post.author.username}}</a><br />
 						</div>
 						<div class="card-body">
-							
-							<p class="card-text te">{{post.description}}</p>
-							<div class="text-right"><a class="btn btn-primary" href="#">Read More &rarr;</a></div>
+							<div>
+								<b>Tags:</b> 
+								{% for tag in post.tags %}
+								    <a href="{{path_for('blog-tag', {'slug': tag.slug})}}">{{ tag.name }}</a> 
+								{% endfor %}
+							</div>
+							<div>
+								<b>Category:</b> <a href="{{path_for('blog-category', {'slug': post.category.slug})}}">{{ post.category.name }}</a> 
+							</div>
+							<p class="card-text"><b>Description:</b> {{post.description}}</p>
+							<p class="card-text">{{post.content|striptags|length > 350 ? post.content|striptags|slice(0, 350) ~ '...' : post.content|striptags}}</p>
+							<div class="text-right"><a class="btn btn-primary" href="{{path_for('blog-post', {'year': post.publish_at|date("Y"), 'month': post.publish_at|date("m"), 'day': post.publish_at|date("d"), 'slug': post.slug})}}">Read More &rarr;</a></div>
 						</div>
 						
 					</div>
 				{% endfor %}
-
-				
-				<ul class="pagination justify-content-center mb-4">
-					<li class="page-item">
-						<a class="page-link" href="#">&larr; Older</a>
-					</li>
-					<li class="page-item disabled">
-						<a class="page-link" href="#">Newer &rarr;</a>
-					</li>
-				</ul>
+				<div class="text-center" style="{% if pagination is empty %}height: 20px;{% endif %}">
+					{{pagination|raw}}
+				</div>
 			</div><!-- Sidebar Widgets Column -->
 			<div class="col-md-4">
 		    	{% include 'inc/blog-sidebar.twig' %}

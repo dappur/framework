@@ -11,6 +11,8 @@ use Dappur\Dappurware\Sentinel as S;
 use Dappur\Model\BlogCategories;
 use Dappur\Model\BlogTags;
 use Dappur\Model\BlogPosts;
+use Dappur\Model\BlogPostsTags;
+use Dappur\Dappurware\Utils;
 use Carbon\Carbon;
 
 class AdminBlog extends Controller{
@@ -64,20 +66,19 @@ class AdminBlog extends Controller{
 
             $this->validator->validate($request, $validate_data);
 
-            // Validate Category
+            // Validate/Add Category
             $category = BlogCategories::find($requestParams['category']);
 
             if (!$category) {
                 $add_category = new BlogCategories;
                 $add_category->name = $requestParams['category'];
-                $add_category->slug = $this->blog->slugify($requestParams['category']);
+                $add_category->slug = Utils::slugify($requestParams['category']);
                 $add_category->status = 1;
                 $add_category->save();
                 $category_id = $add_category->id;
             }else{
                 $category_id = $category->id;
             }
-
 
             // Slugify Title
             $slug = $this->blog->slugify($requestParams['title']);
@@ -89,7 +90,7 @@ class AdminBlog extends Controller{
                     $post_tags[] = $tvalue;
                 }
             }
-            $parsed_tags = $this->blog->validateTags($post_tags);
+            $parsed_tags = $this->validateTags($post_tags);
 
             // Handle Featured Video
             if ((isset($requestParams['video_id']) && $requestParams['video_id'] != "") && (isset($requestParams['video_provider']) && $requestParams['video_provider'] != "")) {
@@ -118,7 +119,7 @@ class AdminBlog extends Controller{
 
             if ($this->validator->isValid()) {
                 
-                $new_post = new \Dappur\Model\BlogPosts;
+                $new_post = new BlogPosts;
                 $new_post->title = $requestParams['title'];
                 $new_post->description = $requestParams['description'];
                 $new_post->slug = $slug;
@@ -135,24 +136,22 @@ class AdminBlog extends Controller{
                 if ($new_post->save()) {
 
                     foreach ($parsed_tags as $tag) {
-                        $add_tag = new \Dappur\Model\BlogPostsTags;
+                        $add_tag = new BlogPostsTags;
                         $add_tag->post_id = $new_post->id;
                         $add_tag->tag_id = $tag;
                         $add_tag->save();
                     }
 
                     $this->flash('success', 'Your blog has been saved successfully.');
-                    $this->logger->addInfo("Add Blog: Blog added successfully", array("user_id" => $loggedUser['id']));
                     return $this->redirect($response, 'admin-blog');
                 }else{
-                    $this->flash('danger', 'There was an error saving your blog.');
-                    $this->logger->addError("Add Blog: There was an error adding blog.", array("user_id" => $loggedUser['id']));
+                    $this->flashNow('danger', 'There was an error saving your blog.');
                 }
             }
 
         }
 
-        return $this->view->render($response, 'blog-add.twig', ["categories" => BlogCategories::get(), "tags" => BlogTags::get(), "requestParams" => $requestParams]);
+        return $this->view->render($response, 'blog-add.twig', ["categories" => BlogCategories::get(), "tags" => BlogTags::get()]);
 
     }
 
@@ -174,7 +173,7 @@ class AdminBlog extends Controller{
             return $this->redirect($response, 'admin-blog');
         }
 
-        $current_post_tags = new \Dappur\Model\BlogPostsTags;
+        $current_post_tags = new BlogPostsTags;
         $current_post_tags = $current_post_tags->where('post_id', '=', $post_id)->get();
 
         $current_tags = array();
@@ -212,7 +211,7 @@ class AdminBlog extends Controller{
             if (!$category) {
                 $add_category = new BlogCategories;
                 $add_category->name = $requestParams['category'];
-                $add_category->slug = $this->blog->slugify($requestParams['category']);
+                $add_category->slug = Utils::slugify($requestParams['category']);
                 $add_category->status = 1;
                 $add_category->save();
                 $category_id = $add_category->id;
@@ -222,7 +221,7 @@ class AdminBlog extends Controller{
 
 
             // Slugify Title
-            $slug = $this->blog->slugify($requestParams['title']);
+            $slug = Utils::slugify($requestParams['title']);
 
             // Validate Tags
             $post_tags = array();
@@ -231,7 +230,7 @@ class AdminBlog extends Controller{
                     $post_tags[] = $tvalue;
                 }
             }
-            $parsed_tags = $this->blog->validateTags($post_tags);
+            $parsed_tags = $this->validateTags($post_tags);
 
             // Handle Featured Video
             if ((isset($requestParams['video_id']) && $requestParams['video_id'] != "") && (isset($requestParams['video_provider']) && $requestParams['video_provider'] != "")) {
@@ -275,28 +274,26 @@ class AdminBlog extends Controller{
 
                 if ($post->save()) {
 
-                    $delete_existing_tags = new \Dappur\Model\BlogPostsTags;
+                    $delete_existing_tags = new BlogPostsTags;
                     $delete_existing_tags->where('post_id', '=', $post->id)->delete();
 
                     foreach ($parsed_tags as $tag) {
-                        $add_tag = new \Dappur\Model\BlogPostsTags;
+                        $add_tag = new BlogPostsTags;
                         $add_tag->post_id = $post->id;
                         $add_tag->tag_id = $tag;
                         $add_tag->save();
                     }
 
                     $this->flash('success', 'Your blog has been updated successfully.');
-                    $this->logger->addInfo("Edit Blog: Blog updated successfully", array("user_id" => $loggedUser['id'], "requestParams" => $requestParams));
                     return $this->redirect($response, 'admin-blog');
                 }else{
                     $this->flash('danger', 'There was an error updating your blog.');
-                    $this->logger->addInfo("Edit Blog: An unknown error occured updating the blog.", array("user_id" => $loggedUser['id'], "requestParams" => $requestParams));
                 }
             }
 
         }
 
-        return $this->view->render($response, 'blog-edit.twig', ["post" => $post->toArray(), "categories" => BlogCategories::get(), "tags" => BlogTags::get(), "currentTags" => $current_tags, "requestParams" => $requestParams]);
+        return $this->view->render($response, 'blog-edit.twig', ["post" => $post->toArray(), "categories" => BlogCategories::get(), "tags" => BlogTags::get(), "currentTags" => $current_tags]);
 
     }
 
@@ -310,30 +307,21 @@ class AdminBlog extends Controller{
 
         $requestParams = $request->getParams();
 
-        $post = new \Dappur\Model\BlogPosts;
+        $post = BlogPosts::find($requestParams['post_id']);
 
-        $post_check = $post->find($requestParams['post_id']);
+        if ($post) {
 
-        if ($post_check) {
-            $update_post = $post->find($requestParams['post_id']);
-            $update_post->status = 1;
+            $post->status = 1;
 
-            if ($update_post->save()) {
+            if ($post->save()) {
                 $this->flash('success', 'Post successfully published.');
-                $this->logger->addError("Publish Post: success", array("message" => "Post successfully published.", "user_id" => $loggedUser['id']));
-                return $this->redirect($response, 'admin-blog');
             }else{
                 $this->flash('danger', 'There was an error publishing your post.');
-                $this->logger->addError("Publish Post: error", array("message" => "error saving post into database.", "user_id" => $loggedUser['id']));
-                return $this->redirect($response, 'admin-blog');
             }
         }else{
             $this->flash('danger', 'That post does not exist.');
-            $this->logger->addError("Publish Post: post doesn't exist", array("message" => "Post does not exist.", "user_id" => $loggedUser['id']));
-            return $this->redirect($response, 'admin-blog');
         }
-
-
+        return $this->redirect($response, 'admin-blog');
     }
 
     // Unpublish Blog Post
@@ -346,30 +334,20 @@ class AdminBlog extends Controller{
 
         $requestParams = $request->getParams();
 
-        $post = new \Dappur\Model\BlogPosts;
+        $post = BlogPosts::find($requestParams['post_id']);
 
-        $post_check = $post->find($requestParams['post_id']);
+        if ($post) {
+            $post->status = 0;
 
-        if ($post_check) {
-            $update_post = $post->find($requestParams['post_id']);
-            $update_post->status = 0;
-
-            if ($update_post->save()) {
+            if ($post->save()) {
                 $this->flash('success', 'Post successfully unpublished.');
-                $this->logger->addError("Unpublish Post: success", array("message" => "Post successfully unpublished.", "user_id" => $loggedUser['id']));
-                return $this->redirect($response, 'admin-blog');
             }else{
                 $this->flash('danger', 'There was an error unpublishing your post.');
-                $this->logger->addError("Unpublish Post: error", array("message" => "error saving post into database.", "user_id" => $loggedUser['id']));
-                return $this->redirect($response, 'admin-blog');
             }
         }else{
             $this->flash('danger', 'That post does not exist.');
-            $this->logger->addError("Unpublish Post: post doesn't exist", array("message" => "Post does not exist.", "user_id" => $loggedUser['id']));
-            return $this->redirect($response, 'admin-blog');
         }
-
-
+        return $this->redirect($response, 'admin-blog');
     }
 
     // Delete Blog Post
@@ -382,33 +360,21 @@ class AdminBlog extends Controller{
 
         $requestParams = $request->getParams();
 
-        $post = new \Dappur\Model\BlogPosts;
+        $post = BlogPosts::find($requestParams['post_id']);
 
-        $post_check = $post->find($requestParams['post_id']);
+        if ($post) {
 
-        if ($post_check) {
+            BlogPostsTags::where('post_id', '=', $rpost->id)->delete();
 
-            $delete_tags = new \Dappur\Model\BlogPostsTags;
-            $delete_tags->where('post_id', '=', $requestParams['post_id'])->delete();
-
-            $delete_post = $post->find($requestParams['post_id']);
-
-            if ($delete_post->delete()) {
+            if ($post->delete()) {
                 $this->flash('success', 'Post successfully deleted.');
-                $this->logger->addError("Unpublish Post: success", array("message" => "Post successfully deleted.", "user_id" => $loggedUser['id']));
-                return $this->redirect($response, 'admin-blog');
             }else{
                 $this->flash('danger', 'There was an error deleting your post.');
-                $this->logger->addError("Unpublish Post: error", array("message" => "error saving post into database.", "user_id" => $loggedUser['id']));
-                return $this->redirect($response, 'admin-blog');
             }
         }else{
             $this->flash('danger', 'That post does not exist.');
-            $this->logger->addError("Unpublish Post: post doesn't exist", array("message" => "Post does not exist.", "user_id" => $loggedUser['id']));
-            return $this->redirect($response, 'admin-blog');
         }
-
-
+        return $this->redirect($response, 'admin-blog');
     }
 
     // Preview Blog Post
@@ -419,20 +385,16 @@ class AdminBlog extends Controller{
             return $this->redirect($response, 'admin-blog');
         }
 
-        $post = new \Dappur\Model\BlogPosts;
+        $post = BlogPosts::where('slug', '=', $slug)->first();
 
-        $post = $post->where('slug', '=', $slug)->get();
+        $categories = BlogCategories::where('status', 1)->get();
 
-        $categories = $this->blog->getCategories(false);
+        $tags = BlogTags::where('status', 1)->get();
 
-        $tags = $this->blog->getTags(false);
-
-        if ($post->count() == 0) {
+        if ($post) {
             $this->flash('danger', 'That blog post does not exist.');
-            $this->logger->addError("Blog Post: Does not exist", array("slug" => $slug));
-            return $this->redirect($response, 'blog');
+            return $this->redirect($response, 'admin-blog');
         }
-
 
         return $this->view->render($response, 'App/blog-post.twig', array("blogPost" => $post[0]->toArray(), 'blogCategories' => $categories, 'blogTags' => $tags));
 
@@ -448,17 +410,13 @@ class AdminBlog extends Controller{
         }
 
         if ($request->isPost()) {
-            
-            $category_name = $request->getParam('category_name');
-            $category_slug = $request->getParam('category_slug');
 
             $this->validator->validate($request, [
                 'category_name' => V::length(2, 25)->alpha('\''),
                 'category_slug' => V::slug()
             ]);
 
-            $check_slug = new \Dappur\Model\BlogCategories;
-            $check_slug = $check_slug->where('slug', '=', $request->getParam('category_slug'))->get()->count();
+            $check_slug = BlogCategories::where('slug', '=', $request->getParam('category_slug'))->get()->count();
 
             if ($check_slug > 0) {
                 $this->validator->addError('category_slug', 'Slug already in use.');
@@ -466,21 +424,21 @@ class AdminBlog extends Controller{
 
             if ($this->validator->isValid()) {
 
-                $add_category = $this->blog->addBlogCategory($category_name, $category_slug);
+                $add_category = new BlogCategories;
+                $add_category->name = $request->getParam('category_name');
+                $add_category->slug = $request->getParam('category_slug');
 
-                if ($add_category) {
+                if ($add_category->save()) {
                     $this->flash('success', 'Category added successfully.');
-                    return $this->redirect($response, 'admin-blog');
                 }else{
                     $this->flash('danger', 'There was a problem added the category.');
-                    return $this->redirect($response, 'admin-blog');
                 }
-
             }else{
                 $this->flash('danger', 'There was a problem adding the category.');
-                return $this->redirect($response, 'admin-blog');
             }
         }
+
+        return $this->redirect($response, 'admin-blog');
 
     }
 
@@ -492,11 +450,11 @@ class AdminBlog extends Controller{
             return $this->redirect($response, 'admin-blog');
         }
 
-        $category = $request->getParam('category_id');
+        $category = BlogCategories::find($request->getParam('category_id'));
 
-        if (is_numeric($category)) {
+        if ($category) {
 
-            if ($this->blog->removeBlogCategory($category)) {
+            if ($category->delete()) {
                 $this->flash('success', 'Category has been removed.');
             }else{
                 $this->flash('danger', 'There was a problem removing the category.');
@@ -506,7 +464,6 @@ class AdminBlog extends Controller{
         }
 
         return $this->redirect($response, 'admin-blog');
-
     }
 
     // Edit Blog Category
@@ -523,11 +480,11 @@ class AdminBlog extends Controller{
             $category_id = $categoryid;
         }
 
-        $categories = new \Dappur\Model\BlogCategories;
-        $category = $categories->find($category_id);
+        $category = BlogCategories::find($category_id);
 
         if ($category) {
             if ($request->isPost()) {
+                
                 // Get Vars
                 $category_name = $request->getParam('category_name');
                 $category_slug = $request->getParam('category_slug');
@@ -553,21 +510,28 @@ class AdminBlog extends Controller{
 
                 //Validate Category Slug
                 $check_slug = $category->where('id', '!=', $category_id)->where('slug', '=', $category_slug)->get()->count();
-                if ($check_slug > 0 && $category_slug != $category['slug']) {
+                if ($check_slug > 0 && $category_slug != $category->slug) {
                     $this->validator->addError('category_slug', 'Category slug is already in use.');
                 }
 
 
                 if ($this->validator->isValid()) {
-                    if ($this->blog->editBlogCategory($category_id, $category_name, $category_slug)) {
-                        $this->flash('success', 'Category has been updated successfully.');
-                        $this->logger->addInfo("Category updated successfully", array("category_id" => $category_id));
-                        return $this->redirect($response, 'admin-blog');
-                    }else{
-                        $this->flash('danger', 'An unknown error occured updating the category.');
-                        $this->logger->addInfo("Unknown error updating category.", array("category_id" => $category_id));
+
+                    if ($category->id == 1) {
+                        $this->flash('danger', 'Cannot edit uncategorized category.');
                         return $this->redirect($response, 'admin-blog');
                     }
+
+                    $category->name = $category_name;
+                    $category->slug = $category_slug;
+
+                    if ($category->save()) {
+                        $this->flash('success', 'Category has been updated successfully.');
+                    }else{
+                        $this->flash('danger', 'An unknown error occured updating the category.');
+                    }
+
+                    return $this->redirect($response, 'admin-blog');
 
                 }
             }
@@ -600,8 +564,7 @@ class AdminBlog extends Controller{
                 'tag_slug' => V::slug()
             ]);
 
-            $check_slug = new \Dappur\Model\BlogTags;
-            $check_slug = $check_slug->where('slug', '=', $request->getParam('tag_slug'))->get()->count();
+            $check_slug = BlogTags::where('slug', '=', $request->getParam('tag_slug'))->get()->count();
 
             if ($check_slug > 0) {
                 $this->validator->addError('tag_slug', 'Slug already in use.');
@@ -609,20 +572,20 @@ class AdminBlog extends Controller{
 
             if ($this->validator->isValid()) {
 
-                $add_tag = $this->blog->addBlogTag($tag_name, $tag_slug);
+                $add_tag = new BlogTags;
+                $add_tag->name = $tag_name;
+                $add_tag->slug = $tag_slug;
 
-                if ($add_tag) {
+                if ($add_tag->save()) {
                     $this->flash('success', 'Category added successfully.');
-                    return $this->redirect($response, 'admin-blog');
                 }else{
                     $this->flash('danger', 'There was a problem added the tag.');
-                    return $this->redirect($response, 'admin-blog');
                 }
-
             }else{
                 $this->flash('danger', 'There was a problem adding the tag.');
-                return $this->redirect($response, 'admin-blog');
             }
+
+            return $this->redirect($response, 'admin-blog');
         }
 
     }
@@ -635,12 +598,12 @@ class AdminBlog extends Controller{
             return $this->redirect($response, 'admin-blog');
         }
 
-        $tag = $request->getParam('tag_id');
+        $tag = BlogTags::find($request->getParam('tag_id'));
         
-        if (is_numeric($tag)) {
+        if ($tag) {
 
-            if ($this->blog->removeBlogTag($tag)) {
-                $this->flash('success', 'Category has been removed.');
+            if ($tag->delete()) {
+                $this->flash('success', 'Tag has been removed.');
             }else{
                 $this->flash('danger', 'There was a problem removing the tag.');
             }
@@ -667,8 +630,7 @@ class AdminBlog extends Controller{
             $tag_id = $tagid;
         }
 
-        $tags = new \Dappur\Model\BlogTags;
-        $tag = $tags->find($tag_id);
+        $tag = BlogTags::find($tag_id);
 
         if ($tag) {
             if ($request->isPost()) {
@@ -704,27 +666,61 @@ class AdminBlog extends Controller{
 
 
                 if ($this->validator->isValid()) {
-                    if ($this->blog->editBlogTag($tag_id, $tag_name, $tag_slug)) {
+
+                    $tag->name = $tag_name;
+                    $tag->slug = $tag_slug;
+
+                    if ($tag->save()) {
                         $this->flash('success', 'Category has been updated successfully.');
-                        $this->logger->addInfo("Category updated successfully", array("tag_id" => $tag_id));
-                        return $this->redirect($response, 'admin-blog');
                     }else{
                         $this->flash('danger', 'An unknown error occured updating the tag.');
-                        $this->logger->addInfo("Unknown error updating tag.", array("tag_id" => $tag_id));
-                        return $this->redirect($response, 'admin-blog');
                     }
-
+                    return $this->redirect($response, 'admin-blog');
                 }
-                
             }
-
             return $this->view->render($response, 'blog-tags-edit.twig', ['tag' => $tag]);
-
         }else{
             $this->flash('danger', 'Sorry, that tag was not found.');
             return $response->withRedirect($this->router->pathFor('admin-blog'));
         }
 
+    }
+
+    private function validateTags(Array $tags){
+
+        $output = array();
+        //Loop Through Tags
+        foreach ($tags as $key => $value) {
+
+            // Check if Already Numeric
+            if (is_numeric($value)) {
+                //Check if valid tag
+                $check = BlogTags::where('id', '=', $value)->get();
+                if ($check->count() > 0) {
+                    $output[] = $value;
+                }
+            }else{
+                //Slugify input
+                $slug = Utils::slugify($value);
+
+                //Check if already slug
+                $slug_check = $tag_check->where('slug', '=', $slug)->get();
+                if ($slug_check->count() > 0) {
+                    //$output[] = $slug_check['id'];
+                }else{
+                    $new_tag = new BlogTags;
+                    $new_tag->name = $value;
+                    $new_tag->slug = $slug;
+                    if ($new_tag->save()) {
+                        if ($new_tag->id) {
+                            $output[] = $new_tag->id;
+                        }
+                    }
+                }
+            }
+        }
+
+        return $output;
     }
 
 }

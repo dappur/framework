@@ -259,9 +259,7 @@ class AdminMedia extends Controller{
             return $this->redirect($response, 'dashboard');
         }
 
-        $requestParams = $request->getParams();
-
-        return $this->view->render($response, 'media.twig', array("requestParams" => $requestParams));
+        return $this->view->render($response, 'media.twig');
     }
 
     public function getCloudinaryCMS($container, $signature_only = false){
@@ -274,8 +272,6 @@ class AdminMedia extends Controller{
         $timestamp = $date->getTimestamp();
         
         // Prepare Cloudinary CMS Params
-        
-
         if ($signature_only) {
             $params = array("timestamp" => $timestamp);
         }else{

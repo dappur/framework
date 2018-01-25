@@ -32,4 +32,8 @@ class BlogPosts extends Model {
         return $this->hasMany('\Dappur\Model\BlogPostsComments', 'post_id', 'id');
     }
 
+    public function author(){
+        return $this->hasOne('\Dappur\Model\Users', 'id', 'user_id');
+    }
+
 }

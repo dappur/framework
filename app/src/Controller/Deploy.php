@@ -4,6 +4,7 @@ namespace Dappur\Controller;
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use Dappur\Dappurware\Deployment;
 
 /**
  * Dappur Framework Controller
@@ -27,7 +28,7 @@ class Deploy extends Controller
             return $response->withRedirect($this->router->pathFor('home'));
 		}
 
-		$deploy = new \Dappur\Dappurware\Deployment($this->settings['deployment']['repo_url'],$_SERVER['DOCUMENT_ROOT'],$_SERVER['HOME'],$this->settings['deployment']['repo_branch']);
+		$deploy = new Deployment($this->settings['deployment']['repo_url'],$_SERVER['DOCUMENT_ROOT'],$_SERVER['HOME'],$this->settings['deployment']['repo_branch']);
 
 		echo $deploy->execute();
 		echo $deploy->updateDappur();

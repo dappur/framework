@@ -15,4 +15,12 @@ class Users extends EloquentUser {
     ];
     protected $loginNames = ['username', 'email'];
     protected $hidden = array('pivot');
+
+    public function profile(){
+        return $this->hasOne('\Dappur\Model\UsersProfile', 'user_id', 'id');
+    }
+
+    public function posts(){
+        return $this->hasMany('\Dappur\Model\BlogPosts', 'user_id', 'id');
+    }
 }

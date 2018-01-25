@@ -58,7 +58,6 @@ class AdminSettings extends Controller
             foreach ($allPostVars as $key => $value) {
                 if (strip_tags($value) != $value) {
                     $this->validator->addError($key, 'Please do not use any HTML Tags');
-                    $this->logger->addWarning("possible scripting attack", array("message" => "HTML tags were blocked from being put into the config."));
                 }
 
                 if ($key == "theme" && !in_array($value, $theme_list)) {
@@ -191,7 +190,6 @@ class AdminSettings extends Controller
             foreach ($allPostVars as $key => $value) {
                 if (strip_tags($value) != $value) {
                     $this->validator->addError($key, 'Please do not use any HTML Tags');
-                    $this->logger->addWarning("possible scripting attack", array("message" => "HTML tags were blocked from being put into the config."));
                 }
 
                 if ($key == "theme" && !in_array($value, $theme_list)) {

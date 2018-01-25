@@ -12,4 +12,8 @@ class BlogPostsComments extends Model {
         'comment',
         'status'
     ];
+
+    public function replies(){
+        return $this->hasMany('\Dappur\Model\BlogPostsReplies', 'comment_id', 'id');
+    }
 }

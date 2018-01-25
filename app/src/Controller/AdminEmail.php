@@ -126,19 +126,17 @@ class AdminEmail extends Controller{
 
 	        	if ($add_template->save()) {
 	        		$this->flash('success', 'Template has been successfully added.');
-                    $this->logger->addInfo("Admin Add Email Template", array("message" => "Template has been successfully added.", "template_id" => $add_template->id, "user_id" => $user->id));
                     return $this->redirect($response, 'admin-email-template');
 	        	}else{
 	        		$this->flash('danger', 'There was a problem adding the template to the database.');
-                    $this->logger->addError("Admin Add Email Template", array("message" => "There was an error adding your template to the database.", "template_id" => $add_template->id, "user_id" => $user->id));
-                    return $this->redirect($response, 'admin-email-template-add', array("placeholders" => $placeholders, "requestParams" => $requestParams));
+                    return $this->redirect($response, 'admin-email-template-add', array("placeholders" => $placeholders));
 	        	}
 	        	
 	        }
 
         }
 
-        return $this->view->render($response, 'emails-templates-add.twig', array("placeholders" => $placeholders, "requestParams" => $requestParams));
+        return $this->view->render($response, 'emails-templates-add.twig', array("placeholders" => $placeholders));
 	}
 
 	public function templatesEdit(Request $request, Response $response){
@@ -157,7 +155,6 @@ class AdminEmail extends Controller{
 
         if (!$template) {
         	$this->flash('danger', 'Template has been successfully added.');
-            $this->logger->addWarning("Admin Edit Email Template", array("message" => "Template not found.", "template_id" => $args['template_id'], "user_id" => $user->id));
             return $this->redirect($response, 'admin-email-template');
         }
         
@@ -223,19 +220,17 @@ class AdminEmail extends Controller{
 
 	        	if ($template->save()) {
 	        		$this->flash('success', 'Template has been successfully added.');
-                    $this->logger->addInfo("Admin Edit Email Template", array("message" => "Template has been updated added.", "template_id" => $template->id, "user_id" => $user->id));
                     return $this->redirect($response, 'admin-email-template');
 	        	}else{
 	        		$this->flash('danger', 'There was an error updating the template in the database.');
-                    $this->logger->addError("Admin Edit Email Template", array("message" => "There was an error updating the template in the database.", "template_id" => $template->id, "user_id" => $user->id));
-                    return $this->redirect($response, 'admin-email-template-add', array("template" => $template, "placeholders" => $placeholders, "requestParams" => $requestParams));
+                    return $this->redirect($response, 'admin-email-template-add', array("template" => $template, "placeholders" => $placeholders));
 	        	}
 	        	
 	        }
 
         }
 
-        return $this->view->render($response, 'emails-templates-edit.twig', array("template" => $template, "placeholders" => $placeholders, "requestParams" => $requestParams));
+        return $this->view->render($response, 'emails-templates-edit.twig', array("template" => $template, "placeholders" => $placeholders));
 
 	}
 }

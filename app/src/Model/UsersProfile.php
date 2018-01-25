@@ -8,8 +8,7 @@ class UsersProfile extends Model {
     protected $primaryKey = 'id';
     protected $fillable = [
         'user_id',
-        'about',
-        'title'
+        'about'
     ];
 
 }

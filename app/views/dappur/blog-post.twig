@@ -1,57 +1,64 @@
-{% extends 'app.twig' %}
+{% extends 'base.twig' %}
 
 {% block title %}
-{{config['site-name']}}
+	{{config['site-name']}}
 {% endblock %}
 
 {% block body %}
-
-<div class="container">
-    <div class="col-md-9">
-    	<div class="row">
-    		<div class="col-xs-12">
-    			<img src="{{ cloudinary_url(blogPost.featured_image, {'width':'1200', 'height':'630', 'crop':'fill', 'gravity':'center'}) }}" class="img-responsive thumbnail" />
-    		</div>
-    		<div class="col-xs-12">
-    			<h2>{{blogPost.title}}</h2>
-    		</div>
-    		<div class="col-xs-12">
-    			{{blogPost.post_content|raw}}
-    		</div>
-    	</div>
-    </div>
-
-    <div class="col-md-3">
-    	<!-- Categories -->
-    	<div class="row">
-    		<div class="col-xs-12">
-		    	<h2>Categories</h2>
-		    	<ul class="list-group">
-		    		{% for category in categories %}
-		    		    <li class="list-group-item">
-					    	<span class="badge">{{category.count}}</span>
-					    	{{category.name}}
-					  	</li>
-		    		{% endfor %}
-				</ul>
-			</div>
-		</div>
-
-		<!-- Tags -->
+	<div class="container">
 		<div class="row">
-    		<div class="col-xs-12">
-		    	<h2>Tags</h2>
-	    		{% for tag in tags %}
-				  	<a style="text-decoration: none; cursor: pointer;">
-					  	<span class="label" style="font-size: 12px; height: 16px; line-height: 12px; color: #000;">
-					  		{{tag.name}} 
-					  		<span class="badge">{{tag.count}}</span>
-					  	</span>
-					</a>
-	    		{% endfor %}
-			</div>
-		</div>
-    </div>
-</div>
+			<!-- Blog Entries Column -->
+			<div class="col-md-8">
 
+			    <div class="card mb-4">
+			    	<a href="{{path_for('blog-post', {'year': post.publish_at|date("Y"), 'month': post.publish_at|date("m"), 'day': post.publish_at|date("d"), 'slug': post.slug})}}">
+			    		<h2 class="card-title">{{post.title}}</h2>
+			    	</a>
+			    	{% if post.featured_image %}
+						<a href="{{path_for('blog-post', {'year': post.publish_at|date("Y"), 'month': post.publish_at|date("m"), 'day': post.publish_at|date("d"), 'slug': post.slug})}}">
+							<img alt="Card image cap" class="card-img-top img-responsive" src="{{post.featured_image}}">
+						</a>
+					{% endif %}
+			    	{% if post.video_id and post.video_provider %}
+                        {% if post.video_provider == "youtube" %}
+                            <div class="video-container">
+                                <iframe src="https://www.youtube.com/embed/{{post.video_id}}" frameborder="0" allowfullscreen></iframe>
+                            </div>
+                        {% endif %}
+
+                        {% if post.video_provider == "vimeo" %}
+                            <div class="video-container">
+                                <iframe src="https://player.vimeo.com/video/{{post.video_id}}" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowfullscreen></iframe>
+                            </div>
+                        {% endif %}
+                    {% endif %}
+					<div class="card-footer text-muted">
+						Posted on {{post.publish_at|date('m/d/Y h:i a')}} by <a href="{{path_for('blog-author', {'username': post.author.username})}}">{{post.author.username}}</a><br />
+					</div>
+					<div class="card-body">
+						<div>
+							<b>Tags:</b> 
+							{% for tag in post.tags %}
+							    <a href="{{path_for('blog-tag', {'slug': tag.slug})}}">{{ tag.name }}</a> 
+							{% endfor %}
+						</div>
+						<div>
+							<b>Category:</b> <a href="{{path_for('blog-category', {'slug': post.category.slug})}}">{{ post.category.name }}</a> 
+						</div>
+						<p class="card-text"><b>Description:</b> {{post.description}}{{ _self.getTemplateName().__toString }}</p>
+						<p class="card-text">{{post.content|raw}}</p>
+					</div>
+					
+				</div>
+				
+			</div><!-- Sidebar Widgets Column -->
+			<div class="col-md-4">
+		    	{% include 'inc/blog-sidebar.twig' %}
+		    </div>
+		</div><!-- /.row -->
+	</div><!-- /.container -->
+{% endblock %}
+
+{% block javascript %}
+    {{ recaptchaJs() }}
 {% endblock %}

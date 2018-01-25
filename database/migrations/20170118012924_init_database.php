@@ -27,7 +27,7 @@ class InitDatabase extends Migration
             $table->string('first_name')->nullable();
             $table->text('permissions');
             $table->boolean('status')->default(1);
-            $table->timestamp('last_login');
+            $table->timestamp('last_login')->nullable();
             $table->timestamps();
         });
 
@@ -382,11 +382,255 @@ class InitDatabase extends Migration
             $table->text('comment')->nullable();
             $table->timestamps();
         });
+
+        $this->schema->create('blog_categories', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('name')->unique();
+            $table->string('slug')->unique();
+            $table->boolean('status')->default(1);
+            $table->timestamps();
+        });
+
+        $this->schema->create('blog_tags', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('name')->unique();
+            $table->string('slug')->unique();
+            $table->boolean('status')->default(1);
+            $table->timestamps();
+        });
+
+        $this->schema->create('blog_posts', function (Blueprint $table) {
+            $table->increments('id');
+            $table->integer('user_id')->unsigned()->nullable();
+            $table->integer('category_id')->unsigned()->nullable();
+            $table->string('title')->nullable();
+            $table->string('description')->nullable();
+            $table->string('slug')->unique();
+            $table->text('content')->nullable();
+            $table->string('featured_image')->nullable();
+            $table->string('video_provider')->nullable();
+            $table->string('video_id')->nullable();
+            $table->timestamp('publish_at')->nullable();
+            $table->boolean('status')->default(1);
+            $table->timestamps();
+            $table->foreign('category_id')->references('id')->on('blog_categories')->onDelete('set null');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
+        });
+
+        $this->schema->create('blog_posts_comments', function (Blueprint $table) {
+            $table->increments('id');
+            $table->integer('user_id')->unsigned();
+            $table->integer('post_id')->unsigned();
+            $table->text('comment');
+            $table->boolean('status')->default(0);
+            $table->timestamps();
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('post_id')->references('id')->on('blog_posts')->onDelete('cascade');
+        });
+
+        $this->schema->create('blog_posts_replies', function (Blueprint $table) {
+            $table->increments('id');
+            $table->integer('user_id')->unsigned();
+            $table->integer('comment_id')->unsigned();
+            $table->text('reply');
+            $table->boolean('status')->default(0);
+            $table->timestamps();
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('comment_id')->references('id')->on('blog_posts_comments')->onDelete('cascade');
+        });
+
+        $this->schema->create('blog_posts_tags', function (Blueprint $table) {
+            $table->integer('post_id')->unsigned();
+            $table->integer('tag_id')->unsigned();
+            $table->primary(['post_id', 'tag_id']);
+            $table->timestamps();
+            $table->foreign('post_id')->references('id')->on('blog_posts')->onDelete('cascade');
+            $table->foreign('tag_id')->references('id')->on('blog_tags')->onDelete('cascade');
+        });
+
+        $this->schema->create('users_profile', function (Blueprint $table) {
+            $table->increments('id');
+            $table->integer('user_id')->unsigned();
+            $table->text('about');
+            $table->timestamps();
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+        });
+
+        $ins_profile = new \Dappur\Model\UsersProfile;
+        $ins_profile->user_id = 1;
+        $ins_profile->about = 'Tail pork chop rump short ribs, hamburger prosciutto cow biltong pig tenderloin. Corned beef porchetta rump, turkey buffalo tail tenderloin hamburger alcatra t-bone cupim swine prosciutto pastrami. Pork belly picanha t-bone corned beef pork chop. Shank swine brisket pork. Shankle turkey shoulder andouille.';
+        $ins_profile->save();
+
+        $uncategorized = new Dappur\Model\BlogCategories;
+        $uncategorized->name = "Uncategorized";
+        $uncategorized->slug = "uncategorized";
+        $uncategorized->save();
+
+        $add_tag = new Dappur\Model\BlogTags;
+        $add_tag->name = "Sample";
+        $add_tag->slug = "sample";
+        $add_tag->save();
+
+
+        $blog_posts = array(
+            array(
+                'id' => 1, 
+                'user_id' => 1, 
+                'category_id' => 1, 
+                'title' => 'Sample Post - No Featured Media', 
+                'description' => 'Sample Post - No Featured Media', 
+                'slug' => 'sample-post-no-featured-media', 
+                'content' => '<div class=\"anyipsum-output\">\r\n<p>Bacon ipsum dolor amet shoulder sausage porchetta frankfurter venison meatloaf kielbasa ham hock. Tail kielbasa bresaola pig pork loin, salami turkey shank cupim fatback. Strip steak short loin picanha pig turducken andouille tail, bresaola sirloin. Meatloaf ham pork chop, prosciutto flank t-bone tongue bresaola drumstick ball tip alcatra burgdoggen. Andouille biltong short loin picanha salami tail. Pork loin shoulder pancetta, kevin beef spare ribs salami. Strip steak salami filet mignon, jowl tail ham biltong venison picanha jerky prosciutto boudin pork belly.</p>\r\n<p>Frankfurter beef tri-tip, short ribs pancetta pork belly kielbasa meatball bacon. Flank pork belly short ribs, bresaola corned beef hamburger salami drumstick chicken cupim. Boudin pork chop meatloaf prosciutto biltong, short loin ham hock ball tip jowl shankle corned beef salami sausage. Flank rump bresaola, cupim pork loin strip steak jowl salami landjaeger short ribs corned beef cow.</p>\r\n<p>Picanha meatball pancetta short loin leberkas capicola ham hock landjaeger tenderloin jowl. Turkey cow turducken, alcatra fatback shank rump tri-tip pork loin pastrami capicola tail ham sirloin tongue. Ribeye hamburger boudin pork chop tongue pancetta pig turducken sausage. Andouille filet mignon pig tri-tip, fatback cupim ball tip ribeye porchetta flank swine meatloaf kevin. Ground round corned beef boudin pork loin, venison chicken meatloaf ham pork belly alcatra ball tip ham hock picanha porchetta. Pig tri-tip beef ribs shank tongue pork chop cow sirloin porchetta rump kevin sausage short ribs. Ham hock pork chop kevin ground round shank sirloin ham swine filet mignon chicken.</p>\r\n<p>Tail pork chop rump short ribs, hamburger prosciutto cow biltong pig tenderloin. Corned beef porchetta rump, turkey buffalo tail tenderloin hamburger alcatra t-bone cupim swine prosciutto pastrami. Pork belly picanha t-bone corned beef pork chop. Shank swine brisket pork. Shankle turkey shoulder andouille. Pork loin ribeye spare ribs bresaola, sirloin porchetta andouille cow. Alcatra jowl boudin cow meatball bresaola kevin frankfurter, pork chop beef ribs capicola ground round filet mignon.</p>\r\n<p>Chicken ribeye bacon, short ribs tongue shoulder ground round picanha bresaola. Tenderloin kevin turducken meatball ground round turkey jerky cupim prosciutto biltong flank. Tail cow chicken pork belly. Ham hock rump corned beef meatloaf.</p>\r\n</div>\r\n<div class=\"anyipsum-form-header\">Does your lorem ipsum text long for something a little meatier? Give our generator a try&hellip; it&rsquo;s tasty!</div>', 
+                'featured_image' => NULL, 
+                'video_provider' => NULL, 
+                'video_id' => NULL, 
+                'publish_at' => '2017-12-06 21:14:00', 
+                'status' => 1, 
+                'created_at' => '2017-12-06 21:14:59', 
+                'updated_at' => '2018-01-25 09:25:10'
+            ),
+            array(
+                'id' => 2, 
+                'user_id' => 1, 
+                'category_id' => 1, 
+                'title' => 'Sample Post - Featured Image', 
+                'description' => 'Sample Post - Featured Image', 
+                'slug' => 'sample-post-featured-image', 
+                'content' => '<div class=\"anyipsum-output\">\r\n<p>Bacon ipsum dolor amet shoulder sausage porchetta frankfurter venison meatloaf kielbasa ham hock. Tail kielbasa bresaola pig pork loin, salami turkey shank cupim fatback. Strip steak short loin picanha pig turducken andouille tail, bresaola sirloin. Meatloaf ham pork chop, prosciutto flank t-bone tongue bresaola drumstick ball tip alcatra burgdoggen. Andouille biltong short loin picanha salami tail. Pork loin shoulder pancetta, kevin beef spare ribs salami. Strip steak salami filet mignon, jowl tail ham biltong venison picanha jerky prosciutto boudin pork belly.</p>\r\n<p>Frankfurter beef tri-tip, short ribs pancetta pork belly kielbasa meatball bacon. Flank pork belly short ribs, bresaola corned beef hamburger salami drumstick chicken cupim. Boudin pork chop meatloaf prosciutto biltong, short loin ham hock ball tip jowl shankle corned beef salami sausage. Flank rump bresaola, cupim pork loin strip steak jowl salami landjaeger short ribs corned beef cow.</p>\r\n<p>Picanha meatball pancetta short loin leberkas capicola ham hock landjaeger tenderloin jowl. Turkey cow turducken, alcatra fatback shank rump tri-tip pork loin pastrami capicola tail ham sirloin tongue. Ribeye hamburger boudin pork chop tongue pancetta pig turducken sausage. Andouille filet mignon pig tri-tip, fatback cupim ball tip ribeye porchetta flank swine meatloaf kevin. Ground round corned beef boudin pork loin, venison chicken meatloaf ham pork belly alcatra ball tip ham hock picanha porchetta. Pig tri-tip beef ribs shank tongue pork chop cow sirloin porchetta rump kevin sausage short ribs. Ham hock pork chop kevin ground round shank sirloin ham swine filet mignon chicken.</p>\r\n<p>Tail pork chop rump short ribs, hamburger prosciutto cow biltong pig tenderloin. Corned beef porchetta rump, turkey buffalo tail tenderloin hamburger alcatra t-bone cupim swine prosciutto pastrami. Pork belly picanha t-bone corned beef pork chop. Shank swine brisket pork. Shankle turkey shoulder andouille. Pork loin ribeye spare ribs bresaola, sirloin porchetta andouille cow. Alcatra jowl boudin cow meatball bresaola kevin frankfurter, pork chop beef ribs capicola ground round filet mignon.</p>\r\n<p>Chicken ribeye bacon, short ribs tongue shoulder ground round picanha bresaola. Tenderloin kevin turducken meatball ground round turkey jerky cupim prosciutto biltong flank. Tail cow chicken pork belly. Ham hock rump corned beef meatloaf.</p>\r\n</div>\r\n<div class=\"anyipsum-form-header\">Does your lorem ipsum text long for something a little meatier? Give our generator a try&hellip; it&rsquo;s tasty!</div>', 
+                'featured_image' => 'https://baconmockup.com/1200/630', 
+                'video_provider' => NULL, 
+                'video_id' => NULL, 
+                'publish_at' => '2017-12-06 21:18:00', 
+                'status' => 1, 
+                'created_at' => '2017-12-06 21:19:25', 
+                'updated_at' => '2018-01-25 09:25:04'
+            ),
+            array(
+                'id' => 3, 
+                'user_id' => 1, 
+                'category_id' => 1, 
+                'title' => 'Sample Post - Featured Video', 
+                'description' => 'Sample Post - Featured Video', 
+                'slug' => 'sample-post-featured-video', 
+                'content' => '<p>Bacon ipsum dolor amet pancetta short loin picanha drumstick, hamburger beef ribs doner shoulder frankfurter sirloin biltong kielbasa pastrami prosciutto. Boudin cupim burgdoggen, flank ground round shank turkey shankle tail kevin landjaeger. Filet mignon leberkas tongue pig biltong. Venison tri-tip buffalo kielbasa tail leberkas, flank brisket pastrami andouille.</p>\r\n<p>Shankle rump ground round, pork burgdoggen bresaola spare ribs bacon pork chop cow sausage. Pastrami pork loin kielbasa frankfurter bacon fatback tri-tip swine turducken sirloin. Meatloaf tongue ball tip beef ribs doner fatback rump hamburger pig corned beef kevin meatball buffalo jerky spare ribs. Meatball biltong beef shoulder alcatra sausage swine pork loin tail chicken. Tongue ham hock flank swine beef ribs porchetta pancetta landjaeger strip steak pork loin fatback jerky meatball spare ribs.</p>\r\n<p>Tail strip steak ham jowl kevin doner shoulder pig shank swine drumstick frankfurter. Bacon drumstick pork belly ribeye andouille sausage tri-tip cow fatback. Filet mignon pig jerky strip steak bresaola meatball brisket beef ribs tail burgdoggen sausage tenderloin t-bone. Andouille landjaeger tri-tip, pork chop chicken t-bone boudin. Kevin ball tip boudin t-bone pork. Short loin jerky pork loin chicken buffalo.</p>\r\n<p>Burgdoggen capicola sausage pig, frankfurter prosciutto turkey andouille. Pig leberkas short loin tri-tip frankfurter. Landjaeger chuck t-bone, ham kevin strip steak short ribs. Shank flank tail turducken. Meatball jowl pastrami ham hock sirloin kielbasa hamburger. Pig shank bacon pork chop rump fatback.</p>\r\n<p>Venison shoulder beef ribs, strip steak t-bone tenderloin ground round brisket shankle pork belly. Jowl sausage shankle chuck, rump short ribs short loin. Prosciutto kevin brisket, andouille short loin sausage cow hamburger pancetta shankle capicola strip steak. Ball tip ground round burgdoggen turducken bacon flank, landjaeger leberkas shank short ribs beef swine cupim jerky biltong. Doner t-bone sirloin picanha. Cow boudin filet mignon salami, leberkas kevin ham hock burgdoggen meatloaf beef drumstick sirloin fatback venison. Tenderloin ham boudin rump frankfurter tail pork chop ground round pig landjaeger pastrami tongue flank tri-tip beef.</p>', 
+                'featured_image' => NULL, 
+                'video_provider' => 'youtube', 
+                'video_id' => '1bSDtlARvPI', 
+                'publish_at' => '2017-12-06 22:50:00', 
+                'status' => 1, 
+                'created_at' => '2017-12-06 22:50:53', 
+                'updated_at' => '2018-01-25 09:23:01'
+            )
+        );
+
+        foreach ($blog_posts as $bkey => $bvalue) {
+            $add_post = new \Dappur\Model\BlogPosts;
+            $add_post->id = $bvalue['id'];
+            $add_post->user_id = $bvalue['user_id'];
+            $add_post->category_id = $bvalue['category_id'];
+            $add_post->title = $bvalue['title'];
+            $add_post->description = $bvalue['description'];
+            $add_post->slug = $bvalue['slug'];
+            $add_post->content = $bvalue['content'];
+            $add_post->featured_image = $bvalue['featured_image'];
+            $add_post->video_provider = $bvalue['video_provider'];
+            $add_post->video_id = $bvalue['video_id'];
+            $add_post->publish_at = $bvalue['publish_at'];
+            $add_post->status = $bvalue['status'];
+            $add_post->created_at = $bvalue['created_at'];
+            $add_post->updated_at = $bvalue['updated_at'];
+            $add_post->save();
+        }
+
+        $blog_posts_tags = array(
+            array(
+                'post_id' => 1,
+                'tag_id' => 1
+            ),
+            array(
+                'post_id' => 2,
+                'tag_id' => 1
+            ),
+            array(
+                'post_id' => 3,
+                'tag_id' => 1
+            )
+        );
+
+        foreach ($blog_posts_tags as $bptkey => $bptvalue) {
+            $add_bpt = new \Dappur\Model\BlogPostsTags;
+            $add_bpt->post_id = $bptvalue['post_id'];
+            $add_bpt->tag_id = $bptvalue['tag_id'];
+            $add_bpt->save();
+        }
+
+        $post_comments = array(
+            array(
+                'id' => 1,
+                'user_id' => 1,
+                'post_id' => 1,
+                'comment' => 'This is a sample comment.',
+                'status' => 1
+            ),
+            array(
+                'id' => 2,
+                'user_id' => 1,
+                'post_id' => 1,
+                'comment' => 'This is a sample pending comment.',
+                'status' => 0
+            )
+        );
+
+        foreach ($post_comments as $ckey => $cvalue) {
+            $add_comment = new \Dappur\Model\BlogPostsComments;
+            $add_comment->id = $cvalue['id'];
+            $add_comment->user_id = $cvalue['user_id'];
+            $add_comment->post_id = $cvalue['post_id'];
+            $add_comment->comment = $cvalue['comment'];
+            $add_comment->status = $cvalue['status'];
+            $add_comment->save();
+        }
+
+        $add_reply = new \Dappur\Model\BlogPostsReplies;
+        $add_reply->user_id = 1;
+        $add_reply->comment_id = 1;
+        $add_reply->reply = 'This is a sample reply.';
+        $add_reply->status = 1;
+        $add_reply->save();
+
+        $config = new Dappur\Model\ConfigGroups;
+        $config->name = "Blog";
+        $config->description = "Blog Settings";
+        $config->page_name = null;
+        $config->save();
+
+        //Initial Config Table Options
+        $init_config = array(
+            array('group_id' => $config->id, 'name' => 'blog-enabled', 'description' => 'Enable Blog', 'type_id' => 6, 'value' => 1),
+            array('group_id' => $config->id, 'name' => 'blog-per-page', 'description' => 'Blog Posts Per Page', 'type_id' => 2, 'value' => 2),
+        );
+
+        foreach ($init_config as $ikey => $ivalue) {
+            $ins_config = new \Dappur\Model\Config;
+            $ins_config->group_id = $ivalue['group_id'];
+            $ins_config->type_id = $ivalue['type_id'];
+            $ins_config->name = $ivalue['name'];
+            $ins_config->description = $ivalue['description'];
+            $ins_config->value = $ivalue['value'];
+            $ins_config->save();
+        }
         
     }
 
     public function down()
     {
+        $this->schema->dropIfExists('users_profile');
+        $this->schema->dropIfExists('blog_posts_tags');
+        $this->schema->dropIfExists('blog_posts_replies');
+        $this->schema->dropIfExists('blog_posts_comments');
+        $this->schema->dropIfExists('blog_posts');
+        $this->schema->dropIfExists('blog_tags');
+        $this->schema->dropIfExists('blog_categories');
         $this->schema->dropIfExists('contact_requests');
         $this->schema->dropIfExists('emails_drafts');
         $this->schema->dropIfExists('emails');

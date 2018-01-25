@@ -114,10 +114,34 @@ $container['view'] = function ($container) {
             $view->getEnvironment()->addGlobal('cloudinarySignature', \Dappur\Controller\AdminMedia::getCloudinaryCMS($container, true));
             $view->getEnvironment()->addGLobal('cloudinaryApiKey', $container['settings']['cloudinary']['api_key']);
         }
-        
     }else{
         $view->addExtension(new \Dappur\TwigExtension\Cloudinary());
         $view->getEnvironment()->addGlobal('hasCloudinary', 0);
+    }
+
+    if ($container['config']['blog-enabled']) {
+        // Get Categories With Count
+        $blog_categories = new \Dappur\Model\BlogCategories;
+        $blog_categories = $blog_categories->withCount(['posts' => function ($query) {
+                $query->where('blog_posts.status', 1);
+            }])
+            ->whereHas('posts', function ($query) {
+                $query->where('blog_posts.status', 1);
+            })
+            ->get();
+
+        // Get Tags With Count
+        $blog_tags = new \Dappur\Model\BlogTags;
+        $blog_tags = $blog_tags->withCount(['posts' => function ($query) {
+                $query->where('blog_posts.status', 1);
+            }])
+            ->whereHas('posts', function ($query) {
+                $query->where('blog_posts.status', 1);
+            })
+            ->get();
+
+        $view->getEnvironment()->addGlobal('blogCategories', $blog_categories);
+        $view->getEnvironment()->addGlobal('blogTags', $blog_tags);
     }
     
     $view->getEnvironment()->addGlobal('flash', $container['flash']);
@@ -126,6 +150,7 @@ $container['view'] = function ($container) {
     $view->getEnvironment()->addGlobal('displayErrorDetails', $container['settings']['displayErrorDetails']);
     $view->getEnvironment()->addGlobal('userAccess', $container['userAccess']);
     $view->getEnvironment()->addGlobal('currentRoute', $container['request']->getUri()->getPath());
+    $view->getEnvironment()->addGlobal('requestParams', $container['request']->getParams());
     $view->getEnvironment()->addGlobal('projectDir', $container['project_dir']);
     $view->getEnvironment()->addGlobal('publicDir', $container['public_dir']);
     $view->getEnvironment()->addGlobal('uploadDir', $container['upload_dir']);
@@ -213,8 +238,4 @@ $container['mail'] = function($container) {
             break;
     }
     return $mail; 
-};
-
-$container['blog'] = function ($container){
-    return new \Dappur\Dappurware\Blog($container);
 };

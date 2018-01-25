@@ -33,32 +33,18 @@ class Auth extends Controller{
             try {
                 if ($this->auth->authenticate($credentials, $remember)) {
                     $this->flash('success', 'You have been logged in.');
-                    $this->logger->addInfo("user login success", array("login" => $request->getParam('login')));
-
                     if ($this->auth->inRole("admin")) {
                         return $this->redirect($response, 'dashboard');
                     }else{
                         return $this->redirect($response, 'home');
                     }
-
-                    
                 } else {
                     $this->flash('danger', 'Invalid username or password.');
-                    $this->logger->addNotice("Login: Invalid login info.", array("login" => $request->getParam('login')));
-                    return $this->redirect($response, 'login');
                 }
             } catch (ThrottlingException $e) {
-
                 $this->flash('danger', 'Too many invalid attempts on your ' . $e->getType() . '!  Please wait ' . $e->getDelay() . ' seconds before trying again.');
-                $this->logger->addError("Login: Throttling Exception", array("login" => $request->getParam('login')));
-                return $this->redirect($response, 'login');
-
             } catch (NotActivatedException $e) {
-
                 $this->flash('danger', 'Please check your email for instructions on activating your account.');
-                $this->logger->addError("Login:  Account Not Activated", array("exception" => $request->getParam('login')));
-                return $this->redirect($response, 'login');
-
             }
 
             return $this->redirect($response, 'login');
@@ -71,11 +57,6 @@ class Auth extends Controller{
     public function register(Request $request, Response $response){
 
         if ($request->isPost()) {
-            $first_name = $request->getParam('first_name');
-            $last_name = $request->getParam('last_name');
-            $email = $request->getParam('email');
-            $username = $request->getParam('username');
-            $password = $request->getParam('password');
 
             // Validate Data
             $validate_data = array(
@@ -116,7 +97,7 @@ class Auth extends Controller{
                         )
                 ),
                 'password-confirm' => array(
-                    'rules' => V::equals($password), 
+                    'rules' => V::equals($request->getParam('password')), 
                     'messages' => array(
                         'equals' => 'Passwords must match.'
                         )
@@ -132,12 +113,12 @@ class Auth extends Controller{
             }
 
             // Validate Username
-            if ($this->auth->findByCredentials(['login' => $username])) {
+            if ($this->auth->findByCredentials(['login' => $request->getParam('username')])) {
                 $this->validator->addError('username', 'User already exists with this username.');
             }
 
             // Validate Email
-            if ($this->auth->findByCredentials(['login' => $email])) {
+            if ($this->auth->findByCredentials(['login' => $request->getParam('email')])) {
                 $this->validator->addError('email', 'User already exists with this email.');
             }
 
@@ -145,11 +126,11 @@ class Auth extends Controller{
 
                 $role = $this->auth->findRoleByName('User');
                 $user_details = [
-                    'first_name' => $first_name,
-                    'last_name' => $last_name,
-                    'email' => $email,
-                    'username' => $username,
-                    'password' => $password,
+                    'first_name' => $request->getParam('first_name'),
+                    'last_name' => $request->getParam('last_name'),
+                    'email' => $request->getParam('email'),
+                    'username' => $request->getParam('username'),
+                    'password' => $request->getParam('password'),
                     'permissions' => [
                         'user.delete' => 0
                     ]
@@ -171,11 +152,9 @@ class Auth extends Controller{
                     $send_email = $send_email->sendTemplate(array($user->id), 'activation', array('confirm_url' => $confirm_url));
                     if ($send_email['status'] == "error") {
                         $this->flash('danger', 'An error ocurred sending your activation email.  Please contact support.');
-                        $this->logger->addError("Registration: Send Activation Email Error.", array("result" => $send_email));
                         return $this->redirect($response, 'forgot-password');
                     }else{
                         $this->flash('success', 'You must activate your account before you can log in. Instructions have been sent to: ' . $request->getParam('email'));
-                        $this->logger->addInfo("Registration: Activation email sent.", array("result" => $send_email));
                         return $this->redirect($response, 'home');
                     }
                     
@@ -188,10 +167,8 @@ class Auth extends Controller{
                     $send_email = $send_email->sendTemplate(array($user->id), 'registration');
                     if ($send_email['status'] == "error") {
                         $this->flash('danger', 'An error ocurred sending your activation email.  Please contact support.');
-                        $this->logger->addError("Registration: Send Activation Email Error.", array("result" => $send_email));
                     }else{
                         $this->flash('success', 'Your account has been created.');
-                        $this->logger->addInfo("Registration: Success", array("request_params" => $request->getParams()));
                     }
 
                     $this->auth->login($user);
@@ -199,13 +176,13 @@ class Auth extends Controller{
                     return $this->redirect($response, 'home');
                 }
 
+                $this->logger->addInfo("New user registration.", array("user" => $user));
+
                 
-            }else{
-                $this->logger->addError("registration data validation failed", array("first_name" => $first_name, "last_name" => $last_name, "email" => $email));
             }
         }
 
-        return $this->view->render($response, 'register.twig', array("requestParams" => $request->getParams()));
+        return $this->view->render($response, 'register.twig');
     }
 
     // Forgot Password
@@ -258,18 +235,16 @@ class Auth extends Controller{
                 $send_email = $send_email->sendTemplate(array($user->id), 'password-reset', array('reset_url' => $reset_url));
                 if ($send_email['status'] == "error") {
                     $this->flash('danger', 'There was an error sending your email.  Please try again or contact support.');
-                    $this->logger->addError("Forgot Password: Send Email Error.", array("email" => $request->getParam('email')));
                     return $this->redirect($response, 'forgot-password');
                 }else{
                     $this->flash('success', 'Password reset instructions have been sent to: ' . $request->getParam('email'));
-                    $this->logger->addInfo("Forgot Password: Password successfully reset.", array("email" => $request->getParam('email')));
                     return $this->redirect($response, 'login');
                 }
             }
 
         }
 
-        return $this->view->render($response, 'forgot-password.twig', array("requestParams" => $request->getParams()));
+        return $this->view->render($response, 'forgot-password.twig');
     }
 
     // Forgot Password
@@ -287,10 +262,6 @@ class Auth extends Controller{
 
             if ($user) {
 
-                $reminder = $request->getParam('reminder');
-                $email = $request->getParam('email');
-                $password = $request->getParam('password');
-
                 // Validate Data
                 $validate_data = array(
                     'password' => array(
@@ -300,7 +271,7 @@ class Auth extends Controller{
                             )
                     ),
                     'password_confirm' => array(
-                        'rules' => V::equals($password), 
+                        'rules' => V::equals($request->getParam('password')), 
                         'messages' => array(
                             'equals' => 'Passwords must match.'
                             )
@@ -312,40 +283,34 @@ class Auth extends Controller{
 
                     $reminders = $this->auth->getReminderRepository();
 
-                    if ($reminders->complete($user, $reminder, $password)) {
+                    if ($reminders->complete($user, $request->getParam('reminder'), $request->getParam('password'))) {
 
                         $this->auth->login($user);
 
                         $this->flash('success', 'Your password has successfully been changed and you have been logged in.');
-                        $this->logger->addInfo("Reset Password: Password successfully reset.", array("user" => $user));
                         return $this->redirect($response, 'home');
 
                     }else{
                         $this->flash('danger', 'There was an error validating your information.  Please try again.');
-                        $this->logger->addError("Reset Password: Error validating info.", array("request_params" => $request->getParams()));
                         return $this->redirect($response, 'forgot-password');
                     }
                 }
 
             }else{
                 $this->flash('danger', 'That account does not exist.');
-                $this->logger->addError("Reset Password: Account doesn't exist.", array("email" => $request->getParam('email')));
                 return $this->redirect($response, 'forgot-password');
             }
 
         }
 
-        return $this->view->render($response, 'reset-password.twig', array("requestParams" => $request->getParams()));
+        return $this->view->render($response, 'reset-password.twig');
     }
 
     // Forgot Password
     public function activate(Request $request, Response $response){
 
-        $code = $request->getParam('code');
-        $email = $request->getParam('email');
-
         $credentials = [
-            'email' => $email
+            'email' => $request->getParam('email')
         ];
 
         $user = $this->auth->findByCredentials($credentials);
@@ -354,7 +319,7 @@ class Auth extends Controller{
 
             $activations = $this->auth->getActivationRepository();
 
-            $activation = $activations->complete($user, $code);
+            $activation = $activations->complete($user, $request->getParam('code'));
 
             if ($activation) {
 
@@ -362,24 +327,15 @@ class Auth extends Controller{
 
                 $send_email = new E($this->container);
                 $send_email = $send_email->sendTemplate(array($user->id), 'registration');
-                if ($send_email['status'] == "error") {
-                    $this->logger->addError("Activation: Send Registration Email Error.", array("result" => $send_email));
-                }
 
                 $this->flash('success', 'Your account was successfully activated and you have been logged in.');
-                $this->logger->addError("Activation: Account successfully activated.", array("user" => $user));
-                return $this->redirect($response, 'home');
             }else{
                 $this->flash('danger', 'Sorry, your activation credentials were incorrect.');
-                $this->logger->addError("Activation: Credentials incorrect.", array("request_params" => $request->getParams()));
-                return $this->redirect($response, 'home');
             }
-
         }else{
             $this->flash('danger', 'That account does not exist.');
-            $this->logger->addError("Activation: Account doesn't exist.", array("email" => $request->getParam('email')));
-            return $this->redirect($response, 'home');
         }
+        return $this->redirect($response, 'home');
     }
 
     // Logout Controller
@@ -389,18 +345,5 @@ class Auth extends Controller{
 
         $this->flash('success', 'You have been logged out.');
         return $this->redirect($response, 'home');
-    }
-
-
-    // Generate Random Password
-    private function randomAlnum($length = 10) {
-        $alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
-        $pass = array(); //remember to declare $pass as an array
-        $alphaLength = strlen($alphabet) - 1; //put the length -1 in cache
-        for ($i = 0; $i < $length; $i++) {
-            $n = rand(0, $alphaLength);
-            $pass[] = $alphabet[$n];
-        }
-        return implode($pass); //turn the array into a string
     }
 }

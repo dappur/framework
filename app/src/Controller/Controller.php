@@ -96,6 +96,11 @@ class Controller
         $this->flash->addMessage($name, $message);
     }
 
+    public function flashNow($name, $message)
+    {
+        $this->flash->addMessageNow($name, $message);
+    }
+
     /**
      * Create new NotFoundException
      *

@@ -62,10 +62,19 @@ $app->group('/dashboard/blog', function() use ($app) {
 // Blog
 $app->group('/blog', function() use ($app) {
     $app->get('[/{page}]', 'Blog:blog')
-    ->setName('blog');
+        ->setName('blog');
 
     $app->get('/{year}/{month}/{day}/{slug}', 'Blog:blogPost')
-    ->setName('blog-post');
+        ->setName('blog-post');
+
+    $app->get('/author/{username}[/{page}]', 'Blog:blogAuthor')
+        ->setName('blog-author');
+
+    $app->get('/tag/{slug}[/{page}]', 'Blog:blogTag')
+        ->setName('blog-tag');
+
+    $app->get('/category/{slug}[/{page}]', 'Blog:blogCategory')
+        ->setName('blog-category');
 })
 ->add($container->get('csrf'))
 ->add(new Dappur\Middleware\Maintenance($container))

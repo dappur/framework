@@ -21,13 +21,7 @@ class App extends Controller{
 
     public function test(Request $request, Response $response){
         
-        $categories = new \Dappur\Model\BlogCategories;
-        $categories = $categories->withCount('posts')->whereHas('posts')->get();
-
-        $tags = new \Dappur\Model\BlogTags;
-        $tags = $tags->withCount('posts')->whereHas('posts')->get();
-
-        echo $tags;
+        // Used as a quick sandbox
 
           
     }
@@ -87,20 +81,12 @@ class App extends Controller{
                         
                         $send_email = new E($this->container);
                         $send_email = $send_email->sendTemplate(array($request->getParam("email")), 'contact-confirmation', array('name' => $request->getParam('name'), 'phone' => $request->getParam('phone'), 'comment' => $request->getParam('comment')));
-                        if ($send_email['status'] == "error") {
-                            $this->logger->addError("Registration: Send Activation Email Error.", array("result" => $send_email));
-                        }else{
-                            $this->logger->addInfo("Registration: Activation email sent.", array("result" => $send_email));
-                        }
-
                     }
 
                     $this->flash('success', 'Your contact request has been submitted successfully.');
-                    $this->logger->addInfo("Contact: Request successful.", array("request_params" => $request->getParams()));
                     return $this->redirect($response, 'contact');
                 }else{
                     $this->flash('danger', 'An unknown error occured.  Please try again or email us at: ' . $this->config['contact-email']);
-                    $this->logger->addError("Contact: Request failed.", array("error" => $add->save()));
                     return $this->redirect($response, 'contact');
                 }
             }

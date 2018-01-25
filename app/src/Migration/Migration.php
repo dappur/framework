@@ -31,6 +31,7 @@ class Migration extends AbstractMigration {
           'password'  => $dbconf['password'],
           'charset'   => 'utf8',
           'collation' => 'utf8_unicode_ci',
+          'timezone' => $dbconf['timezone']
         ]);
 
         $this->capsule->bootEloquent();
