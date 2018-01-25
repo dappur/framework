@@ -266,7 +266,7 @@ class Email extends Dappurware
         if (!empty($recipients)) {
 
             // Send Email To Users
-            if ($recipients['users']) {
+            if (!empty($recipients['users'])) {
                 foreach ($recipients['users'] as $uvalue) {
                     // Process Bodies with Custom and System Placeholders
                     $user_temp = Users::find($uvalue);
@@ -281,18 +281,18 @@ class Email extends Dappurware
                     $placeholders_temp = $this->preparePlaceholders($placeholders_temp);
 
                     // Process HTML Email
-                    $html_temp = new \Twig_Environment(new \Twig_Loader_Array([$template->slug . '_html' => $html]));
-                    $html_temp = $html_temp->render($template->slug . '_html', $placeholders_temp);
+                    $html_temp = new \Twig_Environment(new \Twig_Loader_Array(['email_html' => $html]));
+                    $html_temp = $html_temp->render('email_html', $placeholders_temp);
 
                     // Process Plain Text Email
-                    $plain_text_temp = new \Twig_Environment(new \Twig_Loader_Array([$template->slug . '_pt' => $plain_text]));
-                    $plain_text_temp = $plain_text_temp->render($template->slug . '_pt', $placeholders_temp);
+                    $plain_text_temp = new \Twig_Environment(new \Twig_Loader_Array(['email_pt' => $plain_text]));
+                    $plain_text_temp = $plain_text_temp->render('email_pt', $placeholders_temp);
 
                     //Process Subject
-                    $subject_temp = new \Twig_Environment(new \Twig_Loader_Array([$template->slug . '_sub' => $subject]));
-                    $subject_temp = $subject_temp->render($template->slug . '_sub', $placeholders_temp);
+                    $subject_temp = new \Twig_Environment(new \Twig_Loader_Array(['email_sub' => $subject]));
+                    $subject_temp = $subject_temp->render('email_sub', $placeholders_temp);
 
-                    if (Email::send($user_temp->email, html_entity_decode($subject_temp), $html_temp, $plain_text_temp, $template->id)) {
+                    if (Email::send($user_temp->email, html_entity_decode($subject_temp), $html_temp, $plain_text_temp)) {
                         $output['results']['success'][] = array("email" => $user_temp->email);
                     }else{
                         $output['results']['errors'][] = array("email" => $user_temp->email, "error" => $result['error']);
@@ -300,26 +300,25 @@ class Email extends Dappurware
                 }
             }
 
-
             // Send Email to Email Addresses
-            if ($recipients['email']) {
+            if (!empty($recipients['email'])) {
                 foreach ($recipients['email'] as $evalue) {
 
                     $placeholders_temp = $this->preparePlaceholders($placeholders);
 
                     // Process HTML Email
-                    $html_temp = new \Twig_Environment(new \Twig_Loader_Array([$template->slug . '_html' => $html]));
-                    $html_temp = $html_temp->render($template->slug . '_html', $placeholders_temp);
+                    $html_temp = new \Twig_Environment(new \Twig_Loader_Array(['email_html' => $html]));
+                    $html_temp = $html_temp->render('email_html', $placeholders_temp);
 
                     // Process Plain Text Email
-                    $plain_text_temp = new \Twig_Environment(new \Twig_Loader_Array([$template->slug . '_pt' => $plain_text]));
-                    $plain_text_temp = $plain_text_temp->render($template->slug . '_pt', $placeholders_temp);
+                    $plain_text_temp = new \Twig_Environment(new \Twig_Loader_Array(['email_pt' => $plain_text]));
+                    $plain_text_temp = $plain_text_temp->render('email_pt', $placeholders_temp);
 
                     //Process Subject
-                    $subject_temp = new \Twig_Environment(new \Twig_Loader_Array([$template->slug . '_sub' => $subject]));
-                    $subject_temp = $subject_temp->render($template->slug . '_sub', $placeholders_temp);
+                    $subject_temp = new \Twig_Environment(new \Twig_Loader_Array(['email_sub' => $subject]));
+                    $subject_temp = $subject_temp->render('email_sub', $placeholders_temp);
 
-                    if (Email::send($evalue, $subject_temp, $html_temp, $plain_text_temp, $template->id)){
+                    if (Email::send($evalue, $subject_temp, $html_temp, $plain_text_temp)){
                         $output['results']['success'][] = array("email" => $evalue);
                     }else{
                         $output['results']['errors'][] = array("email" => $evalue, "error" => $result['error']);
