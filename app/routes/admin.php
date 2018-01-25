@@ -77,7 +77,7 @@ $app->group('/dashboard', function () use($app) {
         $app->map(['GET'], '', 'AdminEmail:email')
             ->setName('admin-email');
 
-        $app->map(['GET'], 'details/{email}', 'AdminEmail:emailDetails')
+        $app->map(['GET'], '/details/{email}', 'AdminEmail:emailDetails')
             ->setName('admin-email-details');
 
         $app->map(['GET','POST'], '/new', 'AdminEmail:emailNew')

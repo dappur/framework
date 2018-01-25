@@ -25,6 +25,27 @@ class AdminEmail extends Controller{
         return $this->view->render($response, 'emails.twig', array("emails" => $emails));
 	}
 
+	public function emailDetails(Request $request, Response $response){
+
+		$sentinel = new S($this->container);
+        if(!$sentinel->hasPerm('email.details')){
+        	return $this->redirect($response, 'home');
+        }
+
+        $routeArgs =  $request->getAttribute('route')->getArguments();
+
+        $email = Emails::find($routeArgs['email']);
+
+        if (!$email) {
+        	$this->flash('danger', 'There was a problem finding that email in the database.');
+            return $this->redirect($response, 'admin-email');
+        }
+
+        $user = Users::where('email', $email->send_to)->first();
+
+        return $this->view->render($response, 'emails-details.twig', array("email" => $email, "user" => $user));
+	}
+
 	public function testEmail(Request $request, Response $response){
 
 		$sentinel = new S($this->container);
