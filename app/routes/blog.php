@@ -57,6 +57,7 @@ $app->group('/dashboard/blog', function() use ($app) {
 })
 ->add(new Dappur\Middleware\Auth($container))
 ->add(new Dappur\Middleware\Admin($container))
+->add(new Dappur\Middleware\BlogCheck($container))
 ->add($container->get('csrf'));
 
 // Blog
@@ -78,4 +79,5 @@ $app->group('/blog', function() use ($app) {
 })
 ->add($container->get('csrf'))
 ->add(new Dappur\Middleware\Maintenance($container))
+->add(new Dappur\Middleware\BlogCheck($container))
 ->add(new Dappur\Middleware\PageConfig($container));

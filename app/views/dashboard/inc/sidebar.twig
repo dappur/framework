@@ -25,7 +25,7 @@
     </li>
     {% endif %}
 
-    {% if auth.hasAccess('blog.view') %}
+    {% if auth.hasAccess('blog.view') and config['blog-enabled'] %}
     <li {% if currentRoute starts with '/dashboard/blog' %}class="active"{% endif %}>
         <a href="{{ path_for('admin-blog')}}"><i class="fa fa-fw fa-newspaper-o"></i> Blog</a>
     </li>

@@ -61,17 +61,15 @@ class AdminUsers extends Controller{
             // Validate Form Data
             $validate_data = array(
                 'first_name' => array(
-                    'rules' => V::length(2, 25)->alpha('\''), 
+                    'rules' => V::length(2, 25), 
                     'messages' => array(
-                        'length' => 'Must be between 2 and 25 characters.',
-                        'alpha' => 'Letters only and can contain \''
+                        'length' => 'Must be between 2 and 25 characters.'
                         )
                 ),
                 'last_name' => array(
-                    'rules' => V::length(2, 25)->alpha('\''), 
+                    'rules' => V::length(2, 25), 
                     'messages' => array(
-                        'length' => 'Must be between 2 and 25 characters.',
-                        'alpha' => 'Letters only and can contain \''
+                        'length' => 'Must be between 2 and 25 characters.'
                         )
                 ),
                 'email' => array(
@@ -252,7 +250,7 @@ class AdminUsers extends Controller{
                     // Get User Info
                     $user = $this->auth->findById($request->getParam('user_id'));
 
-                    $user->first_name = $request->getParam('user_id');
+                    $user->first_name = $request->getParam('first_name');
                     $user->last_name = $request->getParam('last_name');
                     $user->email = $request->getParam('email');
                     $user->username = $request->getParam('username');
