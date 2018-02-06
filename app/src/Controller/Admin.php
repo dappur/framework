@@ -6,6 +6,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use Respect\Validation\Validator as V;
 use Dappur\Model\Users;
+use Dappur\Model\UsersProfile;
 use Dappur\Model\ContactRequests;
 use Dappur\Dappurware\Sentinel as S;
 
@@ -45,7 +46,7 @@ class Admin extends Controller{
 
         $requestParams = $request->getParams();
 
-        $user = $this->auth->check()->with('profile');
+        $user = Users::with('profile')->find($this->auth->check()->id);
 
         if ($request->isPost()) {
 
@@ -81,6 +82,7 @@ class Admin extends Controller{
                             )
                     )
                 );
+
                 //Check username
                 if ($user->username != $request->getParam('username')) {
                     $check_username = Users::where('id', '!=', $user->id)->where('username', '=', $request->getParam('username'))->get()->count();
@@ -110,6 +112,10 @@ class Admin extends Controller{
                     ];
 
                     $update_user = $this->auth->update($user, $new_information);
+
+                    $update_profile = UsersProfile::find($user->id);
+                    $update_profile->about = $request->getParam('about');
+                    $update_profile->save();
 
                     if ($update_user) {
                         $this->flash('success', 'Your account has been updated successfully.');
