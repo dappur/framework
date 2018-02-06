@@ -21,6 +21,12 @@ $container['notAllowedHandler'] = function ($container) {
 
 $container['errorHandler'] = function ($container) {
     return function ($request, $response, $exception) use ($container) {
+
+        if (filter_var($container['config']['error-email'], FILTER_VALIDATE_EMAIL)) {
+            $email = new \Dappur\Dappurware\Email($container);
+            $email->sendEmail(array($container['config']['error-email']), "PHP Error on ICS Website", "<pre>" . $exception . "</pre>", $exception);
+        }
+
         return $container['view']
         	->render($response, 'errors/500.twig', array("exception" => $exception))
         	->withStatus(500)
@@ -30,6 +36,12 @@ $container['errorHandler'] = function ($container) {
 
 $container['phpErrorHandler'] = function ($container) {
     return function ($request, $response, $exception) use ($container) {
+        if (filter_var($container['config']['error-email'], FILTER_VALIDATE_EMAIL)) {
+
+            $email = new \Dappur\Dappurware\Email($container);
+            $email->sendEmail(array($container['config']['error-email']), "Application Error on ICS Website", "<pre>" . $exception . "</pre>", $exception);
+        }
+
         return $container['view']
             ->render($response, 'errors/500-php.twig', array("exception" => $exception))
             ->withStatus(500)
