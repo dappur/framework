@@ -3,8 +3,7 @@
 $container = $app->getContainer();
 
 // Configure Database
-$database = $container['settings']['db']['use'];
-$db = $container['settings']['db']['databases'][$database];
+$db = $container['settings']['db']['databases'][$container['settings']['environment']];
 $capsule = new \Illuminate\Database\Capsule\Manager();
 $capsule->addConnection($db);
 $capsule->setAsGlobal();
@@ -223,16 +222,6 @@ $container['mail'] = function($container) {
             $mail->Username = $mail_settings['mailgun']['username'];    // SMTP username from https://mailgun.com/cp/domains
             $mail->Password = $mail_settings['mailgun']['password'];    // SMTP password from https://mailgun.com/cp/domains
             $mail->SMTPSecure = 'tls';                                  // Enable encryption, 'ssl'
-            break;
-        
-        case 'mandrill':
-            $mail->IsSMTP();                                            // Set mailer to use SMTP
-            $mail->Host = 'smtp.mandrillapp.com';                       // Specify main and backup server
-            $mail->Port = 587;                                          // Set the SMTP port
-            $mail->SMTPAuth = true;                                     // Enable SMTP authentication
-            $mail->Username = $mail_settings['mandrill']['username'];   // SMTP username
-            $mail->Password = $mail_settings['mandrill']['password'];   // SMTP password
-            $mail->SMTPSecure = 'tls';                                  // Enable encryption, 'ssl' also accepted
             break;
         
         default:

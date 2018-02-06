@@ -402,9 +402,9 @@ class Deployment {
 
         $settings = file_get_contents(dirname($this->document_root) . '/app/bootstrap/settings.json');
         $settings = json_decode($settings, TRUE);
-        $file_database = $settings['db']['databases'][$settings['db']['use']];
+        $file_database = $settings['db']['databases'][$settings['environment']];
 
-        $construct_database = $this->settings_array['db']['databases'][$this->settings_array['db']['use']];
+        $construct_database = $this->settings_array['db']['databases'][$this->settings_array['environment']];
 
         $output['check_file'] = false;
         $output['check_construct'] = false;

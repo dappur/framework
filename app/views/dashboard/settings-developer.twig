@@ -223,7 +223,6 @@
                                 <label for="name">Enabled</label>
                                 <select name="mail_relay" id="mail_relay" class="form-control" required="required">
                                     <option value="phpmail"{% if settingsFile.mail.relay == 'phpmail' %} selected{% endif %}>PHP mail()</option>
-                                    <option value="mandrill"{% if settingsFile.mail.relay == 'mandrill' %} selected{% endif %}>Mandrill</option>
                                     <option value="mailgun"{% if settingsFile.mail.relay == 'mailgun' %} selected{% endif %}>Mailgun</option>
                                 </select>
                                 <span class="help-block">{{ error('mail_relay') }}</span>
@@ -239,18 +238,6 @@
                                 <label for="name">Mailgun Password</label>
                                 <input type="text" name="mailgun_password" id="mailgun_password" class="form-control" value="{{settingsFile.mail.mailgun.password}}" placeholder="Mailgun Password">
                                 <span class="help-block">{{ error('mailgun_password') }}</span>
-                            </div>
-
-                            <div class="form-group{% if has_error('mandrill_username') %} has-error{% endif %}">
-                                <label for="name">Mandrill Username</label>
-                                <input type="text" name="mandrill_username" id="mandrill_username" class="form-control" value="{{settingsFile.mail.mandrill.username}}" placeholder="Mandrill Username">
-                                <span class="help-block">{{ error('mandrill_username') }}</span>
-                            </div>
-
-                            <div class="form-group{% if has_error('mandrill_password') %} has-error{% endif %}">
-                                <label for="name">Mandrill Password</label>
-                                <input type="text" name="mandrill_password" id="mandrill_password" class="form-control" value="{{settingsFile.mail.mandrill.password}}" placeholder="Mandrill Password">
-                                <span class="help-block">{{ error('mandrill_password') }}</span>
                             </div>
                         </div>
                     </div>
@@ -294,16 +281,12 @@
 
                     <div class="panel panel-danger">
                         <div class="panel-heading">
-                            Save Settings
+                            WARNING
                         </div>
                         <div class="panel-body">
 
                             <div class="alert alert-danger">
-                                <strong>Warning!</strong> This page contains settings that can disable your site.  These should only be modified by an experienced developer.  Please make sure that you know what you are doing before saving these.  This is experimental.  In fact, so experimental that it currently does not work.
-                            </div>
-
-                            <div class="form-group{% if has_error('cl_enabled') %} has-error{% endif %}">
-                                <center><button class="btn btn-warning btn-large"><i class="icon-white icon-ban-circle"></i> Save Settings</button></center>
+                                <strong>Warning!</strong> This page is only available to users within the Developer role. It is meant to merely provide insight into what is contained in the settings.json file. This layout will change in future versions as we do not want to allow any editing of the settings file from a browser.  This page can be disabled by settings showInAdmin to false.
                             </div>
                         </div>
                     </div>
