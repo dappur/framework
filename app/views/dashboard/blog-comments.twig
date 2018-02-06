@@ -36,27 +36,25 @@ javascript
                         <thead>
                             <tr>
                                 <th>Created At</th>
+                                <th>Post</th>
                                 <th>Comment</th>
-                                <th>Replies</th>
+                                <th>Pending / Replies</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             {% for comment in comments %}
-                                <tr class="{% if comment.status %}success{% else %}danger{% endif %}">
+                                <tr class="{% if comment.status %}success{% else %}warning{% endif %}">
                                     <td>{{ comment.created_at }}</td>
+                                    <td>{{ comment.post.title }}</td>
                                     <td>{{ comment.comment }}</td>
                                     <td class="{% if comment.pending_replies_count > 0 %}danger{% endif %}">
-                                        {% if comment.pending_replies_count > 0 %}
-                                            {{ comment.pending_replies_count }} Pending
-                                        {% elseif comment.replies_count == 0 %}
-                                            None
-                                        {% endif %}
-                                        {% if comment.pending_replies_count == 0 and comment.replies_count > 0 %}
-                                            {{comment.replies_count}} Replies
-                                        {% endif %}
+                                        {{ comment.pending_replies_count }} / {{ comment.replies_count }}
                                     </td>
                                     <td>
+                                        <a href="{{ path_for('admin-blog-comment-details', {comment_id: comment.id}) }}">
+                                            <button class="btn btn-default btn-xs"><span class="fa fa-fw fa-comments"></span> </button>
+                                        </a>
                                         {% if comment.status == 1 %}
                                             <form action="{{ path_for('admin-blog-comment-unpublish') }}" method="post" style="display: inline;">
                                                 <input type="hidden" name="comment" value="{{ comment.id }}" />
@@ -80,9 +78,6 @@ javascript
                                                     <span class="fa fa-fw fa-trash"></span>
                                                 </button>
                                             </form>
-                                        {% endif %}
-                                        {% if comment.replies_count > 0 %}
-                                            <button class="btn btn-default btn-xs"><span class="fa fa-fw fa-comments"></span> </button>
                                         {% endif %}
                                     </td>
                                 </tr>

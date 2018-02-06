@@ -12,6 +12,7 @@ use Dappur\Model\BlogCategories;
 use Dappur\Model\BlogTags;
 use Dappur\Model\BlogPosts;
 use Dappur\Model\BlogPostsComments;
+use Dappur\Model\BlogPostsReplies;
 use Dappur\Model\BlogPostsTags;
 use Dappur\Dappurware\Utils;
 use Carbon\Carbon;
@@ -26,7 +27,7 @@ class AdminBlog extends Controller{
             return $this->redirect($response, 'dashboard');
         }
 
-        $posts = BlogPosts::with('category');
+        $posts = BlogPosts::with('category')->withCount('comments', 'replies');
 
         if (!$this->auth->check()->inRole('manager') && !$this->auth->check()->inRole('admin')) {
             $posts = $posts->where('user_id', $this->auth->check()->id);
@@ -36,7 +37,6 @@ class AdminBlog extends Controller{
 
     }
 
-    // Main Blog Admin Page
     public function comments(Request $request, Response $response){
 
         $sentinel = new S($this->container);
@@ -44,14 +44,316 @@ class AdminBlog extends Controller{
             return $this->redirect($response, 'dashboard');
         }
 
-        $comments = BlogPostsComments::withCount('replies', 'pending_replies');
-
         if (!$this->auth->check()->inRole('manager') && !$this->auth->check()->inRole('admin')) {
-            $comments = $comments->where('user_id', $this->auth->check()->id);
+
+            $user_id = $this->auth->check()->id;
+
+            $comments = BlogPostsComments::withCount('replies', 'pending_replies')
+                ->with([
+                    'post' => function($query){
+                        $query->select('id', 'title');
+                    }
+                ])
+                ->whereHas(
+                    'post', function ($query) use ($user_id){
+                        $query->where('user_id', '=', $user_id);
+                    }
+                )
+                ->get();
+        }else{
+            $comments = BlogPostsComments::withCount('replies', 'pending_replies')
+                ->with([
+                    'post' => function($query){
+                        $query->select('id', 'title');
+                    }
+                ])
+                ->get();
         }
 
-        return $this->view->render($response, 'blog-comments.twig', array("comments" => $comments->get()));
+        return $this->view->render($response, 'blog-comments.twig', array("comments" => $comments));
 
+    }
+
+    public function commentDetails(Request $request, Response $response){
+
+        $sentinel = new S($this->container);
+        if(!$sentinel->hasPerm('blog.view')){
+            return $this->redirect($response, 'dashboard');
+        }
+
+        if (!$this->auth->check()->inRole('manager') && !$this->auth->check()->inRole('admin')) {
+
+            $user_id = $this->auth->check()->id;
+
+            $comment = BlogPostsComments::with('replies', 'post', 'post.tags', 'post.category', 'post.author')
+                ->where('id', $request->getAttribute('route')->getArgument('comment_id'))
+                ->whereHas(
+                    'post', function ($query) use ($user_id){
+                        $query->where('user_id', '=', $user_id);
+                    }
+                )
+                ->first();
+        }else{
+            $comment = BlogPostsComments::with('replies', 'post', 'post.tags', 'post.category', 'post.author')->find($request->getAttribute('route')->getArgument('comment_id'));
+        }
+
+        if (!$comment) {
+            $this->flash('danger', 'You do not have permnission to do that.');
+            return $this->redirect($response, 'admin-blog-comments');
+        }else{
+            return $this->view->render($response, 'blog-comments-details.twig', array("comment" => $comment));
+        }
+    }
+
+    public function commentDelete(Request $request, Response $response){
+
+        $sentinel = new S($this->container);
+        if(!$sentinel->hasPerm('blog.view')){
+            return $this->redirect($response, 'dashboard');
+        }
+
+        $comment_id = $request->getParam('comment');
+
+        if (!$this->auth->check()->inRole('manager') && !$this->auth->check()->inRole('admin')) {
+
+            $user_id = $this->auth->check()->id;
+
+            $comment = BlogPostsComments::where('id', $comment_id)
+                ->whereHas(
+                    'post', function ($query) use ($user_id){
+                        $query->where('user_id', '=', $user_id);
+                    }
+                )
+                ->first();
+        }else{
+            $comment = BlogPostsComments::find($comment_id);
+        }
+
+        if (!$comment) {
+            $this->flash('danger', 'You do not have permnission to do that.');
+            return $this->redirect($response, 'admin-blog-comments');
+        }else{
+
+            if ($comment->delete()) {
+                $this->flash('success', 'Comment has been deleted.');
+                return $this->redirect($response, 'admin-blog-comments');
+            }else{
+                $this->flash('danger', 'There was an error deleting your comment.');
+                return $this->redirect($response, 'admin-blog-comments');
+            }
+
+            
+        }
+    }
+
+    public function commentPublish(Request $request, Response $response){
+
+        $sentinel = new S($this->container);
+        if(!$sentinel->hasPerm('blog.view')){
+            return $this->redirect($response, 'dashboard');
+        }
+
+        $comment_id = $request->getParam('comment');
+
+        if (!$this->auth->check()->inRole('manager') && !$this->auth->check()->inRole('admin')) {
+
+            $user_id = $this->auth->check()->id;
+
+            $comment = BlogPostsComments::where('id', $comment_id)
+                ->whereHas(
+                    'post', function ($query) use ($user_id){
+                        $query->where('user_id', '=', $user_id);
+                    }
+                )
+                ->first();
+        }else{
+            $comment = BlogPostsComments::find($comment_id);
+        }
+
+        if (!$comment) {
+            $this->flash('danger', 'You do not have permnission to do that.');
+            return $this->redirect($response, 'admin-blog-comments');
+        }else{
+
+            $comment->status = 1;
+
+            if ($comment->save()) {
+                $this->flash('success', 'Comment has been published.');
+                return $this->redirect($response, 'admin-blog-comments');
+            }else{
+                $this->flash('danger', 'There was an error publishing your comment.');
+                return $this->redirect($response, 'admin-blog-comments');
+            }
+
+            
+        }
+    }
+
+    public function replyPublish(Request $request, Response $response){
+
+        $sentinel = new S($this->container);
+        if(!$sentinel->hasPerm('blog.view')){
+            return $this->redirect($response, 'dashboard');
+        }
+
+        $reply_id = $request->getParam('reply');
+
+        if (!$this->auth->check()->inRole('manager') && !$this->auth->check()->inRole('admin')) {
+
+            $user_id = $this->auth->check()->id;
+
+            $reply = BlogPostsReplies::where('id', $reply_id)
+                ->whereHas(
+                    'comment.post', function ($query) use ($user_id){
+                        $query->where('user_id', '=', $user_id);
+                    }
+                )
+                ->first();
+
+        }else{
+            $reply = BlogPostsReplies::find($reply_id);
+        }
+
+        if (!$reply) {
+            $this->flash('danger', 'You do not have permnission to do that.');
+            return $this->redirect($response, 'admin-blog-comments');
+        }else{
+
+            $reply->status = 1;
+
+            if ($reply->save()) {
+                $this->flash('success', 'Reply has been published.');
+                return $response->withRedirect($this->router->pathFor('admin-blog-comment-details', ['comment_id' => $reply->comment_id]));
+            }else{
+                $this->flash('danger', 'There was an error publishing your reply.');
+                return $response->withRedirect($this->router->pathFor('admin-blog-comment-details', ['comment_id' => $reply->comment_id]));
+            }
+        }
+    }
+
+    public function replyUnpublish(Request $request, Response $response){
+
+        $sentinel = new S($this->container);
+        if(!$sentinel->hasPerm('blog.view')){
+            return $this->redirect($response, 'dashboard');
+        }
+
+        $reply_id = $request->getParam('reply');
+
+        if (!$this->auth->check()->inRole('manager') && !$this->auth->check()->inRole('admin')) {
+
+            $user_id = $this->auth->check()->id;
+
+            $reply = BlogPostsReplies::where('id', $reply_id)
+                ->whereHas(
+                    'comment.post', function ($query) use ($user_id){
+                        $query->where('user_id', '=', $user_id);
+                    }
+                )
+                ->first();
+
+        }else{
+            $reply = BlogPostsReplies::find($reply_id);
+        }
+
+        if (!$reply) {
+            $this->flash('danger', 'You do not have permnission to do that.');
+            return $this->redirect($response, 'admin-blog-comments');
+        }else{
+
+            $reply->status = 0;
+
+            if ($reply->save()) {
+                $this->flash('success', 'Reply has been unpublished.');
+                return $response->withRedirect($this->router->pathFor('admin-blog-comment-details', ['comment_id' => $reply->comment_id]));
+            }else{
+                $this->flash('danger', 'There was an error unpublishing your reply.');
+                return $response->withRedirect($this->router->pathFor('admin-blog-comment-details', ['comment_id' => $reply->comment_id]));
+            }
+        }
+    }
+
+    public function replyDelete(Request $request, Response $response){
+
+        $sentinel = new S($this->container);
+        if(!$sentinel->hasPerm('blog.view')){
+            return $this->redirect($response, 'dashboard');
+        }
+
+        $reply_id = $request->getParam('reply');
+
+        if (!$this->auth->check()->inRole('manager') && !$this->auth->check()->inRole('admin')) {
+
+            $user_id = $this->auth->check()->id;
+
+            $reply = BlogPostsReplies::where('id', $reply_id)
+                ->whereHas(
+                    'comment.post', function ($query) use ($user_id){
+                        $query->where('user_id', '=', $user_id);
+                    }
+                )
+                ->first();
+
+        }else{
+            $reply = BlogPostsReplies::find($reply_id);
+        }
+
+        if (!$reply) {
+            $this->flash('danger', 'You do not have permnission to do that.');
+            return $this->redirect($response, 'admin-blog-comments');
+        }else{
+
+            if ($reply->delete()) {
+                $this->flash('success', 'Reply has been deleted.');
+                return $response->withRedirect($this->router->pathFor('admin-blog-comment-details', ['comment_id' => $reply->comment_id]));
+            }else{
+                $this->flash('danger', 'There was an error deleting your reply.');
+                return $response->withRedirect($this->router->pathFor('admin-blog-comment-details', ['comment_id' => $reply->comment_id]));
+            }
+        }
+    }
+
+    public function commentUnpublish(Request $request, Response $response){
+
+        $sentinel = new S($this->container);
+        if(!$sentinel->hasPerm('blog.view')){
+            return $this->redirect($response, 'dashboard');
+        }
+
+        $comment_id = $request->getParam('comment');
+
+        if (!$this->auth->check()->inRole('manager') && !$this->auth->check()->inRole('admin')) {
+
+            $user_id = $this->auth->check()->id;
+
+            $comment = BlogPostsComments::where('id', $comment_id)
+                ->whereHas(
+                    'post', function ($query) use ($user_id){
+                        $query->where('user_id', '=', $user_id);
+                    }
+                )
+                ->first();
+        }else{
+            $comment = BlogPostsComments::find($comment_id);
+        }
+
+        if (!$comment) {
+            $this->flash('danger', 'You do not have permnission to do that.');
+            return $this->redirect($response, 'admin-blog-comments');
+        }else{
+
+            $comment->status = 0;
+
+            if ($comment->save()) {
+                $this->flash('success', 'Comment has been unpublished.');
+                return $this->redirect($response, 'admin-blog-comments');
+            }else{
+                $this->flash('danger', 'There was an error unpublishing your comment.');
+                return $this->redirect($response, 'admin-blog-comments');
+            }
+
+            
+        }
     }
 
     // Add New Blog Post
@@ -454,7 +756,7 @@ class AdminBlog extends Controller{
     public function categoriesAdd(Request $request, Response $response){
 
         $sentinel = new S($this->container);
-        if(!$sentinel->hasPerm('blog.category.create')){
+        if(!$sentinel->hasPerm('blog_categories.create')){
             return $this->redirect($response, 'admin-blog');
         }
 
@@ -495,7 +797,7 @@ class AdminBlog extends Controller{
     public function categoriesDelete(Request $request, Response $response){
 
         $sentinel = new S($this->container);
-        if(!$sentinel->hasPerm('blog.category.delete')){
+        if(!$sentinel->hasPerm('blog_categories.delete')){
             return $this->redirect($response, 'admin-blog');
         }
 
@@ -519,7 +821,7 @@ class AdminBlog extends Controller{
     public function categoriesEdit(Request $request, Response $response, $categoryid){
 
         $sentinel = new S($this->container);
-        if(!$sentinel->hasPerm('blog.category.update')){
+        if(!$sentinel->hasPerm('blog_categories.update')){
             return $this->redirect($response, 'admin-blog');
         }
 
@@ -599,7 +901,7 @@ class AdminBlog extends Controller{
     public function tagsAdd(Request $request, Response $response){
 
         $sentinel = new S($this->container);
-        if(!$sentinel->hasPerm('blog.tag.create')){
+        if(!$sentinel->hasPerm('blog_tags.create')){
             return $this->redirect($response, 'admin-blog');
         }
 
@@ -643,7 +945,7 @@ class AdminBlog extends Controller{
     public function tagsDelete(Request $request, Response $response){
 
         $sentinel = new S($this->container);
-        if(!$sentinel->hasPerm('blog.tag.delete')){
+        if(!$sentinel->hasPerm('blog_tags.delete')){
             return $this->redirect($response, 'admin-blog');
         }
 
@@ -669,7 +971,7 @@ class AdminBlog extends Controller{
     public function tagsEdit(Request $request, Response $response, $tagid){
 
         $sentinel = new S($this->container);
-        if(!$sentinel->hasPerm('blog.tag.update')){
+        if(!$sentinel->hasPerm('blog_tags.update')){
             return $this->redirect($response, 'admin-blog');
         }
 

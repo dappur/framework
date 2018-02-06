@@ -17,7 +17,15 @@ class BlogPostsComments extends Model {
         return $this->hasMany('\Dappur\Model\BlogPostsReplies', 'comment_id', 'id');
     }
 
+    public function post(){
+        return $this->belongsTo('\Dappur\Model\BlogPosts', 'post_id');
+    }
+
     public function pending_replies(){
         return $this->hasMany('\Dappur\Model\BlogPostsReplies', 'comment_id', 'id')->where('status', 0);
+    }
+
+    public function user(){
+        return $this->belongsTo('\Dappur\Model\users', 'user_id');
     }
 }

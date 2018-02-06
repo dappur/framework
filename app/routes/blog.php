@@ -30,6 +30,8 @@ $app->group('/dashboard/blog', function() use ($app) {
         // View Comments
         $app->get('', 'AdminBlog:comments')
             ->setName('admin-blog-comments');
+        $app->get('/{comment_id}', 'AdminBlog:commentDetails')
+            ->setName('admin-blog-comment-details');
         // Unpublish Comment
         $app->post('/publish', 'AdminBlog:commentUnpublish')
             ->setName('admin-blog-comment-unpublish');
@@ -39,6 +41,20 @@ $app->group('/dashboard/blog', function() use ($app) {
         // Delte Comment
         $app->post('/delete', 'AdminBlog:commentDelete')
             ->setName('admin-blog-comment-delete');
+    });
+
+    // Blog Replies
+    $app->group('/replies', function() use ($app) {
+
+        // Unpublish Comment
+        $app->post('/publish', 'AdminBlog:replyUnpublish')
+            ->setName('admin-blog-reply-unpublish');
+        // Publish Comment
+        $app->post('/unpublish', 'AdminBlog:replyPublish')
+            ->setName('admin-blog-reply-publish');
+        // Delte Comment
+        $app->post('/delete', 'AdminBlog:replyDelete')
+            ->setName('admin-blog-reply-delete');
     });
 
     // Blog Categories Actions

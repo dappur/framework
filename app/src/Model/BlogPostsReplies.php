@@ -12,4 +12,13 @@ class BlogPostsReplies extends Model {
         'reply',
         'status'
     ];
+
+
+    public function comment(){
+        return $this->belongsTo('\Dappur\Model\BlogPostsComments', 'comment_id');
+    }
+
+    public function user(){
+        return $this->belongsTo('\Dappur\Model\users', 'user_id');
+    }
 }

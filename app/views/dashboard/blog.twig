@@ -41,6 +41,7 @@ javascript
                                 <th>Slug</th>
                                 <th>Category</th>
                                 <th>Publish At</th>
+                                <th>Comments</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -52,6 +53,7 @@ javascript
                                     <td>{{ post.slug }}</td>
                                     <td>{{ post.category.name }}</td>
                                     <td>{{ post.publish_at }}</td>
+                                    <td>{{ post.comments_count + post.replies_count }}</td>
                                     <td>
                                         {#<a href="{{ path_for('admin-blog-preview', {'slug': post.slug}) }}" target="_blank" class="btn btn-info btn-xs">
                                             <span class="fa fa-fw fa-search"></span>
@@ -93,7 +95,7 @@ javascript
         </div>
     </div>
     <div class="row">
-    {% if auth.hasAccess('blog.category.view') %}
+    {% if auth.hasAccess('blog_categories.view') %}
         <div class="col-md-6">
             <div class="panel panel-warning">
                 <div class="panel-heading">
@@ -115,12 +117,12 @@ javascript
                                     <td>{{ category.name }}</td>
                                     <td>{{ category.slug }}</td>
                                     <td>
-                                        {% if auth.hasAccess('blog.category.update') and category.id != 1 %}
+                                        {% if auth.hasAccess('blog_categories.update') and category.id != 1 %}
                                                 <a href="{{ path_for('admin-blog-categories-edit', {'category': category.id}) }}" class="btn btn-primary btn-xs">
                                                     <span class="fa fa-fw fa-pencil"></span>
                                                 </a>
                                         {% endif %}
-                                        {% if auth.hasAccess('blog.category.delete') and category.id != 1 %}
+                                        {% if auth.hasAccess('blog_categories.delete') and category.id != 1 %}
                                             <form action="{{ path_for('admin-blog-categories-delete') }}" method="post" style="display: inline;">
                                                 <input type="hidden" name="category_id" value="{{ category.id }}" />
                                                 {{csrf()}}
@@ -168,7 +170,7 @@ javascript
     {% endif %}
 
 
-    {% if auth.hasAccess('blog.tag.view') %}
+    {% if auth.hasAccess('blog_tags.view') %}
         <div class="col-md-6">
             <div class="panel panel-success">
 
@@ -191,12 +193,12 @@ javascript
                                     <td>{{ tag.name }}</td>
                                     <td>{{ tag.slug }}</td>
                                     <td>
-                                        {% if auth.hasAccess('blog.tag.update') %}
+                                        {% if auth.hasAccess('blog_tags.update') %}
                                             <a href="{{ path_for('admin-blog-tags-edit', {'tag_id': tag.id}) }}" class="btn btn-primary btn-xs">
                                                 <span class="fa fa-fw fa-pencil"></span>
                                             </a>
                                         {% endif %}
-                                        {% if auth.hasAccess('blog.tag.delete') %}
+                                        {% if auth.hasAccess('blog_tags.delete') %}
                                             <form action="{{ path_for('admin-blog-tags-delete') }}" method="post" style="display: inline;">
                                                 <input type="hidden" name="tag_id" value="{{ tag.id }}" />
                                                 {{csrf()}}
@@ -213,7 +215,7 @@ javascript
                 </div>
             </div>
 
-            {% if auth.hasAccess('blog.tag.create') %}
+            {% if auth.hasAccess('blog_tags.create') %}
                 <div class="panel panel-success">
                     <div class="panel-heading">
                         Add New Tag
