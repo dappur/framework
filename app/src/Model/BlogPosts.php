@@ -32,6 +32,10 @@ class BlogPosts extends Model {
         return $this->hasMany('\Dappur\Model\BlogPostsComments', 'post_id', 'id');
     }
 
+    public function pending_comments(){
+        return $this->hasMany('\Dappur\Model\BlogPostsComments', 'post_id', 'id')->where('status', 1);
+    }
+
     public function author(){
         return $this->hasOne('\Dappur\Model\Users', 'id', 'user_id');
     }

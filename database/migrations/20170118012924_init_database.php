@@ -143,7 +143,7 @@ class InitDatabase extends Migration
             'slug' => 'developer',
             'permissions' => array(
                 'developer.*' => true
-                )
+            )
         ));
 
         // Create Manager Role
@@ -165,13 +165,27 @@ class InitDatabase extends Migration
             )
         ));
 
+        // Create Contributor Role
+        $this->sentinel->getRoleRepository()->createModel()->create(array(
+            'name' => 'Contributor',
+            'slug' => 'contributor',
+            'permissions' => array(
+                'dashboard.view' => true,
+                'blog.*' => true,
+                'blog.category.delete' => false,
+                'blog.category.update' => false,
+                'blog.tag.delete' => false,
+                'blog.tag.update' => false
+            )
+        ));
+
         //Create User Role
         $this->sentinel->getRoleRepository()->createModel()->create(array(
             'name' => 'User',
             'slug' => 'user',
             'permissions' => array(
                 'user.account' => true
-                )
+            )
         ));
 
         // Create Auditor Role
@@ -568,14 +582,14 @@ class InitDatabase extends Migration
             array(
                 'id' => 1,
                 'user_id' => 1,
-                'post_id' => 1,
+                'post_id' => 3,
                 'comment' => 'This is a sample comment.',
                 'status' => 1
             ),
             array(
                 'id' => 2,
                 'user_id' => 1,
-                'post_id' => 1,
+                'post_id' => 3,
                 'comment' => 'This is a sample pending comment.',
                 'status' => 0
             )
@@ -596,6 +610,13 @@ class InitDatabase extends Migration
         $add_reply->comment_id = 1;
         $add_reply->reply = 'This is a sample reply.';
         $add_reply->status = 1;
+        $add_reply->save();
+
+        $add_reply = new \Dappur\Model\BlogPostsReplies;
+        $add_reply->user_id = 1;
+        $add_reply->comment_id = 1;
+        $add_reply->reply = 'This is a sample pending reply.';
+        $add_reply->status = 0;
         $add_reply->save();
 
         $config = new Dappur\Model\ConfigGroups;

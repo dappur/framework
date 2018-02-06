@@ -19,20 +19,20 @@ $container['notAllowedHandler'] = function ($container) {
     };
 };
 
-$container['phpErrorHandler'] = function ($container) {
-    return function ($request, $response, $exception) use ($container) {
-        return $container['view']
-        	->render($response, 'errors/500-php.twig', array("exception" => $exception))
-        	->withStatus(500)
-            ->withHeader('Content-type', 'text/html');
-    };
-};
-
 $container['errorHandler'] = function ($container) {
     return function ($request, $response, $exception) use ($container) {
         return $container['view']
         	->render($response, 'errors/500.twig', array("exception" => $exception))
         	->withStatus(500)
+            ->withHeader('Content-type', 'text/html');
+    };
+};
+
+$container['phpErrorHandler'] = function ($container) {
+    return function ($request, $response, $exception) use ($container) {
+        return $container['view']
+            ->render($response, 'errors/500-php.twig', array("exception" => $exception))
+            ->withStatus(500)
             ->withHeader('Content-type', 'text/html');
     };
 };

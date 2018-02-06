@@ -11,6 +11,7 @@ use Dappur\Dappurware\Sentinel as S;
 use Dappur\Model\BlogCategories;
 use Dappur\Model\BlogTags;
 use Dappur\Model\BlogPosts;
+use Dappur\Model\BlogPostsComments;
 use Dappur\Model\BlogPostsTags;
 use Dappur\Dappurware\Utils;
 use Carbon\Carbon;
@@ -25,9 +26,31 @@ class AdminBlog extends Controller{
             return $this->redirect($response, 'dashboard');
         }
 
-        $posts = BlogPosts::with('category')->get();
+        $posts = BlogPosts::with('category');
 
-        return $this->view->render($response, 'blog.twig', ["categories" => BlogCategories::get(), "tags" => BlogTags::get(), "posts" => $posts]);
+        if (!$this->auth->check()->inRole('manager') && !$this->auth->check()->inRole('admin')) {
+            $posts = $posts->where('user_id', $this->auth->check()->id);
+        }
+
+        return $this->view->render($response, 'blog.twig', array("categories" => BlogCategories::get(), "tags" => BlogTags::get(), "posts" => $posts->get()));
+
+    }
+
+    // Main Blog Admin Page
+    public function comments(Request $request, Response $response){
+
+        $sentinel = new S($this->container);
+        if(!$sentinel->hasPerm('blog.view')){
+            return $this->redirect($response, 'dashboard');
+        }
+
+        $comments = BlogPostsComments::withCount('replies', 'pending_replies');
+
+        if (!$this->auth->check()->inRole('manager') && !$this->auth->check()->inRole('admin')) {
+            $comments = $comments->where('user_id', $this->auth->check()->id);
+        }
+
+        return $this->view->render($response, 'blog-comments.twig', array("comments" => $comments->get()));
 
     }
 
@@ -173,6 +196,11 @@ class AdminBlog extends Controller{
             return $this->redirect($response, 'admin-blog');
         }
 
+        if (!$this->auth->check()->inRole('manager') && !$this->auth->check()->inRole('admin') && $post->user_id != $this->auth->check()->id) {
+            $this->flash('danger', 'You do not have permission to edit that post.');
+            return $this->redirect($response, 'admin-blog');
+        }
+
         $current_post_tags = new BlogPostsTags;
         $current_post_tags = $current_post_tags->where('post_id', '=', $post_id)->get();
 
@@ -308,8 +336,13 @@ class AdminBlog extends Controller{
         $requestParams = $request->getParams();
 
         $post = BlogPosts::find($requestParams['post_id']);
-
+        
         if ($post) {
+
+            if (!$this->auth->check()->inRole('manager') && !$this->auth->check()->inRole('admin') && $post->user_id != $this->auth->check()->id) {
+                $this->flash('danger', 'You do not have permission to edit that post.');
+                return $this->redirect($response, 'admin-blog');
+            }
 
             $post->status = 1;
 
@@ -337,6 +370,12 @@ class AdminBlog extends Controller{
         $post = BlogPosts::find($requestParams['post_id']);
 
         if ($post) {
+
+            if (!$this->auth->check()->inRole('manager') && !$this->auth->check()->inRole('admin') && $post->user_id != $this->auth->check()->id) {
+                $this->flash('danger', 'You do not have permission to edit that post.');
+                return $this->redirect($response, 'admin-blog');
+            }
+
             $post->status = 0;
 
             if ($post->save()) {
@@ -364,7 +403,12 @@ class AdminBlog extends Controller{
 
         if ($post) {
 
-            BlogPostsTags::where('post_id', '=', $rpost->id)->delete();
+            if (!$this->auth->check()->inRole('manager') && !$this->auth->check()->inRole('admin') && $post->user_id != $this->auth->check()->id) {
+                $this->flash('danger', 'You do not have permission to edit that post.');
+                return $this->redirect($response, 'admin-blog');
+            }
+
+            BlogPostsTags::where('post_id', '=', $post->id)->delete();
 
             if ($post->delete()) {
                 $this->flash('success', 'Post successfully deleted.');
@@ -386,6 +430,11 @@ class AdminBlog extends Controller{
         }
 
         $post = BlogPosts::where('slug', '=', $slug)->first();
+
+        if (!$this->auth->check()->inRole('manager') && !$this->auth->check()->inRole('admin') && $post->user_id != $this->auth->check()->id) {
+            $this->flash('danger', 'You do not have permission to preview that post.');
+            return $this->redirect($response, 'admin-blog');
+        }
 
         $categories = BlogCategories::where('status', 1)->get();
 

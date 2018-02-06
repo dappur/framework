@@ -25,6 +25,22 @@ $app->group('/dashboard/blog', function() use ($app) {
             ->setName('admin-blog-delete');
     });
 
+    // Blog Comments
+    $app->group('/comments', function() use ($app) {
+        // View Comments
+        $app->get('', 'AdminBlog:comments')
+            ->setName('admin-blog-comments');
+        // Unpublish Comment
+        $app->post('/publish', 'AdminBlog:commentUnpublish')
+            ->setName('admin-blog-comment-unpublish');
+        // Publish Comment
+        $app->post('/unpublish', 'AdminBlog:commentPublish')
+            ->setName('admin-blog-comment-publish');
+        // Delte Comment
+        $app->post('/delete', 'AdminBlog:commentDelete')
+            ->setName('admin-blog-comment-delete');
+    });
+
     // Blog Categories Actions
     $app->group('/categories', function() use ($app) {
         // Delete Category

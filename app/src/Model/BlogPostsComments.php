@@ -16,4 +16,8 @@ class BlogPostsComments extends Model {
     public function replies(){
         return $this->hasMany('\Dappur\Model\BlogPostsReplies', 'comment_id', 'id');
     }
+
+    public function pending_replies(){
+        return $this->hasMany('\Dappur\Model\BlogPostsReplies', 'comment_id', 'id')->where('status', 0);
+    }
 }

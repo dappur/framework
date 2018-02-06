@@ -26,6 +26,7 @@ class Blog extends Controller{
         $posts = BlogPosts::where('status', 1)
             ->where('publish_at', '<', Carbon::now())
             ->with('category', 'tags', 'author')
+            ->withCount('comments', 'pending_comments')
             ->orderBy('publish_at', 'DESC');
      
         $pagination = new Paginator($posts->count(), $this->config['blog-per-page'], $page, "/blog/(:num)");

@@ -26,8 +26,16 @@
     {% endif %}
 
     {% if auth.hasAccess('blog.view') and config['blog-enabled'] %}
-    <li {% if currentRoute starts with '/dashboard/blog' %}class="active"{% endif %}>
-        <a href="{{ path_for('admin-blog')}}"><i class="fa fa-fw fa-newspaper-o"></i> Blog</a>
+    <li>
+        <a href="javascript:;" data-toggle="collapse" data-target="#blog-menu"><i class="fa fa-fw fa-newspaper-o"></i> Blog <i class="fa fa-fw fa-caret-down"></i></a>
+        <ul id="blog-menu" class="collapse {% if currentRoute starts with '/dashboard/blog' %}in{% endif %} nav">
+            <li  {% if currentRoute == '/dashboard/blog' %}class="active"{% endif %}>
+                <a href="{{ path_for('admin-blog')}}"><i class="fa fa-newspaper-o fa-fw"></i> Blog Posts</a>
+            </li>
+            <li  {% if currentRoute starts with '/dashboard/blog/comments' %}class="active"{% endif %}>
+                <a href="{{ path_for('admin-blog-comments')}}"><i class="fa fa-comment fa-fw"></i> Comments</a>
+            </li>
+        </ul>
     </li>
     {% endif %}
 
