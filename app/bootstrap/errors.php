@@ -24,7 +24,7 @@ $container['errorHandler'] = function ($container) {
 
         if (filter_var($container['config']['error-email'], FILTER_VALIDATE_EMAIL)) {
             $email = new \Dappur\Dappurware\Email($container);
-            $email->sendEmail(array($container['config']['error-email']), "PHP Error on ICS Website", "<pre>" . $exception . "</pre>", $exception);
+            $email->sendEmail(array($container['config']['error-email']), "PHP Error on " . $container['config']['site-name'], "<pre>" . $exception . "</pre>", $exception);
         }
 
         return $container['view']
@@ -39,7 +39,7 @@ $container['phpErrorHandler'] = function ($container) {
         if (filter_var($container['config']['error-email'], FILTER_VALIDATE_EMAIL)) {
 
             $email = new \Dappur\Dappurware\Email($container);
-            $email->sendEmail(array($container['config']['error-email']), "Application Error on ICS Website", "<pre>" . $exception . "</pre>", $exception);
+            $email->sendEmail(array($container['config']['error-email']), "Application Error on " . $container['config']['site-name'], "<pre>" . $exception . "</pre>", $exception);
         }
 
         return $container['view']
