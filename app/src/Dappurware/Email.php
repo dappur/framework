@@ -2,13 +2,12 @@
 
 namespace Dappur\Dappurware;
 
+use Carbon\Carbon;
 use Dappur\Model\Users;
 use Dappur\Model\Config;
 use Dappur\Model\ConfigGroups;
-use Dappur\Model\EmailsTemplates;
 use Dappur\Model\Emails;
-use Carbon\Carbon;
-
+use Dappur\Model\EmailsTemplates;
 
 class Email extends Dappurware
 {
@@ -39,107 +38,6 @@ class Email extends Dappurware
         }
         return $output;
 
-    }
-
-
-    private function send($email, $subject, $html, $plain_text, $template_id = null){
-
-        $output = array();
-
-        $mail = $this->mail;
-        $mail->ClearAllRecipients();
-        $mail->setFrom($this->config['from-email']);
-        $mail->addAddress($email);
-        $mail->addReplyTo($this->config['from-email']);
-        $mail->isHTML(true);
-
-        $mail->Subject = $subject;
-        $mail->Body    = $html;
-        $mail->AltBody = $plain_text;
-
-        if(!$mail->send()) {
-            $output['result'] = false;
-            $output['error'] = $mail->ErrorInfo;
-        } else {
-            if ($this->settings['mail']['logging']) {
-
-                //Delete Old Emails
-                if ($this->settings['mail']['log_retention']) {
-                    Emails::where('created_at', '<', Carbon::now()->subDays($this->settings['mail']['log_retention']))->delete();
-                }
-
-                $add_email = new Emails;
-                $add_email->secure_id = bin2hex(mcrypt_create_iv(22, MCRYPT_DEV_URANDOM));
-                $add_email->template_id = $template_id;
-                $add_email->send_to = $email;
-                $add_email->subject = $subject;
-                if (in_array("html", $this->settings['mail']['log_details'])) {
-                    $add_email->html = $html;
-                }
-                if (in_array("plain_text", $this->settings['mail']['log_details'])) {
-                    $add_email->plain_text = $plain_text;
-                }
-                $add_email->save();
-            }
-            $output['result'] = true;
-        }
-
-        return $output;
-    }
-
-    private function parseRecipients(Array $send_to){
-        $output = array();
-        $output['users'] = array();
-        foreach ($send_to as $value) {
-            if (is_int($value)) {
-                // If int, get user email
-                if ($this->auth->findById($value)) {
-                    $output['users'][] = $value;
-                }
-                
-            }else if (filter_var($value, FILTER_VALIDATE_EMAIL)) {
-                // If email, check if user
-                $email_user = $this->container->auth->findByCredentials(['login' => $value]);
-                if ($email_user) {
-                    if (!in_array($value, $output['users'])) {
-                        $output['users'][] = $email_user->id;
-                    }
-                }else{
-                    $output['email'][] = $value;
-                }
-                
-            }else{
-                //if other, check to see if user role exists for slug
-                $role = $this->auth->findRoleBySlug($value);
-                if ($role) {
-                    $users = $role->users()->get(['id']);
-                    foreach ($users as $value) {
-                        if (!in_array($value, $output['users'])) {
-                            $output['users'][] = $value['id'];
-                        }
-                    }
-                }
-            }
-        }
-
-        return $output;
-    }
-
-    private function preparePlaceholders($placeholders){
-        
-        $output = array();
-
-        foreach ($placeholders as $value) {
-            
-            foreach ($value as $key2 => $value2) {
-                if (isset($value2['value'])) {
-                    $output[$value2['name']] = $value2['value'];
-                }
-            }
-
-        }
-
-        return $output;
     }
 
     public function sendTemplate(Array $send_to, $template_slug = null, Array $params = null){
@@ -334,6 +232,104 @@ class Email extends Dappurware
         return $output;
     }
 
-    
+    private function parseRecipients(Array $send_to){
+        $output = array();
+        $output['users'] = array();
+        foreach ($send_to as $value) {
+            if (is_int($value)) {
+                // If int, get user email
+                if ($this->auth->findById($value)) {
+                    $output['users'][] = $value;
+                }
+                
+            }else if (filter_var($value, FILTER_VALIDATE_EMAIL)) {
+                // If email, check if user
+                $email_user = $this->container->auth->findByCredentials(['login' => $value]);
+                if ($email_user) {
+                    if (!in_array($value, $output['users'])) {
+                        $output['users'][] = $email_user->id;
+                    }
+                }else{
+                    $output['email'][] = $value;
+                }
+                
+            }else{
+                //if other, check to see if user role exists for slug
+                $role = $this->auth->findRoleBySlug($value);
+                if ($role) {
+                    $users = $role->users()->get(['id']);
+                    foreach ($users as $value) {
+                        if (!in_array($value, $output['users'])) {
+                            $output['users'][] = $value['id'];
+                        }
+                    }
+                }
+            }
+        }
+
+        return $output;
+    }
+
+    private function preparePlaceholders($placeholders){
+        
+        $output = array();
+
+        foreach ($placeholders as $value) {
+            
+            foreach ($value as $key2 => $value2) {
+                if (isset($value2['value'])) {
+                    $output[$value2['name']] = $value2['value'];
+                }
+            }
+
+        }
+
+        return $output;
+    }
+
+    private function send($email, $subject, $html, $plain_text, $template_id = null){
+
+        $output = array();
+
+        $mail = $this->mail;
+        $mail->ClearAllRecipients();
+        $mail->setFrom($this->config['from-email']);
+        $mail->addAddress($email);
+        $mail->addReplyTo($this->config['from-email']);
+        $mail->isHTML(true);
+
+        $mail->Subject = $subject;
+        $mail->Body    = $html;
+        $mail->AltBody = $plain_text;
+
+        if(!$mail->send()) {
+            $output['result'] = false;
+            $output['error'] = $mail->ErrorInfo;
+        } else {
+            if ($this->settings['mail']['logging']) {
+
+                //Delete Old Emails
+                if ($this->settings['mail']['log_retention']) {
+                    Emails::where('created_at', '<', Carbon::now()->subDays($this->settings['mail']['log_retention']))->delete();
+                }
+
+                $add_email = new Emails;
+                $add_email->secure_id = bin2hex(mcrypt_create_iv(22, MCRYPT_DEV_URANDOM));
+                $add_email->template_id = $template_id;
+                $add_email->send_to = $email;
+                $add_email->subject = $subject;
+                if (in_array("html", $this->settings['mail']['log_details'])) {
+                    $add_email->html = $html;
+                }
+                if (in_array("plain_text", $this->settings['mail']['log_details'])) {
+                    $add_email->plain_text = $plain_text;
+                }
+                $add_email->save();
+            }
+            $output['result'] = true;
+        }
+
+        return $output;
+    }
 
 }

@@ -2,18 +2,109 @@
 
 namespace Dappur\Controller;
 
+use Dappur\Dappurware\Email as E;
+use Dappur\Dappurware\Recaptcha;
 use Cartalyst\Sentinel\Checkpoints\ThrottlingException;
 use Cartalyst\Sentinel\Checkpoints\NotActivatedException;
+use Cartalyst\Sentinel\Reminders\Reminder;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use Respect\Validation\Validator as V;
-use Dappur\Dappurware\Recaptcha;
-use Cartalyst\Sentinel\Reminders\Reminder;
-use Dappur\Dappurware\Email as E;
 
 class Auth extends Controller{
+
+    public function activate(Request $request, Response $response){
+
+        $credentials = [
+            'email' => $request->getParam('email')
+        ];
+
+        $user = $this->auth->findByCredentials($credentials);
+
+        if ($user) {
+
+            $activations = $this->auth->getActivationRepository();
+
+            $activation = $activations->complete($user, $request->getParam('code'));
+
+            if ($activation) {
+
+                $this->auth->login($user);
+
+                $send_email = new E($this->container);
+                $send_email = $send_email->sendTemplate(array($user->id), 'registration');
+
+                $this->flash('success', 'Your account was successfully activated and you have been logged in.');
+            }else{
+                $this->flash('danger', 'Sorry, your activation credentials were incorrect.');
+            }
+        }else{
+            $this->flash('danger', 'That account does not exist.');
+        }
+        return $this->redirect($response, 'home');
+    }
+
+    public function forgotPassword(Request $request, Response $response){
+
+        if ($request->isPost()) {
+
+            // Validate Data
+            $validate_data = array(
+                'email' => array(
+                    'rules' => V::email(), 
+                    'messages' => array(
+                        'email' => 'Must be a valid email address.'
+                        )
+                )
+            );
+            $this->validator->validate($request, $validate_data);
+
+            // Validate Recaptcha
+            $recaptcha = new Recaptcha($this->container);
+            $recaptcha = $recaptcha->validate($request->getParam('g-recaptcha-response'));
+            if (!$recaptcha) {
+                $this->validator->addError('recaptcha', 'Recaptcha was invalid.');
+            }
+
+            $credentials = [
+                'email' => $request->getParam('email')
+            ];
+
+            $user = $this->auth->findByCredentials($credentials);
+
+            if (!$user) {
+                $this->validator->addError('email', 'There is no valid account with that email.');
+            }
+
+            if ($this->validator->isValid()) {
+                $reminders = $this->auth->getReminderRepository();
+                
+
+                if ($exists = $reminders->exists($user)) {
+                    $reminder = $exists->code;
+                }else{
+                    $reminder = $reminders->create($user);
+                    $reminder = $reminder->code;
+                }
+
+                $reset_url = "https://" . $this->config['domain'] . "/reset-password?reminder=" . $reminder . "&email=" . $request->getParam('email');
+
+                $send_email = new E($this->container);
+                $send_email = $send_email->sendTemplate(array($user->id), 'password-reset', array('reset_url' => $reset_url));
+                if ($send_email['status'] == "error") {
+                    $this->flash('danger', 'There was an error sending your email.  Please try again or contact support.');
+                    return $this->redirect($response, 'forgot-password');
+                }else{
+                    $this->flash('success', 'Password reset instructions have been sent to: ' . $request->getParam('email'));
+                    return $this->redirect($response, 'login');
+                }
+            }
+
+        }
+
+        return $this->view->render($response, 'forgot-password.twig');
+    }
     
-    //Login Controller
     public function login(Request $request, Response $response){
         if ($request->isPost()) {
             if(filter_var($request->getParam('login'), FILTER_VALIDATE_EMAIL)) {
@@ -53,7 +144,14 @@ class Auth extends Controller{
         return $this->view->render($response, 'login.twig');
     }
 
-    // Register Controller
+    public function logout(Request $request, Response $response){
+
+        $this->auth->logout();
+
+        $this->flash('success', 'You have been logged out.');
+        return $this->redirect($response, 'home');
+    }
+
     public function register(Request $request, Response $response){
 
         if ($request->isPost()) {
@@ -185,69 +283,6 @@ class Auth extends Controller{
         return $this->view->render($response, 'register.twig');
     }
 
-    // Forgot Password
-    public function forgotPassword(Request $request, Response $response){
-
-        if ($request->isPost()) {
-
-            // Validate Data
-            $validate_data = array(
-                'email' => array(
-                    'rules' => V::email(), 
-                    'messages' => array(
-                        'email' => 'Must be a valid email address.'
-                        )
-                )
-            );
-            $this->validator->validate($request, $validate_data);
-
-            // Validate Recaptcha
-            $recaptcha = new Recaptcha($this->container);
-            $recaptcha = $recaptcha->validate($request->getParam('g-recaptcha-response'));
-            if (!$recaptcha) {
-                $this->validator->addError('recaptcha', 'Recaptcha was invalid.');
-            }
-
-            $credentials = [
-                'email' => $request->getParam('email')
-            ];
-
-            $user = $this->auth->findByCredentials($credentials);
-
-            if (!$user) {
-                $this->validator->addError('email', 'There is no valid account with that email.');
-            }
-
-            if ($this->validator->isValid()) {
-                $reminders = $this->auth->getReminderRepository();
-                
-
-                if ($exists = $reminders->exists($user)) {
-                    $reminder = $exists->code;
-                }else{
-                    $reminder = $reminders->create($user);
-                    $reminder = $reminder->code;
-                }
-
-                $reset_url = "https://" . $this->config['domain'] . "/reset-password?reminder=" . $reminder . "&email=" . $request->getParam('email');
-
-                $send_email = new E($this->container);
-                $send_email = $send_email->sendTemplate(array($user->id), 'password-reset', array('reset_url' => $reset_url));
-                if ($send_email['status'] == "error") {
-                    $this->flash('danger', 'There was an error sending your email.  Please try again or contact support.');
-                    return $this->redirect($response, 'forgot-password');
-                }else{
-                    $this->flash('success', 'Password reset instructions have been sent to: ' . $request->getParam('email'));
-                    return $this->redirect($response, 'login');
-                }
-            }
-
-        }
-
-        return $this->view->render($response, 'forgot-password.twig');
-    }
-
-    // Forgot Password
     public function resetPassword(Request $request, Response $response){
 
         if ($request->isPost()) {
@@ -304,46 +339,5 @@ class Auth extends Controller{
         }
 
         return $this->view->render($response, 'reset-password.twig');
-    }
-
-    // Forgot Password
-    public function activate(Request $request, Response $response){
-
-        $credentials = [
-            'email' => $request->getParam('email')
-        ];
-
-        $user = $this->auth->findByCredentials($credentials);
-
-        if ($user) {
-
-            $activations = $this->auth->getActivationRepository();
-
-            $activation = $activations->complete($user, $request->getParam('code'));
-
-            if ($activation) {
-
-                $this->auth->login($user);
-
-                $send_email = new E($this->container);
-                $send_email = $send_email->sendTemplate(array($user->id), 'registration');
-
-                $this->flash('success', 'Your account was successfully activated and you have been logged in.');
-            }else{
-                $this->flash('danger', 'Sorry, your activation credentials were incorrect.');
-            }
-        }else{
-            $this->flash('danger', 'That account does not exist.');
-        }
-        return $this->redirect($response, 'home');
-    }
-
-    // Logout Controller
-    public function logout(Request $request, Response $response){
-
-        $this->auth->logout();
-
-        $this->flash('success', 'You have been logged out.');
-        return $this->redirect($response, 'home');
     }
 }

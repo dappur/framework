@@ -2,10 +2,7 @@
 
 namespace Dappur\Controller;
 
-use Psr\Http\Message\ServerRequestInterface as Request;
-use Psr\Http\Message\ResponseInterface as Response;
-use Respect\Validation\Validator as V;
-use Illuminate\Database\Capsule\Manager as DB;
+use Carbon\Carbon;
 use Dappur\Dappurware\VideoParser as VP;
 use Dappur\Dappurware\Sentinel as S;
 use Dappur\Model\BlogCategories;
@@ -15,7 +12,9 @@ use Dappur\Model\BlogPostsComments;
 use Dappur\Model\BlogPostsReplies;
 use Dappur\Model\BlogPostsTags;
 use Dappur\Dappurware\Utils;
-use Carbon\Carbon;
+use Psr\Http\Message\ServerRequestInterface as Request;
+use Psr\Http\Message\ResponseInterface as Response;
+use Respect\Validation\Validator as V;
 
 class AdminBlog extends Controller{
 

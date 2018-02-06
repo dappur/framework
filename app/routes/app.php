@@ -15,9 +15,6 @@ $app->group('/', function () {
 	$this->map(['GET'], 'csrf', 'App:csrf')
 		->setName('csrf');
 
-	$this->map(['GET'], 'test', 'App:test')
-		->setName('test');
-
 })
 ->add($container->get('csrf'))
 ->add(new Dappur\Middleware\Maintenance($container))

@@ -2,14 +2,14 @@
 
 namespace Dappur\Controller;
 
-use Psr\Http\Message\ServerRequestInterface as Request;
-use Psr\Http\Message\ResponseInterface as Response;
+use Carbon\Carbon;
 use Dappur\Model\BlogCategories;
-use Dappur\Model\BlogTags;
 use Dappur\Model\BlogPosts;
+use Dappur\Model\BlogTags;
 use Dappur\Model\Users;
 use JasonGrimes\Paginator;
-use Carbon\Carbon;
+use Psr\Http\Message\ServerRequestInterface as Request;
+use Psr\Http\Message\ResponseInterface as Response;
 
 class Blog extends Controller{
 
@@ -36,6 +36,44 @@ class Blog extends Controller{
             ->take($this->config['blog-per-page']);
         
         return $this->view->render($response, 'blog.twig', array("posts" => $posts->get(), "pagination" => $pagination));
+    }
+
+    public function blogCategory(Request $request, Response $response){
+
+        $routeArgs =  $request->getAttribute('route')->getArguments();
+
+        $check_cat = BlogCategories::where('slug', $routeArgs['slug'])->first();
+
+        if (!$check_cat) {
+            $this->flash('warning', 'Tag not found.');
+            return $this->redirect($response, 'blog');
+        }
+
+        // Get/Set Page Number
+        if (isset($routeArgs['page']) && is_numeric($routeArgs['page'])) {
+            $page = $routeArgs['page'];
+        }else{
+            $page = 1;
+        }
+
+        $posts = BlogCategories::withCount(['posts' => function($query){
+                $query->where('status', 1)
+                    ->where('publish_at', '<', Carbon::now());
+            }])
+            ->with(['posts' => function($query) use($page){
+                $query->where('status', 1)
+                    ->where('publish_at', '<', Carbon::now())
+                    ->skip($this->config['blog-per-page']*($page-1))
+                    ->take($this->config['blog-per-page'])
+                    ->orderBy('publish_at', 'DESC');
+            }])
+            ->find($check_cat->id);
+
+       
+        $pagination = new Paginator($posts->posts_count, $this->config['blog-per-page'], $page, "/blog/category/".$check_cat->slug."/(:num)");
+        $pagination = $pagination;
+
+        return $this->view->render($response, 'blog.twig', array("posts" => $posts->posts, "pagination" => $pagination));
     }
 
     public function blogPost(Request $request, Response $response){
@@ -102,41 +140,5 @@ class Blog extends Controller{
         return $this->view->render($response, 'blog.twig', array("posts" => $posts->posts, "pagination" => $pagination));
     }
 
-    public function blogCategory(Request $request, Response $response){
-
-        $routeArgs =  $request->getAttribute('route')->getArguments();
-
-        $check_cat = BlogCategories::where('slug', $routeArgs['slug'])->first();
-
-        if (!$check_cat) {
-            $this->flash('warning', 'Tag not found.');
-            return $this->redirect($response, 'blog');
-        }
-
-        // Get/Set Page Number
-        if (isset($routeArgs['page']) && is_numeric($routeArgs['page'])) {
-            $page = $routeArgs['page'];
-        }else{
-            $page = 1;
-        }
-
-        $posts = BlogCategories::withCount(['posts' => function($query){
-                $query->where('status', 1)
-                    ->where('publish_at', '<', Carbon::now());
-            }])
-            ->with(['posts' => function($query) use($page){
-                $query->where('status', 1)
-                    ->where('publish_at', '<', Carbon::now())
-                    ->skip($this->config['blog-per-page']*($page-1))
-                    ->take($this->config['blog-per-page'])
-                    ->orderBy('publish_at', 'DESC');
-            }])
-            ->find($check_cat->id);
-
-       
-        $pagination = new Paginator($posts->posts_count, $this->config['blog-per-page'], $page, "/blog/category/".$check_cat->slug."/(:num)");
-        $pagination = $pagination;
-
-        return $this->view->render($response, 'blog.twig', array("posts" => $posts->posts, "pagination" => $pagination));
-    }
+    
 }

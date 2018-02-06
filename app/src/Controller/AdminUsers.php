@@ -2,12 +2,12 @@
 
 namespace Dappur\Controller;
 
+use Dappur\Dappurware\Sentinel as S;
+use Dappur\Model\Roles;
+use Dappur\Model\Users;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use Respect\Validation\Validator as V;
-use Dappur\Model\Users;
-use Dappur\Model\Roles;
-use Dappur\Dappurware\Sentinel as S;
 
 class AdminUsers extends Controller{
 

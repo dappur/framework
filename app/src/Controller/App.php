@@ -2,30 +2,14 @@
 
 namespace Dappur\Controller;
 
+use Dappur\Dappurware\Email as E;
+use Dappur\Dappurware\Recaptcha;
+use Dappur\Model\ContactRequests;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use Respect\Validation\Validator as V;
-use Dappur\Model\ContactRequests;
-use Dappur\Dappurware\Recaptcha;
-use Dappur\Dappurware\Email as E;
-
-use Illuminate\Database\Capsule\Manager as DB;
 
 class App extends Controller{
-
-    public function home(Request $request, Response $response){
-
-        return $this->view->render($response, 'home.twig');
-        
-    }
-
-    public function test(Request $request, Response $response){
-        
-        // Used as a quick sandbox
-
-          
-    }
-
 
     public function contact(Request $request, Response $response){
 
@@ -96,6 +80,30 @@ class App extends Controller{
 
     }
 
+    public function csrf(Request $request, Response $response){
+
+        $csrf = array(
+            "name_key" => $this->csrf->getTokenNameKey(),
+            "name" => $this->csrf->getTokenName(),
+            "value_key" => $this->csrf->getTokenValueKey(),
+            "value" => $this->csrf->getTokenValue());
+
+        echo json_encode($csrf);
+
+    }
+
+    public function home(Request $request, Response $response){
+
+        return $this->view->render($response, 'home.twig');
+        
+    }
+
+    public function maintenance(Request $request, Response $response){
+
+        return $this->view->render($response, 'maintenance.twig');
+
+    }
+
     public function privacy(Request $request, Response $response){
 
         return $this->view->render($response, 'privacy.twig');
@@ -105,24 +113,6 @@ class App extends Controller{
     public function terms(Request $request, Response $response){
 
         return $this->view->render($response, 'terms.twig');
-
-    }
-
-    public function maintenance(Request $request, Response $response){
-
-        return $this->view->render($response, 'maintenance.twig');
-
-    }
-
-    public function csrf(Request $request, Response $response){
-
-    	$csrf = array(
-    		"name_key" => $this->csrf->getTokenNameKey(),
-    		"name" => $this->csrf->getTokenName(),
-    		"value_key" => $this->csrf->getTokenValueKey(),
-    		"value" => $this->csrf->getTokenValue());
-
-    	echo json_encode($csrf);
 
     }
 

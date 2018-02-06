@@ -2,14 +2,14 @@
 
 namespace Dappur\Controller;
 
+use Dappur\Dappurware\Email as E;
+use Dappur\Dappurware\Sentinel as S;
+use Dappur\Model\Emails;
+use Dappur\Model\EmailsTemplates;
+use Dappur\Model\Users;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use Respect\Validation\Validator as V;
-use Dappur\Model\Emails;
-use Dappur\Model\Users;
-use Dappur\Model\EmailsTemplates;
-use Dappur\Dappurware\Sentinel as S;
-use Dappur\Dappurware\Email as E;
 
 class AdminEmail extends Controller{
 

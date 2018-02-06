@@ -2,13 +2,13 @@
 
 namespace Dappur\Controller;
 
-use Psr\Http\Message\ServerRequestInterface as Request;
-use Psr\Http\Message\ResponseInterface as Response;
-use Respect\Validation\Validator as V;
 use Dappur\Model\ContactRequests;
 use Dappur\Dappurware\Sentinel as S;
 use Dappur\Model\Users;
 use Dappur\Model\UsersProfile;
+use Psr\Http\Message\ServerRequestInterface as Request;
+use Psr\Http\Message\ResponseInterface as Response;
+use Respect\Validation\Validator as V;
 
 class Admin extends Controller{
 

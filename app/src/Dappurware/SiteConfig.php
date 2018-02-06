@@ -1,6 +1,7 @@
 <?php
 
 namespace Dappur\Dappurware;
+
 use Dappur\Model\ConfigGroups;
 
 Class SiteConfig
@@ -21,18 +22,6 @@ Class SiteConfig
 	    $cfg['copyright-year'] = date("Y");
 
 	    return $cfg;
-	}
-
-	public function editConfig() {
-		// TODO
-	}
-
-	public function addConfig() {
-		// TODO
-	}
-
-	public function delConfig() {
-		// TODO
 	}
 
 }

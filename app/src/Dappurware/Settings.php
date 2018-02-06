@@ -7,7 +7,38 @@ use Dappur\Model\ConfigGroups;
 
 
 class Settings
-{
+{   
+
+    public function getBootswatch(){
+
+        $settings = Settings::getSettingsFile();
+
+
+        $bootswatch = json_decode(file_get_contents($settings['view']['bootswatch']['api_url']));
+
+        $output = array();
+        foreach ($bootswatch->themes as $key => $value) {
+            $output[] = $value->name;
+        }
+
+        return $output;
+    }
+
+    public function getSettingsFile(){
+        $settings = file_get_contents( __DIR__ . '/../../bootstrap/settings.json');
+
+        $settings = json_decode($settings, TRUE);
+
+        return $settings;
+    }
+
+    public function getSettingsByGroup(){
+
+        $groups = ConfigGroups::whereNull('page_name')->with('config')->get();
+
+        return $groups;
+    }
+
 	public function getTimezones(){
 
         $zones_array = array();
@@ -40,36 +71,6 @@ class Settings
         }
 
         return $internal_array;
-    }
-
-    public function getSettingsFile(){
-    	$settings = file_get_contents( __DIR__ . '/../../bootstrap/settings.json');
-
-        $settings = json_decode($settings, TRUE);
-
-    	return $settings;
-    }
-
-    public function getBootswatch(){
-
-        $settings = Settings::getSettingsFile();
-
-
-        $bootswatch = json_decode(file_get_contents($settings['view']['bootswatch']['api_url']));
-
-        $output = array();
-        foreach ($bootswatch->themes as $key => $value) {
-            $output[] = $value->name;
-        }
-
-        return $output;
-    }
-
-    public function getSettingsByGroup(){
-
-        $groups = ConfigGroups::whereNull('page_name')->with('config')->get();
-
-        return $groups;
     }
 
 }
