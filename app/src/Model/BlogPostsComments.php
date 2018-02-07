@@ -21,6 +21,10 @@ class BlogPostsComments extends Model {
         return $this->belongsTo('\Dappur\Model\BlogPosts', 'post_id');
     }
 
+     public function approved_replies(){
+        return $this->hasMany('\Dappur\Model\BlogPostsReplies', 'comment_id', 'id')->where('status', 1);
+    }
+
     public function pending_replies(){
         return $this->hasMany('\Dappur\Model\BlogPostsReplies', 'comment_id', 'id')->where('status', 0);
     }

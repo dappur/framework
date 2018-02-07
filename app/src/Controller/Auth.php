@@ -107,6 +107,7 @@ class Auth extends Controller{
     
     public function login(Request $request, Response $response){
         if ($request->isPost()) {
+
             if(filter_var($request->getParam('login'), FILTER_VALIDATE_EMAIL)) {
                 $credentials = [
                     'email' => $request->getParam('login'),
@@ -124,11 +125,16 @@ class Auth extends Controller{
             try {
                 if ($this->auth->authenticate($credentials, $remember)) {
                     $this->flash('success', 'You have been logged in.');
-                    if ($this->auth->inRole("admin")) {
-                        return $this->redirect($response, 'dashboard');
+                    if ($request->getParam('redirect') !== null) {
+                        return $response->withRedirect($request->getParam('redirect'));
                     }else{
-                        return $this->redirect($response, 'home');
+                        if ($this->auth->inRole("admin")) {
+                            return $this->redirect($response, 'dashboard');
+                        }else{
+                            return $this->redirect($response, 'home');
+                        }
                     }
+                    
                 } else {
                     $this->flash('danger', 'Invalid username or password.');
                 }

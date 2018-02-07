@@ -634,6 +634,7 @@ class InitDatabase extends Migration
         $init_config = array(
             array('group_id' => $config->id, 'name' => 'blog-enabled', 'description' => 'Enable Blog', 'type_id' => 6, 'value' => 1),
             array('group_id' => $config->id, 'name' => 'blog-per-page', 'description' => 'Blog Posts Per Page', 'type_id' => 2, 'value' => 2),
+            array('group_id' => $config->id, 'name' => 'blog-approve-comments', 'description' => 'Approve Comments', 'type_id' => 6, 'value' => 1),
         );
 
         foreach ($init_config as $ikey => $ivalue) {

@@ -97,7 +97,7 @@ $app->group('/blog', function() use ($app) {
     $app->get('[/{page}]', 'Blog:blog')
         ->setName('blog');
 
-    $app->get('/{year}/{month}/{day}/{slug}', 'Blog:blogPost')
+    $app->map(['GET', 'POST'], '/{year}/{month}/{day}/{slug}', 'Blog:blogPost')
         ->setName('blog-post');
 
     $app->get('/author/{username}[/{page}]', 'Blog:blogAuthor')

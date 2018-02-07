@@ -33,13 +33,17 @@ class BlogPosts extends Model {
     }
 
     public function replies(){
-    
+        
         return $this->hasManyThrough('\Dappur\Model\BlogPostsReplies', '\Dappur\Model\BlogPostsComments', 'post_id', 'comment_id', 'id');
 
     }
 
-    public function pending_comments(){
+    public function approved_comments(){
         return $this->hasMany('\Dappur\Model\BlogPostsComments', 'post_id', 'id')->where('status', 1);
+    }
+
+    public function pending_comments(){
+        return $this->hasMany('\Dappur\Model\BlogPostsComments', 'post_id', 'id')->where('status', 0);
     }
 
     public function author(){

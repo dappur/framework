@@ -105,6 +105,7 @@ $container['view'] = function ($container) {
     $view->addExtension(new \Dappur\TwigExtension\Recaptcha($container['settings']['recaptcha']));
     $view->addExtension(new \Dappur\TwigExtension\Csrf($container['csrf']));
     $view->addExtension(new \Awurth\SlimValidation\ValidatorExtension($container['validator']));
+    $view->addExtension(new \Dappur\TwigExtension\Md5($container['request']));
     if ($container['cloudinary']) {
         $view->addExtension(new \Dappur\TwigExtension\Cloudinary());
         $view->getEnvironment()->addGlobal('hasCloudinary', 1);
