@@ -3,15 +3,29 @@
 namespace Dappur\Controller;
 
 use Dappur\Dappurware\Email as E;
+use Dappur\Dappurware\FileResponse;
 use Dappur\Dappurware\Recaptcha;
 use Dappur\Model\ContactRequests;
 use Dappur\Model\UsersProfile;
-use mhndev\slimFileResponse\FileResponse;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use Respect\Validation\Validator as V;
+use Slim\Exception\NotFoundException;
 
 class App extends Controller{
+
+    public function asset(Request $request, Response $response){
+
+        $asset_path = __DIR__ . "/../../views/" . $request->getParam('path');
+
+        //die(file_get_contents($asset_path));
+
+        if (!file_exists($asset_path)) {
+            throw new NotFoundException($request, $response);
+        }else{
+            return FileResponse::getResponse($response, $asset_path);
+        }
+    }
 
     public function contact(Request $request, Response $response){
 
