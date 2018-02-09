@@ -35,3 +35,12 @@ $container['Deploy'] = function ($container) {
 $container['AdminEmail'] = function ($container) { 
 	return new Dappur\Controller\AdminEmail($container); 
 };
+
+// Blog Controller
+$container['AdminBlog'] = function ($container) {
+    return new Dappur\Controller\AdminBlog($container);
+};
+
+$container['Blog'] = function ($container) {
+    return new Dappur\Controller\Blog($container);
+};

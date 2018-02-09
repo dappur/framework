@@ -1,5 +1,4 @@
 composer.phar
-composer.lock
 vendor/
 storage/cache/twig/*
 !storage/cache/twig/.gitkeep
@@ -16,3 +15,4 @@ node_modules
 .phpintel
 
 deploy.init.php
+composer.lock

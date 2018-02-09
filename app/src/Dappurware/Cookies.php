@@ -2,13 +2,13 @@
 
 namespace Dappur\Dappurware;
 
+use Carbon\Carbon;
 use Dflydev\FigCookies\FigRequestCookies;
 use Dflydev\FigCookies\FigResponseCookies;
 use Dflydev\FigCookies\SetCookie;
 use Dflydev\FigCookies\Cookie;
-use Carbon\Carbon;
 
-class Cookies extends Dappurware
+class Cookies
 {
     // Get Response Cookie
     public function getResponseCookie($response, $name){

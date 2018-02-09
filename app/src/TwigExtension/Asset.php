@@ -23,6 +23,6 @@ class Asset extends \Twig_Extension {
     }
 
     public function asset($path) {
-        return $this->request->getUri()->getBaseUrl() . '/assets/' . $path;
+        return '/asset?path=' . $path;
     }
 }

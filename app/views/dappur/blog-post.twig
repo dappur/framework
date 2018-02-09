@@ -1,0 +1,84 @@
+{% extends 'base.twig' %}
+
+{% block title %}
+	{{config['site-name']}}
+{% endblock %}
+
+{% block stylesheets %}
+    <link href="{{ asset('dappur/css/blog-comments.min.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block body %}
+	<div class="container">
+		<div class="row">
+			<!-- Blog Entries Column -->
+			<div class="col-md-8">
+
+			    <div class="card mb-4">
+			    	<a href="{{path_for('blog-post', {'year': post.publish_at|date("Y"), 'month': post.publish_at|date("m"), 'day': post.publish_at|date("d"), 'slug': post.slug})}}">
+			    		<h2 class="card-title">{{post.title}}</h2>
+			    	</a>
+			    	{% if post.featured_image %}
+						<a href="{{path_for('blog-post', {'year': post.publish_at|date("Y"), 'month': post.publish_at|date("m"), 'day': post.publish_at|date("d"), 'slug': post.slug})}}">
+							<img alt="Card image cap" class="card-img-top img-responsive" src="{{post.featured_image}}">
+						</a>
+					{% endif %}
+			    	{% if post.video_id and post.video_provider %}
+                        {% if post.video_provider == "youtube" %}
+                            <div class="video-container">
+                                <iframe src="https://www.youtube.com/embed/{{post.video_id}}" frameborder="0" allowfullscreen></iframe>
+                            </div>
+                        {% endif %}
+
+                        {% if post.video_provider == "vimeo" %}
+                            <div class="video-container">
+                                <iframe src="https://player.vimeo.com/video/{{post.video_id}}" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowfullscreen></iframe>
+                            </div>
+                        {% endif %}
+                    {% endif %}
+					<div class="card-footer text-muted">
+						Posted on {{post.publish_at|date('m/d/Y h:i a')}} by <a href="{{path_for('blog-author', {'username': post.author.username})}}">{{post.author.username}}</a><br />
+					</div>
+					<div class="card-body">
+						<div>
+							<b>Tags:</b> 
+							{% for tag in post.tags %}
+							    <a href="{{path_for('blog-tag', {'slug': tag.slug})}}">{{ tag.name }}</a> 
+							{% endfor %}
+						</div>
+						<div>
+							<b>Category:</b> <a href="{{path_for('blog-category', {'slug': post.category.slug})}}">{{ post.category.name }}</a> 
+						</div>
+						<p class="card-text"><b>Description:</b> {{post.description}}{{ _self.getTemplateName().__toString }}</p>
+						<p class="card-text">{{post.content|raw}}</p>
+					</div>
+					
+				</div>
+
+				{% include 'inc/blog-comments.twig' %}
+				
+			</div><!-- Sidebar Widgets Column -->
+			<div class="col-md-4">
+		    	{% include 'inc/blog-sidebar.twig' %}
+		    </div>
+		</div><!-- /.row -->
+	</div><!-- /.container -->
+{% endblock %}
+
+{% block javascript %}
+    {{ recaptchaJs() }}
+    
+    <script src="{{ asset('dappur/js/blog-comments.js') }}"></script>
+
+    {% if requestParams['comment_login'] %}
+    <script type="text/javascript">
+    $(document).ready(function(){
+    	$('html, body').animate({
+		    scrollTop: ($('#comments').offset().top -175)
+		},500);
+	});
+    {% endif %}
+    </script>
+    
+    
+{% endblock %}

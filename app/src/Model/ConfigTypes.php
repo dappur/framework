@@ -10,4 +10,8 @@ class ConfigTypes extends Model {
     protected $fillable = [
         'name'
     ];
+
+    public function config() {
+        return $this->hasMany('\Dappur\Model\Config', 'type_id');
+    }
 }

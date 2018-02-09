@@ -2,12 +2,12 @@
 
 namespace Dappur\Controller;
 
+use Dappur\Dappurware\Sentinel as S;
+use Dappur\Model\Roles;
+use Dappur\Model\Users;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use Respect\Validation\Validator as V;
-use Dappur\Model\Users;
-use Dappur\Model\Roles;
-use Dappur\Dappurware\Sentinel as S;
 
 class AdminUsers extends Controller{
 
@@ -32,21 +32,12 @@ class AdminUsers extends Controller{
         $requestParams = $request->getParams();
 
         if ($request->isPost()) {
-            $user_id = $request->getParam('user_id');
-            $first_name = $request->getParam('first_name');
-            $last_name = $request->getParam('last_name');
-            $email = $request->getParam('email');
-            $username = $request->getParam('username');
-            $password = $request->getParam('password');
-            $user_roles = $request->getParam('roles');
-            $perm_name = $request->getParam('perm_name');
-            $perm_value = $request->getParam('perm_value');
 
             $permissions_array = array();
 
-            if (is_array($perm_name)) {
-                foreach ($perm_name as $pkey => $pvalue) {
-                    if ($perm_value[$pkey] == "true") {
+            if (is_array($request->getParam('perm_name'))) {
+                foreach ($request->getParam('perm_name') as $pkey => $pvalue) {
+                    if ($request->getParam('perm_value')[$pkey] == "true") {
                         $val = true;
                     }else{
                         $val = false;
@@ -57,8 +48,8 @@ class AdminUsers extends Controller{
 
             // Check if roles exist
             $roles_array = array();
-            if (is_array($user_roles)) {
-                foreach ($user_roles as $rkey => $rvalue) {
+            if (is_array($request->getParam('roles'))) {
+                foreach ($request->getParam('roles') as $rkey => $rvalue) {
                     if (!$this->auth->findRoleBySlug($rvalue)) {
                         $this->validator->addError('roles', 'Role does not exist.');
                     }else{
@@ -70,17 +61,15 @@ class AdminUsers extends Controller{
             // Validate Form Data
             $validate_data = array(
                 'first_name' => array(
-                    'rules' => V::length(2, 25)->alpha('\''), 
+                    'rules' => V::length(2, 25), 
                     'messages' => array(
-                        'length' => 'Must be between 2 and 25 characters.',
-                        'alpha' => 'Letters only and can contain \''
+                        'length' => 'Must be between 2 and 25 characters.'
                         )
                 ),
                 'last_name' => array(
-                    'rules' => V::length(2, 25)->alpha('\''), 
+                    'rules' => V::length(2, 25), 
                     'messages' => array(
-                        'length' => 'Must be between 2 and 25 characters.',
-                        'alpha' => 'Letters only and can contain \''
+                        'length' => 'Must be between 2 and 25 characters.'
                         )
                 ),
                 'email' => array(
@@ -105,7 +94,7 @@ class AdminUsers extends Controller{
                     )
                 ),
                 'password_confirm' => array(
-                    'rules' => V::equals($password),
+                    'rules' => V::equals($request->getParam('password')),
                     'messages' => array(
                         'equals' => 'Passwords do not match.'
                     )
@@ -114,23 +103,23 @@ class AdminUsers extends Controller{
             $this->validator->validate($request, $validate_data);
 
             // Validate Username
-            if ($this->auth->findByCredentials(['login' => $username])) {
+            if ($this->auth->findByCredentials(['login' => $request->getParam('username')])) {
                 $this->validator->addError('username', 'User already exists with this username.');
             }
 
             // Validate Email
-            if ($this->auth->findByCredentials(['login' => $email])) {
+            if ($this->auth->findByCredentials(['login' => $request->getParam('email')])) {
                 $this->validator->addError('email', 'User already exists with this email.');
             }
 
             if ($this->validator->isValid()) {
 
                 $user = $this->auth->registerAndActivate([
-                    'first_name' => $first_name,
-                    'last_name' => $last_name,
-                    'email' => $email,
-                    'username' => $username,
-                    'password' => $password,
+                    'first_name' => $request->getParam('first_name'),
+                    'last_name' => $request->getParam('last_name'),
+                    'email' => $request->getParam('email'),
+                    'username' => $request->getParam('username'),
+                    'password' => $request->getParam('password'),
                     'permissions' => [
                         'user.delete' => 0
                     ]
@@ -144,7 +133,7 @@ class AdminUsers extends Controller{
                     echo $rolevalue['slug'] . "<br>";
                     
                     if (!in_array($rolevalue['slug'], $roles_array)) {
-                        if ($rolevalue['slug'] == 'admin' && $user_id == 1) {
+                        if ($rolevalue['slug'] == 'admin' && $request->getParam('user_id') == 1) {
                             continue;
                         }else{
                             $role = $this->auth->findRoleBySlug($rolevalue['slug']);
@@ -165,12 +154,11 @@ class AdminUsers extends Controller{
                 }
 
                 $this->flash('success', $username.' has been added successfully.');
-                $this->logger->addInfo("User added successfully", array("first_name" => $first_name, "last_name" => $last_name, "email" => $email, "username" => $username));
                 return $this->redirect($response, 'admin-users');
             }
         }
 
-        return $this->view->render($response, 'users-add.twig', ['roles' => Roles::get(), 'requestParams' => $requestParams]);
+        return $this->view->render($response, 'users-add.twig', ['roles' => Roles::get()]);
 
         
     }
@@ -188,20 +176,12 @@ class AdminUsers extends Controller{
 
         if ($user) {
             if ($request->isPost()) {
-                $user_id = $request->getParam('user_id');
-                $first_name = $request->getParam('first_name');
-                $last_name = $request->getParam('last_name');
-                $email = $request->getParam('email');
-                $username = $request->getParam('username');
-                $user_roles = $request->getParam('roles');
-                $perm_name = $request->getParam('perm_name');
-                $perm_value = $request->getParam('perm_value');
 
                 // Create Permissions Array
                 $permissions_array = array();
-                if(null !== $perm_name){
-                    foreach ($perm_name as $pkey => $pvalue) {
-                        if ($perm_value[$pkey] == "true") {
+                if(null !== $request->getParam('perm_name')){
+                    foreach ($request->getParam('perm_name') as $pkey => $pvalue) {
+                        if ($request->getParam('perm_value')[$pkey] == "true") {
                             $val = true;
                         }else{
                             $val = false;
@@ -212,8 +192,8 @@ class AdminUsers extends Controller{
 
                 // Check if roles exist
                 $roles_array = array();
-                if(null !== $user_roles){
-                    foreach ($user_roles as $rkey => $rvalue) {
+                if(null !== $request->getParam('roles')){
+                    foreach ($request->getParam('roles') as $rkey => $rvalue) {
                         if (!$this->auth->findRoleBySlug($rvalue)) {
                             $this->validator->addError('roles', 'Role does not exist.');
                         }else{
@@ -256,46 +236,40 @@ class AdminUsers extends Controller{
                 $this->validator->validate($request, $validate_data);
 
                 // Validate Username
-                if ($this->auth->findByCredentials(['login' => $username]) && $user->username != $username) {
+                if ($this->auth->findByCredentials(['login' => $request->getParam('username')]) && $user->username != $request->getParam('username')) {
                     $this->validator->addError('username', 'User already exists with this username.');
                 }
 
                 // Validate Email
-                if ($this->auth->findByCredentials(['login' => $email]) && $user->email != $email) {
+                if ($this->auth->findByCredentials(['login' => $request->getParam('email')]) && $user->email != $request->getParam('email')) {
                     $this->validator->addError('email', 'User already exists with this email.');
                 }
 
                 if ($this->validator->isValid()) {
 
                     // Get User Info
-                    $user = $this->auth->findById($user_id);
+                    $user = $this->auth->findById($request->getParam('user_id'));
 
+                    $user->first_name = $request->getParam('first_name');
+                    $user->last_name = $request->getParam('last_name');
+                    $user->email = $request->getParam('email');
+                    $user->username = $request->getParam('username');
+                    $user->save();
 
-                    // Update User Info
-                    $update_user = $user;
-                    $update_user->first_name = $first_name;
-                    $update_user->last_name = $last_name;
-                    $update_user->email = $email;
-                    $update_user->username = $username;
-                    $update_user->save();
-
-                    $user_perms = $user;
-                    $user_perms->permissions = $permissions_array;
-                    $user_perms->save();
+                    $user->permissions = $permissions_array;
+                    $user->save();
 
                     foreach (Roles::get() as $rolekey => $rolevalue) {
                         echo $rolevalue['slug'] . "<br>";
                         
                         if (!in_array($rolevalue['slug'], $roles_array)) {
-                            if ($rolevalue['slug'] == 'admin' && $user_id == 1) {
+                            if ($rolevalue['slug'] == 'admin' && $request->getParam('user_id') == 1) {
                                 continue;
                             }else{
                                 $role = $this->auth->findRoleBySlug($rolevalue['slug']);
                                 $role->users()->detach($user);
                             }
-                            
                         }
-                        
                     }
 
                     foreach ($roles_array as $rakey => $ravalue) {
@@ -307,13 +281,12 @@ class AdminUsers extends Controller{
                         }
                     }
 
-                    $this->flash('success', $username.' has been updated successfully.');
-                    $this->logger->addInfo("User updated successfully", array("first_name" => $first_name, "last_name" => $last_name, "email" => $email, "username" => $username));
+                    $this->flash('success', $user->username.' has been updated successfully.');
                     return $this->redirect($response, 'admin-users');
                 }
             }
 
-            return $this->view->render($response, 'users-edit.twig', ['user' => $user, 'roles' => Roles::get(), 'requestParams' => $requestParams]);
+            return $this->view->render($response, 'users-edit.twig', ['user' => $user, 'roles' => Roles::get()]);
         }else{
             $this->flash('danger', 'Sorry, that user was not found.');
             return $response->withRedirect($this->router->pathFor('admin-users'));
@@ -332,13 +305,11 @@ class AdminUsers extends Controller{
 
         if($user->delete()){
             $this->flash('success', 'User has been deleted successfully.');
-            $this->logger->addInfo("User deleted successfully", array("user" => $user));
-            return $this->redirect($response, 'admin-users');
         }else{
             $this->flash('danger'.'There was an error deleting the user.');
-            $this->logger->addInfo("User ", array("user" => $user));
-            return $this->redirect($response, 'admin-users');
         }
+
+        return $this->redirect($response, 'admin-users');
         
     }
 }

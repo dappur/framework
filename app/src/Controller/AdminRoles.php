@@ -2,12 +2,12 @@
 
 namespace Dappur\Controller;
 
+use Dappur\Dappurware\Sentinel as S;
+use Dappur\Model\RoleUsers;
+use Dappur\Model\Roles;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use Respect\Validation\Validator as V;
-use Dappur\Model\RoleUsers;
-use Dappur\Model\Roles;
-use Dappur\Dappurware\Sentinel as S;
 
 class AdminRoles extends Controller{
 
@@ -20,9 +20,6 @@ class AdminRoles extends Controller{
 
         if ($request->isPost()) {
 
-            $role_name = $request->getParam('role_name');
-            $role_slug = $request->getParam('role_slug');
-
             $this->validator->validate($request, [
                 'role_name' => V::length(2, 25)->alpha('\''),
                 'role_slug' => V::slug()
@@ -31,25 +28,20 @@ class AdminRoles extends Controller{
             if ($this->validator->isValid()) {
 
                 $role = $this->auth->getRoleRepository()->createModel()->create([
-                    'name' => $role_name,
-                    'slug' => $role_slug,
+                    'name' => $request->getParam('role_name'),
+                    'slug' => $request->getParam('role_slug'),
                     'permissions' => []
                 ]);
 
                 if ($role) {
                     $this->flash('success', 'Role has been successfully added.');
-                    $this->logger->addInfo("Role added successfully", array("role_name" => $role_name, "role_slug" => $role_slug));
-                    return $this->redirect($response, 'admin-users');
                 }else{
                     $this->flash('danger', 'There was a problem adding the role.');
-                    $this->logger->addError("Problem adding role.", array("role_name" => $role_name, "role_slug" => $role_slug));
-                    return $this->redirect($response, 'admin-users');
                 }
             }else{
                 $this->flash('danger', 'There was a problem adding the role.');
-                $this->logger->addError("Problem adding role.", array("role_name" => $role_name, "role_slug" => $role_slug));
-                return $this->redirect($response, 'admin-users');
             }
+            return $this->redirect($response, 'admin-users');
         }
 
     }
@@ -61,26 +53,19 @@ class AdminRoles extends Controller{
             return $this->redirect($response, 'dashboard');
         }
 
-        $requestParams = $request->getParams();
+        if (is_numeric($request->getParam('role_id')) && $role != 1) {
 
-        if (is_numeric($requestParams['role_id']) && $role != 1) {
+            RoleUsers::where('role_id', '=', $request->getParam('role_id'))->delete();
 
-
-            RoleUsers::where('role_id', '=', $requestParams['role_id'])->delete();
-
-            $remove_role = Roles::find($requestParams['role_id']);
-
+            $remove_role = Roles::find($request->getParam('role_id'));
 
             if ($remove_role->delete()) {
                 $this->flash('success', 'Role has been removed.');
-                $this->logger->addInfo("Role removed successfully", array("role_id" => $role));
             }else{
                 $this->flash('danger', 'There was a problem removing the role.');
-                $this->logger->addError("Problem removing role.", array("role_id" => $role));
             }
         }else{
             $this->flash('danger', 'There was a problem removing the role.');
-            $this->logger->addError("Problem removing role.", array("role_id" => $role));
         }
 
         return $this->redirect($response, 'admin-users');
@@ -98,12 +83,6 @@ class AdminRoles extends Controller{
 
         if ($role) {
             if ($request->isPost()) {
-                // Get Vars
-                $role_name = $request->getParam('role_name');
-                $role_slug = $request->getParam('role_slug');
-                $role_id = $request->getParam('role_id');
-                $perm_name = $request->getParam('perm_name');
-                $perm_value = $request->getParam('perm_value');
 
                 // Validate Data
                 $validate_data = array(
@@ -125,21 +104,21 @@ class AdminRoles extends Controller{
                 $this->validator->validate($request, $validate_data);
 
                 //Validate Role Name
-                $check_name = $role->where('id', '!=', $role_id)->where('name', '=', $role_name)->get()->count();
+                $check_name = $role->where('id', '!=', $request->getParam('role_id'))->where('name', '=', $request->getParam('role_name'))->get()->count();
                 if ($check_name > 0) {
                     $this->validator->addError('role_name', 'Role name is already in use.');
                 }
 
                 //Validate Role Name
-                $check_slug = $role->where('id', '!=', $role_id)->where('slug', '=', $role_slug)->get()->count();
+                $check_slug = $role->where('id', '!=', $request->getParam('role_id'))->where('slug', '=', $request->getParam('role_slug'))->get()->count();
                 if ($check_slug > 0) {
                     $this->validator->addError('role_slug', 'Role slug is already in use.');
                 }
 
                 // Create Permissions Array
                 $permissions_array = array();
-                foreach ($perm_name as $pkey => $pvalue) {
-                    if ($perm_value[$pkey] == "true") {
+                foreach ($request->getParam('perm_name') as $pkey => $pvalue) {
+                    if ($request->getParam('perm_value')[$pkey] == "true") {
                         $val = true;
                     }else{
                         $val = false;
@@ -152,17 +131,15 @@ class AdminRoles extends Controller{
                 if ($this->validator->isValid()) {
 
                     $update_role = $role;
-                    $update_role->name = $role_name;
-                    $update_role->slug = $role_slug;
+                    $update_role->name = $request->getParam('role_name');
+                    $update_role->slug = $request->getParam('role_slug');
                     $update_role->save();
 
-                    $role_perms = $this->auth->findRoleById($role_id);
+                    $role_perms = $this->auth->findRoleById($request->getParam('role_id'));
                     $role_perms->permissions = $permissions_array;
                     $role_perms->save();
 
-
                     $this->flash('success', 'Role has been updated successfully.');
-                    $this->logger->addInfo("Role updated successfully", array("role_id" => $role_id));
                     return $this->redirect($response, 'admin-users');
                 }
             }

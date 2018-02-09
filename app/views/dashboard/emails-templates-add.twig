@@ -21,7 +21,7 @@
                         <i class="fa fa-envelope"></i> Emails
                     </li>
                     <li class="active">
-                        <i class="fa fa-plus"></i> Add User
+                        <i class="fa fa-plus"></i> Add Template
                     </li>
                 </ol>
             </div>
@@ -56,7 +56,7 @@
 
                                 <div class="form-group{% if has_error('description') %} has-error{% endif %}">
                                     <label for="description">Description</label>
-                                    <input type="description" name="description" class="form-control" id="description" placeholder="description" value="{% if requestParams.description %}{{requestParams.description}}{% endif %}" required="required">
+                                    <input type="description" name="description" class="form-control" id="description" placeholder="Description" value="{% if requestParams.description %}{{requestParams.description}}{% endif %}" required="required">
                                     <span class="help-block">{{ error('description') }}</span>
                                 </div>
 

@@ -21,12 +21,12 @@
 		    	<div class="row">
 					<div class="col-sm-12" id="parent">
 						<div class="row">
-							{% if config['contact-map-show'] %}
+							{% if page_config['contact-map-show'] %}
 							<div class="col-sm-6">
-								<iframe allowfullscreen frameborder="0" height="420px;" src="{{config['contact-map-url']}}" style="border:0" width="100%"></iframe>
+								<iframe allowfullscreen frameborder="0" height="420px;" src="{{page_config['contact-map-url']}}" style="border:0" width="100%"></iframe>
 							</div>
 							{% endif %}
-							<div class="col-sm-6 {% if not config['contact-map-show'] %}col-sm-offset-3{% endif %}">
+							<div class="col-sm-6 {% if not page_config['contact-map-show'] %}col-sm-offset-3{% endif %}">
 								<form action="{{currentRoute}}" class="contact-form" method="post">
 									<div class="row">
 										<div class="col-sm-6">
@@ -67,7 +67,7 @@
 									</div>
 									<div class="info">
 										<h3 class="title">ONLINE</h3>
-										<p><i aria-hidden="true" class="fa fa-envelope"></i> &nbsp; {{config['contact-email']}}<br>
+										<p><i aria-hidden="true" class="fa fa-envelope"></i> &nbsp; {{page_config['contact-email']}}<br>
 										<br>
 										<i aria-hidden="true" class="fa fa-globe"></i> &nbsp; {{config['domain']}}</p>
 									</div>
@@ -83,7 +83,7 @@
 									</div>
 									<div class="info">
 										<h3 class="title">PHONE</h3>
-										<p><i aria-hidden="true" class="fa fa-phone"></i> &nbsp; {{config['contact-phone']}}<br>
+										<p><i aria-hidden="true" class="fa fa-phone"></i> &nbsp; {{page_config['contact-phone']}}<br>
 										<br>
 										<i aria-hidden="true" class="fa fa-mobile"></i> &nbsp; (+91)-7567065254</p>
 									</div>
@@ -100,9 +100,9 @@
 									<div class="info">
 										<h3 class="title">ADDRESS</h3>
 										<p><i aria-hidden="true" class="fa fa-map-marker"></i> &nbsp;
-											{{config['site-name']}} <br />
-											{{config['contact-street']}}<br />
-											{{config['contact-city']}}, {{config['contact-state']}}, {{config['contact-zip']}}
+											{{page_config['site-name']}} <br />
+											{{page_config['contact-street']}}<br />
+											{{page_config['contact-city']}}, {{page_config['contact-state']}}, {{page_config['contact-zip']}}
 										</p>
 									</div>
 								</div>

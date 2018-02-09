@@ -40,6 +40,8 @@ $app->group('/dashboard', function () use($app) {
         ->setName('settings-global-group-add');
     $app->post('/settings/group/delete', 'AdminSettings:settingsGlobalDeleteGroup')
         ->setName('settings-global-group-delete');
+
+    $app->map(['GET', 'POST'], '/settings/page-settings/{page_name}', 'AdminSettings:settingsPage')->setName('settings-page');
     
     // Edit Settings.json
     $app->map(['GET', 'POST'], '/developer/settings', 'AdminSettings:settingsDeveloper')->setName('settings-developer');
@@ -64,6 +66,9 @@ $app->group('/dashboard', function () use($app) {
 
         $app->map(['POST'], '/delete', 'AdminMedia:mediaDelete')
             ->setName('admin-media-delete');
+
+        $app->map(['GET'], '/cloudinary-sign', 'AdminMedia:cloudinarySign')
+            ->setName('cloudinary-sign');
     });
 
     // Email Manager
@@ -72,7 +77,7 @@ $app->group('/dashboard', function () use($app) {
         $app->map(['GET'], '', 'AdminEmail:email')
             ->setName('admin-email');
 
-        $app->map(['GET'], 'details/{email}', 'AdminEmail:emailDetails')
+        $app->map(['GET'], '/details/{email}', 'AdminEmail:emailDetails')
             ->setName('admin-email-details');
 
         $app->map(['GET','POST'], '/new', 'AdminEmail:emailNew')

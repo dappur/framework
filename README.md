@@ -1,8 +1,10 @@
 # Dappur PHP Framework
-# TODO: Update for V2.0.0
+# TODO: Update for V2
 PHP App Framework built on the Slim PHP Micro Framework, Twig templating engine, Eloquent ORM database interactions, Phinx database migrations, Sentinel user management, Monolog w/ Logentries Support, form validation with CSRF protection, cookie management, database controlled config and Cloudinary CMS integration.
 
-This is a lightweight full featured framework intended for PHP developers who need an open source fast and reliable framework.  Have your new projects up and running in minutes with the provided basic bootstrap pages and basic bootstrap admin.
+This is a lightweight full featured framework intended for PHP developers who need an open source, fast and reliable platform to build your apps from.  Have your new projects up and running in minutes with the provided basic bootstrap pages and basic bootstrap admin.
+
+The blog addon has now been integrated into the main repo and template files.  It can be easily enabled/disabled via the settings page in the dashboard.
 
 ----------
 
@@ -18,13 +20,18 @@ This is a lightweight full featured framework intended for PHP developers who ne
 * [Fig Cookies](https://github.com/dflydev/dflydev-fig-cookies) - Cookies for PSR-7 HTTP Message Interface.
 * [Phinx Database Migrations](https://github.com/robmorgan/phinx) - Phinx makes it ridiculously easy to manage the database migrations for your PHP app.
 * [Cloudinary Image CDN](https://github.com/cloudinary/cloudinary_php) - Cloudinary is a cloud service that offers a solution to a web application's entire image management pipeline.
+* [PHPMailer](https://github.com/PHPMailer/PHPMailer) - A full-featured email creation and transfer class for PHP.
+* [Paginator](https://github.com/jasongrimes/php-paginator) - A lightweight PHP paginator, for generating pagination controls in the style of Stack Overflow and Flickr.
+
 
 ----------
 
 ### //TODO
-* Start documentation for the Dappur CLI
-* Create Usage Pages
-* Implement a better open source BS3 theme for the admin interface
+* Create Documentation
+* Update Dappur CLI for v2
+* Update Default Theme to an open source Bootstrap 4
+* Update Dashboard theme to an open source Bootstrap 4
+* Add Unit Testing
 
 ----------
 

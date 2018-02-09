@@ -14,4 +14,12 @@ class Config extends Model {
         'description',
         'value'
     ];
+
+    public function group(){
+        return $this->hasOne('\Dappur\Model\ConfigGroups', 'group_id');
+    }
+
+    public function type(){
+        return $this->hasOne('\Dappur\Model\ConfigTypes', 'type_id');
+    }
 }

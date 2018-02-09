@@ -18,8 +18,7 @@ class Migration extends AbstractMigration {
     {
         $settings = file_get_contents( __DIR__ . '/../../bootstrap/settings.json' );
         $settings = json_decode($settings, TRUE);
-        $database = $settings['db']['use'];
-        $dbconf = $settings['db']['databases'][$database];
+        $dbconf = $settings['db']['databases'][$settings['environment']];
 
         $this->capsule = new Capsule;
         $this->capsule->addConnection([
@@ -31,6 +30,7 @@ class Migration extends AbstractMigration {
           'password'  => $dbconf['password'],
           'charset'   => 'utf8',
           'collation' => 'utf8_unicode_ci',
+          'timezone' => $dbconf['timezone']
         ]);
 
         $this->capsule->bootEloquent();

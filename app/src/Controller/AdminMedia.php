@@ -2,12 +2,89 @@
 
 namespace Dappur\Controller;
 
+use Cloudinary;
+use Dappur\Dappurware\Sentinel as S;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use Respect\Validation\Validator as V;
-use Dappur\Dappurware\Sentinel as S;
 
 class AdminMedia extends Controller{
+
+    public function cloudinarySign(Request $request, Response $response){
+
+        $sentinel = new S($this->container);
+        $sentinel->hasPerm('media.cloudinary');
+
+        $cloudinary = $this->cloudinary;
+
+        $params = array();
+        foreach ($request->getQueryParam('data') as $key => $value) {
+            $params[$key] = $value;
+        }
+
+        // Sign Request With Cloudinary
+        $signature = $cloudinary->api_sign_request(
+            $params, 
+            $cloudinary->config_get("api_secret")
+        );
+
+        if ($signature) {
+            return $signature;
+        }else{
+            return false;
+        }
+        
+    }
+
+    public function getCloudinaryCMS($container, $signature_only = false){
+
+        $sentinel = new S($container);
+        $sentinel->hasPerm('media.cloudinary');
+
+        // Generate Timestamp
+        $date = new \DateTime();
+        $timestamp = $date->getTimestamp();
+        
+        // Prepare Cloudinary CMS Params
+        if ($signature_only) {
+            $params = array("timestamp" => $timestamp);
+        }else{
+            $params = array("timestamp" => $timestamp, "mode" => "tinymce");
+        }
+
+        // Prepare Cloudinary Options
+        $options = array("cloud_name" => $container->settings['cloudinary']['cloud_name'],
+            "api_key" => $container->settings['cloudinary']['api_key'],
+            "api_secret" => $container->settings['cloudinary']['api_secret']);
+
+        // Sign Request With Cloudinary
+        $output = \Cloudinary::sign_request($params, $options);
+
+        if ($output) {
+            // Build the http query
+            $api_params_cl = http_build_query($output);
+
+            // Complete the Cloudinary URL
+            $cloudinary_cms_url = "https://cloudinary.com/console/media_library/cms?$api_params_cl";
+            if ($signature_only) {
+                $output['signature'] = \Cloudinary:: api_sign_request(
+                    array(
+                        "timestamp" => $timestamp
+                    ), 
+                    $container->settings['cloudinary']['api_secret']
+                );
+
+                $output['api_key'] = $container->settings['cloudinary']['api_key'];
+                $output['timestamp'] = $timestamp;
+                return $output;
+            }else{
+                return $cloudinary_cms_url;
+            }
+        }else{
+            return false;
+        }
+        
+    }
 
 	private function getFiles($directory){
 
@@ -54,25 +131,14 @@ class AdminMedia extends Controller{
 
     }
 
-    public function mediaFolder(Request $request, Response $response){
+    public function media(Request $request, Response $response){
 
         $sentinel = new S($this->container);
-        if(!$sentinel->hasPerm('media.folder')){
+        if(!$sentinel->hasPerm('media.local')){
             return $this->redirect($response, 'dashboard');
         }
 
-        $requestParams = $request->getParams();
-
-        $directory = $requestParams['directory'];
-
-        if (substr(realpath($this->upload_dir . "/$directory"), 0, strlen($this->upload_dir)) !== $this->upload_dir) {
-            return $response->write(json_encode(array("status" => "error")), 201);
-        }
-
-        $output = $this->getFiles($this->upload_dir . "/$directory");
-
-        return $response->write(json_encode($output), 201);
-
+        return $this->view->render($response, 'media.twig');
     }
 
     public function mediaDelete(Request $request, Response $response){
@@ -132,39 +198,26 @@ class AdminMedia extends Controller{
 
     }
 
-    public function mediaUpload(Request $request, Response $response){
+    public function mediaFolder(Request $request, Response $response){
 
         $sentinel = new S($this->container);
-        if(!$sentinel->hasPerm('media.upload')){
+        if(!$sentinel->hasPerm('media.folder')){
             return $this->redirect($response, 'dashboard');
         }
 
         $requestParams = $request->getParams();
 
-        $directory = $requestParams['current_folder'];
-
-        
+        $directory = $requestParams['directory'];
 
         if (substr(realpath($this->upload_dir . "/$directory"), 0, strlen($this->upload_dir)) !== $this->upload_dir) {
             return $response->write(json_encode(array("status" => "error")), 201);
         }
 
-        $errors = 0;
-        foreach($_FILES['files']['tmp_name'] as $key => $tmp_name) {
-            if(!move_uploaded_file($_FILES['files']['tmp_name'][$key], realpath($this->upload_dir . "/$directory") . "/".$_FILES["files"]["name"][$key])){
-                $errors++;
-            }
-        }
+        $output = $this->getFiles($this->upload_dir . "/$directory");
 
-        if ($errors > 0) {
-            return $response->write(json_encode(array("status" => "error")), 201);
-        }else{
-            return $response->write(json_encode(array("status" => "success")), 201);
-        }
-        
+        return $response->write(json_encode($output), 201);
 
     }
-
 
     public function mediaFolderNew(Request $request, Response $response){
 
@@ -250,16 +303,36 @@ class AdminMedia extends Controller{
 
     }
 
-
-    public function media(Request $request, Response $response){
+    public function mediaUpload(Request $request, Response $response){
 
         $sentinel = new S($this->container);
-        if(!$sentinel->hasPerm('media.local')){
+        if(!$sentinel->hasPerm('media.upload')){
             return $this->redirect($response, 'dashboard');
         }
 
         $requestParams = $request->getParams();
 
-        return $this->view->render($response, 'media.twig', array("requestParams" => $requestParams));
+        $directory = $requestParams['current_folder'];
+
+        
+
+        if (substr(realpath($this->upload_dir . "/$directory"), 0, strlen($this->upload_dir)) !== $this->upload_dir) {
+            return $response->write(json_encode(array("status" => "error")), 201);
+        }
+
+        $errors = 0;
+        foreach($_FILES['files']['tmp_name'] as $key => $tmp_name) {
+            if(!move_uploaded_file($_FILES['files']['tmp_name'][$key], realpath($this->upload_dir . "/$directory") . "/".$_FILES["files"]["name"][$key])){
+                $errors++;
+            }
+        }
+
+        if ($errors > 0) {
+            return $response->write(json_encode(array("status" => "error")), 201);
+        }else{
+            return $response->write(json_encode(array("status" => "success")), 201);
+        }
+        
+
     }
 }

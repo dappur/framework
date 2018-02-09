@@ -15,4 +15,5 @@ class Emails extends Model {
         'html', 
         'plain_text'
     ];
+
 }

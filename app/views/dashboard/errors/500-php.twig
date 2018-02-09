@@ -34,26 +34,43 @@
 		    </div>
 
 		    {% if displayErrorDetails %}
-		    <div class="row text-center">
-		    	<div class="col-md-12">
-		    		<p>
-		    			{{ exception.getMessage() }}
-		    		</p>
+		    <blockquote>
+			    <div class="row text-center">
+			    	<div class="col-md-12">
+			    		<p class="text-left">{{ exception.getFile() }}</p>
+			    	</div>
+			    </div>
+			</blockquote>
 
-		    	</div>
-		    </div>
+			<blockquote>
+			    <div class="row text-center">
+			    	<div class="col-md-12">
+			    		<p class="text-left"><b>Line:</b> {{ exception.getLine() }}</p>
+			    	</div>
+			    </div>
+			</blockquote>
+
+			<blockquote>
+			    <div class="row text-center">
+			    	<div class="col-md-12">
+			    		<p class="text-left"><b>Message:</b> {{ exception.getMessage() }}</p>
+			    	</div>
+			    </div>
+			</blockquote>
 
 
 	    	<div class="row">
 	    		<hr />
 		    	{% for item in exception.getTrace() %}
+		    		<blockquote>
 				    {% for key2,item2 in item %}
 				        <b>{{key2|capitalize}}:</b> {{item2}}<br />
 				    {% endfor %}
+				    </blockquote>
 	    			<hr />
 				{% endfor %}
 			</div>
-			{% endif %}
+			{% endif %}	
 	    	
 	    </div>
 	</div>

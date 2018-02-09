@@ -2,19 +2,27 @@
 
 namespace Dappur\Controller;
 
+use Dappur\Dappurware\Email as E;
+use Dappur\Dappurware\FileResponse;
+use Dappur\Dappurware\Recaptcha;
+use Dappur\Model\ContactRequests;
+use Dappur\Model\UsersProfile;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use Respect\Validation\Validator as V;
-use Dappur\Model\ContactRequests;
-use Dappur\Dappurware\Recaptcha;
-use Dappur\Dappurware\Email as E;
+use Slim\Exception\NotFoundException;
 
 class App extends Controller{
 
-    public function home(Request $request, Response $response){
+    public function asset(Request $request, Response $response){
 
-        return $this->view->render($response, 'home.twig');
+        $asset_path = __DIR__ . "/../../views/" . $request->getParam('path');
 
+        if (!file_exists($asset_path)) {
+            throw new NotFoundException($request, $response);
+        }else{
+            return FileResponse::getResponse($response, $asset_path);
+        }
     }
 
     public function contact(Request $request, Response $response){
@@ -71,26 +79,175 @@ class App extends Controller{
                         
                         $send_email = new E($this->container);
                         $send_email = $send_email->sendTemplate(array($request->getParam("email")), 'contact-confirmation', array('name' => $request->getParam('name'), 'phone' => $request->getParam('phone'), 'comment' => $request->getParam('comment')));
-                        if ($send_email['status'] == "error") {
-                            $this->logger->addError("Registration: Send Activation Email Error.", array("result" => $send_email));
-                        }else{
-                            $this->logger->addInfo("Registration: Activation email sent.", array("result" => $send_email));
-                        }
-
                     }
 
                     $this->flash('success', 'Your contact request has been submitted successfully.');
-                    $this->logger->addInfo("Contact: Request successful.", array("request_params" => $request->getParams()));
                     return $this->redirect($response, 'contact');
                 }else{
                     $this->flash('danger', 'An unknown error occured.  Please try again or email us at: ' . $this->config['contact-email']);
-                    $this->logger->addError("Contact: Request failed.", array("error" => $add->save()));
                     return $this->redirect($response, 'contact');
                 }
             }
         }
 
         return $this->view->render($response, 'contact.twig', array("requestParams" => $request->getParams()));
+
+    }
+
+    public function csrf(Request $request, Response $response){
+
+        $csrf = array(
+            "name_key" => $this->csrf->getTokenNameKey(),
+            "name" => $this->csrf->getTokenName(),
+            "value_key" => $this->csrf->getTokenValueKey(),
+            "value" => $this->csrf->getTokenValue());
+
+        echo json_encode($csrf);
+
+    }
+
+    public function home(Request $request, Response $response){
+
+        return $this->view->render($response, 'home.twig');
+        
+    }
+
+    public function maintenance(Request $request, Response $response){
+
+        return $this->view->render($response, 'maintenance.twig');
+
+    }
+
+    public function profile(Request $request, Response $response){
+
+        $user = $this->auth->check();
+
+        if ($request->isPost()) {
+
+            if ($request->getParam('save_profile') !== null) {
+
+                // Validate Data
+                $validate_data = array(
+                    'first_name' => array(
+                        'rules' => V::length(2, 25)->alnum('\'?!@#,."'), 
+                        'messages' => array(
+                            'length' => 'Must be between 2 and 25 characters.',
+                            'alpha' => 'Contains an invalid character.'
+                            )
+                    ),
+                    'last_name' => array(
+                        'rules' => V::length(2, 25)->alnum('\'?!@#,."'), 
+                        'messages' => array(
+                            'length' => 'Must be between 2 and 25 characters.',
+                            'alpha' => 'Contains an invalid character.'
+                            )
+                    ),
+                    'email' => array(
+                        'rules' => V::noWhitespace()->email(), 
+                        'messages' => array(
+                            'email' => 'Enter a valid email address.',
+                            'noWhitespace' => 'Must not contain any spaces.'
+                            )
+                    ),
+                    'username' => array(
+                        'rules' => V::noWhitespace()->alnum(), 
+                        'messages' => array(
+                            'slug' => 'Must be alpha numeric with no spaces.',
+                            'noWhitespace' => 'Must not contain any spaces.'
+                            )
+                    )
+                );
+
+                //Check username
+                if ($user->username != $request->getParam('username')) {
+                    $check_username = Users::where('id', '!=', $user->id)->where('username', '=', $request->getParam('username'))->get()->count();
+                    if ($check_username > 0) {
+                        $this->validator->addError('username', 'Username is already in use.');
+                    }
+                }
+                
+
+                //Check Email
+                if ($user->email != $request->getParam('email')) {
+                    $check_email = Users::where('id', '!=', $user->id)->where('email', '=', $request->getParam('email'))->get()->count();
+                    if ($check_email > 0) {
+                        $this->validator->addError('email', 'Email address is already in use.');
+                    }
+                }
+
+                $this->validator->validate($request, $validate_data);
+
+                if ($this->validator->isValid()) {
+
+                    $new_information = [
+                        'first_name' => $request->getParam('first_name'),
+                        'last_name' => $request->getParam('last_name'),
+                        'email' => $request->getParam('email'),
+                        'username' => $request->getParam('username')
+                    ];
+
+                    $update_user = $this->auth->update($user, $new_information);
+
+                    $update_profile = UsersProfile::where('user_id', $user->id)->first();
+
+                    if ($update_profile) {
+                        $update_profile->about = strip_tags($request->getParam('about'));
+                        $update_profile->save();
+                    }else{
+                        $add_profile = new UsersProfile;
+                        $add_profile->user_id = $user->id;
+                        $add_profile->about = strip_tags($request->getParam('about'));
+                        $add_profile->save();
+                    }
+                    
+
+                    if ($update_user) {
+                        $this->flashNow('success', 'Your profile has been updated successfully.');
+                    }else{
+                        $this->flashNow('danger', 'There was an error updating your account information.');
+                    }
+                }
+            }
+
+            if ($request->getParam('change_password') !== null) {
+                // Validate Data
+                $validate_data = array(
+                    'password' => array(
+                    'rules' => V::noWhitespace()->length(6), 
+                    'messages' => array(
+                        'length' => 'Must be greater than 6 characters.'
+                        )
+                    ),
+                    'confirm' => array(
+                        'rules' => V::equals($request->getParam('password')),
+                        'messages' => array(
+                            'equals' => 'Passwords do not match.'
+                            )
+                    )
+                );
+
+                $this->validator->validate($request, $validate_data);
+
+                if ($this->validator->isValid()) {
+
+                    $new_information = [
+                        'password' => $request->getParam('password')
+                    ];
+
+                    $update_user = $this->auth->update($user, $new_information);
+
+                    if ($update_user) {
+                        $this->flashNow('success', 'Your password has been updated successfully.');
+                    }else{
+                        $this->flashNow('danger', 'There was an error changing your password.');
+                    }
+                }else{
+                    $this->flashNow('danger', 'There was an error changing your password.');
+                }
+            }
+        }
+
+        return $this->view->render($response, 'profile.twig', array("user" => $user));
 
     }
 
@@ -103,24 +260,6 @@ class App extends Controller{
     public function terms(Request $request, Response $response){
 
         return $this->view->render($response, 'terms.twig');
-
-    }
-
-    public function maintenance(Request $request, Response $response){
-
-        return $this->view->render($response, 'maintenance.twig');
-
-    }
-
-    public function csrf(Request $request, Response $response){
-
-    	$csrf = array(
-    		"name_key" => $this->csrf->getTokenNameKey(),
-    		"name" => $this->csrf->getTokenName(),
-    		"value_key" => $this->csrf->getTokenValueKey(),
-    		"value" => $this->csrf->getTokenValue());
-
-    	echo json_encode($csrf);
 
     }
 

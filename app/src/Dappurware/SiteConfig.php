@@ -2,36 +2,26 @@
 
 namespace Dappur\Dappurware;
 
-Class SiteConfig extends Dappurware 
+use Dappur\Model\ConfigGroups;
+
+Class SiteConfig
 {
 
-	public function getConfig() 
+	public function getGlobalConfig() 
 	{
+		$cfg = array();
 
-	    $config = $this->db->table('config')->get();
-	    $cfg = array();
-	    foreach($config as $cfgkey => $cfgvalue){
-	        $cfg[$cfgvalue->name] = $cfgvalue->value;
+		$config = ConfigGroups::whereNull('page_name')->with('config')->get();
+
+		foreach($config as $group_key => $group_value){
+	        foreach($group_value->config as $cfgkey => $cfgvalue){
+	        	$cfg[$cfgvalue->name] = $cfgvalue->value;
+		    }
 	    }
 
 	    $cfg['copyright-year'] = date("Y");
 
-	    //Set Default Timezone
-	    date_default_timezone_set($cfg['timezone']);
-
 	    return $cfg;
-	}
-
-	public function editConfig() {
-		// TODO
-	}
-
-	public function addConfig() {
-		// TODO
-	}
-
-	public function delConfig() {
-		// TODO
 	}
 
 }

@@ -2,13 +2,14 @@
 
 namespace Dappur\Controller;
 
+use Dappur\Dappurware\Email as E;
+use Dappur\Dappurware\Sentinel as S;
+use Dappur\Model\Emails;
+use Dappur\Model\EmailsTemplates;
+use Dappur\Model\Users;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use Respect\Validation\Validator as V;
-use Dappur\Model\Emails;
-use Dappur\Model\EmailsTemplates;
-use Dappur\Dappurware\Sentinel as S;
-use Dappur\Dappurware\Email as E;
 
 class AdminEmail extends Controller{
 
@@ -22,6 +23,27 @@ class AdminEmail extends Controller{
         $emails = Emails::take(200)->get();
 
         return $this->view->render($response, 'emails.twig', array("emails" => $emails));
+	}
+
+	public function emailDetails(Request $request, Response $response){
+
+		$sentinel = new S($this->container);
+        if(!$sentinel->hasPerm('email.details')){
+        	return $this->redirect($response, 'home');
+        }
+
+        $routeArgs =  $request->getAttribute('route')->getArguments();
+
+        $email = Emails::find($routeArgs['email']);
+
+        if (!$email) {
+        	$this->flash('danger', 'There was a problem finding that email in the database.');
+            return $this->redirect($response, 'admin-email');
+        }
+
+        $user = Users::where('email', $email->send_to)->first();
+
+        return $this->view->render($response, 'emails-details.twig', array("email" => $email, "user" => $user));
 	}
 
 	public function testEmail(Request $request, Response $response){
@@ -126,19 +148,17 @@ class AdminEmail extends Controller{
 
 	        	if ($add_template->save()) {
 	        		$this->flash('success', 'Template has been successfully added.');
-                    $this->logger->addInfo("Admin Add Email Template", array("message" => "Template has been successfully added.", "template_id" => $add_template->id, "user_id" => $user->id));
                     return $this->redirect($response, 'admin-email-template');
 	        	}else{
 	        		$this->flash('danger', 'There was a problem adding the template to the database.');
-                    $this->logger->addError("Admin Add Email Template", array("message" => "There was an error adding your template to the database.", "template_id" => $add_template->id, "user_id" => $user->id));
-                    return $this->redirect($response, 'admin-email-template-add', array("placeholders" => $placeholders, "requestParams" => $requestParams));
+                    return $this->redirect($response, 'admin-email-template-add', array("placeholders" => $placeholders));
 	        	}
 	        	
 	        }
 
         }
 
-        return $this->view->render($response, 'emails-templates-add.twig', array("placeholders" => $placeholders, "requestParams" => $requestParams));
+        return $this->view->render($response, 'emails-templates-add.twig', array("placeholders" => $placeholders));
 	}
 
 	public function templatesEdit(Request $request, Response $response){
@@ -157,7 +177,6 @@ class AdminEmail extends Controller{
 
         if (!$template) {
         	$this->flash('danger', 'Template has been successfully added.');
-            $this->logger->addWarning("Admin Edit Email Template", array("message" => "Template not found.", "template_id" => $args['template_id'], "user_id" => $user->id));
             return $this->redirect($response, 'admin-email-template');
         }
         
@@ -223,19 +242,89 @@ class AdminEmail extends Controller{
 
 	        	if ($template->save()) {
 	        		$this->flash('success', 'Template has been successfully added.');
-                    $this->logger->addInfo("Admin Edit Email Template", array("message" => "Template has been updated added.", "template_id" => $template->id, "user_id" => $user->id));
                     return $this->redirect($response, 'admin-email-template');
 	        	}else{
 	        		$this->flash('danger', 'There was an error updating the template in the database.');
-                    $this->logger->addError("Admin Edit Email Template", array("message" => "There was an error updating the template in the database.", "template_id" => $template->id, "user_id" => $user->id));
-                    return $this->redirect($response, 'admin-email-template-add', array("template" => $template, "placeholders" => $placeholders, "requestParams" => $requestParams));
+                    return $this->redirect($response, 'admin-email-template-add', array("template" => $template, "placeholders" => $placeholders));
 	        	}
 	        	
 	        }
 
         }
 
-        return $this->view->render($response, 'emails-templates-edit.twig', array("template" => $template, "placeholders" => $placeholders, "requestParams" => $requestParams));
+        return $this->view->render($response, 'emails-templates-edit.twig', array("template" => $template, "placeholders" => $placeholders));
 
+	}
+
+	public function emailNew(Request $request, Response $response){
+
+    	$sentinel = new S($this->container);
+        if(!$sentinel->hasPerm('email.template.create')){
+        	return $this->redirect($response, 'dashboard');
+        }
+
+        $placeholders = E::getPlaceholders();
+
+        $requestParams = $request->getParams();
+
+        $users = Users::orderBy('first_name')->orderBy('last_name')->select('first_name', 'last_name', 'id', 'email')->get();
+
+        if ($request->isPost()) {
+
+        	// Validate Text Fields
+        	$this->validator->validate($request, 
+	            array(
+	                'subject' => array(
+	                    'rules' => V::notEmpty(), 
+	                    'messages' => array(
+	                        'notEmpty' => 'Cannot be empty.'
+	                    )
+	                ),
+	                'html' => array(
+	                	'rules' => V::notEmpty(), 
+	                    'messages' => array(
+	                        'notEmpty' => 'Cannot be empty.'
+	                    )
+	                ),
+	                'plain_text' => array(
+	                    'rules' => V::notEmpty(), 
+	                    'messages' => array(
+	                        'notEmpty' => 'Cannot be empty.'
+	                    )
+	                )
+	            )
+	        );
+        	
+	        // Check user
+	        $user_check = Users::find($requestParams['send_to']);
+	        if (!$user_check) {
+	        	$this->validator->addError('slug', 'User does not exist.');
+	        }
+	        
+	        // Check Plain Text for HTML
+	        if (strip_tags($requestParams['plain_text']) != $requestParams['plain_text']) {
+	        	$this->validator->addError('plain_text', 'Plain Text cannot contain HTML.');
+	        }
+
+	        if ($this->validator->isValid()) {
+
+
+	        	$email = new E($this->container);
+				$email = $email->sendEmail(array($user_check->id), $request->getParam('subject'), $request->getParam('html'), $request->getParam('plain_text'));
+
+				print_r($email);
+
+	        	if ($email['results']['success']) {
+	        		$this->flash('success', 'Email has been successfully sent.');
+                    return $this->redirect($response, 'admin-email');
+	        	}else{
+	        		$this->flashNow('danger', 'There was a problem sending your email.');
+	        	}
+	        	
+	        }
+
+        }
+
+        return $this->view->render($response, 'emails-new.twig', array("placeholders" => $placeholders, "users" => $users));
 	}
 }

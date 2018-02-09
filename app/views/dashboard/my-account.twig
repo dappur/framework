@@ -29,37 +29,45 @@
 
                     <div class="panel-body">
                         <div class="col-md-6">
-                            <form action="{{ currentRoute }}" method="POST" role="form">
-                                <div class="form-group{% if has_error('first_name') %} has-error{% endif %}">
-                                    <label for="first_name">First Name</label>
-                                    <input type="text" name="first_name" class="form-control" id="first_name" placeholder="First Name" value="{% if requestParams.first_name %}{{requestParams.first_name}}{% else %}{{auth.user.first_name}}{% endif %}" required="required">
-                                    <span class="help-block">{{ error('first_name') }}</span>
-                                </div>
+                            <div class="row">
+                                <form action="{{ currentRoute }}" method="POST" role="form">
+                                    <div class=" col-md-6 form-group{% if has_error('first_name') %} has-error{% endif %}">
+                                        <label for="first_name">First Name</label>
+                                        <input type="text" name="first_name" class="form-control" id="first_name" placeholder="First Name" value="{% if requestParams.first_name %}{{requestParams.first_name}}{% else %}{{auth.user.first_name}}{% endif %}" required="required">
+                                        <span class="help-block">{{ error('first_name') }}</span>
+                                    </div>
 
-                                <div class="form-group{% if has_error('last_name') %} has-error{% endif %}">
-                                    <label for="last_name">Last name</label>
-                                    <input type="text" name="last_name" class="form-control" id="last_name" placeholder="Last name" value="{% if requestParams.last_name %}{{requestParams.last_name}}{% else %}{{auth.user.last_name}}{% endif %}" required="required">
-                                    <span class="help-block">{{ error('last_name') }}</span>
-                                </div>
+                                    <div class=" col-md-6 form-group{% if has_error('last_name') %} has-error{% endif %}">
+                                        <label for="last_name">Last name</label>
+                                        <input type="text" name="last_name" class="form-control" id="last_name" placeholder="Last name" value="{% if requestParams.last_name %}{{requestParams.last_name}}{% else %}{{auth.user.last_name}}{% endif %}" required="required">
+                                        <span class="help-block">{{ error('last_name') }}</span>
+                                    </div>
 
-                                <div class="form-group{% if has_error('email') %} has-error{% endif %}">
-                                    <label for="email">Email</label>
-                                    <input type="email" name="email" class="form-control" id="email" placeholder="Email" value="{% if requestParams.email %}{{requestParams.email}}{% else %}{{auth.user.email}}{% endif %}" required="required">
-                                    <span class="help-block">{{ error('email') }}</span>
-                                </div>
+                                    <div class=" col-md-6 form-group{% if has_error('email') %} has-error{% endif %}">
+                                        <label for="email">Email</label>
+                                        <input type="email" name="email" class="form-control" id="email" placeholder="Email" value="{% if requestParams.email %}{{requestParams.email}}{% else %}{{auth.user.email}}{% endif %}" required="required">
+                                        <span class="help-block">{{ error('email') }}</span>
+                                    </div>
 
-                                <div class="form-group{% if has_error('username') %} has-error{% endif %}">
-                                    <label for="username">Username</label>
-                                    <input type="text" name="username" class="form-control" id="username" placeholder="Username" value="{% if requestParams.username %}{{requestParams.username}}{% else %}{{auth.user.username}}{% endif %}" required="required">
-                                    <span class="help-block">{{ error('username') }}</span>
-                                </div>
+                                    <div class=" col-md-6 form-group{% if has_error('username') %} has-error{% endif %}">
+                                        <label for="username">Username</label>
+                                        <input type="text" name="username" class="form-control" id="username" placeholder="Username" value="{% if requestParams.username %}{{requestParams.username}}{% else %}{{auth.user.username}}{% endif %}" required="required">
+                                        <span class="help-block">{{ error('username') }}</span>
+                                    </div>
 
-                                <div class="form-group">
-                                    {{ csrf() }} 
-                                    <input type="submit" name="update_account" value="Update Account" class="btn btn-primary form-control" />
-                                </div>
+                                    <div class=" col-md-12 form-group{% if has_error('about') %} has-error{% endif %}">
+                                        <label for="about">About</label>
+                                        <textarea name="about" class="form-control" id="about" placeholder="About Me" rows="5">{% if requestParams.about %}{{requestParams.about}}{% else %}{{auth.user.profile.about}}{% endif %}</textarea>
+                                        <span class="help-block">{{ error('about') }}</span>
+                                    </div>
 
-                            </form>
+                                    <div class="form-group">
+                                        {{ csrf() }} 
+                                        <input type="submit" name="update_account" value="Update Account" class="btn btn-primary form-control" />
+                                    </div>
+
+                                </form>
+                            </div>
 
                         </div>
                         

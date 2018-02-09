@@ -1,11 +1,11 @@
 
 {
     "framework": "dappur",
-    "version": "2.0.0",
+    "version": "2.1.0",
     "displayErrorDetails": false,
     "showInAdmin": true,
+    "environment": "development",
     "db": {
-        "use": "development",
         "databases": {
             "development": {
                 "driver": "mysql",
@@ -16,7 +16,20 @@
                 "password": "",
                 "charset": "utf8",
                 "collation": "utf8_general_ci",
-                "prefix": ""
+                "prefix": "",
+                "timezone": "+00:00"
+            },
+            "staging": {
+                "driver": "mysql",
+                "host": "localhost",
+                "port": 3306,
+                "database": "",
+                "username": "",
+                "password": "",
+                "charset": "utf8",
+                "collation": "utf8_general_ci",
+                "prefix": "",
+                "timezone": "+00:00"
             },
             "production": {
                 "driver": "mysql",
@@ -27,7 +40,8 @@
                 "password": "",
                 "charset": "utf8",
                 "collation": "utf8_general_ci",
-                "prefix": ""
+                "prefix": "",
+                "timezone": "+00:00"
             }
         }
     },
@@ -72,11 +86,8 @@
         "relay": "phpmail",
         "logging": true,
         "log_details": ["html", "plain_text"],
+        "log_retention": 30,
         "mailgun": {
-            "username": "",
-            "password": ""
-        },
-        "mandrill": {
             "username": "",
             "password": ""
         }

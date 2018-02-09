@@ -1,8 +1,8 @@
 {
     "name": "dappur/framework",
-    "description": "PHP App Framework built on the Slim PHP Micro Framework, Twig templating engine, Eloquent ORM database interactions, Phinx database migrations, Sentinel user management, Monolog w/ Logentries Support, form validation with CSRF protection, PSR7 cookie management, dashboard controlled site configm, custom email templating systemm, Cloudinary CMS integration and GitHub auto deployment",
-    "keywords": ["slim", "eloquent", "twig", "sentinel", "monolog", "logentries", "validation", "config", "framework", "phinx", "cloudinary", "phpmailer", "email", "deployment", "github"],
-    "version": "2.0.3",
+    "description": "PHP App Framework built on the Slim PHP Micro Framework, Twig templating engine, Eloquent ORM database interactions, Phinx database migrations, Sentinel user management, Monolog w/ Logentries Support, form validation with CSRF protection, PSR7 cookie management, dashboard controlled site configm, custom email templating system, Cloudinary CMS integration, Recaptcha, and GitHub auto deployment",
+    "keywords": ["slim", "eloquent", "twig", "sentinel", "monolog", "logentries", "validation", "config", "framework", "phinx", "cloudinary", "phpmailer", "email", "deployment", "github", "recaptcha"],
+    "version": "2.1",
     "homepage": "https://github.com/dappur/framework",
     "license": "MIT",
     "authors": [
@@ -18,21 +18,21 @@
         }
     },
     "require": {
-        "slim/slim": "^3.6",
-        "slim/twig-view": "^2.1",
+        "slim/slim": "^3.8",
+        "slim/twig-view": "^2.2",
         "slim/flash": "^0.2.0",
-        "slim/csrf": "^0.8.0",
-        "illuminate/database": "^5.3",
-        "respect/validation": "^1.1",
+        "slim/csrf": "^0.8.1",
+        "illuminate/database": "^5.5",
         "cartalyst/sentinel": "^2.0",
-        "illuminate/events": "^5.3",
-        "symfony/http-foundation": "^3.2",
-        "awurth/slim-validation": "^1.2",
-        "monolog/monolog": "^1.22",
+        "illuminate/events": "^5.5",
+        "symfony/http-foundation": "^3.3",
+        "awurth/slim-validation": "^2.0",
+        "monolog/monolog": "^1.23",
         "logentries/logentries-monolog-handler": "^2.1",
         "dflydev/fig-cookies": "^1.0",
-        "cloudinary/cloudinary_php": "^1.7",
-        "robmorgan/phinx": "^0.8.0",
-        "phpmailer/phpmailer": "^5.2"     
+        "cloudinary/cloudinary_php": "^1.8",
+        "robmorgan/phinx": "^0.9.1",
+        "phpmailer/phpmailer": "^5.2",
+        "JasonGrimes/Paginator": "^1.0"
     }
 }

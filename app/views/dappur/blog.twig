@@ -1,0 +1,76 @@
+{% extends 'base.twig' %}
+
+{% block title %}
+	{{config['site-name']}}
+{% endblock %}
+
+{% block body %}
+	<div class="container">
+		<div class="row">
+			<!-- Blog Entries Column -->
+			<div class="col-md-8">
+				{% if posts|length == 0 %}
+					<div class="text-center">
+						<h1>No Posts Found</h1>
+					</div>
+				{% endif %}
+				{% for post in posts %}
+				    <div class="card mb-4">
+				    	<a href="{{path_for('blog-post', {'year': post.publish_at|date("Y"), 'month': post.publish_at|date("m"), 'day': post.publish_at|date("d"), 'slug': post.slug})}}">
+				    		<h2 class="card-title">{{post.title}}</h2>
+				    	</a>
+
+				    	{% if post.video_id and post.video_provider %}
+                            {% if post.video_provider == "youtube" %}
+                                <div class="video-container">
+                                    <iframe src="https://www.youtube.com/embed/{{post.video_id}}" frameborder="0" allowfullscreen></iframe>
+                                </div>
+                            {% endif %}
+
+                            {% if post.video_provider == "vimeo" %}
+                                <div class="video-container">
+                                    <iframe src="https://player.vimeo.com/video/{{post.video_id}}" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowfullscreen></iframe>
+                                </div>
+                            {% endif %}
+						{% elseif post.featured_image %}
+							<a href="{{path_for('blog-post', {'year': post.publish_at|date("Y"), 'month': post.publish_at|date("m"), 'day': post.publish_at|date("d"), 'slug': post.slug})}}">
+								<img alt="Card image cap" class="card-img-top img-responsive" src="{{post.featured_image}}">
+							</a>
+						{% endif %}
+						<div class="card-footer text-muted">
+							Posted on {{post.publish_at|date('m/d/Y h:i a')}} by <a href="{{path_for('blog-author', {'username': post.author.username})}}">{{post.author.username}}</a><br />
+						</div>
+						<div class="card-body">
+							<div>
+								<b>Tags:</b> 
+								{% for tag in post.tags %}
+								    <a href="{{path_for('blog-tag', {'slug': tag.slug})}}">{{ tag.name }}</a> 
+								{% endfor %}
+							</div>
+							<div>
+								<b>Category:</b> <a href="{{path_for('blog-category', {'slug': post.category.slug})}}">{{ post.category.name }}</a> 
+							</div>
+							<div>
+								<b>Comments:</b> {{ post.comments_count - post.pending_comments_count }}</a> 
+							</div>
+							<p class="card-text"><b>Description:</b> {{post.description}}</p>
+							<p class="card-text">{{post.content|striptags|length > 350 ? post.content|striptags|slice(0, 350) ~ '...' : post.content|striptags}}</p>
+							<div class="text-right"><a class="btn btn-primary" href="{{path_for('blog-post', {'year': post.publish_at|date("Y"), 'month': post.publish_at|date("m"), 'day': post.publish_at|date("d"), 'slug': post.slug})}}">Read More &rarr;</a></div>
+						</div>
+						
+					</div>
+				{% endfor %}
+				<div class="text-center" style="{% if pagination is empty %}height: 20px;{% endif %}">
+					{{pagination|raw}}
+				</div>
+			</div><!-- Sidebar Widgets Column -->
+			<div class="col-md-4">
+		    	{% include 'inc/blog-sidebar.twig' %}
+		    </div>
+		</div><!-- /.row -->
+	</div><!-- /.container -->
+{% endblock %}
+
+{% block javascript %}
+    {{ recaptchaJs() }}
+{% endblock %}

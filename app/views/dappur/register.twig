@@ -21,18 +21,18 @@
                     <form action="{{ path_for('register') }}" method="POST">
                         <div class="row">
                             <div class="col-md-6">
-                                {{ form.text('first_name', null, 'first_name', 'First Name') }}
+                                {{ form.text('first_name', requestParams['first_name'], 'first_name', 'First Name') }}
                             </div>
                             <div class="col-md-6">
-                                {{ form.text('last_name', null, 'last_name', 'Last Name') }}
+                                {{ form.text('last_name', requestParams['last_name'], 'last_name', 'Last Name') }}
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-6">
-                                {{ form.text('email', null, 'email', 'Email', null, 'email') }}
+                                {{ form.text('email', requestParams['email'], 'email', 'Email', null, 'email') }}
                             </div>
                             <div class="col-md-6">
-                                {{ form.text('username', null, 'username', 'Username', null, 'username') }}
+                                {{ form.text('username', requestParams['username'], 'username', 'Username', null, 'username') }}
                             </div>
                         </div>
                         <div class="row">

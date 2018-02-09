@@ -37,7 +37,7 @@
     {# End Google Analytics #}
     
 </head>
-<body style="padding-top: 75px;">
+<body style="margin-top: 75px;">
     {% block navbar %}
         {% include 'inc/navbar.twig' %}
     {% endblock %}
@@ -54,6 +54,11 @@
 
     <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.2.1.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.nicescroll/3.7.5/jquery.nicescroll.min.js"></script>
+
+    {# Custom JS #}
+    <script src="{{ asset('dappur/js/custom.min.js') }}"></script>
+
     {% block javascript %}{% endblock %}
 </body>
 </html>

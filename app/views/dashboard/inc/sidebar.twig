@@ -25,6 +25,20 @@
     </li>
     {% endif %}
 
+    {% if auth.hasAccess('blog.view') and config['blog-enabled'] %}
+    <li>
+        <a href="javascript:;" data-toggle="collapse" data-target="#blog-menu"><i class="fa fa-fw fa-newspaper-o"></i> Blog <i class="fa fa-fw fa-caret-down"></i></a>
+        <ul id="blog-menu" class="collapse {% if currentRoute starts with '/dashboard/blog' %}in{% endif %} nav">
+            <li  {% if currentRoute == '/dashboard/blog' %}class="active"{% endif %}>
+                <a href="{{ path_for('admin-blog')}}"><i class="fa fa-newspaper-o fa-fw"></i> Blog Posts</a>
+            </li>
+            <li  {% if currentRoute starts with '/dashboard/blog/comments' %}class="active"{% endif %}>
+                <a href="{{ path_for('admin-blog-comments')}}"><i class="fa fa-comment fa-fw"></i> Comments</a>
+            </li>
+        </ul>
+    </li>
+    {% endif %}
+
     {% if auth.hasAccess('media.local') %}
     <li {% if currentRoute starts with '/dashboard/media' %}class="active"{% endif %}>
         <a style="cursor: pointer;" id="media-menu"><i class="fa fa-cloud fa-fw"></i> Local CMS</a>
@@ -44,8 +58,21 @@
     {% endif %}
 
     {% if auth.hasAccess('settings.view') %}
-    <li {% if currentRoute starts with '/dashboard/settings' %}class="active"{% endif %}>
-        <a href="{{ path_for('settings-global')}}"><i class="fa fa-cogs fa-fw"></i> Settings</a>
+    <li>
+        <a href="javascript:;" data-toggle="collapse" data-target="#page-settings-menu"><i class="fa fa-fw fa-wrench"></i> Page Settings <i class="fa fa-fw fa-caret-down"></i></a>
+        <ul id="page-settings-menu" class="collapse {% if currentRoute starts with '/dashboard/settings/page/' %}in{% endif %} nav">
+            {% for item in pageSettings %}
+                <li class="{% if currentRoute starts with '/dashboard/settings/page/' ~ item.page_name %}active{% endif %}">
+                    <a href="{{ path_for('settings-page', {'page_name': item.page_name})}}"><i class="fa fa-life-ring fa-fw"></i> {{item.name}}</a>
+                </li>
+            {% endfor %}
+        </ul>
+    </li>
+    {% endif %}
+
+    {% if auth.hasAccess('settings.view') %}
+    <li {% if currentRoute == '/dashboard/settings/global' %}class="active"{% endif %}>
+        <a href="{{ path_for('settings-global')}}"><i class="fa fa-cogs fa-fw"></i> Global Settings</a>
     </li>
     {% endif %}
 
@@ -55,7 +82,7 @@
         <ul id="developer-tools-menu" class="collapse {% if currentRoute starts with '/dashboard/developer/settings' %}in{% endif %} nav">
             {% if auth.hasAccess('settings.developer.view') %}
                 <li class="{% if currentRoute starts with '/dashboard/developer/settings' %}active{% endif %}">
-                    <a href="{{ path_for('settings-developer')}}"><i class="fa fa-life-ring fa-fw"></i> Edit settings.json</a>
+                    <a href="{{ path_for('settings-developer')}}"><i class="fa fa-life-ring fa-fw"></i> settings.json</a>
                 </li>
             {% endif %}
         </ul>

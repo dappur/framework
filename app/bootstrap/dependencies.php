@@ -3,8 +3,7 @@
 $container = $app->getContainer();
 
 // Configure Database
-$database = $container['settings']['db']['use'];
-$db = $container['settings']['db']['databases'][$database];
+$db = $container['settings']['db']['databases'][$container['settings']['environment']];
 $capsule = new \Illuminate\Database\Capsule\Manager();
 $capsule->addConnection($db);
 $capsule->setAsGlobal();
@@ -31,8 +30,10 @@ $container['upload_dir'] = function ($container) {
 
 // Bind config table from database
 $container['config'] = function () use ($container) {
-    $config = new \Dappur\Dappurware\SiteConfig($container);
-    return $config->getConfig();
+    $config = new \Dappur\Dappurware\SiteConfig;
+    $config = $config->getGlobalConfig();
+
+    return $config;
 };
 
 // Bind Sentinel Authorization plugin
@@ -56,12 +57,7 @@ $container['flash'] = function () {
 
 // Bind Respect Validation
 $container['validator'] = function () {
-    return new \Awurth\Slim\Validation\Validator();
-};
-
-// Bind Cookies
-$container['cookies'] = function ($container){
-    return new \Dappur\Dappurware\Cookies($container);
+    return new \Awurth\SlimValidation\Validator();
 };
 
 // CSRF
@@ -87,7 +83,7 @@ $container['csrf'] = function ($container) {
 
 // Bind Twig View
 $container['view'] = function ($container) {
-    if (substr($container['request']->getUri()->getPath(), 0, 10 ) === "/dashboard") {
+    if (strpos($container['request']->getUri()->getPath(), 'dashboard' ) !== false) {
         $template_path = $container['settings']['view']['template_path'] . $container->config['dashboard-theme'];
     }else{
         $template_path = $container['settings']['view']['template_path'] . $container->config['theme'];
@@ -108,16 +104,44 @@ $container['view'] = function ($container) {
     $view->addExtension(new \Dappur\TwigExtension\JsonDecode($container['request']));
     $view->addExtension(new \Dappur\TwigExtension\Recaptcha($container['settings']['recaptcha']));
     $view->addExtension(new \Dappur\TwigExtension\Csrf($container['csrf']));
-    $view->addExtension(new \Awurth\Slim\Validation\ValidatorExtension($container['validator']));
+    $view->addExtension(new \Awurth\SlimValidation\ValidatorExtension($container['validator']));
+    $view->addExtension(new \Dappur\TwigExtension\Md5($container['request']));
     if ($container['cloudinary']) {
         $view->addExtension(new \Dappur\TwigExtension\Cloudinary());
         $view->getEnvironment()->addGlobal('hasCloudinary', 1);
         if ($container->auth->check() && $container->auth->hasAccess('media.cloudinary')) {
-            $view->getEnvironment()->addGlobal('cloudinaryCmsUrl', \Dappur\Controller\Admin::getCloudinaryCMS($container));
+            $view->getEnvironment()->addGlobal('cloudinaryCmsUrl', \Dappur\Controller\AdminMedia::getCloudinaryCMS($container));
+            $view->getEnvironment()->addGlobal('cloudinarySignature', \Dappur\Controller\AdminMedia::getCloudinaryCMS($container, true));
+            $view->getEnvironment()->addGLobal('cloudinaryApiKey', $container['settings']['cloudinary']['api_key']);
         }
-        
     }else{
+        $view->addExtension(new \Dappur\TwigExtension\Cloudinary());
         $view->getEnvironment()->addGlobal('hasCloudinary', 0);
+    }
+
+    if ($container['config']['blog-enabled']) {
+        // Get Categories With Count
+        $blog_categories = new \Dappur\Model\BlogCategories;
+        $blog_categories = $blog_categories->withCount(['posts' => function ($query) {
+                $query->where('blog_posts.status', 1);
+            }])
+            ->whereHas('posts', function ($query) {
+                $query->where('blog_posts.status', 1);
+            })
+            ->get();
+
+        // Get Tags With Count
+        $blog_tags = new \Dappur\Model\BlogTags;
+        $blog_tags = $blog_tags->withCount(['posts' => function ($query) {
+                $query->where('blog_posts.status', 1);
+            }])
+            ->whereHas('posts', function ($query) {
+                $query->where('blog_posts.status', 1);
+            })
+            ->get();
+
+        $view->getEnvironment()->addGlobal('blogCategories', $blog_categories);
+        $view->getEnvironment()->addGlobal('blogTags', $blog_tags);
     }
     
     $view->getEnvironment()->addGlobal('flash', $container['flash']);
@@ -126,10 +150,18 @@ $container['view'] = function ($container) {
     $view->getEnvironment()->addGlobal('displayErrorDetails', $container['settings']['displayErrorDetails']);
     $view->getEnvironment()->addGlobal('userAccess', $container['userAccess']);
     $view->getEnvironment()->addGlobal('currentRoute', $container['request']->getUri()->getPath());
+    $view->getEnvironment()->addGlobal('requestParams', $container['request']->getParams());
     $view->getEnvironment()->addGlobal('projectDir', $container['project_dir']);
     $view->getEnvironment()->addGlobal('publicDir', $container['public_dir']);
     $view->getEnvironment()->addGlobal('uploadDir', $container['upload_dir']);
 
+    
+    $page_name = $container['request']->getAttribute('name');
+    if (strpos($container['request']->getUri()->getPath(), 'dashboard' ) !== false) {
+        $page_settings = new \Dappur\Model\ConfigGroups;
+        $page_settings = $page_settings->whereNotNull('page_name')->get();
+        $view->getEnvironment()->addGlobal('pageSettings', $page_settings);
+    }
     return $view;
 };
 
@@ -191,16 +223,6 @@ $container['mail'] = function($container) {
             $mail->Username = $mail_settings['mailgun']['username'];    // SMTP username from https://mailgun.com/cp/domains
             $mail->Password = $mail_settings['mailgun']['password'];    // SMTP password from https://mailgun.com/cp/domains
             $mail->SMTPSecure = 'tls';                                  // Enable encryption, 'ssl'
-            break;
-        
-        case 'mandrill':
-            $mail->IsSMTP();                                            // Set mailer to use SMTP
-            $mail->Host = 'smtp.mandrillapp.com';                       // Specify main and backup server
-            $mail->Port = 587;                                          // Set the SMTP port
-            $mail->SMTPAuth = true;                                     // Enable SMTP authentication
-            $mail->Username = $mail_settings['mandrill']['username'];   // SMTP username
-            $mail->Password = $mail_settings['mandrill']['password'];   // SMTP password
-            $mail->SMTPSecure = 'tls';                                  // Enable encryption, 'ssl' also accepted
             break;
         
         default:

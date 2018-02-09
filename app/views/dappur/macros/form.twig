@@ -1,8 +1,8 @@
 
-{% macro text(name, value, id, label, class, type) %}
-    <div class="form-group{% if has_error(name) %} has-error{% endif %}">
+{% macro text(name, value, id, label, class, type, disabled = null) %}
+    <div class="form-group floating-label-form-group{% if has_error(name) %} has-error{% endif %}">
         <label for="{{ id }}">{{ label }}</label>
-        <input type="{{ type|default('text') }}" name="{{ name }}" value="{{ value }}" id="{{ id }}" class="form-control {{ class }}" aria-describedby="{{ id }}-help-block">
+        <input type="{{ type|default('text') }}" name="{{ name }}" value="{{ value }}" id="{{ id }}" placeholder="{{ label }}" class="form-control {{ class }}" aria-describedby="{{ id }}-help-block" {% if disabled %}disabled{% endif %}>
         <span id="{{ id }}-help-block" class="help-block">{{ error(name) }}</span>
     </div>
 {% endmacro %}
@@ -11,17 +11,17 @@
     <input type="hidden" name="{{ name }}" value="{{ value }}" id="{{ id }}" class="form-control {{ class }}" aria-describedby="{{ id }}-help-block">
 {% endmacro %}
 
-{% macro select(name, options, value_key, text_key, default_value, default_text, selected_value, id, label) %}
-    <div class="form-group{% if has_error(name) %} has-error{% endif %}">
+{% macro select(name, options, default_value, default_text, selected_value, id, label) %}
+    <div class="form-group floating-label-form-group{% if has_error(name) %} has-error{% endif %}">
         {% if label %}
             <label for="{{ id }}">{{ label }}</label>
         {% endif %}
-        <select name="{{ name }}" id="{{ id }}" class="form-control" aria-describedby="{{ id }}-help-block">
+        <select name="{{ name }}" id="{{ id }}" placeholder="{{ label }}" class="form-control" aria-describedby="{{ id }}-help-block">
             {% if default_value or default_text %}
                 <option value="{{ default_value }}">{{ default_text }}</option>
             {% endif %}
             {% for option in options %}
-                <option value="{{ attribute(option, value_key) }}"{% if selected_value == attribute(option, value_key) %} selected{% endif %}>{{ attribute(option, text_key) }}</option>
+                <option value="{{ option.value }}"{% if selected_value == option.value %} selected{% endif %}>{{ option.name }}</option>
             {% endfor %}
         </select>
         <span id="{{ id }}-help-block" class="help-block">{{ error(name) }}</span>
@@ -29,9 +29,9 @@
 {% endmacro %}
 
 {% macro textarea(name, value, id, label, class, rows, cols) %}
-    <div class="form-group{% if has_error(name) %} has-error{% endif %}">
+    <div class="form-group floating-label-form-group{% if has_error(name) %} has-error{% endif %}">
         <label for="{{ id }}">{{ label }}</label>
-        <textarea class="form-control {{ class }}" name="{{ name }}" id="{{ id }}" cols="{{ cols }}" rows="{{ rows }}" aria-describedby="{{ id }}-help-block">{{ value }}</textarea>
+        <textarea class="form-control {{ class }}" name="{{ name }}" id="{{ id }}" placeholder="{{ label }}" cols="{{ cols }}" rows="{{ rows }}" aria-describedby="{{ id }}-help-block">{{ value }}</textarea>
         <span id="{{ id }}-help-block" class="help-block">{{ error(name) }}</span>
     </div>
 {% endmacro %}

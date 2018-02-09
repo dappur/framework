@@ -4,9 +4,9 @@ namespace Dappur\Controller;
 
 use Awurth\Slim\Validation\Validator;
 use Cartalyst\Sentinel\Sentinel;
+use Interop\Container\ContainerInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
-use Interop\Container\ContainerInterface;
 use Slim\Exception\NotFoundException;
 use Slim\Flash\Messages;
 use Slim\Router;
@@ -94,6 +94,11 @@ class Controller
     public function flash($name, $message)
     {
         $this->flash->addMessage($name, $message);
+    }
+
+    public function flashNow($name, $message)
+    {
+        $this->flash->addMessageNow($name, $message);
     }
 
     /**
