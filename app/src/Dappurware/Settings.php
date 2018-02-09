@@ -51,23 +51,11 @@ class Settings
     }
 
     public function getThemeList(){
-        $public_assets = array_filter(glob('../public/assets/*'), 'is_dir');
-        $internal_assets = array_filter(glob('../app/views/*'), 'is_dir');
+        $internal_assets = array_filter(glob(__DIR__ . '/../../views/*'), 'is_dir');
 
-        $public_array = array();
         $internal_array = array();
-        foreach ($public_assets as $key => $value) {
-            $public_array[] = substr($value, strrpos($value, '/') + 1);
-        }
-
         foreach ($internal_assets as $key => $value) {
             $internal_array[] = substr($value, strrpos($value, '/') + 1);
-        }
-
-        foreach ($internal_array as $key => $value) {
-            if (!in_array($value, $public_array)) {
-                unset($internal_array[$key]);
-            }
         }
 
         return $internal_array;

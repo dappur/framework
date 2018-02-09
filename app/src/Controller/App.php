@@ -18,8 +18,6 @@ class App extends Controller{
 
         $asset_path = __DIR__ . "/../../views/" . $request->getParam('path');
 
-        //die(file_get_contents($asset_path));
-
         if (!file_exists($asset_path)) {
             throw new NotFoundException($request, $response);
         }else{

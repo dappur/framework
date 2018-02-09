@@ -68,7 +68,7 @@
 {% block javascript %}
     {{ recaptchaJs() }}
     
-    <script type="{{ asset('dappur/js/blog-comments.min.js') }}"></script>
+    <script src="{{ asset('dappur/js/blog-comments.js') }}"></script>
 
     {% if requestParams['comment_login'] %}
     <script type="text/javascript">
