@@ -41,7 +41,7 @@ $app->group('/dashboard', function () use($app) {
     $app->post('/settings/group/delete', 'AdminSettings:settingsGlobalDeleteGroup')
         ->setName('settings-global-group-delete');
 
-    $app->map(['GET', 'POST'], '/settings/page/{page_name}', 'AdminSettings:settingsPage')->setName('settings-page');
+    $app->map(['GET', 'POST'], '/settings/page-settings/{page_name}', 'AdminSettings:settingsPage')->setName('settings-page');
     
     // Edit Settings.json
     $app->map(['GET', 'POST'], '/developer/settings', 'AdminSettings:settingsDeveloper')->setName('settings-developer');

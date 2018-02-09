@@ -1,13 +1,13 @@
 {% macro configString(name, description, type, value) %}
 		<div class="col-md-6 form-group{% if has_error(name) %} has-error{% endif %}">
-				<label for="{{ name }}">{{ description }}</label>
+				<label for="{{ name }}">{{ description }} - ({{name}})</label>
 			    <input type="text" name="{{ name }}" id="{{ name }}" class="form-control" value="{{ value }}">
 			    <span id="{{ id }}-help-block" class="help-block">{{ error(name) }}</span>
 		</div>
 {% endmacro %}
 {% macro configTheme(name, description, type, value, themeList) %}
 		<div class="col-md-6 form-group{% if has_error(name) %} has-error{% endif %}">
-			<label for="{{ name }}">{{ description }}</label>
+			<label for="{{ name }}">{{ description }} - ({{name}})</label>
 		    <select name="{{ name }}" id="{{ name }}" class="form-control" required="required">
 		    	{% for theme in themeList %}
 		    	    <option value="{{ theme }}" {% if theme == value %}SELECTED{% endif %}>{{ theme }}</option>
@@ -18,7 +18,7 @@
 {% endmacro %}
 {% macro configTimezone(name, description, type, value, timezones) %}
 		<div class="col-md-6 form-group{% if has_error(name) %} has-error{% endif %}">
-			<label for="{{ name }}">{{ description }}</label>
+			<label for="{{ name }}">{{ description }} - ({{name}})</label>
 		    <select name="{{ name }}" id="{{ name }}" class="form-control" required="required">
 		    	
 		    	{% for timezone in timezones %}
@@ -37,7 +37,7 @@
 {% endmacro %}
 {% macro configBootswatch(name, description, type, value, bsThemes) %}
 	    <div class="col-md-6 form-group{% if has_error(name) %} has-error{% endif %}">
-			<label for="{{ name }}">{{ description }}</label>
+			<label for="{{ name }}">{{ description }} - ({{name}})</label>
 		    <select name="{{ name }}" id="{{ name }}" class="form-control" required="required">
 		    	{% for theme in bsThemes %}
 		    	    <option value="{{ theme|lower }}" {% if theme|lower == value  %}SELECTED{% endif %}>{{ theme }}</option>
@@ -48,7 +48,7 @@
 {% endmacro %}
 {% macro configImage(name, description, type, value) %}
 	    <div class="col-md-6 form-group{% if has_error(name) %} has-error{% endif %}">
-			<label for="{{ name }}">{{ description }}</label>
+			<label for="{{ name }}">{{ description }} - ({{name}})</label>
 		    <div class="input-group dm-input" data-name="{{ name }}" data-value="{{ value }}"></div>
 		    <span id="{{ id }}-help-block" class="help-block">{{ error(name) }}</span>
 		</div>
@@ -56,11 +56,27 @@
 
 {% macro configBoolean(name, description, value) %}
 	    <div class="col-md-6 form-group{% if has_error(name) %} has-error{% endif %}">
-			<label for="{{ name }}">{{ description }}</label>
+			<label for="{{ name }}">{{ description }} - ({{name}})</label>
 		    <select name="{{ name }}" id="{{ name }}" class="form-control" required="required">
 		    	<option value="1" {% if value %}selected{% endif %}>True</option>
 		    	<option value="0" {% if not value %}selected{% endif %}>False</option>
 		    </select>
 		    <span id="{{ id }}-help-block" class="help-block">{{ error(name) }}</span>
+		</div>
+{% endmacro %}
+
+{% macro configHtml(name, description, value) %}
+		<div class="col-md-6 form-group{% if has_error(name) %} has-error{% endif %}">
+				<label for="{{ name }}">{{ description }} - ({{name}})</label>
+				<div class="row">
+					<div class="col-md-6">
+						<button type="button" class="btn btn-info dappur-html-preview form-control" data-html="{{name}}">Preview</button>
+			    		<input type="hidden" name="{{ name }}" id="{{ name }}" value="{{ value }}">
+					</div>
+					<div class="col-md-6">
+						<button type="button" class="btn btn-warning dappur-html-edit form-control" data-html="{{name}}">Edit HTML</button>
+					</div>
+				</div>
+			    <span id="{{ id }}-help-block" class="help-block">{{ error(name) }}</span>
 		</div>
 {% endmacro %}

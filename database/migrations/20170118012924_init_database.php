@@ -229,7 +229,8 @@ class InitDatabase extends Migration
             array(3, "theme"),
             array(4, "bootswatch"),
             array(5, "image"),
-            array(6, "boolean")
+            array(6, "boolean"),
+            array(7, "html")
         );
 
         // Seed Config Table
@@ -244,7 +245,8 @@ class InitDatabase extends Migration
         $init_config_groups = array(
             array(1, "Site Settings", null, null),
             array(2, "Dashboard Settings", null, null),
-            array(3, "Contact", "Contact Page Config", 'contact')
+            array(3, "Contact", "Contact Page Config", 'contact'),
+            array(4, "Home", "Home Page Config", 'home')
         );
 
         // Seed Config Table
@@ -285,7 +287,8 @@ class InitDatabase extends Migration
             array(3, 'contact-country', 'Contact Country', 2, 'USA'),
             array(3, 'contact-map-url', 'Map Iframe Url', 2, 'https://goo.gl/oDcRix'),
             array(3, 'contact-map-show', 'Show Map', 6, 1),
-            array(3, 'contact-send-email', 'Send Confirmation Email', 6, 1)
+            array(3, 'contact-send-email', 'Send Confirmation Email', 6, 1),
+            array(4, 'home-paragraph', 'Home Page Paragraph', 7, '<p>Bacon ipsum dolor amet turducken venison short loin meatloaf bresaola bacon chuck tongue fatback flank picanha shankle pastrami rump. Short loin bresaola leberkas, ball tip filet mignon pork chop ground round flank chuck burgdoggen meatloaf andouille frankfurter venison turkey. Leberkas doner kevin picanha shank beef brisket drumstick pastrami jowl turducken burgdoggen ground round pork chop bacon. Pastrami hamburger tenderloin chicken sausage tail pork chop chuck ground round kielbasa sirloin burgdoggen jerky brisket.</p><p>Andouille ribeye corned beef filet mignon rump brisket. Pancetta meatball doner, fatback ham beef shank picanha pork belly ground round shoulder kielbasa. Tenderloin fatback ham beef ribs t-bone, brisket chicken. Ground round kielbasa beef beef ribs, capicola jerky sirloin fatback meatloaf cupim ham.</p><p>Corned beef picanha ground round burgdoggen, pork belly shoulder tongue pork loin doner. Kevin sausage pork loin strip steak salami. Boudin frankfurter shankle tongue drumstick strip steak sirloin salami leberkas. Chicken brisket bacon pork turducken t-bone. Shank meatloaf alcatra, landjaeger sausage venison picanha. Spare ribs porchetta drumstick ham hock jowl, ball tip pancetta tenderloin rump.</p>')
         );
 
         // Seed Config Table

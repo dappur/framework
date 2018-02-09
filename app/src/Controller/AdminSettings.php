@@ -78,10 +78,6 @@ class AdminSettings extends Controller {
 
             // Additional Validation
             foreach ($allPostVars as $key => $value) {
-                if (strip_tags($value) != $value) {
-                    $this->validator->addError($key, 'Please do not use any HTML Tags');
-                }
-
                 if ($key == "theme" && !in_array($value, $theme_list)) {
                     $this->validator->addError($key, 'Not a valid global setting.');
                 }
@@ -287,7 +283,7 @@ class AdminSettings extends Controller {
 
     public function settingsPage(Request $request, Response $response, $page_name){
 
-        $page_settings = ConfigGroups::where('page_name', '=', $page_name)->first();
+        $page_settings = ConfigGroups::where('page_name', '=', $page_name)->with('config')->skip(0)->take(1)->get();
 
         $timezones = Settings::getTimezones();
         $theme_list = Settings::getThemeList();
@@ -321,10 +317,6 @@ class AdminSettings extends Controller {
 
             // Additional Validation
             foreach ($allPostVars as $key => $value) {
-                if (strip_tags($value) != $value) {
-                    $this->validator->addError($key, 'Please do not use any HTML Tags');
-                }
-
                 if ($key == "theme" && !in_array($value, $theme_list)) {
                     $this->validator->addError($key, 'Not a valid global setting.');
                 }
@@ -337,7 +329,7 @@ class AdminSettings extends Controller {
                     Config::where('name', $key)->update(['value' => $value]);
                 }
 
-                $this->flash('success', 'Global settings have been updated successfully.');
+                $this->flash('success', 'Page settings have been updated successfully.');
                 return $this->redirect($response, 'settings-page', array('page_name' => $page_name));
             }
 
@@ -345,7 +337,7 @@ class AdminSettings extends Controller {
         }
 
         return $this->view->render($response, 'settings-page.twig', array("settingsGrouped" => $page_settings, "configTypes" => $types, "configGroups" => $groups, "themeList" => $theme_list, "timezones" => $timezones, "requestParams" => $allPostVars));
-
+        
     }
 
 }

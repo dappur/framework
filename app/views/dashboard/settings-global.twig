@@ -31,50 +31,11 @@
         </div>
 
         <div class="row">
-            <div class="col-lg-8">
-                <form action="{{ path_for('settings-global') }}" method="post">
-                    {% for item in settingsGrouped %}
-                        <div class="panel panel-primary">
-                            <div class="panel-heading">
-                                {{ item.name }}
-                            </div>
-                            
-                            <div class="panel-body">
-                                    {% for item in item.config %}
-                                        {% if item.type_id == 3 %}
-                                            {{ configMacro.configTheme(item.name, item.description, "theme", item.value, themeList) }}
-                                        {% elseif item.type_id == 2 %}
-                                            {{ configMacro.configString(item.name, item.description, "string", item.value) }}
-                                        {% elseif item.type_id == 1 %}
-                                            {{ configMacro.configTimezone(item.name, item.description, "timezone", item.value, timezones, cfg.timezone) }}
-                                        {% elseif item.type_id == 4 %}
-                                            {{ configMacro.configBootswatch(item.name, item.description, "bootswatch", item.value, bsThemes) }}
-                                        {% elseif item.type_id == 5 %}
-                                            {{ configMacro.configImage(item.name, item.description, "image", item.value) }}
-                                        {% elseif item.type_id == 6 %}
-                                            {{ configMacro.configBoolean(item.name, item.description, item.value) }}
-                                        {% else %}
-                                            {{ configMacro.configDefault(item.name, item.description, item.value) }}
-                                        {% endif %}
-                                    {% endfor %}
-                            </div>
-                        </div>
-                    {% endfor %}
+            
+            {% include 'inc/settings-view.twig' %}
 
-                        <div class="row" style="margin-top: 20px;">
-                            <div class="form-group">
-                                <div class="col-xs-12 col-sm-12 col-md-4 col-md-offset-4">
-                                    <button type="submit" class="btn btn-primary form-control">Save Settings</button>
-                                </div>
-                            </div>
-                        </div>
+            {% include 'inc/settings-controls.twig' with {'isPage': true} %}
 
-
-                    {{ csrf() }}
-                </form>
-            </div>
-
-            {% include 'inc/settings-controls.twig' %}
         </div>
     </div>
 {% endblock %}
