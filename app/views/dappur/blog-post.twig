@@ -67,33 +67,18 @@
 
 {% block javascript %}
     {{ recaptchaJs() }}
-    <script>
-    $(document).on('click', '.reply-btn', function(e){
-    	e.preventDefault();
-    	if ($(".reply"+$(this).data('commentid')).is(":visible")) {
-    		$(".reply"+$(this).data('commentid')).hide();
-    	}else{
-    		$(".reply"+$(this).data('commentid')).show();
-    	}
-    	$("body").getNiceScroll().resize();
-    });
-
-    var hasError = 0;
-    $(".has-error").each(function(){
-	   hasError = 1;
-	})
-
-    if (hasError) {
-    	$('html, body').animate({
-		    scrollTop: ($('.has-error').first().offset().top -175)
-		},500);
-    }
+    
+    <script type="{{ asset('dappur/js/blog-comments.min.js') }}"></script>
 
     {% if requestParams['comment_login'] %}
+    <script type="text/javascript">
+    $(document).ready(function(){
     	$('html, body').animate({
 		    scrollTop: ($('#comments').offset().top -175)
 		},500);
+	});
     {% endif %}
-    
     </script>
+    
+    
 {% endblock %}
