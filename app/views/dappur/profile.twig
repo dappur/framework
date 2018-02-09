@@ -1,0 +1,114 @@
+{% extends 'base.twig' %}
+
+{% import 'macros/form.twig' as form %}
+
+{% block title %}
+	{{config['site-name']}}
+{% endblock %}
+
+{% block stylesheets %}
+    <link href="{{ asset('dappur/css/my-account.min.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block body %}
+	<div class="container">
+		<div class="ui-67">
+			<!-- Head Starts -->
+			<div class="ui-head">
+				<!-- Details -->
+				<div class="ui-details">
+					<!-- Name -->
+					<h3 id="name-header">{{user.first_name}} {{ user.last_name}} </h3><!-- Designation -->
+					<h4>
+						{% for item in auth.user.roles %}
+						    {% if loop.last %}{{item.name}}{% else %}{{item.name}}, {% endif %}
+						{% endfor %}
+					</h4>
+				</div><!-- Image -->
+				<div class="ui-image"><!-- User Image -->
+				<img alt="Profile Picture" class="img-responsive" height="100" src="https://www.gravatar.com/avatar/{{ auth.user.email|md5 }}?d=identicon" width="100"></div>
+			</div><!-- Head Ends -->
+			<!-- Content Starts -->
+			<div class="ui-content">
+				<div class="row">
+					<div class="col-md-6 acc-col">
+						<section>
+							<h3>Profile</h3>
+							<form action="{{currentRoute}}" class="ng-pristine ng-valid" method="post" role="form">
+								<div class="row">
+									<div class="col-md-6">
+		                                {{ form.text('first_name', user.first_name, 'first_name', 'First Name') }}
+		                            </div>
+		                            <div class="col-md-6">
+		                                {{ form.text('last_name', user.first_name, 'last_name', 'Last Name') }}
+		                            </div>
+								</div>
+								<div class="row">
+									<div class="col-md-6">
+		                                {{ form.text('email', user.email, 'email', 'Email', null, 'email') }}
+		                            </div>
+		                            <div class="col-md-6">
+		                                {{ form.text('username', user.username, 'username', 'Username', null, 'username') }}
+		                            </div>
+								</div>
+								<div class="row">
+									<div class="col-md-12">
+										{{ form.textarea('about', user.profile.about, 'about', 'About Me', null, 7, null) }}
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-12">
+										<div class="btn-div pull-right">
+											<button type="submit" name="save_profile" class="btn btn-primary">Save Profile</button>
+										</div>
+									</div>
+								</div>
+								{{csrf()}}
+							</form>
+						</section>
+					</div>
+					<div class="col-md-6 acc-col">
+						<section>
+							<h3>Change Password</h3>
+							<form action="{{currentRoute}}" method="post" role="form">
+								<div class="row">
+									<div class="col-md-6">
+		                                {{ form.text('password', '', 'password', 'Password', 'password') }}
+		                            </div>
+		                            <div class="col-md-6">
+		                                {{ form.text('confirm', '', 'confirm', 'Confirm Password', 'password') }}
+		                            </div>
+								</div>
+								<div class="row">
+									<div class="col-md-12">
+										<div class="btn-div pull-right">
+											<button type="submit" name="change_password" class="btn btn-primary">Change Password</button>
+										</div>
+									</div>
+								</div>
+								{{csrf()}}
+							</form>
+						</section>
+					</div><!-- col-8 -->
+				</div>
+			</div><!-- Content Ends -->
+		</div><!-- UI - X Ends -->
+	</div><!-- /.container -->
+{% endblock %}
+
+{% block javascript %}
+    {{ recaptchaJs() }}
+   
+
+    {% if requestParams['comment_login'] %}
+    <script type="text/javascript">
+    $(document).ready(function(){
+    	$('html, body').animate({
+		    scrollTop: ($('#comments').offset().top -175)
+		},500);
+	});
+    {% endif %}
+    </script>
+    
+    
+{% endblock %}

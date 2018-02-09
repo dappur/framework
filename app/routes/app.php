@@ -14,9 +14,17 @@ $app->group('/', function () {
 
 	$this->map(['GET'], 'csrf', 'App:csrf')
 		->setName('csrf');
-
 })
 ->add($container->get('csrf'))
+->add(new Dappur\Middleware\Maintenance($container))
+->add(new Dappur\Middleware\PageConfig($container));
+
+$app->group('', function () {
+	$this->map(['GET', 'POST'], '/profile', 'App:profile')
+		->setName('profile');
+})
+->add($container->get('csrf'))
+->add(new Dappur\Middleware\Auth($container))
 ->add(new Dappur\Middleware\Maintenance($container))
 ->add(new Dappur\Middleware\PageConfig($container));
 

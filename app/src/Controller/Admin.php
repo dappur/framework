@@ -111,8 +111,15 @@ class Admin extends Controller{
                     $update_user = $this->auth->update($user, $new_information);
 
                     $update_profile = UsersProfile::find($user->id);
-                    $update_profile->about = $request->getParam('about');
-                    $update_profile->save();
+                    if ($update_profile) {
+                        $update_profile->about = strip_tags($request->getParam('about'));
+                        $update_profile->save();
+                    }else{
+                        $add_profile = new UsersProfile;
+                        $add_profile->user_id = $user->id;
+                        $add_profile->about = strip_tags($request->getParam('about'));
+                        $add_profile->save();
+                    }
 
                     if ($update_user) {
                         $this->flash('success', 'Your account has been updated successfully.');

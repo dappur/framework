@@ -5,6 +5,8 @@ namespace Dappur\Controller;
 use Dappur\Dappurware\Email as E;
 use Dappur\Dappurware\Recaptcha;
 use Dappur\Model\ContactRequests;
+use Dappur\Model\UsersProfile;
+use mhndev\slimFileResponse\FileResponse;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use Respect\Validation\Validator as V;
@@ -101,6 +103,139 @@ class App extends Controller{
     public function maintenance(Request $request, Response $response){
 
         return $this->view->render($response, 'maintenance.twig');
+
+    }
+
+    public function profile(Request $request, Response $response){
+
+        $user = $this->auth->check();
+
+        if ($request->isPost()) {
+
+            if ($request->getParam('save_profile') !== null) {
+
+                // Validate Data
+                $validate_data = array(
+                    'first_name' => array(
+                        'rules' => V::length(2, 25)->alnum('\'?!@#,."'), 
+                        'messages' => array(
+                            'length' => 'Must be between 2 and 25 characters.',
+                            'alpha' => 'Contains an invalid character.'
+                            )
+                    ),
+                    'last_name' => array(
+                        'rules' => V::length(2, 25)->alnum('\'?!@#,."'), 
+                        'messages' => array(
+                            'length' => 'Must be between 2 and 25 characters.',
+                            'alpha' => 'Contains an invalid character.'
+                            )
+                    ),
+                    'email' => array(
+                        'rules' => V::noWhitespace()->email(), 
+                        'messages' => array(
+                            'email' => 'Enter a valid email address.',
+                            'noWhitespace' => 'Must not contain any spaces.'
+                            )
+                    ),
+                    'username' => array(
+                        'rules' => V::noWhitespace()->alnum(), 
+                        'messages' => array(
+                            'slug' => 'Must be alpha numeric with no spaces.',
+                            'noWhitespace' => 'Must not contain any spaces.'
+                            )
+                    )
+                );
+
+                //Check username
+                if ($user->username != $request->getParam('username')) {
+                    $check_username = Users::where('id', '!=', $user->id)->where('username', '=', $request->getParam('username'))->get()->count();
+                    if ($check_username > 0) {
+                        $this->validator->addError('username', 'Username is already in use.');
+                    }
+                }
+                
+
+                //Check Email
+                if ($user->email != $request->getParam('email')) {
+                    $check_email = Users::where('id', '!=', $user->id)->where('email', '=', $request->getParam('email'))->get()->count();
+                    if ($check_email > 0) {
+                        $this->validator->addError('email', 'Email address is already in use.');
+                    }
+                }
+
+                $this->validator->validate($request, $validate_data);
+
+                if ($this->validator->isValid()) {
+
+                    $new_information = [
+                        'first_name' => $request->getParam('first_name'),
+                        'last_name' => $request->getParam('last_name'),
+                        'email' => $request->getParam('email'),
+                        'username' => $request->getParam('username')
+                    ];
+
+                    $update_user = $this->auth->update($user, $new_information);
+
+                    $update_profile = UsersProfile::where('user_id', $user->id)->first();
+
+                    if ($update_profile) {
+                        $update_profile->about = strip_tags($request->getParam('about'));
+                        $update_profile->save();
+                    }else{
+                        $add_profile = new UsersProfile;
+                        $add_profile->user_id = $user->id;
+                        $add_profile->about = strip_tags($request->getParam('about'));
+                        $add_profile->save();
+                    }
+                    
+
+                    if ($update_user) {
+                        $this->flashNow('success', 'Your profile has been updated successfully.');
+                    }else{
+                        $this->flashNow('danger', 'There was an error updating your account information.');
+                    }
+                }
+            }
+
+            if ($request->getParam('change_password') !== null) {
+                // Validate Data
+                $validate_data = array(
+                    'password' => array(
+                    'rules' => V::noWhitespace()->length(6), 
+                    'messages' => array(
+                        'length' => 'Must be greater than 6 characters.'
+                        )
+                    ),
+                    'confirm' => array(
+                        'rules' => V::equals($request->getParam('password')),
+                        'messages' => array(
+                            'equals' => 'Passwords do not match.'
+                            )
+                    )
+                );
+
+                $this->validator->validate($request, $validate_data);
+
+                if ($this->validator->isValid()) {
+
+                    $new_information = [
+                        'password' => $request->getParam('password')
+                    ];
+
+                    $update_user = $this->auth->update($user, $new_information);
+
+                    if ($update_user) {
+                        $this->flashNow('success', 'Your password has been updated successfully.');
+                    }else{
+                        $this->flashNow('danger', 'There was an error changing your password.');
+                    }
+                }else{
+                    $this->flashNow('danger', 'There was an error changing your password.');
+                }
+            }
+        }
+
+        return $this->view->render($response, 'profile.twig', array("user" => $user));
 
     }
 

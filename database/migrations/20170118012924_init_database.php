@@ -180,6 +180,8 @@ class InitDatabase extends Migration
                 'blog.*' => true,
                 'blog_categories.view' => true,
                 'blog_categories.create' => true,
+                'blog_tags.view' => true,
+                'blog_tags.create' => true
             )
         ));
 
