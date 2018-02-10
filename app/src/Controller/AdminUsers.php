@@ -2,7 +2,6 @@
 
 namespace Dappur\Controller;
 
-use Dappur\Dappurware\Sentinel as S;
 use Dappur\Model\Roles;
 use Dappur\Model\Users;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -11,11 +10,10 @@ use Respect\Validation\Validator as V;
 
 class AdminUsers extends Controller{
 
-	public function users(Request $request, Response $response){
+    public function users(Request $request, Response $response){
 
-        $sentinel = new S($this->container);
-        if(!$sentinel->hasPerm('user.view')){
-            return $this->redirect($response, 'dashboard');
+        if($check = $this->sentinel->hasPerm('user.view')){
+            return $check;
         }
 
         return $this->view->render($response, 'users.twig', ["users" => Users::get(), "roles" => Roles::get()]);
@@ -24,9 +22,8 @@ class AdminUsers extends Controller{
     
     public function usersAdd(Request $request, Response $response){
 
-        $sentinel = new S($this->container);
-        if(!$sentinel->hasPerm('user.create')){
-            return $this->redirect($response, 'dashboard');
+        if($check = $this->sentinel->hasPerm('user.create')){
+            return $check;
         }
 
         $requestParams = $request->getParams();
@@ -165,9 +162,8 @@ class AdminUsers extends Controller{
 
     public function usersEdit(Request $request, Response $response, $userid){
 
-        $sentinel = new S($this->container);
-        if(!$sentinel->hasPerm('user.update')){
-            return $this->redirect($response, 'dashboard');
+        if($check = $this->sentinel->hasPerm('user.update')){
+            return $check;
         }
 
         $requestParams = $request->getParams();
@@ -296,9 +292,8 @@ class AdminUsers extends Controller{
 
     public function usersDelete(Request $request, Response $response){
 
-        $sentinel = new S($this->container);
-        if(!$sentinel->hasPerm('user.delete')){
-            return $this->redirect($response, 'dashboard');
+        if($check = $this->sentinel->hasPerm('user.delete')){
+            return $check;
         }
 
         $user = $this->auth->findById($request->getParam('user_id'));

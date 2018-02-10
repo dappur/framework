@@ -67,7 +67,7 @@ class Deployment {
         if (is_null($document_root)) {
             die('DOCUMENT_ROOT is required');
         }
-        if (is_null($document_root)) {
+        if (is_null($user_home)) {
             die('USER_HOME is required');
         }
         if (is_null($repo_dir)) {
@@ -450,7 +450,7 @@ class Deployment {
         // Check that phinx was installed properly
         $check_phinx = shell_exec(dirname($this->document_root) . "/vendor/robmorgan/phinx/bin/phinx --version");
         echo $this->logEntry($check_phinx);
-        if(!strpos($check_phinx, 'by Rob Morgan - https://phinx.org')){
+        if(!strpos($check_phinx, 'https://phinx.org')){
             die($this->logEntry("Phinx is required in order for database migration to work.  Please check the deploy.init.log for errors."));
         }
 

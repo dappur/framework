@@ -135,7 +135,8 @@ class InitDatabase extends Migration
                 'blog.*' => true,
                 'blog_tags.*' => true,
                 'blog_categories.*' => true,
-                'dashboard.*' => true
+                'dashboard.*' => true,
+                'contact.*' => true
             )
         ));
 
@@ -157,6 +158,7 @@ class InitDatabase extends Migration
                 'user.delete' => false,
                 'role.*' => true,
                 'role.delete' => false,
+                'contact.*' => true,
                 'permission.*' => true,
                 'permission.delete' => false,
                 'media.*' => true,
@@ -181,7 +183,8 @@ class InitDatabase extends Migration
                 'blog_categories.view' => true,
                 'blog_categories.create' => true,
                 'blog_tags.view' => true,
-                'blog_tags.create' => true
+                'blog_tags.create' => true,
+                'user.account' => true
             )
         ));
 
@@ -200,11 +203,13 @@ class InitDatabase extends Migration
             'slug' => 'auditor',
             'permissions' => array(
                 'user.view' => true,
+                'user.account' => true,
                 'settings.view' => true,
                 'role.view' => true,
                 'permission.view' => true,
                 'blog.view' => true,
-                'dashboard.view' => true
+                'dashboard.view' => true,
+                'contact.view' => true
             )
         ));
 

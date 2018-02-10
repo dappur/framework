@@ -15,9 +15,8 @@ class AdminEmail extends Controller{
 
 	public function email(Request $request, Response $response){
 
-		$sentinel = new S($this->container);
-        if(!$sentinel->hasPerm('email.view')){
-        	return $this->redirect($response, 'home');
+		if($check = $this->sentinel->hasPerm('email.view', 'dashboard')){
+            return $check;
         }
 
         $emails = Emails::take(200)->get();
@@ -48,9 +47,8 @@ class AdminEmail extends Controller{
 
 	public function testEmail(Request $request, Response $response){
 
-		$sentinel = new S($this->container);
-        if(!$sentinel->hasPerm('email.test')){
-        	return $this->redirect($response, 'home');
+		if($check = $this->sentinel->hasPerm('email.test', 'dashboard')){
+            return $check;
         }
 
         $user = $this->auth->check();
@@ -64,9 +62,8 @@ class AdminEmail extends Controller{
 
 	public function templates(Request $request, Response $response){
 
-		$sentinel = new S($this->container);
-        if(!$sentinel->hasPerm('email.template.view')){
-        	return $this->redirect($response, 'dashboard');
+		if($check = $this->sentinel->hasPerm('email_template.view', 'dashboard')){
+            return $check;
         }
 
         $templates = EmailsTemplates::take(200)->get();
@@ -76,9 +73,8 @@ class AdminEmail extends Controller{
 
 	public function templatesAdd(Request $request, Response $response){
 
-    	$sentinel = new S($this->container);
-        if(!$sentinel->hasPerm('email.template.create')){
-        	return $this->redirect($response, 'dashboard');
+    	if($check = $this->sentinel->hasPerm('email_template.create', 'dashboard')){
+            return $check;
         }
 
         $placeholders = E::getPlaceholders();
@@ -163,9 +159,8 @@ class AdminEmail extends Controller{
 
 	public function templatesEdit(Request $request, Response $response){
 
-    	$sentinel = new S($this->container);
-        if(!$sentinel->hasPerm('email.template.update')){
-        	return $this->redirect($response, 'dashboard');
+    	if($check = $this->sentinel->hasPerm('email_template.update', 'dashboard')){
+            return $check;
         }
 
         $placeholders = E::getPlaceholders();
@@ -258,9 +253,8 @@ class AdminEmail extends Controller{
 
 	public function emailNew(Request $request, Response $response){
 
-    	$sentinel = new S($this->container);
-        if(!$sentinel->hasPerm('email.template.create')){
-        	return $this->redirect($response, 'dashboard');
+    	if($check = $this->sentinel->hasPerm('email.create', 'dashboard')){
+            return $check;
         }
 
         $placeholders = E::getPlaceholders();

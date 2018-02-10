@@ -4,6 +4,7 @@ namespace Dappur\Controller;
 
 use Awurth\Slim\Validation\Validator;
 use Cartalyst\Sentinel\Sentinel;
+use Dappur\Dappurware\Sentinel as DS;
 use Interop\Container\ContainerInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -27,10 +28,12 @@ class Controller
      * @var ContainerInterface
      */
     protected $container;
+    protected $sentinel;
 
     public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
+        $this->sentinel = new DS($this->container);
     }
 
     /**

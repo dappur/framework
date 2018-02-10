@@ -1,9 +1,9 @@
 
 {
     "framework": "dappur",
-    "version": "2.1.0",
+    "version": "2.1.1",
     "displayErrorDetails": false,
-    "showInAdmin": true,
+    "showInAdmin": false,
     "environment": "development",
     "db": {
         "databases": {

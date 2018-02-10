@@ -2,7 +2,6 @@
 
 namespace Dappur\Controller;
 
-use Dappur\Dappurware\Sentinel as S;
 use Dappur\Dappurware\Settings;
 use Dappur\Model\Config;
 use Dappur\Model\ConfigGroups;
@@ -27,9 +26,8 @@ class AdminSettings extends Controller {
 
     public function settingsDeveloper(Request $request, Response $response){
 
-        $sentinel = new S($this->container);
-        if(!$sentinel->hasPerm('settings.developer')){
-            return $this->redirect($response, 'dashboard');
+        if($check = $this->sentinel->hasPerm('settings.developer', 'dashboard')){
+            return $check;
         }
 
         $settings_file = Settings::getSettingsFile();
@@ -38,12 +36,11 @@ class AdminSettings extends Controller {
         
         return $this->view->render($response, 'settings-developer.twig', array("settingsFile" => $settings_file, "postVars" => $requestParams));
     }
-	
+    
     public function settingsGlobal(Request $request, Response $response){
 
-        $sentinel = new S($this->container);
-        if(!$sentinel->hasPerm('settings.view')){
-            return $this->redirect($response, 'dashboard');
+        if($check = $this->sentinel->hasPerm('settings.view', 'dashboard')){
+            return $check;
         }
 
         $timezones = Settings::getTimezones();
@@ -103,9 +100,8 @@ class AdminSettings extends Controller {
 
     public function settingsGlobalAdd(Request $request, Response $response){
 
-        $sentinel = new S($this->container);
-        if(!$sentinel->hasPerm('settings.add')){
-            return $this->redirect($response, 'dashboard');
+        if($check = $this->sentinel->hasPerm('settings.create', 'dashboard')){
+            return $check;
         }
 
         $allPostVars = $request->getParsedBody();
@@ -172,9 +168,8 @@ class AdminSettings extends Controller {
 
     public function settingsGlobalAddGroup(Request $request, Response $response){
 
-        $sentinel = new S($this->container);
-        if(!$sentinel->hasPerm('settings.group.add')){
-            return $this->redirect($response, 'dashboard');
+        if($check = $this->sentinel->hasPerm('settings.create', 'dashboard')){
+            return $check;
         }
 
         $allPostVars = $request->getParsedBody();
@@ -254,9 +249,8 @@ class AdminSettings extends Controller {
 
     public function settingsGlobalDeleteGroup(Request $request, Response $response){
 
-        $sentinel = new S($this->container);
-        if(!$sentinel->hasPerm('settings.group.delete')){
-            return $this->redirect($response, 'dashboard');
+        if($check = $this->sentinel->hasPerm('settings.delete', 'dashboard')){
+            return $check;
         }
 
         $allPostVars = $request->getParsedBody();
@@ -282,6 +276,10 @@ class AdminSettings extends Controller {
     }
 
     public function settingsPage(Request $request, Response $response, $page_name){
+
+        if($check = $this->sentinel->hasPerm('settings.page', 'dashboard')){
+            return $check;
+        }
 
         $page_settings = ConfigGroups::where('page_name', '=', $page_name)->with('config')->skip(0)->take(1)->get();
 

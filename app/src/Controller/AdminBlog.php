@@ -4,7 +4,6 @@ namespace Dappur\Controller;
 
 use Carbon\Carbon;
 use Dappur\Dappurware\VideoParser as VP;
-use Dappur\Dappurware\Sentinel as S;
 use Dappur\Model\BlogCategories;
 use Dappur\Model\BlogTags;
 use Dappur\Model\BlogPosts;
@@ -21,9 +20,8 @@ class AdminBlog extends Controller{
     // Main Blog Admin Page
     public function blog(Request $request, Response $response){
 
-        $sentinel = new S($this->container);
-        if(!$sentinel->hasPerm('blog.view')){
-            return $this->redirect($response, 'dashboard');
+        if($check = $this->sentinel->hasPerm('blog.view', 'dashboard')){
+            return $check;
         }
 
         $posts = BlogPosts::with('category')->withCount('comments', 'replies');
@@ -38,9 +36,8 @@ class AdminBlog extends Controller{
 
     public function comments(Request $request, Response $response){
 
-        $sentinel = new S($this->container);
-        if(!$sentinel->hasPerm('blog.view')){
-            return $this->redirect($response, 'dashboard');
+        if($check = $this->sentinel->hasPerm('blog.view', 'dashboard')){
+            return $check;
         }
 
         if (!$this->auth->check()->inRole('manager') && !$this->auth->check()->inRole('admin')) {
@@ -75,9 +72,8 @@ class AdminBlog extends Controller{
 
     public function commentDetails(Request $request, Response $response){
 
-        $sentinel = new S($this->container);
-        if(!$sentinel->hasPerm('blog.view')){
-            return $this->redirect($response, 'dashboard');
+        if($check = $this->sentinel->hasPerm('blog.view', 'dashboard')){
+            return $check;
         }
 
         if (!$this->auth->check()->inRole('manager') && !$this->auth->check()->inRole('admin')) {
@@ -106,9 +102,8 @@ class AdminBlog extends Controller{
 
     public function commentDelete(Request $request, Response $response){
 
-        $sentinel = new S($this->container);
-        if(!$sentinel->hasPerm('blog.view')){
-            return $this->redirect($response, 'dashboard');
+        if($check = $this->sentinel->hasPerm('blog.view', 'dashboard')){
+            return $check;
         }
 
         $comment_id = $request->getParam('comment');
@@ -147,9 +142,8 @@ class AdminBlog extends Controller{
 
     public function commentPublish(Request $request, Response $response){
 
-        $sentinel = new S($this->container);
-        if(!$sentinel->hasPerm('blog.view')){
-            return $this->redirect($response, 'dashboard');
+        if($check = $this->sentinel->hasPerm('blog.view', 'dashboard')){
+            return $check;
         }
 
         $comment_id = $request->getParam('comment');
@@ -190,9 +184,8 @@ class AdminBlog extends Controller{
 
     public function replyPublish(Request $request, Response $response){
 
-        $sentinel = new S($this->container);
-        if(!$sentinel->hasPerm('blog.view')){
-            return $this->redirect($response, 'dashboard');
+        if($check = $this->sentinel->hasPerm('blog.view', 'dashboard')){
+            return $check;
         }
 
         $reply_id = $request->getParam('reply');
@@ -232,9 +225,8 @@ class AdminBlog extends Controller{
 
     public function replyUnpublish(Request $request, Response $response){
 
-        $sentinel = new S($this->container);
-        if(!$sentinel->hasPerm('blog.view')){
-            return $this->redirect($response, 'dashboard');
+        if($check = $this->sentinel->hasPerm('blog.view', 'dashboard')){
+            return $check;
         }
 
         $reply_id = $request->getParam('reply');
@@ -274,9 +266,8 @@ class AdminBlog extends Controller{
 
     public function replyDelete(Request $request, Response $response){
 
-        $sentinel = new S($this->container);
-        if(!$sentinel->hasPerm('blog.view')){
-            return $this->redirect($response, 'dashboard');
+        if($check = $this->sentinel->hasPerm('blog.view', 'dashboard')){
+            return $check;
         }
 
         $reply_id = $request->getParam('reply');
@@ -314,9 +305,8 @@ class AdminBlog extends Controller{
 
     public function commentUnpublish(Request $request, Response $response){
 
-        $sentinel = new S($this->container);
-        if(!$sentinel->hasPerm('blog.view')){
-            return $this->redirect($response, 'dashboard');
+        if($check = $this->sentinel->hasPerm('blog.view', 'dashboard')){
+            return $check;
         }
 
         $comment_id = $request->getParam('comment');
@@ -358,9 +348,8 @@ class AdminBlog extends Controller{
     // Add New Blog Post
     public function blogAdd(Request $request, Response $response){
 
-        $sentinel = new S($this->container);
-        if(!$sentinel->hasPerm('blog.create')){
-            return $this->redirect($response, 'admin-blog');
+        if($check = $this->sentinel->hasPerm('blog.create', 'dashboard')){
+            return $check;
         }
 
         $requestParams = $request->getParams();
@@ -482,9 +471,8 @@ class AdminBlog extends Controller{
     // Edit Blog Post
     public function blogEdit(Request $request, Response $response, $post_id){
 
-        $sentinel = new S($this->container);
-        if(!$sentinel->hasPerm('blog.update')){
-            return $this->redirect($response, 'admin-blog');
+        if($check = $this->sentinel->hasPerm('blog.update', 'dashboard')){
+            return $check;
         }
         
         $requestParams = $request->getParams();
@@ -629,9 +617,8 @@ class AdminBlog extends Controller{
     // Publish Blog Post
     public function blogPublish(Request $request, Response $response){
 
-        $sentinel = new S($this->container);
-        if(!$sentinel->hasPerm('blog.update')){
-            return $this->redirect($response, 'admin-blog');
+        if($check = $this->sentinel->hasPerm('blog.update', 'dashboard')){
+            return $check;
         }
 
         $requestParams = $request->getParams();
@@ -661,9 +648,8 @@ class AdminBlog extends Controller{
     // Unpublish Blog Post
     public function blogUnpublish(Request $request, Response $response){
 
-        $sentinel = new S($this->container);
-        if(!$sentinel->hasPerm('blog.update')){
-            return $this->redirect($response, 'admin-blog');
+        if($check = $this->sentinel->hasPerm('blog.update', 'dashboard')){
+            return $check;
         }
 
         $requestParams = $request->getParams();
@@ -693,9 +679,8 @@ class AdminBlog extends Controller{
     // Delete Blog Post
     public function blogDelete(Request $request, Response $response){
 
-        $sentinel = new S($this->container);
-        if(!$sentinel->hasPerm('blog.delete')){
-            return $this->redirect($response, 'admin_blog');
+        if($check = $this->sentinel->hasPerm('blog.delete', 'dashboard')){
+            return $check;
         }
 
         $requestParams = $request->getParams();
@@ -725,9 +710,8 @@ class AdminBlog extends Controller{
     // Preview Blog Post
     public function blogPreview(Request $request, Response $response, $slug){
 
-        $sentinel = new S($this->container);
-        if(!$sentinel->hasPerm('blog.view')){
-            return $this->redirect($response, 'admin-blog');
+        if($check = $this->sentinel->hasPerm('blog.view', 'dashboard')){
+            return $check;
         }
 
         $post = BlogPosts::where('slug', '=', $slug)->first();
@@ -754,9 +738,8 @@ class AdminBlog extends Controller{
     // Add New Blog Category
     public function categoriesAdd(Request $request, Response $response){
 
-        $sentinel = new S($this->container);
-        if(!$sentinel->hasPerm('blog_categories.create')){
-            return $this->redirect($response, 'admin-blog');
+        if($check = $this->sentinel->hasPerm('blog_categories.create', 'dashboard')){
+            return $check;
         }
 
         if ($request->isPost()) {
@@ -795,9 +778,8 @@ class AdminBlog extends Controller{
     // Delete Blog Category
     public function categoriesDelete(Request $request, Response $response){
 
-        $sentinel = new S($this->container);
-        if(!$sentinel->hasPerm('blog_categories.delete')){
-            return $this->redirect($response, 'admin-blog');
+        if($check = $this->sentinel->hasPerm('blog_categories.delete', 'dashboard')){
+            return $check;
         }
 
         $category = BlogCategories::find($request->getParam('category_id'));
@@ -819,9 +801,8 @@ class AdminBlog extends Controller{
     // Edit Blog Category
     public function categoriesEdit(Request $request, Response $response, $categoryid){
 
-        $sentinel = new S($this->container);
-        if(!$sentinel->hasPerm('blog_categories.update')){
-            return $this->redirect($response, 'admin-blog');
+        if($check = $this->sentinel->hasPerm('blog_categories.update', 'dashboard')){
+            return $check;
         }
 
         if ($request->isPost()) {
@@ -899,9 +880,8 @@ class AdminBlog extends Controller{
     // Add New Blog Tag
     public function tagsAdd(Request $request, Response $response){
 
-        $sentinel = new S($this->container);
-        if(!$sentinel->hasPerm('blog_tags.create')){
-            return $this->redirect($response, 'admin-blog');
+        if($check = $this->sentinel->hasPerm('blog_tags.create', 'dashboard')){
+            return $check;
         }
 
         if ($request->isPost()) {
@@ -943,9 +923,8 @@ class AdminBlog extends Controller{
     // Delete Blog Tag
     public function tagsDelete(Request $request, Response $response){
 
-        $sentinel = new S($this->container);
-        if(!$sentinel->hasPerm('blog_tags.delete')){
-            return $this->redirect($response, 'admin-blog');
+        if($check = $this->sentinel->hasPerm('blog_tags.delete', 'dashboard')){
+            return $check;
         }
 
         $tag = BlogTags::find($request->getParam('tag_id'));
@@ -969,9 +948,8 @@ class AdminBlog extends Controller{
     // Edit Blog Tag
     public function tagsEdit(Request $request, Response $response, $tagid){
 
-        $sentinel = new S($this->container);
-        if(!$sentinel->hasPerm('blog_tags.update')){
-            return $this->redirect($response, 'admin-blog');
+        if($check = $this->sentinel->hasPerm('blog_tags.update', 'dashboard')){
+            return $check;
         }
 
         if ($request->isPost()) {

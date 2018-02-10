@@ -2,7 +2,6 @@
 
 namespace Dappur\Controller;
 
-use Dappur\Dappurware\Sentinel as S;
 use Dappur\Model\RoleUsers;
 use Dappur\Model\Roles;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -13,9 +12,8 @@ class AdminRoles extends Controller{
 
     public function rolesAdd(Request $request, Response $response){
         
-        $sentinel = new S($this->container);
-        if(!$sentinel->hasPerm('role.create')){
-            return $this->redirect($response, 'dashboard');
+        if($check = $this->sentinel->hasPerm('role.create')){
+            return $check;
         }
 
         if ($request->isPost()) {
@@ -48,9 +46,8 @@ class AdminRoles extends Controller{
 
     public function rolesDelete(Request $request, Response $response){
 
-        $sentinel = new S($this->container);
-        if(!$sentinel->hasPerm('role.delete')){
-            return $this->redirect($response, 'dashboard');
+        if($check = $this->sentinel->hasPerm('role.delete')){
+            return $check;
         }
 
         if (is_numeric($request->getParam('role_id')) && $role != 1) {
@@ -74,9 +71,8 @@ class AdminRoles extends Controller{
 
     public function rolesEdit(Request $request, Response $response, $roleid){
         
-        $sentinel = new S($this->container);
-        if(!$sentinel->hasPerm('role.update')){
-            return $this->redirect($response, 'dashboard');
+        if($check = $this->sentinel->hasPerm('role.update')){
+            return $check;
         }
 
         $role = Roles::find($roleid);

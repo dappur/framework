@@ -3,7 +3,7 @@
 namespace Dappur\Controller;
 
 use Cloudinary;
-use Dappur\Dappurware\Sentinel as S;
+use Dappur\Dappurware\Sentinel as DS;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use Respect\Validation\Validator as V;
@@ -12,8 +12,9 @@ class AdminMedia extends Controller{
 
     public function cloudinarySign(Request $request, Response $response){
 
-        $sentinel = new S($this->container);
-        $sentinel->hasPerm('media.cloudinary');
+        if($check = $this->sentinel->hasPerm('media.cloudinary', 'dashboard')){
+            return $check;
+        }
 
         $cloudinary = $this->cloudinary;
 
@@ -38,8 +39,10 @@ class AdminMedia extends Controller{
 
     public function getCloudinaryCMS($container, $signature_only = false){
 
-        $sentinel = new S($container);
-        $sentinel->hasPerm('media.cloudinary');
+        $sentinel = new DS($container);
+        if($check = $sentinel->hasPerm('media.cloudinary', 'dashboard')){
+            return $check;
+        }
 
         // Generate Timestamp
         $date = new \DateTime();
@@ -86,11 +89,10 @@ class AdminMedia extends Controller{
         
     }
 
-	private function getFiles($directory){
+    private function getFiles($directory){
 
-        $sentinel = new S($this->container);
-        if(!$sentinel->hasPerm('media.local')){
-            return $this->redirect($response, 'dashboard');
+        if($check = $this->sentinel->hasPerm('media.local', 'dashboard')){
+            return $check;
         }
 
         $listing = scandir($directory);
@@ -133,9 +135,8 @@ class AdminMedia extends Controller{
 
     public function media(Request $request, Response $response){
 
-        $sentinel = new S($this->container);
-        if(!$sentinel->hasPerm('media.local')){
-            return $this->redirect($response, 'dashboard');
+        if($check = $this->sentinel->hasPerm('media.local', 'dashboard')){
+            return $check;
         }
 
         return $this->view->render($response, 'media.twig');
@@ -143,9 +144,8 @@ class AdminMedia extends Controller{
 
     public function mediaDelete(Request $request, Response $response){
 
-        $sentinel = new S($this->container);
-        if(!$sentinel->hasPerm('media.delete')){
-            return $this->redirect($response, 'dashboard');
+        if($check = $this->sentinel->hasPerm('media.delete', 'dashboard')){
+            return $check;
         }
 
         $requestParams = $request->getParams();
@@ -200,9 +200,8 @@ class AdminMedia extends Controller{
 
     public function mediaFolder(Request $request, Response $response){
 
-        $sentinel = new S($this->container);
-        if(!$sentinel->hasPerm('media.folder')){
-            return $this->redirect($response, 'dashboard');
+        if($check = $this->sentinel->hasPerm('media.local', 'dashboard')){
+            return $check;
         }
 
         $requestParams = $request->getParams();
@@ -221,9 +220,8 @@ class AdminMedia extends Controller{
 
     public function mediaFolderNew(Request $request, Response $response){
 
-        $sentinel = new S($this->container);
-        if(!$sentinel->hasPerm('media.local')){
-            return $this->redirect($response, 'dashboard');
+        if($check = $this->sentinel->hasPerm('media.local', 'dashboard')){
+            return $check;
         }
 
         $requestParams = $request->getParams();
@@ -305,9 +303,8 @@ class AdminMedia extends Controller{
 
     public function mediaUpload(Request $request, Response $response){
 
-        $sentinel = new S($this->container);
-        if(!$sentinel->hasPerm('media.upload')){
-            return $this->redirect($response, 'dashboard');
+        if($check = $this->sentinel->hasPerm('media.upload', 'dashboard')){
+            return $check;
         }
 
         $requestParams = $request->getParams();

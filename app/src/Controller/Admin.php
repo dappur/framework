@@ -3,7 +3,6 @@
 namespace Dappur\Controller;
 
 use Dappur\Model\ContactRequests;
-use Dappur\Dappurware\Sentinel as S;
 use Dappur\Model\Users;
 use Dappur\Model\UsersProfile;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -14,9 +13,8 @@ class Admin extends Controller{
 
     public function contact(Request $request, Response $response){
 
-        $sentinel = new S($this->container);
-        if(!$sentinel->hasPerm('email.view')){
-            return $this->redirect($response, 'dashboard');
+        if($check = $this->sentinel->hasPerm('contact.view')){
+            return $check;
         }
 
         return $this->view->render($response, 'contact.twig', array("contactRequests" => ContactRequests::orderBy('created_at', 'desc')->get()));
@@ -25,9 +23,8 @@ class Admin extends Controller{
 
     public function dashboard(Request $request, Response $response){
 
-        $sentinel = new S($this->container);
-        if(!$sentinel->hasPerm('dashboard.view')){
-            return $this->redirect($response, 'home');
+        if($check = $this->sentinel->hasPerm('dashboard.view')){
+            return $check;
         }
 
         return $this->view->render($response, 'dashboard.twig');
@@ -36,9 +33,8 @@ class Admin extends Controller{
 
     public function myAccount(Request $request, Response $response){
 
-        $sentinel = new S($this->container);
-        if(!$sentinel->hasPerm('user.account')){
-            return $this->redirect($response, 'my-account');
+        if($check = $this->sentinel->hasPerm('user.account')){
+            return $check;
         }
 
         $requestParams = $request->getParams();
