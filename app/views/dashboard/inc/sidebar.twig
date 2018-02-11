@@ -76,7 +76,7 @@
     </li>
     {% endif %}
 
-    {% if auth.hasAccess('developer.view') %}
+    {% if auth.hasAccess('developer.view') and config['showInAdmin'] %}
     <li>
         <a href="javascript:;" data-toggle="collapse" data-target="#developer-tools-menu"><i class="fa fa-fw fa-wrench"></i> Developer Tools <i class="fa fa-fw fa-caret-down"></i></a>
         <ul id="developer-tools-menu" class="collapse {% if currentRoute starts with '/dashboard/developer/settings' %}in{% endif %} nav">

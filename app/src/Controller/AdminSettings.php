@@ -26,7 +26,7 @@ class AdminSettings extends Controller {
 
     public function settingsDeveloper(Request $request, Response $response){
 
-        if($check = $this->sentinel->hasPerm('settings.developer', 'dashboard')){
+        if($check = $this->sentinel->hasPerm('settings.developer', 'dashboard') and $this->config['showInAdmin']){
             return $check;
         }
 
@@ -53,8 +53,9 @@ class AdminSettings extends Controller {
         $all_routes = $this->getRouteNames();
 
         if ($request->isPost()) {
-            $sentinel = new S($this->container);
-            $sentinel->hasPerm('settings.update');
+            if($check = $this->sentinel->hasPerm('settings.update', 'dashboard')){
+                return $check;
+            }
 
             $allPostVars = $request->getParsedBody();
 
@@ -295,8 +296,9 @@ class AdminSettings extends Controller {
         $allPostVars = $request->getParsedBody();
 
         if ($request->isPost()) {
-            $sentinel = new S($this->container);
-            $sentinel->hasPerm('settings.update');
+            if($check = $this->sentinel->hasPerm('settings.update', 'dashboard')){
+                return $check;
+            }
 
             // Validate Domain
             if (array_key_exists('domain', $allPostVars)){

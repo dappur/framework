@@ -1,7 +1,7 @@
 
 {
     "framework": "dappur",
-    "version": "2.1.1",
+    "version": "2.1.2",
     "displayErrorDetails": false,
     "showInAdmin": false,
     "environment": "development",

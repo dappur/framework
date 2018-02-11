@@ -26,9 +26,8 @@ class AdminEmail extends Controller{
 
 	public function emailDetails(Request $request, Response $response){
 
-		$sentinel = new S($this->container);
-        if(!$sentinel->hasPerm('email.details')){
-        	return $this->redirect($response, 'home');
+		if($check = $this->sentinel->hasPerm('email.details', 'dashboard')){
+            return $check;
         }
 
         $routeArgs =  $request->getAttribute('route')->getArguments();
@@ -62,7 +61,7 @@ class AdminEmail extends Controller{
 
 	public function templates(Request $request, Response $response){
 
-		if($check = $this->sentinel->hasPerm('email_template.view', 'dashboard')){
+		if($check = $this->sentinel->hasPerm('email.templates', 'dashboard')){
             return $check;
         }
 
@@ -73,7 +72,7 @@ class AdminEmail extends Controller{
 
 	public function templatesAdd(Request $request, Response $response){
 
-    	if($check = $this->sentinel->hasPerm('email_template.create', 'dashboard')){
+    	if($check = $this->sentinel->hasPerm('email.templates', 'dashboard')){
             return $check;
         }
 
@@ -159,7 +158,7 @@ class AdminEmail extends Controller{
 
 	public function templatesEdit(Request $request, Response $response){
 
-    	if($check = $this->sentinel->hasPerm('email_template.update', 'dashboard')){
+    	if($check = $this->sentinel->hasPerm('email.templates', 'dashboard')){
             return $check;
         }
 
