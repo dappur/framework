@@ -251,7 +251,8 @@ class InitDatabase extends Migration
             array(1, "Site Settings", null, null),
             array(2, "Dashboard Settings", null, null),
             array(3, "Contact", "Contact Page Config", 'contact'),
-            array(4, "Home", "Home Page Config", 'home')
+            array(4, "Home", "Home Page Config", 'home'),
+            array(5, "Terms", "Terms & Conditions", 'terms'),
         );
 
         // Seed Config Table
@@ -290,6 +291,12 @@ class InitDatabase extends Migration
             array(3, 'contact-state', 'Contact State', 2, 'CA'),
             array(3, 'contact-zip', 'Contact Zip', 2, '93035'),
             array(3, 'contact-country', 'Contact Country', 2, 'USA'),
+            array(5, 'terms-email', 'Terms Email', 2, 'contact@example.com'),
+            array(5, 'terms-street', 'Terms Street', 2, '123 Harbor Blvd.'),
+            array(5, 'terms-city', 'Terms City', 2, 'Oxnard'),
+            array(5, 'terms-state', 'Terms State', 2, 'CA'),
+            array(5, 'terms-zip', 'Terms Zip', 2, '93035'),
+            array(5, 'terms-country', 'Terms Country', 2, 'USA'),
             array(3, 'contact-map-url', 'Map Iframe Url', 2, 'https://goo.gl/oDcRix'),
             array(3, 'contact-map-show', 'Show Map', 6, 1),
             array(3, 'contact-send-email', 'Send Confirmation Email', 6, 1),
