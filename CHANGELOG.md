@@ -2,6 +2,7 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+Removed mcrypt_create_iv() usage in Dappurware\Email
 Removed unecessary array from database settings.
 Updated Readme
 
