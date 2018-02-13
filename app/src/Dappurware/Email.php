@@ -314,7 +314,7 @@ class Email extends Dappurware
                 }
 
                 $add_email = new Emails;
-                $add_email->secure_id = bin2hex(mcrypt_create_iv(22, MCRYPT_DEV_URANDOM));
+                $add_email->secure_id = bin2hex(random_bytes(22) + microtime());
                 $add_email->template_id = $template_id;
                 $add_email->send_to = $email;
                 $add_email->subject = $subject;
