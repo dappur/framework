@@ -10,6 +10,14 @@ The blog addon has now been integrated into the main repo and template files.  I
 
 ----------
 
+### Links
+**[Demo](https://demo.dappur.io)**  
+**[Documentation](https://docs.dappur.io)**  
+**[Dapp CLI](https://github.com/dappur/dapp)**  
+
+
+----------
+
 ### Created Using
 * [Slim](https://github.com/slimphp/Slim) - Slim is a PHP micro framework that helps you quickly write simple yet powerful web applications and APIs
 * [Slim Twig-View](https://github.com/slimphp/Twig-View) - Slim Framework 3 view helper built on top of the Twig 2 templating component
@@ -46,7 +54,7 @@ The blog addon has now been integrated into the main repo and template files.  I
 
 ----------
 
-### Install Via Composer Create-Project
+### Install Via Composer
 You can start a new project user the Composer `create-project` command.
 
     composer create-project dappur/framework new_app
@@ -57,17 +65,13 @@ This will clone the Dappur Framework into a new project directory called `new_ap
 ----------
 
 ### Configure Project and Database
-Configuring your new project is simple.  Rename `settings.dist.json` to `settings.json` and configure the following options:
+Configuring your new project is simple.  Rename `settings.dist.json` to `settings.json` and configure the following options at a minimum:
 ```
-db->host
-db->port
-db->database
-db->username
-db->password
-logger->name
-logger->log_path
-logger->le_token (Optional)
-cloudinary (Optional)
+db->development->host
+db->development->port
+db->development->database
+db->development->username
+db->development->password
 ```
 Once you have the `settings.json` file configured, all you have to do is navigate to your root project directory from a terminal and run the first migration:
 ```
@@ -82,14 +86,7 @@ Once you have successfully done the initial migration, you can simply use PHP's 
 php -S localhost:8181 -t public
 ```
 
-You should then see a confirmation similar to: 
-```bash
-PHP Development Server started at
-Listening on http://localhost:8181
-Document root is /User/Dappur/ProjectRoot/public
-Press Ctrl-C to quit.
-```
-You can then navigate to [http://localhost:8181](http://localhost:8181) to view your project.
+Navigate to [http://localhost:8181](http://localhost:8181) to view your project.
 
 ----------
 
@@ -101,7 +98,7 @@ This framework comes with several pre-made Bootstrap pages to help get your proj
 ### Admin Interface
 In addition to the few basic front end templates, this framework also comes pre-built with a basic Bootstrap 3 admin dashboard. This dashboard can be accessed automatically by logging in with the admin user credentials.
 
-**Default Admin Username:** admin
-**Default Admin Password:** admin123
+**Default Admin Username:** `admin`  
+**Default Admin Password:** `admin123`
 
-It is HIGHLY recommended that you change the default admin password to one of your choosing by modifying line 138 of `database/migrations/20170118012924_init_database.php`.
+It is HIGHLY recommended that you change the default admin password to one of your choosing by modifying line 224 of `database/migrations/20170118012924_init_database.php`.
