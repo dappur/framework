@@ -1,48 +1,46 @@
 
 {
     "framework": "dappur",
-    "version": "2.1.2",
+    "version": "2.1.3",
     "displayErrorDetails": false,
     "showInAdmin": false,
     "environment": "development",
     "db": {
-        "databases": {
-            "development": {
-                "driver": "mysql",
-                "host": "localhost",
-                "port": 3306,
-                "database": "",
-                "username": "",
-                "password": "",
-                "charset": "utf8",
-                "collation": "utf8_general_ci",
-                "prefix": "",
-                "timezone": "+00:00"
-            },
-            "staging": {
-                "driver": "mysql",
-                "host": "localhost",
-                "port": 3306,
-                "database": "",
-                "username": "",
-                "password": "",
-                "charset": "utf8",
-                "collation": "utf8_general_ci",
-                "prefix": "",
-                "timezone": "+00:00"
-            },
-            "production": {
-                "driver": "mysql",
-                "host": "localhost",
-                "port": 3306,
-                "database": "",
-                "username": "",
-                "password": "",
-                "charset": "utf8",
-                "collation": "utf8_general_ci",
-                "prefix": "",
-                "timezone": "+00:00"
-            }
+        "development": {
+            "driver": "mysql",
+            "host": "localhost",
+            "port": 3306,
+            "database": "",
+            "username": "",
+            "password": "",
+            "charset": "utf8",
+            "collation": "utf8_general_ci",
+            "prefix": "",
+            "timezone": "+00:00"
+        },
+        "staging": {
+            "driver": "mysql",
+            "host": "localhost",
+            "port": 3306,
+            "database": "",
+            "username": "",
+            "password": "",
+            "charset": "utf8",
+            "collation": "utf8_general_ci",
+            "prefix": "",
+            "timezone": "+00:00"
+        },
+        "production": {
+            "driver": "mysql",
+            "host": "localhost",
+            "port": 3306,
+            "database": "",
+            "username": "",
+            "password": "",
+            "charset": "utf8",
+            "collation": "utf8_general_ci",
+            "prefix": "",
+            "timezone": "+00:00"
         }
     },
     "view": {

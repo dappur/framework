@@ -3,7 +3,7 @@
 $container = $app->getContainer();
 
 // Configure Database
-$db = $container['settings']['db']['databases'][$container['settings']['environment']];
+$db = $container['settings']['db'][$container['settings']['environment']];
 $capsule = new \Illuminate\Database\Capsule\Manager();
 $capsule->addConnection($db);
 $capsule->setAsGlobal();

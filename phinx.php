@@ -3,7 +3,7 @@ require __DIR__ . '/vendor/autoload.php';
 $settings = file_get_contents( __DIR__ . '/app/bootstrap/settings.json');
 $settings = json_decode($settings, TRUE);
 
-$dbconf = $settings['db']['databases'][$settings['environment']];
+$dbconf = $settings['db'][$settings['environment']];
 
 return [
   	'paths' => [
