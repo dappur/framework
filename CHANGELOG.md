@@ -2,6 +2,8 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+Removed unecessary array from database settings.
+Updated Readme
 
 ## [2.1.2] - 2018-02-11
 ### Added
@@ -34,7 +36,7 @@ All notable changes to this project will be documented in this file.
 - Internalized all assets, they are now served from the view folder and not from the public dir.
 
 
-[Unreleased]: https://github.com/dappur/framework/compare/v2.1.1...HEAD
+[Unreleased]: https://github.com/dappur/framework/compare/v2.1.2...HEAD
 [2.1.2]: https://github.com/dappur/framework/compare/v2.1.1...v2.1.2
 [2.1.1]: https://github.com/dappur/framework/compare/v2.1.0...v2.1.1
 [2.1.0]: https://github.com/dappur/framework/compare/v2.0.0...v2.1.0
