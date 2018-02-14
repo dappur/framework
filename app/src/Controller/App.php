@@ -26,6 +26,67 @@ class App extends Controller{
         }
     }
 
+    public function changePassword(Request $request, Response $response){
+
+        $user = $this->auth->check();
+        $reminders = $this->auth->getReminderRepository();
+
+        if ($exists = $reminders->exists($user)) {
+            $reminder = $exists->code;
+        }else{
+            $reminder = $reminders->create($user);
+            $reminder = $reminder->code;
+        }
+
+        if ($request->getParam('password') != $request->getParam('confirm')) {
+            return json_encode(
+                array(
+                    "result" => "error",
+                    "message" => "The passwords you entered do not match."
+                )
+            );
+        }else{
+            if ($reminders->complete($user, $reminder, $request->getParam('password'))) {
+                return json_encode(
+                    array(
+                        "result" => "success"
+                    )
+                );
+            }else{
+                return json_encode(
+                    array(
+                        "result" => "error",
+                        "message" => "There was an error updating your password.  Please contact us if this problem persists."
+                    )
+                );
+            }
+        }
+
+    }
+
+    public function checkPassword(Request $request, Response $response){
+
+        $credentials = [
+            'email'    => $this->auth->check()->email,
+            'password' => $request->getParam('password'),
+        ];
+
+        if ($user = $this->auth->stateless($credentials)){
+            return json_encode(
+                array(
+                    "result" => "success"
+                )
+            );
+        }else{
+            return json_encode(
+                array(
+                    "result" => "error"
+                )
+            );
+        }
+
+    }
+
     public function contact(Request $request, Response $response){
 
         if ($request->isPost()) {

@@ -7,7 +7,7 @@
 {% endblock %}
 
 {% block stylesheets %}
-    <link href="{{ asset('dappur/css/my-account.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('dappur/css/profile.min.css') }}" rel="stylesheet">
 {% endblock %}
 
 {% block body %}
@@ -70,24 +70,7 @@
 					<div class="col-md-6 acc-col">
 						<section>
 							<h3>Change Password</h3>
-							<form action="{{currentRoute}}" method="post" role="form">
-								<div class="row">
-									<div class="col-md-6">
-		                                {{ form.text('password', '', 'password', 'Password', 'password') }}
-		                            </div>
-		                            <div class="col-md-6">
-		                                {{ form.text('confirm', '', 'confirm', 'Confirm Password', 'password') }}
-		                            </div>
-								</div>
-								<div class="row">
-									<div class="col-md-12">
-										<div class="btn-div pull-right">
-											<button type="submit" name="change_password" class="btn btn-primary">Change Password</button>
-										</div>
-									</div>
-								</div>
-								{{csrf()}}
-							</form>
+                            <button class="btn btn-warning form-control change_password">Change Password</button>
 						</section>
 					</div><!-- col-8 -->
 				</div>
@@ -97,8 +80,7 @@
 {% endblock %}
 
 {% block javascript %}
-    {{ recaptchaJs() }}
-   
+    <script src="{{ asset('dappur/js/change-password.min.js') }}"></script>
 
     {% if requestParams['comment_login'] %}
     <script type="text/javascript">

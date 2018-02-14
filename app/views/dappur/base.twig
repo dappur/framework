@@ -10,6 +10,7 @@
     {# Bootstrap #}
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/{{config['bootswatch']}}/bootstrap.min.css" crossorigin="anonymous">
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/6.6.6/sweetalert2.min.css" rel="stylesheet">
     {# Minified Custom CSS #}
     <link rel="stylesheet" href="{{ asset('dappur/css/custom.min.css') }}">
 
@@ -55,7 +56,12 @@
     <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.2.1.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.nicescroll/3.7.5/jquery.nicescroll.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/6.6.6/sweetalert2.min.js"></script>
 
+    {# Ajax CSRF #}
+    <script src="{{ asset('dashboard/js/csrf.min.js') }}"></script>
+    <script type="text/javascript">DappurCSRF.csrfUrl = "/csrf";</script>
+    
     {# Custom JS #}
     <script src="{{ asset('dappur/js/custom.min.js') }}"></script>
 

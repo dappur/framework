@@ -1,10 +1,19 @@
 # Changelog
-All notable changes to this project will be documented in this file.
+All notable changes to this project will be documented in this file as of v2.1.0.
 
 ## [Unreleased]
-Removed mcrypt_create_iv() usage in Dappurware\Email
-Removed unecessary array from database settings.
-Updated Readme
+### Added
+- Sweet Alert 2 has been added to the base.twig for the front end theme
+- Added page config for terms & conditions.
+- Made change password feature more secure/interactive.
+
+### Changed
+- Updated Readme
+- Fixed bug in assets allowing traverse of server directories.
+
+### Removed
+- Removed mcrypt_create_iv() usage in Dappurware\Email;
+- Removed unecessary array from database settings.
 
 ## [2.1.2] - 2018-02-11
 ### Added
@@ -26,7 +35,6 @@ Updated Readme
 - Email site errors (in Site Settings now).
 - Can now send email to users individually from the Admin.
 - Profile page for users
-- 
 
 ### Changed
 - Various fixes to local cms frontend.
