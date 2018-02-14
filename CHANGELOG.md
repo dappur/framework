@@ -2,6 +2,8 @@
 All notable changes to this project will be documented in this file as of v2.1.0.
 
 ## [Unreleased]
+### Changed
+- Updated Readme
 
 ## [2.1.3] - 2018-02-13
 ### Added

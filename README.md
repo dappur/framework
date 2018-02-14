@@ -13,8 +13,8 @@ The blog addon has now been integrated into the main repo and template files.  I
 ### Links
 **[Demo](https://demo.dappur.io)**  
 **[Documentation](https://docs.dappur.io)**  
-**[Dapp CLI](https://github.com/dappur/dapp)**  
-
+**[Changelog](https://github.com/dappur/framework/blob/master/CHANGELOG.md)**  
+**[Dapp CLI](https://github.com/dappur/dapp)** 
 
 ----------
 
