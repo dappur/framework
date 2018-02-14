@@ -1,6 +1,6 @@
 <?php
 require __DIR__ . '/vendor/autoload.php';
-$settings = file_get_contents( __DIR__ . '/app/bootstrap/settings.json');
+$settings = file_get_contents( __DIR__ . '/settings.json');
 $settings = json_decode($settings, TRUE);
 
 $dbconf = $settings['db'][$settings['environment']];

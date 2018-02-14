@@ -347,20 +347,16 @@ class Deployment {
     private function checkSettings(){
 
         // Check that the user home has a settings.json file. If not, then create it.
-        if (!is_dir(dirname($this->document_root) . '/app/bootstrap')) {
-            echo $this->logEntry("Creating bootstrap folder for settings...");
-            mkdir(dirname($this->document_root) . '/app/bootstrap', 0755, true);
-        }
-        if (!is_file(dirname($this->document_root) . '/app/bootstrap/settings.json')) {
+        if (!is_file(dirname($this->document_root) . '/settings.json')) {
             
             $this->logEntry("Dappur settings.json not found.  Creating now...");
             //Get current settings.json from github
             $this->logEntry("Downloading current settings.dist.json file from Github and cloning to app/bootstrap/settings.json");
-            $settings_file = file_get_contents("https://raw.githubusercontent.com/dappur/framework/master/app/bootstrap/settings.dist.json");
+            $settings_file = file_get_contents("https://raw.githubusercontent.com/dappur/framework/master/settings.dist.json");
 
-            file_put_contents(dirname($this->document_root) . '/app/bootstrap/settings.json', "$settings_file");
+            file_put_contents(dirname($this->document_root) . '/settings.json', "$settings_file");
         }else{
-            $settings = file_get_contents(dirname($this->document_root) . '/app/bootstrap/settings.json');
+            $settings = file_get_contents(dirname($this->document_root) . '/settings.json');
             $settings = json_decode($settings, TRUE);
             if ($settings['framework'] != 'dappur') {
                 die($this->logEntry("You do not appear to have a valid settings file.  Please check and try again."));
@@ -383,7 +379,7 @@ class Deployment {
                 $settings = file_get_contents(dirname($this->document_root) . '/app/bootstrap/settings.json');
                 $settings = json_decode($settings, TRUE);
                 $settings_new = array_replace_recursive($settings, $this->settings_array);
-                if(file_put_contents(dirname($this->document_root) . '/app/bootstrap/settings.json', json_encode($settings_new, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE))){
+                if(file_put_contents(dirname($this->document_root) . '/settings.json', json_encode($settings_new, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE))){
                     echo $this->logEntry("Settings file successfully updated.");
                 }else{
                     die($this->logEntry("There was an error updating the settings file."));
@@ -400,7 +396,7 @@ class Deployment {
 
         $output == array();
 
-        $settings = file_get_contents(dirname($this->document_root) . '/app/bootstrap/settings.json');
+        $settings = file_get_contents(dirname($this->document_root) . '/settings.json');
         $settings = json_decode($settings, TRUE);
         $file_database = $settings['db'][$settings['environment']];
 

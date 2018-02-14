@@ -25,7 +25,7 @@ class Settings
     }
 
     public function getSettingsFile(){
-        $settings = file_get_contents( __DIR__ . '/../../bootstrap/settings.json');
+        $settings = file_get_contents( __DIR__ . '/../../../settings.json');
 
         $settings = json_decode($settings, TRUE);
 
