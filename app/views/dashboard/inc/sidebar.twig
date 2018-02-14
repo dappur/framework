@@ -60,9 +60,9 @@
     {% if auth.hasAccess('settings.view') %}
     <li>
         <a href="javascript:;" data-toggle="collapse" data-target="#page-settings-menu"><i class="fa fa-fw fa-wrench"></i> Page Settings <i class="fa fa-fw fa-caret-down"></i></a>
-        <ul id="page-settings-menu" class="collapse {% if currentRoute starts with '/dashboard/settings/page/' %}in{% endif %} nav">
+        <ul id="page-settings-menu" class="collapse {% if currentRoute starts with '/dashboard/settings/page-settings/' %}in{% endif %} nav">
             {% for item in pageSettings %}
-                <li class="{% if currentRoute starts with '/dashboard/settings/page/' ~ item.page_name %}active{% endif %}">
+                <li class="{% if currentRoute starts with '/dashboard/settings/page-settings/' ~ item.page_name %}active{% endif %}">
                     <a href="{{ path_for('settings-page', {'page_name': item.page_name})}}"><i class="fa fa-life-ring fa-fw"></i> {{item.name}}</a>
                 </li>
             {% endfor %}
