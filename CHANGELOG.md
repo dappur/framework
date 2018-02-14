@@ -2,6 +2,8 @@
 All notable changes to this project will be documented in this file as of v2.1.0.
 
 ## [Unreleased]
+
+## [2.1.3] - 2018-02-13
 ### Added
 - Added Recaptcha to the login page.
 - Sweet Alert 2 has been added to the base.twig for the front end theme
@@ -17,6 +19,9 @@ All notable changes to this project will be documented in this file as of v2.1.0
 ### Removed
 - Removed mcrypt_create_iv() usage in Dappurware\Email;
 - Removed unecessary array from database settings.
+
+### Notes
+- As of this version, all database changed will be reflected in individual migration files.  However, the inital migration SQL file will contain a dump of ALL of the migrations.
 
 ## [2.1.2] - 2018-02-11
 ### Added
@@ -48,7 +53,8 @@ All notable changes to this project will be documented in this file as of v2.1.0
 - Internalized all assets, they are now served from the view folder and not from the public dir.
 
 
-[Unreleased]: https://github.com/dappur/framework/compare/v2.1.2...HEAD
+[Unreleased]: https://github.com/dappur/framework/compare/v2.1.3...HEAD
+[2.1.3]: https://github.com/dappur/framework/compare/v2.1.2...v2.1.3
 [2.1.2]: https://github.com/dappur/framework/compare/v2.1.1...v2.1.2
 [2.1.1]: https://github.com/dappur/framework/compare/v2.1.0...v2.1.1
 [2.1.0]: https://github.com/dappur/framework/compare/v2.0.0...v2.1.0
