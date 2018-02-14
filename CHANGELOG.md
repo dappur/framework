@@ -3,6 +3,7 @@ All notable changes to this project will be documented in this file as of v2.1.0
 
 ## [Unreleased]
 ### Added
+- Added Recaptcha to the login page.
 - Sweet Alert 2 has been added to the base.twig for the front end theme
 - Added page config for terms & conditions.
 - Made change password feature more secure/interactive.

@@ -122,29 +122,40 @@ class Auth extends Controller{
             
             $remember = $request->getParam('remember') ? true : false;
 
-            try {
-                if ($this->auth->authenticate($credentials, $remember)) {
-                    $this->flash('success', 'You have been logged in.');
-                    if ($request->getParam('redirect') !== null) {
-                        return $response->withRedirect($request->getParam('redirect'));
-                    }else{
-                        if ($this->auth->inRole("admin")) {
-                            return $this->redirect($response, 'dashboard');
-                        }else{
-                            return $this->redirect($response, 'home');
-                        }
-                    }
-                    
-                } else {
-                    $this->flash('danger', 'Invalid username or password.');
-                }
-            } catch (ThrottlingException $e) {
-                $this->flash('danger', 'Too many invalid attempts on your ' . $e->getType() . '!  Please wait ' . $e->getDelay() . ' seconds before trying again.');
-            } catch (NotActivatedException $e) {
-                $this->flash('danger', 'Please check your email for instructions on activating your account.');
+            // Validate Recaptcha
+            $recaptcha = new Recaptcha($this->container);
+            $recaptcha = $recaptcha->validate($request->getParam('g-recaptcha-response'));
+            if (!$recaptcha) {
+                $this->validator->addError('recaptcha', 'Recaptcha was invalid.');
             }
 
-            return $this->redirect($response, 'login');
+            if ($this->validator->isValid()) {
+
+                try {
+                    if ($this->auth->authenticate($credentials, $remember)) {
+
+                        $this->flashNow('success', 'You have been logged in.');
+                        if ($request->getParam('redirect') !== null) {
+                            return $response->withRedirect($request->getParam('redirect'));
+                        }else{
+                            if ($this->auth->inRole("admin")) {
+                                return $this->redirect($response, 'dashboard');
+                            }else{
+                                return $this->redirect($response, 'home');
+                            }
+                        }
+                        
+                    } else {
+                        $this->flashNow('danger', 'Invalid username or password.');
+                    }
+                } catch (ThrottlingException $e) {
+                    $this->flashNow('danger', 'Too many invalid attempts on your ' . $e->getType() . '!  Please wait ' . $e->getDelay() . ' seconds before trying again.');
+                } catch (NotActivatedException $e) {
+                    $this->flashNow('danger', 'Please check your email for instructions on activating your account.');
+                }
+
+            }
+
         }
 
         return $this->view->render($response, 'login.twig');

@@ -31,6 +31,9 @@
                                 <a href="{{ path_for('forgot-password') }}">Forgot Password?</a>
                             </div>
                         </div>
+
+                        {{ form.custom('recaptcha', recaptcha()) }}
+                        
                         {{ csrf() }}
                         <input type="submit" value="Login" class="btn btn-primary">
                     </form>
@@ -39,4 +42,8 @@
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block javascript %}
+    {{ recaptchaJs() }}
 {% endblock %}
