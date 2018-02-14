@@ -9,6 +9,7 @@ All notable changes to this project will be documented in this file as of v2.1.0
 - Made change password feature more secure/interactive.
 
 ### Changed
+- Fixed bug with page settings menu items not showing as active
 - Updated Readme
 - Fixed bug in assets allowing traverse of server directories.
 
