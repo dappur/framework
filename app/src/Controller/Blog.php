@@ -22,6 +22,9 @@ class Blog extends Controller{
         $routeArgs =  $request->getAttribute('route')->getArguments();
         if (isset($routeArgs['page']) && is_numeric($routeArgs['page'])) {
             $page = $routeArgs['page'];
+        }else if(isset($routeArgs['page']) && !is_numeric($routeArgs['page'])){
+            $this->flash('warning', 'Page not found.');
+            return $this->redirect($response, 'blog');
         }else{
             $page = 1;
         }
@@ -55,6 +58,9 @@ class Blog extends Controller{
         // Get/Set Page Number
         if (isset($routeArgs['page']) && is_numeric($routeArgs['page'])) {
             $page = $routeArgs['page'];
+        }else if(isset($routeArgs['page']) && !is_numeric($routeArgs['page'])){
+            $this->flash('warning', 'Page not found.');
+            return $this->redirect($response, 'blog');
         }else{
             $page = 1;
         }
@@ -194,6 +200,9 @@ class Blog extends Controller{
         // Get/Set Page Number
         if (isset($routeArgs['page']) && is_numeric($routeArgs['page'])) {
             $page = $routeArgs['page'];
+        }else if(isset($routeArgs['page']) && !is_numeric($routeArgs['page'])){
+            $this->flash('warning', 'Page not found.');
+            return $this->redirect($response, 'blog');
         }else{
             $page = 1;
         }
