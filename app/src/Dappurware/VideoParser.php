@@ -66,7 +66,6 @@ class VideoParser extends Dappurware {
         return null;
     }
 
-
     private static function parseForParams($url, $target_params){
         parse_str( parse_url( $url, PHP_URL_QUERY ), $params_array );
         foreach ($target_params as $target) {

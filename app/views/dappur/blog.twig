@@ -1,7 +1,43 @@
 {% extends 'base.twig' %}
 
-{% block title %}
-	{{config['site-name']}}
+{% if categoryPage %}
+    {% set append = " Category: " ~ category.name %}
+{% elseif tagPage %}
+	{% set append = " Tag: " ~ tag.name %}
+{% elseif authorPage %}
+	{% set append = " Author: " ~ author.username %}
+{% else %}
+    {% set append = "" %}
+{% endif %}
+
+{% block seo %}
+	<title>{{ seo.title }}{{ append }}</title>
+	<meta name="page-title" content="{{ seo.title }}{{ append }}" />
+	<meta name="description" content="{{ seo.description }}{{ append }}" />
+	<meta name="author" content="{{ config['site-name'] }}"/>
+
+	{# Open Graph #}
+	<meta property="og:title" content="{{ seo.title }}{{ append }}" />
+	<meta property="og:type" content="{% if seo.video and seo.video != "" %}video{% else %}website{% endif %}" />
+	<meta property="og:url" content="https://{{ config['domain'] }}{{ currentRoute }}" />
+	<meta property="og:image" content="{{ seo.image }}" />
+	<meta property="og:description" content="{{ seo.description }}{{ append }}" /> 
+	<meta property="og:site_name" content="{{ config['site-name'] }}" />
+	{% if seo.video and seo.video != "" %}<meta property="og:video" content="{{ seo.video }}" />{% endif %}
+
+	{# Twitter Card #}
+	<meta name="twitter:card" content="{% if seo.video and seo.video != "" %}player{% else %}summary_large_image{% endif %}">
+	<meta name="twitter:title" content="{{ seo.title }}{{ append }}">
+	<meta name="twitter:description" content="{{ seo.description }}{{ append }}">
+	<meta name="twitter:image" content="{{ seo.image }}">
+	{% if seo.video and seo.video != "" %}
+	<meta property="twitter:player" content="{{ seo.video }}" />
+	{% endif %}
+
+	{# Google+ #}
+	<meta itemprop="name" content="{{ seo.title }}{{ append }}">
+	<meta itemprop="description" content="{{ seo.description }}{{ append }}">
+	<meta itemprop="image" content="{{ seo.image }}">
 {% endblock %}
 
 {% block body %}

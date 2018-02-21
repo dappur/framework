@@ -19,7 +19,8 @@ $app->group('/', function () {
 })
 ->add($container->get('csrf'))
 ->add(new Dappur\Middleware\Maintenance($container))
-->add(new Dappur\Middleware\PageConfig($container));
+->add(new Dappur\Middleware\PageConfig($container))
+->add(new Dappur\Middleware\Seo($container));
 
 // Requires Authentication
 $app->group('/', function () use($app) {
@@ -39,7 +40,8 @@ $app->group('/', function () use($app) {
 ->add($container->get('csrf'))
 ->add(new Dappur\Middleware\Auth($container))
 ->add(new Dappur\Middleware\Maintenance($container))
-->add(new Dappur\Middleware\PageConfig($container));
+->add(new Dappur\Middleware\PageConfig($container))
+->add(new Dappur\Middleware\Seo($container));
 
 // Maintenance Mode Bypasses All Middleware
 $app->map(['GET'], '/maintenance', 'App:maintenance')
