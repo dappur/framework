@@ -13,7 +13,7 @@
 
     {# Open Graph #}
     <meta property="og:title" content="{{ seo.title }}" />
-    <meta property="og:type" content="{% if seo.video and seo.video != "" %}video{% else %}website{% endif %}" />
+    <meta property="og:type" content="{% if seo.video and seo.video != "" %}video.other{% else %}website{% endif %}" />
     <meta property="og:url" content="https://{{ config['domain'] }}{{ currentRoute }}" />
     <meta property="og:image" content="{{ seo.image }}" />
     <meta property="og:description" content="{{ seo.description }}" /> 

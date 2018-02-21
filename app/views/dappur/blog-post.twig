@@ -18,7 +18,7 @@
 
 	{# Open Graph #}
 	<meta property="og:title" content="{{ post.title }}" />
-	<meta property="og:type" content="{% if player_url %}video{% else %}article{% endif %}" />
+	<meta property="og:type" content="{% if player_url %}video.other{% else %}article{% endif %}" />
 	<meta property="og:url" content="https://{{ config['domain'] }}{{ currentRoute }}" />
 	<meta property="og:image" content="{{ post.featured_image }}" />
 	<meta property="og:description" content="{{ post.description }}" /> 
