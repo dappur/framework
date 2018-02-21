@@ -18,7 +18,7 @@
     <meta property="og:image" content="{{ seo.image }}" />
     <meta property="og:description" content="{{ seo.description }}" /> 
     <meta property="og:site_name" content="{{ config['site-name'] }}" />
-    {#{% if seo.video and seo.video != "" %}<meta property="og:video" content="{{ seo.video }}" />{% endif %}#}
+    {% if seo.video and seo.video != "" %}<meta property="og:video" content="{{ seo.video }}" />{% endif %}
 
     {# Twitter Card #}
     <meta name="twitter:card" content="{% if seo.video and seo.video != "" %}player{% else %}summary_large_image{% endif %}">
@@ -27,6 +27,7 @@
     <meta name="twitter:image" content="{{ seo.image }}">
     {% if seo.video and seo.video != "" %}
     <meta property="twitter:player" content="{{ seo.video }}" />
+    <meta property="twitter:player:stream" content="{{ seo.video }}" />
     {% endif %}
 
     {# Google+ #}
