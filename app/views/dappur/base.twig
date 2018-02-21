@@ -13,12 +13,12 @@
 
     {# Open Graph #}
     <meta property="og:title" content="{{ seo.title }}" />
-    <meta property="og:type" content="{% if seo.video and seo.video != "" %}video.other{% else %}website{% endif %}" />
+    <meta property="og:type" content="website" />
     <meta property="og:url" content="https://{{ config['domain'] }}{{ currentRoute }}" />
     <meta property="og:image" content="{{ seo.image }}" />
     <meta property="og:description" content="{{ seo.description }}" /> 
     <meta property="og:site_name" content="{{ config['site-name'] }}" />
-    {% if seo.video and seo.video != "" %}<meta property="og:video" content="{{ seo.video }}" />{% endif %}
+    {#{% if seo.video and seo.video != "" %}<meta property="og:video" content="{{ seo.video }}" />{% endif %}#}
 
     {# Twitter Card #}
     <meta name="twitter:card" content="{% if seo.video and seo.video != "" %}player{% else %}summary_large_image{% endif %}">
