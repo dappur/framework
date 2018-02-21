@@ -2,8 +2,14 @@
 All notable changes to this project will be documented in this file as of v2.1.0.
 
 ## [Unreleased]
+### Added
+- Added per page SEO config options
+
 ### Changed
+- Alphabetized controllers.php file
+- Required page numbers to be numeric on blog
 - Updated Readme
+- Updated framework description
 
 ## [2.1.3] - 2018-02-13
 ### Added

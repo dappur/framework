@@ -1,6 +1,29 @@
 <?php
 
-// Blog
+// Blog Front End
+$app->group('/blog', function() use ($app) {
+    $app->get('[/{page}]', 'Blog:blog')
+        ->setName('blog');
+
+    $app->map(['GET', 'POST'], '/{year}/{month}/{day}/{slug}', 'Blog:blogPost')
+        ->setName('blog-post');
+
+    $app->get('/author/{username}[/{page}]', 'Blog:blogAuthor')
+        ->setName('blog-author');
+
+    $app->get('/tag/{slug}[/{page}]', 'Blog:blogTag')
+        ->setName('blog-tag');
+
+    $app->get('/category/{slug}[/{page}]', 'Blog:blogCategory')
+        ->setName('blog-category');
+})
+->add($container->get('csrf'))
+->add(new Dappur\Middleware\Maintenance($container))
+->add(new Dappur\Middleware\BlogCheck($container))
+->add(new Dappur\Middleware\PageConfig($container))
+->add(new Dappur\Middleware\Seo($container));
+
+// Blog Admin
 $app->group('/dashboard/blog', function() use ($app) {
     // Main Blog Admin
     $app->get('', 'AdminBlog:blog')
@@ -91,25 +114,3 @@ $app->group('/dashboard/blog', function() use ($app) {
 ->add(new Dappur\Middleware\Admin($container))
 ->add(new Dappur\Middleware\BlogCheck($container))
 ->add($container->get('csrf'));
-
-// Blog
-$app->group('/blog', function() use ($app) {
-    $app->get('[/{page}]', 'Blog:blog')
-        ->setName('blog');
-
-    $app->map(['GET', 'POST'], '/{year}/{month}/{day}/{slug}', 'Blog:blogPost')
-        ->setName('blog-post');
-
-    $app->get('/author/{username}[/{page}]', 'Blog:blogAuthor')
-        ->setName('blog-author');
-
-    $app->get('/tag/{slug}[/{page}]', 'Blog:blogTag')
-        ->setName('blog-tag');
-
-    $app->get('/category/{slug}[/{page}]', 'Blog:blogCategory')
-        ->setName('blog-category');
-})
-->add($container->get('csrf'))
-->add(new Dappur\Middleware\Maintenance($container))
-->add(new Dappur\Middleware\BlogCheck($container))
-->add(new Dappur\Middleware\PageConfig($container));

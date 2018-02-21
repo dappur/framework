@@ -33,6 +33,12 @@ var DappurMedia = new function() {
                     '?source=blog_featured&target='+target+'"></iframe>'
                 );
                 break;
+            case "seo_featured":
+                $("#media-modal-body").html('<iframe id="dappurmedia" width="100%" height="475px" frameborder="0" marginheight="0" marginwidth="0" src="'+
+                    this.managerUrl+
+                    '?source=blog_featured&target='+target+'"></iframe>'
+                );
+                break;
         }
         $('#media-modal').modal('show');
     };
@@ -477,6 +483,10 @@ var DappurMedia = new function() {
             
         }else if (source == "blog_featured") {
             window.parent.$("#featured_thumbnail").html('<img src="'+filePath+'" class="img-responsive" alt="Featured Image" style="width: 100%;"><input type="hidden" name="featured_image" value="'+filePath+'">');            
+            window.parent.$("#media-modal").modal("hide");
+        }else if (source == "seo_featured") {
+            window.parent.$("#featured_thumbnail").html('<img src="'+filePath+'" class="img-responsive" alt="Featured Image" style="width: 100%;">');     
+            window.parent.$("#featured_image").val(filePath);     
             window.parent.$("#media-modal").modal("hide");
         }
        

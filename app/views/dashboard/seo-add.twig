@@ -1,0 +1,212 @@
+{% extends 'base.twig' %}
+
+{% block title %}{{config['site-name']}} || Add New SEO Configuration{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/css/select2.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2-bootstrap-theme/0.1.0-beta.10/select2-bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-daterangepicker/2.1.25/daterangepicker.min.css" />
+    <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+{% endblock %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header">Add New SEO Configuration</h1>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    Add SEO Configuration
+                </div>
+                
+                <div class="panel-body">
+                    <form action="{{ currentRoute }}" method="POST" role="form">
+                        <div class="col-md-12">
+                            <div class="row">
+                                <h4 style="font-weight: bold;">Details</h4>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group{% if has_error('page') %} has-error{% endif %}">
+                                        <label for="page">Page</label>
+                                        <select name="page" id="page" class="form-control" required="required">
+                                            <option value="">Select Route</option>
+                                            {% for key,route in availableRoutes %}
+                                                <option value="{{ route.name }}" {% if requestParams.page == route.name %}SELECTED{% endif %}>{{ route.pattern }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <span class="help-block">{{ error('page') }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group{% if has_error('title') %} has-error{% endif %}">
+                                        <label for="title">Title</label>
+                                        <input type="text" name="title" class="form-control" id="title" placeholder="Title" value="{% if requestParams.title %}{{requestParams.title}}{% endif %}" required="required">
+                                        <span class="help-block">{{ error('title') }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <div class="form-group{% if has_error('description') %} has-error{% endif %}">
+                                        <label for="description">Description</label>
+                                        <textarea name="description" class="form-control" id="description" placeholder="Description" required="required" rows="2">{% if requestParams.description %}{{requestParams.description}}{% endif %}</textarea>
+                                        <span class="help-block">{{ error('description') }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <h4 style="font-weight: bold;">Media</h4>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group{% if has_error('featured_image') %} has-error{% endif %}">
+                                        <label for="cl_upload">Image (Recommended 1200px by 630px)</label>
+                                        <div class="row">
+                                            <div class="col-xs-6">
+                                                <div class="form-group">
+                                                    <a class="btn btn-block upload-featured-local">
+                                                        <span class="fa fa-upload"></span> via Local CMS
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            {% if hasCloudinary %}
+                                            <div class="col-xs-6">
+                                                <div class="form-group">
+                                                    <a class="btn btn-block upload-featured-cloudinary">
+                                                        <span class="fa fa-upload"></span> via Cloudinary
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            {% endif %}
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-xs-12">
+                                                <div class="form-group" id="featured_thumbnail" delete-token="">
+                                                    {% if requestParams.featured_image %}
+                                                        <img src="{{requestParams.featured_image}}" class="img-responsive" alt="Image" style="width: 100%;">
+                                                    {% else %}
+                                                        <img src="https://placehold.it/400x210?text=No+Featured+Photo" class="img-responsive" alt="Image" style="width: 100%;">
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div> 
+                                        <input type="hidden" name="featured_image" id="featured_image" value="{{ requestParams.featured_image }}" />
+
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group{% if has_error('video') %} has-error{% endif %}" id="fv_group">
+                                        <label for="video">Video</label>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" id="video_url" name="video_url" placeholder="Youtube/Vimeo URL" value="{{requestParams.video}}">
+                                            <input type="hidden" name="video" id="video" value="{{requestParams.video}}" />
+                                            
+                                            <span class="input-group-btn">
+                                                <button class="btn btn-default" id="fvButton">
+                                                    <i class="fa fa-arrow-right"></i>
+                                                </button>
+                                            </span>
+                                        </div>
+                                        <span class="help-block">{{ error('video') }}</span>
+
+                                        <div id="video_preview">
+                                            {% if requestParams.video %}
+                                                <div class="video-container">
+                                                    <iframe src="{{requestParams.video}}" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowfullscreen></iframe>
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4 col-md-offset-4">
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-success form-control">Save SEO Configuration</button>
+                            </div>
+                        </div>
+                        {{ csrf() }}
+                        <input type="hidden" name="user_id" value="{{user.id}}" />
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block javascript %}
+<!-- Select2 Dropdowns -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/js/select2.min.js" type="text/javascript"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-daterangepicker/2.1.25/moment.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-daterangepicker/2.1.25/daterangepicker.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/4.7.1/tinymce.min.js" type="text/javascript"></script>
+<script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+<script src="{{ asset('dashboard/js/tinymce-init.min.js') }}" type="text/javascript"></script>
+<script src="{{ asset('dashboard/js/video-parser.min.js') }}" type="text/javascript"></script>
+{% if hasCloudinary %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cloudinary-jquery-file-upload/2.3.0/cloudinary-jquery-file-upload.min.js"></script>
+<script src="{{ asset('dashboard/js/seo.min.js') }}" type="text/javascript"></script>
+{{ cloudinary_js_config() }}
+<script src="//widget.cloudinary.com/global/all.js" type="text/javascript"></script>
+<script type="text/javascript">
+
+var generateSignature = function(callback, params_to_sign){
+    $.ajax({
+        url     : "/dashboard/media/cloudinary-sign",
+        type    : "GET",
+        dataType: "text",
+        data    : { data: params_to_sign},
+        success : function(signature, textStatus, xhr) { callback(signature); },
+        error   : function(xhr, status, error) { console.log(xhr, status, error); }
+    });
+}
+
+$('.upload-featured-cloudinary').cloudinary_upload_widget(
+    { 
+        cloud_name: 'dappur', 
+        thumbnails: false,
+        upload_signature: generateSignature,
+        api_key: '{{ cloudinarySignature.api_key|raw }}', 
+        button_class: 'btn btn-info form-control',
+        button_caption: '<span class="fa fa-upload"></span> via Cloudinary',
+        cropping: 'server',
+        cropping_aspect_ratio: 1.91,
+        folder: 'seo/',
+        min_image_width: 1200,
+        min_image_height: 627, 
+        show_powered_by: false,
+        sources: [
+            'local',
+            'url',
+            'camera',
+        ],
+        multiple: false,
+        theme: 'white'
+    },
+    function(error, result) { 
+        if (result) {
+
+            var deleteToken = $("#featured_thumbnail").attr('delete-token');
+            if (deleteToken != "") {
+                $.cloudinary.delete_by_token(deleteToken);
+            }
+            $("#featured_image").val(result[0].secure_url);
+            $("#featured_thumbnail").html('<img src="'+result[0].secure_url+'" class="img-responsive" alt="Featured Image" style="width: 100%;">');
+            $("#featured_thumbnail").attr('delete-token', result[0].delete_token);
+        }
+    }
+);
+</script>
+{% endif %}
+{% endblock %}
+

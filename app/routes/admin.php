@@ -99,6 +99,25 @@ $app->group('/dashboard', function () use($app) {
             ->setName('admin-email-test');
     });
 
+    // SEO Manager
+    $app->group('/seo', function () use($app) {
+
+        $app->map(['GET'], '', 'AdminSeo:seo')
+            ->setName('admin-seo');
+
+        $app->map(['GET','POST'], '/add', 'AdminSeo:seoAdd')
+            ->setName('admin-seo-add');
+
+        $app->map(['GET','POST'], '/edit/{seo_id}', 'AdminSeo:seoEdit')
+            ->setName('admin-seo-edit');
+
+        $app->map(['POST'], '/delete', 'AdminSeo:seoDelete')
+            ->setName('admin-seo-delete');
+
+        $app->map(['POST'], '/default', 'AdminSeo:seoDefault')
+            ->setName('admin-seo-default');
+    });
+
     // Contact Requests
     $app->map(['GET'], '/contact', 'Admin:contact')
         ->setName('admin-contact');

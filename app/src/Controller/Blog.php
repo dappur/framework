@@ -16,12 +16,16 @@ use Respect\Validation\Validator as V;
 
 class Blog extends Controller{
 
+    // Main Blog Page
     public function blog(Request $request, Response $response){
 
         // Get Page Number
         $routeArgs =  $request->getAttribute('route')->getArguments();
         if (isset($routeArgs['page']) && is_numeric($routeArgs['page'])) {
             $page = $routeArgs['page'];
+        }else if(isset($routeArgs['page']) && !is_numeric($routeArgs['page'])){
+            $this->flash('warning', 'Page not found.');
+            return $this->redirect($response, 'blog');
         }else{
             $page = 1;
         }
@@ -41,6 +45,45 @@ class Blog extends Controller{
         return $this->view->render($response, 'blog.twig', array("posts" => $posts->get(), "pagination" => $pagination));
     }
 
+    // Author Posts Page
+    public function blogAuthor(Request $request, Response $response){
+
+        $routeArgs =  $request->getAttribute('route')->getArguments();
+
+        $check_author = Users::where('username', $routeArgs['username'])->first();
+
+        if (!$check_author) {
+            $this->flash('warning', 'Author not found.');
+            return $this->redirect($response, 'blog');
+        }
+
+        // Get/Set Page Number
+        if (isset($routeArgs['page']) && is_numeric($routeArgs['page'])) {
+            $page = $routeArgs['page'];
+        }else if(isset($routeArgs['page']) && !is_numeric($routeArgs['page'])){
+            $this->flash('warning', 'Page not found.');
+            return $this->redirect($response, 'blog');
+        }else{
+            $page = 1;
+        }
+
+        $posts = BlogPosts::where('status', 1)
+            ->where('user_id', $check_author->id)
+            ->where('publish_at', '<', Carbon::now())
+            ->with('category', 'tags', 'author')
+            ->withCount('comments', 'pending_comments')
+            ->orderBy('publish_at', 'DESC')
+            ->skip($this->config['blog-per-page']*($page-1))
+            ->take($this->config['blog-per-page']);
+
+       
+        $pagination = new Paginator($posts->posts_count, $this->config['blog-per-page'], $page, "/blog/tag/".$check_tag->slug."/(:num)");
+        $pagination = $pagination;
+
+        return $this->view->render($response, 'blog.twig', array("author" => $check_author, "posts" => $posts->get(), "pagination" => $pagination, "authorPage" => true));
+    }
+
+    // Category Posts Page
     public function blogCategory(Request $request, Response $response){
 
         $routeArgs =  $request->getAttribute('route')->getArguments();
@@ -55,6 +98,9 @@ class Blog extends Controller{
         // Get/Set Page Number
         if (isset($routeArgs['page']) && is_numeric($routeArgs['page'])) {
             $page = $routeArgs['page'];
+        }else if(isset($routeArgs['page']) && !is_numeric($routeArgs['page'])){
+            $this->flash('warning', 'Page not found.');
+            return $this->redirect($response, 'blog');
         }else{
             $page = 1;
         }
@@ -78,9 +124,10 @@ class Blog extends Controller{
         $pagination = new Paginator($posts->posts_count, $this->config['blog-per-page'], $page, "/blog/category/".$check_cat->slug."/(:num)");
         $pagination = $pagination;
 
-        return $this->view->render($response, 'blog.twig', array("posts" => $posts->posts, "pagination" => $pagination));
+        return $this->view->render($response, 'blog.twig', array("category" => $check_cat, "posts" => $posts->posts, "pagination" => $pagination, "categoryPage" => true));
     }
 
+    // Blog Post
     public function blogPost(Request $request, Response $response){
 
         $args =  $request->getAttribute('route')->getArguments();
@@ -180,6 +227,8 @@ class Blog extends Controller{
         
     }
 
+
+    // Tag posts page
     public function blogTag(Request $request, Response $response){
 
         $routeArgs =  $request->getAttribute('route')->getArguments();
@@ -194,6 +243,9 @@ class Blog extends Controller{
         // Get/Set Page Number
         if (isset($routeArgs['page']) && is_numeric($routeArgs['page'])) {
             $page = $routeArgs['page'];
+        }else if(isset($routeArgs['page']) && !is_numeric($routeArgs['page'])){
+            $this->flash('warning', 'Page not found.');
+            return $this->redirect($response, 'blog');
         }else{
             $page = 1;
         }
@@ -217,8 +269,10 @@ class Blog extends Controller{
         $pagination = new Paginator($posts->posts_count, $this->config['blog-per-page'], $page, "/blog/tag/".$check_tag->slug."/(:num)");
         $pagination = $pagination;
 
-        return $this->view->render($response, 'blog.twig', array("posts" => $posts->posts, "pagination" => $pagination));
+        return $this->view->render($response, 'blog.twig', array("tag" => $check_tag, "posts" => $posts->posts, "pagination" => $pagination, "tagPage" => true));
     }
+
+    
 
     
 }
