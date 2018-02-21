@@ -25,8 +25,8 @@ $(document).ready(function() {
                 $("#fv_group").removeClass('has-error');
 
                 if (featuredVideo.provider === "youtube") {
-                    $("#video").val('https://www.youtube.com/embed/'+featuredVideo.id);
-                    $("#video_preview").html('<div class="video-container"><iframe src="https://www.youtube.com/v/'+featuredVideo.id+'" frameborder="0" allowfullscreen></iframe></div>');
+                    $("#video").val('https://www.youtube.com/v/'+featuredVideo.id);
+                    $("#video_preview").html('<div class="video-container"><iframe src="https://www.youtube.com/embed/'+featuredVideo.id+'" frameborder="0" allowfullscreen></iframe></div>');
 
                 } else if (featuredVideo.provider === "vimeo"){
                     $("#video").val('https://player.vimeo.com/video/'+featuredVideo.id);
