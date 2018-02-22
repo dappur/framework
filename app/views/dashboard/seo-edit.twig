@@ -56,22 +56,29 @@
                                         <label for="cl_upload">Image (Recommended 1200px by 630px)</label>
                                         <span class="help-block">{{ error('featured_image') }}</span>
                                         <div class="row">
-                                            <div class="col-xs-6">
+                                            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-4">
                                                 <div class="form-group">
                                                     <a class="btn btn-block upload-featured-local">
-                                                        <span class="fa fa-upload"></span> via Local CMS
+                                                        <span class="fa fa-upload"></span> Local CMS
                                                     </a>
                                                 </div>
                                             </div>
                                             {% if hasCloudinary %}
-                                            <div class="col-xs-6">
+                                            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-4">
                                                 <div class="form-group">
                                                     <a class="btn btn-block upload-featured-cloudinary">
-                                                        <span class="fa fa-upload"></span> via Cloudinary
+                                                        <span class="fa fa-upload"></span> Cloudinary
                                                     </a>
                                                 </div>
                                             </div>
                                             {% endif %}
+                                            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-4">
+                                                <div class="form-group">
+                                                    <a class="btn btn-danger btn-block">
+                                                        <span class="fa fa-upload youtube-image" style="display: none;"></span> YouTube Hi-Res
+                                                    </a>
+                                                </div>
+                                            </div>
                                         </div>
                                         <div class="row">
                                             <div class="col-xs-12">
@@ -172,7 +179,7 @@ $('.upload-featured-cloudinary').cloudinary_upload_widget(
         upload_signature: generateSignature,
         api_key: '{{ cloudinarySignature.api_key|raw }}', 
         button_class: 'btn btn-info form-control',
-        button_caption: '<span class="fa fa-upload"></span> via Cloudinary',
+        button_caption: '<span class="fa fa-upload"></span> Cloudinary',
         cropping: 'server',
         cropping_aspect_ratio: 1.91,
         folder: 'seo/',

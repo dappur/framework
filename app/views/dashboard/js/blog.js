@@ -1,5 +1,4 @@
 var video_id = false;
-
 $(document).ready(function() {
 
     $('#fvButton').on('click', function (e) {
@@ -20,26 +19,30 @@ $(document).ready(function() {
             var featuredVideo = urlParser.parse($("#video_url").val());
 
             if (featuredVideo) {
+                video_id = featuredVideo.id;
                 // Start the loading spinner
                 $("#video_preview").html('<span class="help-block">Processing Video... <i class="fa fa-spinner"></i></span>');
+
+                // Set the form video details
+                $("#video_provider").val(featuredVideo.provider);
+                $("#video_id").val(featuredVideo.id);
 
                 // Remove the error class from the form.
                 $("#fv_group").removeClass('has-error');
 
                 if (featuredVideo.provider === "youtube") {
-                    video_id = featuredVideo.id;
-                    $("#video").val('https://www.youtube.com/embed/'+featuredVideo.id);
                     $("#video_preview").html('<div class="video-container"><iframe src="https://www.youtube.com/embed/'+featuredVideo.id+'" frameborder="0" allowfullscreen></iframe></div>');
-                    $(".seo-del-video").show();
+                    $(".blog-del-video").show();
                     $(".youtube-image").show();
                 } else if (featuredVideo.provider === "vimeo"){
-                    $("#video").val('https://player.vimeo.com/video/'+featuredVideo.id);
+                    $(".blog-del-video").show();
                     $("#video_preview").html('<div class="video-container"><iframe src="https://player.vimeo.com/video/'+featuredVideo.id+'" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowfullscreen></iframe></div>');
-                    $(".seo-del-video").show();
+
                 }else{
                     $("#video_preview").html('<span class="help-block">That is not a supported video provider.</span>');
                     $("#fv_group").addClass('has-error')
                 }
+
 
             }else{
                 $("#video_preview").html('<span class="help-block">That is not a valid video url.</span>');
@@ -50,18 +53,38 @@ $(document).ready(function() {
         }
     });
 
-    if($("#video").val() !== ""){
-        $(".seo-del-video").show();
-        $(".youtube-image").show();
+    $('#status').bootstrapToggle({
+      on: 'Published',
+      off: 'Draft',
+      width: '100%'
+    });
+
+    $('#tags').select2({
+        tags: true,
+        width: '100%'
+    });
+
+    $('#category').select2({
+        tags: true,
+        width: '100%'
+    });
+
+    if($("#video_id").val() !== ""){
+        $(".blog-del-video").show();
+        if ($("#video_provider").val() == "youtube") {
+            $(".youtube-image").show();
+        }
     }else{$(".youtube-image").show();
-        $(".seo-del-video").hide();
-        $(".youtube-image").hide();
+        $(".blog-del-video").hide();
+        if ($("#video_provider").val() == "youtube") {
+            $(".youtube-image").hide();
+        }
     }
     
 });
 
 $(document).on('click', '.upload-featured-local', function(){
-    DappurMedia.loadMedia('seo_featured', null);
+    DappurMedia.loadMedia('blog_featured', null);
 });
 
 $(document).on('click', '.youtube-image', function(){
@@ -72,10 +95,10 @@ $(document).on('click', '.youtube-image', function(){
     }
 });
 
-$(document).on('click', '.seo-del-video', function(){
-    $("#video").val("");
+$(document).on('click', '.blog-del-video', function(){
+    $("#video_id").val("");
     $("#video_preview").html("");
     $("#video_url").html("");
-    $(".seo-del-video").hide();
+    $(".blog-del-video").hide();
     $(".youtube-image").hide();
 });

@@ -9,6 +9,7 @@
 	{% if post.video_id and post.video_provider %}
 	    {% if post.video_provider == "youtube" %}
 	    	{% set player_url = "https://www.youtube.com/embed/" ~ post.video_id %}
+	    	{% set player_thumb = "https://i1.ytimg.com/vi/" ~ post.video_id ~ "/maxresdefault.jpg" %}
 	    {% elseif post.video_provider == "vimeo" %}
 	    	{% set player_url = "https://player.vimeo.com/video/" ~ post.video_id %}
 	    {% else %}

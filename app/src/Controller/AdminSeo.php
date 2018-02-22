@@ -74,7 +74,7 @@ class AdminSeo extends Controller{
                 $add->page = $request->getParam('page');
                 $add->title = $request->getParam('title');
                 $add->description = $request->getParam('description');
-                if ($request->getParam('image') != "") {
+                if ($request->getParam('featured_image') != "") {
                     $add->image = $request->getParam('featured_image');
                 }
                 if ($request->getParam('video') != "") {

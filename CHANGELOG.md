@@ -3,11 +3,14 @@ All notable changes to this project will be documented in this file as of v2.1.0
 
 ## [Unreleased]
 ### Added
+- Get featured image from youtube video on blog and seo
+- Prevent directory listing of uploads folder
 - Added twitter player card width and height options
 - Added option to delete SEO video in admin
 - Added per page SEO config options
 
 ### Changed
+- Required featured image if video on blog (for seo purposes)
 - Mage SEO image required
 - Changed default OG image
 - Cleaned Up navbar Logo

@@ -394,7 +394,7 @@ class AdminBlog extends Controller{
             }
 
             // Slugify Title
-            $slug = $this->blog->slugify($requestParams['title']);
+            $slug = Utils::slugify($requestParams['title']);
 
             // Validate Tags
             $post_tags = array();
@@ -428,6 +428,10 @@ class AdminBlog extends Controller{
                 $status = 1;
             }else{
                 $status = 0;
+            }
+
+            if ($video_provider && $video_id && $requestParams['featured_image'] == "") {
+                $this->validator->addError('featured_image', 'Featured image is required with a video.');
             }
 
             if ($this->validator->isValid()) {
@@ -572,6 +576,10 @@ class AdminBlog extends Controller{
                 $status = 1;
             }else{
                 $status = 0;
+            }
+
+            if ($video_provider && $video_id && $requestParams['featured_image'] == "") {
+                $this->validator->addError('featured_image', 'Featured image is required with a video.');
             }
 
             if ($this->validator->isValid()) {
