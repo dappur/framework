@@ -7,6 +7,7 @@ storage/log/monolog/*
 
 public/uploads/*
 !public/uploads/index.php
+!public/uploads/.htaccess
 
 settings.json
 bower_components
