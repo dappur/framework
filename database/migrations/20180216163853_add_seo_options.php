@@ -46,7 +46,7 @@ class AddSeoOptions extends Migration
         $ins_seo->page = "home";
         $ins_seo->title = "Dappur PHP Framework";
         $ins_seo->description = "A stylish PHP application framework crafted using Slim, Twig, Eloquent and Sentinel designed to get you from clone to production in a matter of minutes.";
-        $ins_seo->image = "https://res.cloudinary.com/dappur/image/upload/c_mpad,w_1200,h_630/v1479072913/site-images/logo-horizontal.png";
+        $ins_seo->image = "https://res.cloudinary.com/dappur/image/upload/v1519256235/seo/bbn48kaoq35hm7zbuuzk.jpg";
         $ins_seo->default = 1;
         $ins_seo->save();
 
