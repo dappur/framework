@@ -68,6 +68,7 @@
                                 <div class="col-md-6">
                                     <div class="form-group{% if has_error('featured_image') %} has-error{% endif %}">
                                         <label for="cl_upload">Image (Recommended 1200px by 630px)</label>
+                                        <span class="help-block">{{ error('featured_image') }}</span>
                                         <div class="row">
                                             <div class="col-xs-6">
                                                 <div class="form-group">
@@ -103,7 +104,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group{% if has_error('video') %} has-error{% endif %}" id="fv_group">
-                                        <label for="video">Video</label>
+                                        <label for="video">Video <button type="button" class="btn btn-sm btn-danger seo-del-video" style="display: none;"><i class="fa fa-close"></i> Delete</button></label>
                                         <div class="input-group">
                                             <input type="text" class="form-control" id="video_url" name="video_url" placeholder="Youtube/Vimeo URL" value="{{requestParams.video}}">
                                             <input type="hidden" name="video" id="video" value="{{requestParams.video}}" />

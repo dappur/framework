@@ -101,4 +101,4 @@ In addition to the few basic front end templates, this framework also comes pre-
 **Default Admin Username:** `admin`  
 **Default Admin Password:** `admin123`
 
-It is HIGHLY recommended that you change the default admin password to one of your choosing by modifying line 224 of `database/migrations/20170118012924_init_database.php`.
+It is HIGHLY recommended that you change the password immediately after your initial migration.

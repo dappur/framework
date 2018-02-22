@@ -27,11 +27,11 @@ $(document).ready(function() {
                 if (featuredVideo.provider === "youtube") {
                     $("#video").val('https://www.youtube.com/embed/'+featuredVideo.id);
                     $("#video_preview").html('<div class="video-container"><iframe src="https://www.youtube.com/embed/'+featuredVideo.id+'" frameborder="0" allowfullscreen></iframe></div>');
-
+                    $(".seo-del-video").show();
                 } else if (featuredVideo.provider === "vimeo"){
                     $("#video").val('https://player.vimeo.com/video/'+featuredVideo.id);
                     $("#video_preview").html('<div class="video-container"><iframe src="https://player.vimeo.com/video/'+featuredVideo.id+'" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowfullscreen></iframe></div>');
-
+                    $(".seo-del-video").show();
                 }else{
                     $("#video_preview").html('<span class="help-block">That is not a supported video provider.</span>');
                     $("#fv_group").addClass('has-error')
@@ -45,9 +45,22 @@ $(document).ready(function() {
             $("#video_url").attr("disabled", false);
         }
     });
+
+    if($("#video").val() !== ""){
+        $(".seo-del-video").show();
+    }else{
+        $(".seo-del-video").hide();
+    }
     
 });
 
 $(document).on('click', '.upload-featured-local', function(){
     DappurMedia.loadMedia('seo_featured', null);
+});
+
+$(document).on('click', '.seo-del-video', function(){
+    $("#video").val("");
+    $("#video_preview").html("");
+    $("#video_url").html("");
+    $(".seo-del-video").hide();
 });

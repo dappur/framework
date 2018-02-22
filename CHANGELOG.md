@@ -3,13 +3,21 @@ All notable changes to this project will be documented in this file as of v2.1.0
 
 ## [Unreleased]
 ### Added
+- Added twitter player card width and height options
+- Added option to delete SEO video in admin
 - Added per page SEO config options
 
 ### Changed
+- Mage SEO image required
+- Changed default OG image
+- Cleaned Up navbar Logo
 - Alphabetized controllers.php file
 - Required page numbers to be numeric on blog
 - Updated Readme
 - Updated framework description
+
+### Removed
+- Removed logo from homepage in leiu of html config
 
 ## [2.1.3] - 2018-02-13
 ### Added

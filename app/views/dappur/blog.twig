@@ -1,11 +1,11 @@
 {% extends 'base.twig' %}
 
 {% if categoryPage %}
-    {% set append = " Category: " ~ category.name %}
+    {% set append = " || Category: " ~ category.name %}
 {% elseif tagPage %}
-	{% set append = " Tag: " ~ tag.name %}
+	{% set append = " || Tag: " ~ tag.name %}
 {% elseif authorPage %}
-	{% set append = " Author: " ~ author.username %}
+	{% set append = " || Author: " ~ author.username %}
 {% else %}
     {% set append = "" %}
 {% endif %}
@@ -32,6 +32,9 @@
 	<meta name="twitter:image" content="{{ seo.image }}">
 	{% if seo.video and seo.video != "" %}
 	<meta property="twitter:player" content="{{ seo.video }}" />
+	<meta property="twitter:player:stream" content="{{ seo.video }}" />
+    <meta property="twitter:player:height" content="450" />
+    <meta property="twitter:player:width" content="800" />
 	{% endif %}
 
 	{# Google+ #}

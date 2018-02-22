@@ -46,6 +46,12 @@ class AdminSeo extends Controller{
                         'notEmpty' => 'Title is required.',
                         'length' => 'SEO descriptions need to be between 50-300 characters.'
                         )
+                ),
+                'featured_image' => array(
+                    'rules' => V::notEmpty(), 
+                    'messages' => array(
+                        'notEmpty' => 'Featured image is required.'
+                        )
                 )
             );
             $this->validator->validate($request, $validate_data);
@@ -175,6 +181,12 @@ class AdminSeo extends Controller{
                     'messages' => array(
                         'notEmpty' => 'Title is required.',
                         'length' => 'SEO descriptions need to be between 50-300 characters.'
+                        )
+                ),
+                'featured_image' => array(
+                    'rules' => V::notEmpty(), 
+                    'messages' => array(
+                        'notEmpty' => 'Featured image is required.'
                         )
                 )
             );
