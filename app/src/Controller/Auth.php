@@ -4,6 +4,7 @@ namespace Dappur\Controller;
 
 use Dappur\Dappurware\Email as E;
 use Dappur\Dappurware\Recaptcha;
+use Dappur\Model\Oauth2Providers;
 use Cartalyst\Sentinel\Checkpoints\ThrottlingException;
 use Cartalyst\Sentinel\Checkpoints\NotActivatedException;
 use Cartalyst\Sentinel\Reminders\Reminder;
@@ -158,12 +159,25 @@ class Auth extends Controller{
 
         }
 
-        return $this->view->render($response, 'login.twig');
+        // Prepare Oauth2 Providers
+        $oauth2_providers = Oauth2Providers::where('status', 1)->where('login', 1)->get();
+        $client_ids = array();
+        foreach ($oauth2_providers as $okey => $ovalue) {
+            $client_ids[$ovalue->id] = $this->settings['oauth2'][$ovalue->slug]['client_id'];
+        }
+
+        // Generate Oauth2 State
+        $_SESSION["oauth2-state"] = (string) microtime(true);
+
+        return $this->view->render($response, 'login.twig', array("oauth2_providers" => $oauth2_providers, "client_ids" => $client_ids));
     }
 
     public function logout(Request $request, Response $response){
 
         $this->auth->logout();
+
+        unset($_SESSION['oauth2-redirect']);
+        unset($_SESSION['oauth2-state']);
 
         $this->flash('success', 'You have been logged out.');
         return $this->redirect($response, 'home');
@@ -281,7 +295,7 @@ class Auth extends Controller{
                     $send_email = new E($this->container);
                     $send_email = $send_email->sendTemplate(array($user->id), 'registration');
                     if ($send_email['status'] == "error") {
-                        $this->flash('danger', 'An error ocurred sending your activation email.  Please contact support.');
+                        $this->flash('danger', 'An error ocurred sending your welcome email.');
                     }else{
                         $this->flash('success', 'Your account has been created.');
                     }
@@ -297,7 +311,17 @@ class Auth extends Controller{
             }
         }
 
-        return $this->view->render($response, 'register.twig');
+        // Prepare Oauth2 Providers
+        $oauth2_providers = Oauth2Providers::where('status', 1)->where('login', 1)->get();
+        $client_ids = array();
+        foreach ($oauth2_providers as $okey => $ovalue) {
+            $client_ids[$ovalue->id] = $this->settings['oauth2'][$ovalue->slug]['client_id'];
+        }
+
+        // Generate Oauth2 State
+        $_SESSION["oauth2-state"] = (string) microtime(true);
+
+        return $this->view->render($response, 'register.twig', array("oauth2_providers" => $oauth2_providers, "client_ids" => $client_ids));
     }
 
     public function resetPassword(Request $request, Response $response){

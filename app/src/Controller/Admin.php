@@ -8,6 +8,7 @@ use Dappur\Model\UsersProfile;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use Respect\Validation\Validator as V;
+use Slim\Views\PhpRenderer;
 
 class Admin extends Controller{
 
@@ -122,43 +123,6 @@ class Admin extends Controller{
                         return $this->redirect($response, 'my-account');
                     }else{
                         $this->flashNow('danger', 'There was an error updating your account information.');
-                    }
-                }
-            }
-
-            if (null !== $request->getParam('change_password')) {
-                // Validate Data
-                $validate_data = array(
-                    'password' => array(
-                    'rules' => V::noWhitespace()->length(6, 25), 
-                    'messages' => array(
-                        'length' => 'Must be between 6 and 25 characters.',
-                        'noWhitespace' => 'Must not contain any spaces.'
-                        )
-                    ),
-                    'password_confirm' => array(
-                        'rules' => V::equals($request->getParam('password')),
-                        'messages' => array(
-                            'equals' => 'Passwords do not match.'
-                            )
-                    )
-                );
-
-                $this->validator->validate($request, $validate_data);
-
-                if ($this->validator->isValid()) {
-
-                    $new_information = [
-                        'password' => $request->getParam('password')
-                    ];
-
-                    $update_user = $this->auth->update($user, $new_information);
-
-                    if ($update_user) {
-                        $this->flash('success', 'Your password has been updated successfully.');
-                        return $this->redirect($response, 'my-account');
-                    }else{
-                        $this->flashNow('danger', 'There was an error changing your password.');
                     }
                 }
             }

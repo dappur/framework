@@ -28,10 +28,10 @@
     </div>
 {% endmacro %}
 
-{% macro textarea(name, value, id, label, class, rows, cols) %}
+{% macro textarea(name, value, id, label, class, rows, cols, disabled = null) %}
     <div class="form-group floating-label-form-group{% if has_error(name) %} has-error{% endif %}">
         <label for="{{ id }}">{{ label }}</label>
-        <textarea class="form-control {{ class }}" name="{{ name }}" id="{{ id }}" placeholder="{{ label }}" cols="{{ cols }}" rows="{{ rows }}" aria-describedby="{{ id }}-help-block">{{ value }}</textarea>
+        <textarea class="form-control {{ class }}" name="{{ name }}" id="{{ id }}" placeholder="{{ label }}" cols="{{ cols }}" rows="{{ rows }}" aria-describedby="{{ id }}-help-block" {% if disabled %}disabled{% endif %}>{{ value }}</textarea>
         <span id="{{ id }}-help-block" class="help-block">{{ error(name) }}</span>
     </div>
 {% endmacro %}

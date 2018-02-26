@@ -2,6 +2,10 @@
 All notable changes to this project will be documented in this file as of v2.1.0.
 
 ## [Unreleased]
+### Added
+- Oauth 2 Login Provider Support
+- Added profile check for incomplete profiles
+
 
 ## [2.2.0]
 ### Added

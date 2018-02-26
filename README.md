@@ -18,6 +18,10 @@ The blog addon has now been integrated into the main repo and template files.  I
 
 ----------
 
+### Features
+
+----------
+
 ### Created Using
 * [Slim](https://github.com/slimphp/Slim) - Slim is a PHP micro framework that helps you quickly write simple yet powerful web applications and APIs
 * [Slim Twig-View](https://github.com/slimphp/Twig-View) - Slim Framework 3 view helper built on top of the Twig 2 templating component

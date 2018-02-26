@@ -102,6 +102,7 @@ $container['view'] = function ($container) {
     $view->addExtension(new \Twig_Extension_Debug());
     $view->addExtension(new \Dappur\TwigExtension\Asset($container['request']));
     $view->addExtension(new \Dappur\TwigExtension\JsonDecode($container['request']));
+    $view->addExtension(new \Dappur\TwigExtension\Oauth2($container));
     $view->addExtension(new \Dappur\TwigExtension\Recaptcha($container['settings']['recaptcha']));
     $view->addExtension(new \Dappur\TwigExtension\Csrf($container['csrf']));
     $view->addExtension(new \Awurth\SlimValidation\ValidatorExtension($container['validator']));

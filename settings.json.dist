@@ -93,5 +93,27 @@
     "recaptcha": {
         "site_key": "",
         "secret_key": ""
+    },
+    "oauth2": {
+        "facebook": {
+            "client_id": "",
+            "client_secret": ""
+        },
+        "google": {
+            "client_id": "",
+            "client_secret": ""
+        },
+        "twitter": {
+            "client_id": "",
+            "client_secret": ""
+        },
+        "linkedin": {
+            "client_id": "",
+            "client_secret": ""
+        },
+        "github": {
+            "client_id": "",
+            "client_secret": ""
+        }
     }
 }

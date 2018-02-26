@@ -1,0 +1,66 @@
+{% extends 'base.twig' %}
+
+{% import 'macros/form.twig' as form %}
+
+{% block stylesheets %}
+    <link href="{{ asset('dappur/css/profile.min.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block body %}
+	<div class="container">
+		<div class="row">
+			<div class="col-md-6 col-md-offset-3">
+				<section>
+					<h3>Complete Your Profile</h3>
+					<form action="{{currentRoute}}" class="ng-pristine ng-valid" method="post" role="form">
+						<div class="row">
+							<div class="col-md-6">
+                                {{ form.text('first_name', user.first_name, 'first_name', 'First Name') }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form.text('last_name', user.last_name, 'last_name', 'Last Name') }}
+                            </div>
+						</div>
+						<div class="row">
+							<div class="col-md-6">
+                                {{ form.text('email', user.email, 'email', 'Email', null, 'email') }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form.text('username', user.username, 'username', 'Username', null, 'username') }}
+                            </div>
+						</div>
+						<div class="row">
+							<div class="col-md-12">
+								{{ form.textarea('about', user.profile.about, 'about', 'About Me', null, 7, null) }}
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-12">
+								<div class="btn-div pull-right">
+									<button type="submit" name="save_profile" class="btn btn-primary">Save Profile</button>
+								</div>
+							</div>
+						</div>
+						{{csrf()}}
+					</form>
+				</section>
+			</div>
+		</div>
+	</div>
+{% endblock %}
+
+{% block javascript %}
+    <script src="{{ asset('dappur/js/change-password.min.js') }}"></script>
+
+    {% if requestParams['comment_login'] %}
+    <script type="text/javascript">
+    $(document).ready(function(){
+    	$('html, body').animate({
+		    scrollTop: ($('#comments').offset().top -175)
+		},500);
+	});
+    {% endif %}
+    </script>
+    
+    
+{% endblock %}

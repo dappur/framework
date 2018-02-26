@@ -16,11 +16,15 @@ $app->group('/', function () {
 	// CSRF
 	$this->map(['GET'], 'csrf', 'App:csrf')
 		->setName('csrf');
+	// Oauth
+	$this->map(['GET'], 'oauth/{slug}', 'Oauth2:oauth2')
+		->setName('oauth');
 })
 ->add($container->get('csrf'))
 ->add(new Dappur\Middleware\Maintenance($container))
 ->add(new Dappur\Middleware\PageConfig($container))
-->add(new Dappur\Middleware\Seo($container));
+->add(new Dappur\Middleware\Seo($container))
+->add(new Dappur\Middleware\ProfileCheck($container));
 
 // Requires Authentication
 $app->group('/', function () use($app) {
@@ -41,7 +45,16 @@ $app->group('/', function () use($app) {
 ->add(new Dappur\Middleware\Auth($container))
 ->add(new Dappur\Middleware\Maintenance($container))
 ->add(new Dappur\Middleware\PageConfig($container))
-->add(new Dappur\Middleware\Seo($container));
+->add(new Dappur\Middleware\Seo($container))
+->add(new Dappur\Middleware\ProfileCheck($container));
+
+// Incomplete Profile Page
+$app->map(['GET','POST'], '/profile/incomplete', 'App:profileIncomplete')
+		->setName('profile-incomplete')
+		->add($container->get('csrf'))
+		->add(new Dappur\Middleware\Auth($container))
+		->add(new Dappur\Middleware\Maintenance($container))
+		->add(new Dappur\Middleware\PageConfig($container));
 
 // Maintenance Mode Bypasses All Middleware
 $app->map(['GET'], '/maintenance', 'App:maintenance')

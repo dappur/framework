@@ -23,6 +23,9 @@ class JsonDecode extends \Twig_Extension {
     }
 
     public function jsonDecode($str) {
-        return json_decode($str, true);
+
+        $current_url = $this->request->getUri()->getBaseUrl() . $this->request->getUri()->getPath();
+
+        return $current_url;
     }
 }

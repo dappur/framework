@@ -46,3 +46,7 @@ $container['Deploy'] = function ($container) {
 $container['Blog'] = function ($container) {
     return new Dappur\Controller\Blog($container);
 };
+
+$container['Oauth2'] = function ($container) {
+    return new Dappur\Controller\Oauth2($container);
+};

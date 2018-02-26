@@ -1,14 +1,14 @@
 {
     "name": "dappur/framework",
     "description": "A stylish PHP application framework crafted using Slim, Twig, Eloquent and Sentinel designed to get you from clone to production in a matter of minutes.",
-    "keywords": ["slim", "eloquent", "twig", "sentinel", "monolog", "logentries", "validation", "config", "framework", "phinx", "cloudinary", "phpmailer", "email", "deployment", "github", "recaptcha"],
+    "keywords": ["slim", "eloquent", "twig", "sentinel", "monolog", "logentries", "validation", "config", "framework", "phinx", "cloudinary", "phpmailer", "email", "deployment", "github", "recaptcha", "seo"],
     "version": "2.2.0",
     "homepage": "https://github.com/dappur/framework",
     "license": "MIT",
     "authors": [
         {
-            "name": "Jeff Thomas",
-            "email": "jeff@dappur.io",
+            "name": "Edward Teach",
+            "email": "edward@edwardteach.co",
             "homepage": "https://github.com/dappur"
         }
     ],
@@ -33,6 +33,7 @@
         "cloudinary/cloudinary_php": "^1.8",
         "robmorgan/phinx": "^0.9.1",
         "phpmailer/phpmailer": "^5.2",
-        "JasonGrimes/Paginator": "^1.0"
+        "JasonGrimes/Paginator": "^1.0",
+        "abraham/twitteroauth": "^0.7.4"
     }
 }

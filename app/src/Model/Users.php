@@ -23,4 +23,8 @@ class Users extends EloquentUser {
     public function posts(){
         return $this->hasMany('\Dappur\Model\BlogPosts', 'user_id', 'id');
     }
+
+    public function oauth2() {
+        return $this->hasMany('Oauth2', 'user_id', 'id');
+    }
 }

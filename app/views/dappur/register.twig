@@ -2,6 +2,10 @@
 
 {% import 'macros/form.twig' as form %}
 
+{% block stylesheets %}
+    <link href="{{ asset('dappur/css/bootstrap-social.min.css') }}" rel="stylesheet">
+{% endblock %}
+
 {% block body %}
 
 <div class="container">
@@ -12,7 +16,7 @@
     </div>
 
     <div class="row" style="margin-top: 20px;">
-        <div class="col-md-8 col-md-offset-2">
+        <div class="col-md-8">
             <div class="panel panel-default">
                 <div class="panel-heading">Register</div>
                 <div class="panel-body">
@@ -49,6 +53,20 @@
                             <button type="submit" class="form-control btn btn-primary">Register</button>
                         </div>
                     </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="panel panel-default">
+                <div class="panel-heading">Register With Social</div>
+                <div class="panel-body">
+                    {% for provider in oauth2_providers %}
+                        <div class="form-group">
+                            <a href="{{ authorize_url(provider.id, client_ids[provider.id], 1) }}" class="btnbtn-block btn-social btn-{{provider.button}} form-control">
+                                <span class="fa fa-{{provider.button}}"></span> Register with {{provider.name}}
+                            </a>
+                        </div>
+                    {% endfor %}
                 </div>
             </div>
         </div>

@@ -4,6 +4,12 @@
 
 {% block stylesheets %}
     <link href="{{ asset('dappur/css/profile.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('dappur/css/bootstrap-social.min.css') }}" rel="stylesheet">
+    <style>
+    .btn-social[disabled] {
+    	background-color: #777777;
+    }
+    </style>
 {% endblock %}
 
 {% block body %}
@@ -33,29 +39,29 @@
 							<form action="{{currentRoute}}" class="ng-pristine ng-valid" method="post" role="form">
 								<div class="row">
 									<div class="col-md-6">
-		                                {{ form.text('first_name', user.first_name, 'first_name', 'First Name') }}
+		                                {{ form.text('first_name', user.first_name, 'first_name', 'First Name', null, 'text', 1) }}
 		                            </div>
 		                            <div class="col-md-6">
-		                                {{ form.text('last_name', user.first_name, 'last_name', 'Last Name') }}
+		                                {{ form.text('last_name', user.last_name, 'last_name', 'Last Name', null, 'text', 1) }}
 		                            </div>
 								</div>
 								<div class="row">
 									<div class="col-md-6">
-		                                {{ form.text('email', user.email, 'email', 'Email', null, 'email') }}
+		                                {{ form.text('email', user.email, 'email', 'Email', null, 'email', 1) }}
 		                            </div>
 		                            <div class="col-md-6">
-		                                {{ form.text('username', user.username, 'username', 'Username', null, 'username') }}
+		                                {{ form.text('username', user.username, 'username', 'Username', null, 'text', 1) }}
 		                            </div>
 								</div>
 								<div class="row">
 									<div class="col-md-12">
-										{{ form.textarea('about', user.profile.about, 'about', 'About Me', null, 7, null) }}
+										{{ form.textarea('about', user.profile.about, 'about', 'About Me', null, 7, null, 1) }}
 									</div>
 								</div>
 								<div class="row">
 									<div class="col-md-12">
 										<div class="btn-div pull-right">
-											<button type="submit" name="save_profile" class="btn btn-primary">Save Profile</button>
+											<button type="submit" name="save_profile" class="btn btn-primary" style="display: none;">Save Profile</button>
 										</div>
 									</div>
 								</div>
@@ -64,6 +70,26 @@
 						</section>
 					</div>
 					<div class="col-md-6 acc-col">
+						<section>
+							<h3>Connect With Us</h3>
+							<div class="row">
+								<div class="col-md-6">
+									{% for provider in providers %}
+				                        <div class="form-group">
+				                        	{% if provider.id in user_providers %}
+					                            <button class="btnbtn-block btn-social btn-{{provider.button}} form-control" disabled>
+					                                <span class="fa fa-{{provider.button}}"></span> {{provider.name}} <span class="pull-right" style="color: #98FB98;"><i class="fa fa-check"></i> Connected</span>
+					                            </button>
+				                            {% else %}
+					                            <a href="{{ authorize_url(provider.id, client_ids[provider.id], 1) }}" class="btnbtn-block btn-social btn-{{provider.button}} form-control">
+					                                <span class="fa fa-{{provider.button}}"></span> Connect {{provider.name}}
+					                            </a>
+				                            {% endif %}
+				                        </div>
+				                    {% endfor %}
+						        </div>
+						    </div>
+						</section>
 						<section>
 							<h3>Change Password</h3>
                             <button class="btn btn-warning form-control change_password">Change Password</button>
