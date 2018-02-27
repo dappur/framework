@@ -20,7 +20,7 @@ class AdminBlog extends Controller{
     // Main Blog Admin Page
     public function blog(Request $request, Response $response){
 
-        if($check = $this->sentinel->hasPerm('blog.view', 'dashboard')){
+        if($check = $this->sentinel->hasPerm('blog.view', 'dashboard', $this->config['blog-enabled'])){
             return $check;
         }
 
@@ -36,7 +36,7 @@ class AdminBlog extends Controller{
 
     public function comments(Request $request, Response $response){
 
-        if($check = $this->sentinel->hasPerm('blog.view', 'dashboard')){
+        if($check = $this->sentinel->hasPerm('blog.view', 'dashboard', $this->config['blog-enabled'])){
             return $check;
         }
 
@@ -72,7 +72,7 @@ class AdminBlog extends Controller{
 
     public function commentDetails(Request $request, Response $response){
 
-        if($check = $this->sentinel->hasPerm('blog.view', 'dashboard')){
+        if($check = $this->sentinel->hasPerm('blog.view', 'dashboard', $this->config['blog-enabled'])){
             return $check;
         }
 
@@ -102,7 +102,7 @@ class AdminBlog extends Controller{
 
     public function commentDelete(Request $request, Response $response){
 
-        if($check = $this->sentinel->hasPerm('blog.view', 'dashboard')){
+        if($check = $this->sentinel->hasPerm('blog.view', 'dashboard', $this->config['blog-enabled'])){
             return $check;
         }
 
@@ -142,7 +142,7 @@ class AdminBlog extends Controller{
 
     public function commentPublish(Request $request, Response $response){
 
-        if($check = $this->sentinel->hasPerm('blog.view', 'dashboard')){
+        if($check = $this->sentinel->hasPerm('blog.view', 'dashboard', $this->config['blog-enabled'])){
             return $check;
         }
 
@@ -184,7 +184,7 @@ class AdminBlog extends Controller{
 
     public function replyPublish(Request $request, Response $response){
 
-        if($check = $this->sentinel->hasPerm('blog.view', 'dashboard')){
+        if($check = $this->sentinel->hasPerm('blog.view', 'dashboard', $this->config['blog-enabled'])){
             return $check;
         }
 
@@ -225,7 +225,7 @@ class AdminBlog extends Controller{
 
     public function replyUnpublish(Request $request, Response $response){
 
-        if($check = $this->sentinel->hasPerm('blog.view', 'dashboard')){
+        if($check = $this->sentinel->hasPerm('blog.view', 'dashboard', $this->config['blog-enabled'])){
             return $check;
         }
 
@@ -266,7 +266,7 @@ class AdminBlog extends Controller{
 
     public function replyDelete(Request $request, Response $response){
 
-        if($check = $this->sentinel->hasPerm('blog.view', 'dashboard')){
+        if($check = $this->sentinel->hasPerm('blog.view', 'dashboard', $this->config['blog-enabled'])){
             return $check;
         }
 
@@ -305,7 +305,7 @@ class AdminBlog extends Controller{
 
     public function commentUnpublish(Request $request, Response $response){
 
-        if($check = $this->sentinel->hasPerm('blog.view', 'dashboard')){
+        if($check = $this->sentinel->hasPerm('blog.view', 'dashboard', $this->config['blog-enabled'])){
             return $check;
         }
 
@@ -348,7 +348,7 @@ class AdminBlog extends Controller{
     // Add New Blog Post
     public function blogAdd(Request $request, Response $response){
 
-        if($check = $this->sentinel->hasPerm('blog.create', 'dashboard')){
+        if($check = $this->sentinel->hasPerm('blog.create', 'dashboard', $this->config['blog-enabled'])){
             return $check;
         }
 
@@ -475,7 +475,7 @@ class AdminBlog extends Controller{
     // Edit Blog Post
     public function blogEdit(Request $request, Response $response, $post_id){
 
-        if($check = $this->sentinel->hasPerm('blog.update', 'dashboard')){
+        if($check = $this->sentinel->hasPerm('blog.update', 'dashboard', $this->config['blog-enabled'])){
             return $check;
         }
         
@@ -625,7 +625,7 @@ class AdminBlog extends Controller{
     // Publish Blog Post
     public function blogPublish(Request $request, Response $response){
 
-        if($check = $this->sentinel->hasPerm('blog.update', 'dashboard')){
+        if($check = $this->sentinel->hasPerm('blog.update', 'dashboard', $this->config['blog-enabled'])){
             return $check;
         }
 
@@ -656,7 +656,7 @@ class AdminBlog extends Controller{
     // Unpublish Blog Post
     public function blogUnpublish(Request $request, Response $response){
 
-        if($check = $this->sentinel->hasPerm('blog.update', 'dashboard')){
+        if($check = $this->sentinel->hasPerm('blog.update', 'dashboard', $this->config['blog-enabled'])){
             return $check;
         }
 
@@ -687,7 +687,7 @@ class AdminBlog extends Controller{
     // Delete Blog Post
     public function blogDelete(Request $request, Response $response){
 
-        if($check = $this->sentinel->hasPerm('blog.delete', 'dashboard')){
+        if($check = $this->sentinel->hasPerm('blog.delete', 'dashboard', $this->config['blog-enabled'])){
             return $check;
         }
 
@@ -718,7 +718,7 @@ class AdminBlog extends Controller{
     // Preview Blog Post
     public function blogPreview(Request $request, Response $response, $slug){
 
-        if($check = $this->sentinel->hasPerm('blog.view', 'dashboard')){
+        if($check = $this->sentinel->hasPerm('blog.view', 'dashboard', $this->config['blog-enabled'])){
             return $check;
         }
 
@@ -746,7 +746,7 @@ class AdminBlog extends Controller{
     // Add New Blog Category
     public function categoriesAdd(Request $request, Response $response){
 
-        if($check = $this->sentinel->hasPerm('blog_categories.create', 'dashboard')){
+        if($check = $this->sentinel->hasPerm('blog_categories.create', 'dashboard', $this->config['blog-enabled'])){
             return $check;
         }
 
@@ -786,7 +786,7 @@ class AdminBlog extends Controller{
     // Delete Blog Category
     public function categoriesDelete(Request $request, Response $response){
 
-        if($check = $this->sentinel->hasPerm('blog_categories.delete', 'dashboard')){
+        if($check = $this->sentinel->hasPerm('blog_categories.delete', 'dashboard', $this->config['blog-enabled'])){
             return $check;
         }
 
@@ -809,7 +809,7 @@ class AdminBlog extends Controller{
     // Edit Blog Category
     public function categoriesEdit(Request $request, Response $response, $categoryid){
 
-        if($check = $this->sentinel->hasPerm('blog_categories.update', 'dashboard')){
+        if($check = $this->sentinel->hasPerm('blog_categories.update', 'dashboard', $this->config['blog-enabled'])){
             return $check;
         }
 
@@ -888,7 +888,7 @@ class AdminBlog extends Controller{
     // Add New Blog Tag
     public function tagsAdd(Request $request, Response $response){
 
-        if($check = $this->sentinel->hasPerm('blog_tags.create', 'dashboard')){
+        if($check = $this->sentinel->hasPerm('blog_tags.create', 'dashboard', $this->config['blog-enabled'])){
             return $check;
         }
 
@@ -931,7 +931,7 @@ class AdminBlog extends Controller{
     // Delete Blog Tag
     public function tagsDelete(Request $request, Response $response){
 
-        if($check = $this->sentinel->hasPerm('blog_tags.delete', 'dashboard')){
+        if($check = $this->sentinel->hasPerm('blog_tags.delete', 'dashboard', $this->config['blog-enabled'])){
             return $check;
         }
 
@@ -956,7 +956,7 @@ class AdminBlog extends Controller{
     // Edit Blog Tag
     public function tagsEdit(Request $request, Response $response, $tagid){
 
-        if($check = $this->sentinel->hasPerm('blog_tags.update', 'dashboard')){
+        if($check = $this->sentinel->hasPerm('blog_tags.update', 'dashboard', $this->config['blog-enabled'])){
             return $check;
         }
 

@@ -70,6 +70,20 @@
     </li>
     {% endif %}
 
+    {% if auth.hasAccess('oauth2.view') and config['oauth2-enabled'] %}
+    <li>
+        <a href="javascript:;" data-toggle="collapse" data-target="#oauth2-menu"><i class="fa fa-fw fa-user-circle"></i> Oauth2 <i class="fa fa-fw fa-caret-down"></i></a>
+        <ul id="oauth2-menu" class="collapse {% if currentRoute starts with '/dashboard/oauth2' %}in{% endif %} nav">
+            <li  {% if currentRoute == '/dashboard/oauth2' %}class="active"{% endif %}>
+                <a href="{{ path_for('admin-oauth2')}}"><i class="fa fa-user-circle fa-fw"></i> Providers</a>
+            </li>
+            <li  {% if currentRoute starts with '/dashboard/oauth2/users' %}class="active"{% endif %}>
+                <a href="{{ path_for('admin-oauth2-users')}}"><i class="fa fa-user-circle fa-fw"></i> Users</a>
+            </li>
+        </ul>
+    </li>
+    {% endif %}
+
     {% if auth.hasAccess('seo.view') %}
     <li {% if currentRoute starts with '/dashboard/seo' %}class="active"{% endif %}>
         <a href="{{ path_for('admin-seo')}}"><i class="fa fa-sitemap fa-fw"></i> SEO Settings</a>

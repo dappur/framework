@@ -41,9 +41,9 @@ class Sentinel extends Dappurware
         return array('roles' => $rolesSlugs, 'permissions' => $permissions);
     }
 
-    public function hasPerm($permission, $redirect_to = 'home'){
+    public function hasPerm($permission, $redirect_to = 'home', $enabled = 1){
         
-        if (!$this->auth->hasAccess($permission)) {
+        if (!$this->auth->hasAccess($permission) || !$enabled) {
 
             $user = $this->auth->check();
 

@@ -131,6 +131,42 @@ class AddOauth extends Migration
             $ins->save();
         }
 
+        // Add Oauth2 Config Group
+        $config = new Dappur\Model\ConfigGroups;
+        $config->name = "oauth2";
+        $config->description = "Oauth2 Login Provider Settings";
+        $config->save();
+
+        $init_config = array(
+            array($config->id, 'oauth2-enabled', 'Enable Oauth2', 6, 0)
+        );
+
+        // Seed Config Table
+        foreach ($init_config as $key => $value) {
+            $config = new Dappur\Model\Config;
+            $config->group_id = $value[0];
+            $config->name = $value[1];
+            $config->description = $value[2];
+            $config->type_id = $value[3];
+            $config->value = $value[4];
+            $config->save();
+        }
+
+        // Update Admin Role
+        $admin_role = $this->sentinel->findRoleByName('Admin');
+        $admin_role->addPermission('oauth2.*');
+        $admin_role->save();
+        // Update Manager Role
+        $manager_role = $this->sentinel->findRoleByName('Manager');
+        $manager_role->addPermission('oauth2.create');
+        $manager_role->addPermission('oauth2.view');
+        $manager_role->addPermission('oauth2.update');
+        $manager_role->save();
+        // Update Auditor Role
+        $auditor_role = $this->sentinel->findRoleByName('Auditor');
+        $auditor_role->addPermission('oauth2.view');
+        $auditor_role->save();
+
     }
 
     public function down()

@@ -70,6 +70,7 @@
 						</section>
 					</div>
 					<div class="col-md-6 acc-col">
+						{% if config['oauth2-enabled'] %}
 						<section>
 							<h3>Connect With Us</h3>
 							<div class="row">
@@ -90,6 +91,7 @@
 						        </div>
 						    </div>
 						</section>
+						{% endif %}
 						<section>
 							<h3>Change Password</h3>
                             <button class="btn btn-warning form-control change_password">Change Password</button>

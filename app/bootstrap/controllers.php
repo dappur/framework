@@ -15,6 +15,10 @@ $container['AdminMedia'] = function ($container) {
     return new Dappur\Controller\AdminMedia($container);
 };
 
+$container['AdminOauth2'] = function ($container) {
+    return new Dappur\Controller\AdminOauth2($container);
+};
+
 $container['AdminRoles'] = function ($container) {
     return new Dappur\Controller\AdminRoles($container);
 };

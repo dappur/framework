@@ -118,6 +118,30 @@ $app->group('/dashboard', function () use($app) {
             ->setName('admin-seo-default');
     });
 
+    // SEO Manager
+    $app->group('/oauth2', function () use($app) {
+        $app->map(['GET'], '', 'AdminOauth2:providers')
+            ->setName('admin-oauth2');
+
+        $app->map(['GET'], '/users', 'AdminOauth2:oauth2Users')
+            ->setName('admin-oauth2-users');
+
+        $app->map(['GET','POST'], '/add', 'AdminOauth2:oauth2Add')
+            ->setName('admin-oauth2-add');
+
+        $app->map(['GET','POST'], '/edit/{provider_id}', 'AdminOauth2:oauth2Edit')
+            ->setName('admin-oauth2-edit');
+
+        $app->map(['POST'], '/enable[/login]', 'AdminOauth2:oauth2Enable')
+            ->setName('admin-oauth2-enable');
+
+        $app->map(['POST'], '/disable[/login]', 'AdminOauth2:oauth2Disable')
+            ->setName('admin-oauth2-disable');
+
+        $app->map(['POST'], '/delete', 'AdminOauth2:oauth2Delete')
+            ->setName('admin-oauth2-delete');
+    });
+
     // Contact Requests
     $app->map(['GET'], '/contact', 'Admin:contact')
         ->setName('admin-contact');

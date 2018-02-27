@@ -16,7 +16,7 @@
     </div>
 
     <div class="row" style="margin-top: 20px;">
-        <div class="col-md-8">
+        <div class="col-md-8{% if not config['oauth2-enabled'] %} col-md-offset-2{% endif %}">
             <div class="panel panel-default">
                 <div class="panel-heading">Register</div>
                 <div class="panel-body">
@@ -56,6 +56,7 @@
                 </div>
             </div>
         </div>
+        {% if config['oauth2-enabled'] %}
         <div class="col-md-4">
             <div class="panel panel-default">
                 <div class="panel-heading">Register With Social</div>
@@ -70,6 +71,7 @@
                 </div>
             </div>
         </div>
+        {% endif %}
     </div>
 </div>
 
