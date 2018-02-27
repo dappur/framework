@@ -51,15 +51,15 @@
                                     </div>
                                 </div>
                                 <div class="col-md-4">
-                                    <div class="form-group{% if has_error('scopes') %} has-error{% endif %}">
-                                        <label for="scopes">Button</label>
+                                    <div class="form-group{% if has_error('button') %} has-error{% endif %}">
+                                        <label for="button">Button</label>
                                         <select name="button" id="button" class="form-control" required="required">
                                             <option value="">Select Button</option>
                                             {% for button in bs_social %}
                                                 <option value="{{button}}">{{button}}</option>
                                             {% endfor %}
                                         </select>
-                                        <span class="help-block">{{ error('scopes') }}</span>
+                                        <span class="help-block">{{ error('button') }}</span>
                                     </div>
                                 </div>
                                 <div class="col-md-2 col-xs-6">

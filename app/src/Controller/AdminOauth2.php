@@ -7,6 +7,7 @@ use Dappur\Model\Oauth2Providers;
 use Dappur\Model\Oauth2Users;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
+use Respect\Validation\Validator as V;
 
 class AdminOauth2 extends Controller{
 
@@ -44,6 +45,60 @@ class AdminOauth2 extends Controller{
 
         if($check = $this->sentinel->hasPerm('oauth2.create', 'dashboard', $this->config['oauth2-enabled'])){
             return $check;
+        }
+
+        if ($request->isPost()) {
+            // Validate Data
+            $validate_data = array(
+                'name' => array(
+                    'rules' => V::alnum(''), 
+                    'messages' => array(
+                        'alnum' => 'Must be alphanumeric.'
+                        )
+                ),
+                'slug' => array(
+                    'rules' => V::slug(), 
+                    'messages' => array(
+                        'slug' => 'Must be slug format.'
+                        )
+                ),
+                'scopes' => array(
+                    'rules' => V::alnum(), 
+                    'messages' => array(
+                        'alnum' => 'Must be alphanumeric.'
+                        )
+                ),
+                'login' => array(
+                    'rules' => V::boolType(), 
+                    'messages' => array(
+                        'boolType' => 'Not a valid value.'
+                        )
+                ),
+                'status' => array(
+                    'rules' => V::boolType(), 
+                    'messages' => array(
+                        'boolType' => 'Not a valid value..'
+                        )
+                ),
+                'authorize_url' => array(
+                    'rules' => V::url(), 
+                    'messages' => array(
+                        'url' => 'Enter a valid URL.'
+                        )
+                ),
+                'token_url' => array(
+                    'rules' => V::url(), 
+                    'messages' => array(
+                        'url' => 'Enter a valid URL.'
+                        )
+                ),
+                'resource_url' => array(
+                    'rules' => V::url(), 
+                    'messages' => array(
+                        'url' => 'Enter a valid URL.'
+                        )
+                )
+            );
         }
 
         $bs_social = array('adn', 'bitbucket', 'dropbox', 'facebook', 'flickr', 'foursquare', 'github', 'google', 'instagram', 'linkedin', 'microsoft', 'odnoklassniki', 'openid', 'pinterest', 'reddit', 'soundcloud', 'tumblr', 'twitter', 'vimeo', 'vk', 'yahoo');

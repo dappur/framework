@@ -51,14 +51,14 @@ class Admin extends Controller{
                         'rules' => V::length(2, 25)->alnum('\'?!@#,."'), 
                         'messages' => array(
                             'length' => 'Must be between 2 and 25 characters.',
-                            'alpha' => 'Contains an invalid character.'
+                            'alnum' => 'Contains an invalid character.'
                             )
                     ),
                     'last_name' => array(
                         'rules' => V::length(2, 25)->alnum('\'?!@#,."'), 
                         'messages' => array(
                             'length' => 'Must be between 2 and 25 characters.',
-                            'alpha' => 'Letters only and can contain \''
+                            'alnum' => 'Letters only and can contain \''
                             )
                     ),
                     'email' => array(
