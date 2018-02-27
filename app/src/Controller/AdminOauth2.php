@@ -40,6 +40,17 @@ class AdminOauth2 extends Controller{
         return $this->view->render($response, 'oauth2-users.twig', array("oauth2_users" => $oauth2_users));
     }
 
+    public function oauth2Add(Request $request, Response $response){
+
+        if($check = $this->sentinel->hasPerm('oauth2.create', 'dashboard', $this->config['oauth2-enabled'])){
+            return $check;
+        }
+
+        $bs_social = array('adn', 'bitbucket', 'dropbox', 'facebook', 'flickr', 'foursquare', 'github', 'google', 'instagram', 'linkedin', 'microsoft', 'odnoklassniki', 'openid', 'pinterest', 'reddit', 'soundcloud', 'tumblr', 'twitter', 'vimeo', 'vk', 'yahoo');
+
+        return $this->view->render($response, 'oauth2-add.twig', array("bs_social" => $bs_social));
+    }
+
     public function oauth2Disable(Request $request, Response $response){
 
         if($check = $this->sentinel->hasPerm('oauth2.update', 'dashboard', $this->config['oauth2-enabled'])){

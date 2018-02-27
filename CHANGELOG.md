@@ -3,8 +3,12 @@ All notable changes to this project will be documented in this file as of v2.1.0
 
 ## [Unreleased]
 ### Added
+- Admin section for Oauth2 Providers
 - Oauth 2 Login Provider Support
 - Added profile check for incomplete profiles
+
+### Changed
+- Fixed Flash messages so that each message shown in a seperate panel
 
 
 ## [2.2.0]
