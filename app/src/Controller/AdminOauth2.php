@@ -68,18 +68,6 @@ class AdminOauth2 extends Controller{
                         'alnum' => 'Must be alphanumeric.'
                         )
                 ),
-                'login' => array(
-                    'rules' => V::boolType(), 
-                    'messages' => array(
-                        'boolType' => 'Not a valid value.'
-                        )
-                ),
-                'status' => array(
-                    'rules' => V::boolType(), 
-                    'messages' => array(
-                        'boolType' => 'Not a valid value..'
-                        )
-                ),
                 'authorize_url' => array(
                     'rules' => V::url(), 
                     'messages' => array(
@@ -99,6 +87,52 @@ class AdminOauth2 extends Controller{
                         )
                 )
             );
+
+            if ($request->getParam('login')) {
+                $login = 1;
+            }else{
+                $login = 0;
+            }
+
+            if ($request->getParam('status')) {
+                $status = 1;
+            }else{
+                $status = 0;
+            }
+
+            //Check name
+            $check_slug = Oauth2Providers::where('slug', $request->getParam('slug'))->first();
+            if ($check_slug) {
+                $this->validator->addError('slug', 'Slug already in use.');
+            }
+
+            //Check slug
+            $check_name = Oauth2Providers::where('name', $request->getParam('name'))->first();
+            if ($check_name) {
+                $this->validator->addError('name', 'Name already in use.');
+            }
+
+            $this->validator->validate($request, $validate_data);
+
+            if ($this->validator->isValid()) {
+                $add = new Oauth2Providers;
+                $add->name = $request->getParam('name');
+                $add->slug = $request->getParam('slug');
+                $add->button = $request->getParam('button');
+                $add->scopes = $request->getParam('scopes');
+                $add->login = $login;
+                $add->status = $status;
+                $add->authorize_url = $request->getParam('authorize_url');
+                $add->token_url = $request->getParam('token_url');
+                $add->resource_url = $request->getParam('resource_url');
+                
+                if ($add->save()) {
+                    $this->flash('success', $add->name . " was successfully added to the Ouath2 providers.");
+                    return $this->redirect($response, 'admin-oauth2');
+                }else{
+                    $this->flashNow('success', " There was a problem saving your Oauth2 provider to the database.");
+                }
+            }
         }
 
         $bs_social = array('adn', 'bitbucket', 'dropbox', 'facebook', 'flickr', 'foursquare', 'github', 'google', 'instagram', 'linkedin', 'microsoft', 'odnoklassniki', 'openid', 'pinterest', 'reddit', 'soundcloud', 'tumblr', 'twitter', 'vimeo', 'vk', 'yahoo');
