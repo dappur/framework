@@ -12,6 +12,9 @@ All notable changes to this project will be documented in this file as of v2.1.0
 - Exclude all global except site settings from email placeholders
 - Fixed Flash messages so that each message shown in a seperate panel
 
+### Removed
+- Removed paths from the settings file.
+
 
 ## [2.2.0]
 ### Added

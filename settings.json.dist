@@ -1,4 +1,3 @@
-
 {
     "framework": "dappur",
     "version": "2.2.0",
@@ -7,18 +6,6 @@
     "environment": "development",
     "db": {
         "development": {
-            "driver": "mysql",
-            "host": "localhost",
-            "port": 3306,
-            "database": "",
-            "username": "",
-            "password": "",
-            "charset": "utf8",
-            "collation": "utf8_general_ci",
-            "prefix": "",
-            "timezone": "+00:00"
-        },
-        "staging": {
             "driver": "mysql",
             "host": "localhost",
             "port": 3306,
@@ -41,10 +28,21 @@
             "collation": "utf8_general_ci",
             "prefix": "",
             "timezone": "+00:00"
+        },
+        "demo": {
+            "driver": "mysql",
+            "host": "localhost",
+            "port": 3306,
+            "database": "",
+            "username": "",
+            "password": "",
+            "charset": "utf8",
+            "collation": "utf8_general_ci",
+            "prefix": "",
+            "timezone": "+00:00"
         }
     },
     "view": {
-        "template_path": "../app/views/",
         "twig": {
             "cache": false,
             "debug": false,
@@ -62,7 +60,6 @@
     },
     "logger": {
         "log_name": "Dappur",
-        "log_path": "../storage/log/monolog/",
         "log_file_name": "dappur.log",
         "le_token": ""
     },
@@ -82,7 +79,7 @@
     },
     "mail": {
         "relay": "phpmail",
-        "logging": true,
+        "logging": false,
         "log_details": ["html", "plain_text"],
         "log_retention": 30,
         "mailgun": {

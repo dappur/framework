@@ -84,13 +84,12 @@ $container['csrf'] = function ($container) {
 // Bind Twig View
 $container['view'] = function ($container) {
     if (strpos($container['request']->getUri()->getPath(), 'dashboard' ) !== false) {
-        $template_path = $container['settings']['view']['template_path'] . $container->config['dashboard-theme'];
+        $template_path = __DIR__ . '/../views/' . $container->config['dashboard-theme'];
     }else{
-        $template_path = $container['settings']['view']['template_path'] . $container->config['theme'];
+        $template_path = __DIR__ . '/../views/' . $container->config['theme'];
     }
 
     $view = new \Slim\Views\Twig(
-        
         $template_path,
         $container['settings']['view']['twig']
     );
@@ -176,7 +175,7 @@ $container['logger'] = function($container) {
 
     // Stream Log output to file
     $logger = new Monolog\Logger($container['settings']['logger']['log_name']);
-    $file_stream = new \Monolog\Handler\StreamHandler($container['settings']['logger']['log_path'] . date("Y-m-d-") . $container['settings']['logger']['log_file_name']);
+    $file_stream = new \Monolog\Handler\StreamHandler(__DIR__ . "/../../storage/log/monolog/" . date("Y-m-d-") . $container['settings']['logger']['log_file_name']);
     $logger->pushHandler($file_stream);
     
     //Stream log output to Logentries
