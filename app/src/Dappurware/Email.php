@@ -27,15 +27,13 @@ class Email extends Dappurware
             $output['User Info'][] = array("name" => "user_" . str_replace("-", "_", $key));
         }
 
-        $config_groups = ConfigGroups::with('config')->whereNull('page_name')->get();
+        // Only include Site Settings
+        $site_settings = ConfigGroups::with('config')->find(1);
 
-        foreach ($config_groups as $cgvalue) {
-
-            foreach ($cgvalue->config as $key2 => $value2) {
-                $output[$cgvalue->name][] = array("name" => "settings_" . str_replace("-", "_", $value2->name), "value" => $value2->value);
-            }
-            
+        foreach ($site_settings->config as $key2 => $value2) {
+            $output[$site_settings->name][] = array("name" => "settings_" . str_replace("-", "_", $value2->name), "value" => $value2->value);
         }
+            
         return $output;
 
     }
