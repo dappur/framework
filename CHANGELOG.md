@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file as of v2.1.0
 - Added profile check for incomplete profiles
 
 ### Changed
+- Exclude oauth pub route from seo settings
 - Exclude all global except site settings from email placeholders
 - Fixed Flash messages so that each message shown in a seperate panel
 

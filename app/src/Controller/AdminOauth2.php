@@ -63,9 +63,9 @@ class AdminOauth2 extends Controller{
                         )
                 ),
                 'scopes' => array(
-                    'rules' => V::alnum(), 
+                    'rules' => V::alnum(',_-'), 
                     'messages' => array(
-                        'alnum' => 'Must be alphanumeric.'
+                        'alnum' => 'Does not fit scope pattern.'
                         )
                 ),
                 'authorize_url' => array(
@@ -130,7 +130,7 @@ class AdminOauth2 extends Controller{
                     $this->flash('success', $add->name . " was successfully added to the Ouath2 providers.");
                     return $this->redirect($response, 'admin-oauth2');
                 }else{
-                    $this->flashNow('success', " There was a problem saving your Oauth2 provider to the database.");
+                    $this->flashNow('warning', " There was a problem saving your Oauth2 provider to the database.");
                 }
             }
         }
@@ -168,6 +168,103 @@ class AdminOauth2 extends Controller{
                 return json_encode(array("status" => false, "message" => "An error occured enabling {$provider->name}."));
             }
         }
+    }
+
+    public function oauth2Edit(Request $request, Response $response){
+
+        if($check = $this->sentinel->hasPerm('oauth2.update', 'dashboard', $this->config['oauth2-enabled'])){
+            return $check;
+        }
+
+        $provider = Oauth2Providers::find($request->getAttribute('route')->getArgument('provider_id'));
+
+        if (!$provider) {
+            $this->flash('danger', "Oauth2 provider not found.");
+            return $this->redirect($response, 'admin-oauth2');
+        }
+
+        if ($request->isPost()) {
+            // Validate Data
+            $validate_data = array(
+                'name' => array(
+                    'rules' => V::alnum(''), 
+                    'messages' => array(
+                        'alnum' => 'Must be alphanumeric.'
+                        )
+                ),
+                'slug' => array(
+                    'rules' => V::slug(), 
+                    'messages' => array(
+                        'slug' => 'Must be slug format.'
+                        )
+                ),
+                'scopes' => array(
+                    'rules' => V::alnum(',_-'), 
+                    'messages' => array(
+                        'alnum' => 'Does not fit scope pattern.'
+                        )
+                ),
+                'authorize_url' => array(
+                    'rules' => V::url(), 
+                    'messages' => array(
+                        'url' => 'Enter a valid URL.'
+                        )
+                ),
+                'token_url' => array(
+                    'rules' => V::url(), 
+                    'messages' => array(
+                        'url' => 'Enter a valid URL.'
+                        )
+                ),
+                'resource_url' => array(
+                    'rules' => V::url(), 
+                    'messages' => array(
+                        'url' => 'Enter a valid URL.'
+                        )
+                )
+            );
+
+            if ($request->getParam('login')) { $login = 1; }else{ $login = 0; }
+
+            if ($request->getParam('status')) { $status = 1; }else{ $status = 0; }
+
+            //Check name
+            $check_slug = Oauth2Providers::where('slug', $request->getParam('slug'))->where('id', '!=', $provider->id)->first();
+            if ($check_slug) {
+                $this->validator->addError('slug', 'Slug already in use.');
+            }
+
+            //Check slug
+            $check_name = Oauth2Providers::where('name', $request->getParam('name'))->where('id', '!=', $provider->id)->first();
+            if ($check_name) {
+                $this->validator->addError('name', 'Name already in use.');
+            }
+
+            $this->validator->validate($request, $validate_data);
+
+            if ($this->validator->isValid()) {
+                $provider->name = $request->getParam('name');
+                $provider->slug = $request->getParam('slug');
+                $provider->button = $request->getParam('button');
+                $provider->scopes = $request->getParam('scopes');
+                $provider->login = $login;
+                $provider->status = $status;
+                $provider->authorize_url = $request->getParam('authorize_url');
+                $provider->token_url = $request->getParam('token_url');
+                $provider->resource_url = $request->getParam('resource_url');
+                
+                if ($provider->save()) {
+                    $this->flash('success', $provider->name . " was successfully modified.");
+                    return $this->redirect($response, 'admin-oauth2');
+                }else{
+                    $this->flashNow('warning', "There was a problem modifying " . $provider->name  . ".");
+                }
+            }
+        }
+
+        $bs_social = array('adn', 'bitbucket', 'dropbox', 'facebook', 'flickr', 'foursquare', 'github', 'google', 'instagram', 'linkedin', 'microsoft', 'odnoklassniki', 'openid', 'pinterest', 'reddit', 'soundcloud', 'tumblr', 'twitter', 'vimeo', 'vk', 'yahoo');
+
+        return $this->view->render($response, 'oauth2-edit.twig', array("bs_social" => $bs_social, "provider" => $provider));
     }
 
     public function oauth2Enable(Request $request, Response $response){
