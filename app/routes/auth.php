@@ -13,10 +13,9 @@ $app->group('/', function () {
 
 
 $app->map(['GET', 'POST'], '/login', 'Auth:login')
-	->setName('login')
-	->add(new Dappur\Middleware\Guest($container))
-	->add($container->get('csrf'))
-	->add(new Dappur\Middleware\Seo($container));
-
-$app->get('/logout', 'Auth:logout')
-	->setName('logout');
+    ->setName('login')
+    ->add(new Dappur\Middleware\Guest($container))
+    ->add($container->get('csrf'))
+    ->add(new Dappur\Middleware\Seo($container));
+    
+$app->get('/logout', 'Auth:logout')->setName('logout');

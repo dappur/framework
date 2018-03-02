@@ -236,6 +236,8 @@ class AdminSeo extends Controller{
         		$route->getName() == "csrf" ||
         		$route->getName() == "logout" ||
                 $route->getName() == "oauth" ||
+                $route->getName() == "profile" ||
+                $route->getName() == "profile-incomplete" ||
         		in_array($route->getName(), $existing) ||
         		!in_array("GET", $route->getMethods())){
         		continue;

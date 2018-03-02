@@ -83,10 +83,14 @@ $container['csrf'] = function ($container) {
 
 // Bind Twig View
 $container['view'] = function ($container) {
-    if (strpos($container['request']->getUri()->getPath(), 'dashboard' ) !== false) {
+    if (strpos($container['request']->getUri()->getPath(), '/dashboard' ) !== false) {
         $template_path = __DIR__ . '/../views/' . $container->config['dashboard-theme'];
     }else{
-        $template_path = __DIR__ . '/../views/' . $container->config['theme'];
+        if ($_SESSION['isAmp']) {
+            $template_path = __DIR__ . '/../views/' . $container->config['theme'] . '/amp';
+        }else{
+            $template_path = __DIR__ . '/../views/' . $container->config['theme'];
+        }
     }
 
     $view = new \Slim\Views\Twig(
@@ -154,10 +158,9 @@ $container['view'] = function ($container) {
     $view->getEnvironment()->addGlobal('projectDir', $container['project_dir']);
     $view->getEnvironment()->addGlobal('publicDir', $container['public_dir']);
     $view->getEnvironment()->addGlobal('uploadDir', $container['upload_dir']);
-
     
     $page_name = $container['request']->getAttribute('name');
-    if (strpos($container['request']->getUri()->getPath(), 'dashboard' ) !== false) {
+    if (strpos($container['request']->getUri()->getPath(), '/dashboard' ) !== false) {
         $page_settings = new \Dappur\Model\ConfigGroups;
         $page_settings = $page_settings->whereNotNull('page_name')->get();
         $view->getEnvironment()->addGlobal('pageSettings', $page_settings);

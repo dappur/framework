@@ -21,7 +21,8 @@ $app->group('/blog', function() use ($app) {
 ->add(new Dappur\Middleware\Maintenance($container))
 ->add(new Dappur\Middleware\BlogCheck($container))
 ->add(new Dappur\Middleware\PageConfig($container))
-->add(new Dappur\Middleware\Seo($container));
+->add(new Dappur\Middleware\Seo($container))
+->add(new Dappur\Middleware\ProfileCheck($container));
 
 // Blog Admin
 $app->group('/dashboard/blog', function() use ($app) {
@@ -51,18 +52,18 @@ $app->group('/dashboard/blog', function() use ($app) {
     // Blog Comments
     $app->group('/comments', function() use ($app) {
         // View Comments
-        $app->get('', 'AdminBlog:comments')
+        $app->get('', 'AdminBlogComments:comments')
             ->setName('admin-blog-comments');
-        $app->get('/{comment_id}', 'AdminBlog:commentDetails')
+        $app->get('/{comment_id}', 'AdminBlogComments:commentDetails')
             ->setName('admin-blog-comment-details');
         // Unpublish Comment
-        $app->post('/publish', 'AdminBlog:commentUnpublish')
+        $app->post('/publish', 'AdminBlogComments:commentUnpublish')
             ->setName('admin-blog-comment-unpublish');
         // Publish Comment
-        $app->post('/unpublish', 'AdminBlog:commentPublish')
+        $app->post('/unpublish', 'AdminBlogComments:commentPublish')
             ->setName('admin-blog-comment-publish');
         // Delte Comment
-        $app->post('/delete', 'AdminBlog:commentDelete')
+        $app->post('/delete', 'AdminBlogComments:commentDelete')
             ->setName('admin-blog-comment-delete');
     });
 
@@ -70,39 +71,39 @@ $app->group('/dashboard/blog', function() use ($app) {
     $app->group('/replies', function() use ($app) {
 
         // Unpublish Comment
-        $app->post('/publish', 'AdminBlog:replyUnpublish')
+        $app->post('/publish', 'AdminBlogComments:replyUnpublish')
             ->setName('admin-blog-reply-unpublish');
         // Publish Comment
-        $app->post('/unpublish', 'AdminBlog:replyPublish')
+        $app->post('/unpublish', 'AdminBlogComments:replyPublish')
             ->setName('admin-blog-reply-publish');
         // Delte Comment
-        $app->post('/delete', 'AdminBlog:replyDelete')
+        $app->post('/delete', 'AdminBlogComments:replyDelete')
             ->setName('admin-blog-reply-delete');
     });
 
     // Blog Categories Actions
     $app->group('/categories', function() use ($app) {
         // Delete Category
-        $app->post('/delete', 'AdminBlog:categoriesDelete')
+        $app->post('/delete', 'AdminBlogCategories:categoriesDelete')
             ->setName('admin-blog-categories-delete');
         // Edit Category
-        $app->map(['GET', 'POST'], '/edit[/{category}]', 'AdminBlog:categoriesEdit')
+        $app->map(['GET', 'POST'], '/edit[/{category}]', 'AdminBlogCategories:categoriesEdit')
             ->setName('admin-blog-categories-edit');
         // Add Category
-        $app->post('/add', 'AdminBlog:categoriesAdd')
+        $app->post('/add', 'AdminBlogCategories:categoriesAdd')
             ->setName('admin-blog-categories-add');
     });
 
     // Blog Tag Actions
     $app->group('/tags', function() use ($app) {
         // Delete Tag
-        $app->post('/delete', 'AdminBlog:tagsDelete')
+        $app->post('/delete', 'AdminBlogTags:tagsDelete')
             ->setName('admin-blog-tags-delete');
         // Edit Tag
-        $app->map(['GET', 'POST'], '/edit[/{tag_id}]', 'AdminBlog:tagsEdit')
+        $app->map(['GET', 'POST'], '/edit[/{tag_id}]', 'AdminBlogTags:tagsEdit')
             ->setName('admin-blog-tags-edit');
         // Delete Tag
-        $app->post('/add', 'AdminBlog:tagsAdd')
+        $app->post('/add', 'AdminBlogTags:tagsAdd')
             ->setName('admin-blog-tags-add');
     });
 

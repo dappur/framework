@@ -7,6 +7,10 @@ $container['AdminBlog'] = function ($container) {
     return new Dappur\Controller\AdminBlog($container);
 };
 
+$container['AdminBlogComments'] = function ($container) {
+    return new Dappur\Controller\AdminBlogComments($container);
+};
+
 $container['AdminEmail'] = function ($container) { 
     return new Dappur\Controller\AdminEmail($container); 
 };

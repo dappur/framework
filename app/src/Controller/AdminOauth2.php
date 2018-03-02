@@ -20,10 +20,10 @@ class AdminOauth2 extends Controller{
         $providers = new Oauth2Providers;
 
         $active = $providers->where('status', 1)->get();
-        foreach ($active as $key => $value) {
-            $client_id = $this->settings['oauth2'][$value->slug]['client_id'];
-            $client_secret = $this->settings['oauth2'][$value->slug]['client_id'];
-            if ((isset($client_id) || $client_id == "") || (isset($client_secret) || $client_secret == "")) {
+        foreach ($active as $value) {
+            $clientId = $this->settings['oauth2'][$value->slug]['client_id'];
+            $slientSecret = $this->settings['oauth2'][$value->slug]['client_id'];
+            if ((isset($clientId) || $clientId == "") || (isset($slientSecret) || $slientSecret == "")) {
                 $this->flash->addMessageNow('warning', "Client ID and/or Client Secret not found.  {$value->name} might not work until these are added to the settings.json file.");
             }
         }
@@ -32,6 +32,7 @@ class AdminOauth2 extends Controller{
     }
 
     public function users(Request $request, Response $response){
+        
         if($check = $this->sentinel->hasPerm('oauth2.view', 'dashboard', $this->config['oauth2-enabled'])){
             return $check;
         }

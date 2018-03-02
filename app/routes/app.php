@@ -1,37 +1,38 @@
 <?php
 // Non Logged Users
-$app->group('/', function () {
+$app->group('', function () {
 	// Home Page
-	$this->map(['GET'], '', 'App:home')
+	$this->map(['GET'], '/', 'App:home')
 		->setName('home');
 	// Privacy Policy
-	$this->map(['GET'], 'privacy', 'App:privacy')
+	$this->map(['GET'], '/privacy', 'App:privacy')
 		->setName('privacy');
 	// Contact 
-	$this->map(['GET', 'POST'], 'contact', 'App:contact')
+	$this->map(['GET', 'POST'], '/contact', 'App:contact')
 		->setName('contact');
 	// Terms and Conditions
-	$this->map(['GET'], 'terms', 'App:terms')
+	$this->map(['GET'], '/terms', 'App:terms')
 		->setName('terms');
 	// CSRF
-	$this->map(['GET'], 'csrf', 'App:csrf')
+	$this->map(['GET'], '/csrf', 'App:csrf')
 		->setName('csrf');
 	// Oauth
-	$this->map(['GET'], 'oauth/{slug}', 'Oauth2:oauth2')
+	$this->map(['GET'], '/oauth/{slug}', 'Oauth2:oauth2')
 		->setName('oauth');
 })
 ->add($container->get('csrf'))
-->add(new Dappur\Middleware\Maintenance($container))
+->add(new Dappur\Middleware\ Maintenance($container))
 ->add(new Dappur\Middleware\PageConfig($container))
 ->add(new Dappur\Middleware\Seo($container))
-->add(new Dappur\Middleware\ProfileCheck($container));
+->add(new Dappur\Middleware\ProfileCheck($container))
+->add(new Dappur\Middleware\Amp($container));
 
 // Requires Authentication
-$app->group('/', function () use($app) {
+$app->group('', function () use($app) {
 	// User Profile
-	$app->group('profile', function() use ($app) {
+	$app->group('/profile', function() use ($app) {
 		//Profile
-		$this->map(['GET', 'POST'], '', 'App:profile')
+		$this->map(['GET', 'POST'], '/', 'App:profile')
 			->setName('profile');
 		// Check Password
 		$this->map(['POST'], '/password-check', 'App:checkPassword')
@@ -45,7 +46,6 @@ $app->group('/', function () use($app) {
 ->add(new Dappur\Middleware\Auth($container))
 ->add(new Dappur\Middleware\Maintenance($container))
 ->add(new Dappur\Middleware\PageConfig($container))
-->add(new Dappur\Middleware\Seo($container))
 ->add(new Dappur\Middleware\ProfileCheck($container));
 
 // Incomplete Profile Page
