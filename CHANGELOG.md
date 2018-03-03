@@ -3,6 +3,7 @@ All notable changes to this project will be documented in this file as of v2.1.0
 
 ## [Unreleased]
 ### Added
+- PHPMD and PHPCS into require-dev
 - Admin section for Oauth2 Providers
 - Oauth 2 Login Provider Support
 - Added profile check for incomplete profiles

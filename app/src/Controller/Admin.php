@@ -12,15 +12,25 @@ use Slim\Views\PhpRenderer;
 
 class Admin extends Controller
 {
+    /**
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
     public function contact(Request $request, Response $response)
     {
         if ($check = $this->sentinel->hasPerm('contact.view')) {
             return $check;
         }
 
-        return $this->view->render($response, 'contact.twig', array("contactRequests" => ContactRequests::orderBy('created_at', 'desc')->get()));
+        return $this->view->render(
+            $response,
+            'contact.twig',
+            array("contactRequests" => ContactRequests::orderBy('created_at', 'desc')->get())
+        );
     }
 
+    /**
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
     public function dashboard(Request $request, Response $response)
     {
         if ($check = $this->sentinel->hasPerm('dashboard.view')) {
@@ -72,13 +82,17 @@ class Admin extends Controller
             );
 
             //Check username
-            $checkUsername = Users::where('id', '!=', $user->id)->where('username', '=', $request->getParam('username'))->first();
+            $checkUsername = Users::where('id', '!=', $user->id)
+                ->where('username', '=', $request->getParam('username'))
+                ->first();
             if ($checkUsername) {
                 $this->validator->addError('username', 'Username is already in use.');
             }
 
             //Check Email
-            $checkEmail = Users::where('id', '!=', $user->id)->where('email', '=', $request->getParam('email'))->first();
+            $checkEmail = Users::where('id', '!=', $user->id)
+                ->where('email', '=', $request->getParam('email'))
+                ->first();
             if ($checkEmail) {
                 $this->validator->addError('email', 'Email address is already in use.');
             }
@@ -90,7 +104,6 @@ class Admin extends Controller
                     $this->flash('success', 'Your account has been updated successfully.');
                     return $this->redirect($response, 'my-account');
                 }
-
                 $this->flashNow('danger', 'There was an error updating your account information.');
             }
         }

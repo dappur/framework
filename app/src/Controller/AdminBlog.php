@@ -3,6 +3,7 @@
 namespace Dappur\Controller;
 
 use Carbon\Carbon;
+use Dappur\Dappurware\Blog as B;
 use Dappur\Dappurware\VideoParser as VP;
 use Dappur\Model\BlogCategories;
 use Dappur\Model\BlogTags;
@@ -15,30 +16,35 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use Respect\Validation\Validator as V;
 
-/**
- * @SuppressWarnings(PHPMD.StaticAccess)
- */
-
+/** @SuppressWarnings(PHPMD.StaticAccess) */
 class AdminBlog extends Controller
 {
 
-    // Main Blog Admin Page
+    /** @SuppressWarnings(PHPMD.UnusedFormalParameter) */
     public function blog(Request $request, Response $response)
     {
         if ($check = $this->sentinel->hasPerm('blog.view', 'dashboard', $this->config['blog-enabled'])) {
             return $check;
         }
 
-        $posts = BlogPosts::with('category')->withCount('comments', 'replies');
+        $posts = BlogPosts::with('category') ->withCount('comments', 'replies');
 
         if (!$this->auth->check()->inRole('manager') && !$this->auth->check()->inRole('admin')) {
             $posts = $posts->where('user_id', $this->auth->check()->id);
         }
 
-        return $this->view->render($response, 'blog.twig', array("categories" => BlogCategories::get(), "tags" => BlogTags::get(), "posts" => $posts->get()));
+        return $this->view->render(
+            $response,
+            'blog.twig',
+            array(
+                "categories" => BlogCategories::get(),
+                "tags" => BlogTags::get(),
+                "posts" => $posts->get()
+            )
+        );
     }
 
-    // Add New Blog Post
+
     public function blogAdd(Request $request, Response $response)
     {
         if ($check = $this->sentinel->hasPerm('blog.create', 'dashboard', $this->config['blog-enabled'])) {
@@ -46,13 +52,10 @@ class AdminBlog extends Controller
         }
 
         $requestParams = $request->getParams();
-        $loggedUser = $this->auth->check();
         
         if ($request->isPost()) {
             // Validate Data
-            $validate_data = array(
-
-                // Validate Form Fields
+            $validateData = array(
                 'title' => array(
                     'rules' => V::length(6, 255)->alnum('\',.?!@#$%&*()-_"'),
                         'messages' => array(
@@ -60,7 +63,6 @@ class AdminBlog extends Controller
                         'alnum' => 'Invalid Characters Only \',.?!@#$%&*()-_" are allowed.'
                     )
                 ),
-
                 'description' => array(
                     'rules' => V::length(6, 255)->alnum('\',.?!@#$%&*()-_"'),
                         'messages' => array(
@@ -69,128 +71,115 @@ class AdminBlog extends Controller
                     )
                 )
             );
-
-            $this->validator->validate($request, $validate_data);
+            $this->validator->validate($request, $validateData);
 
             // Validate/Add Category
-            $category = new BlogCategories;
-            $category = $category->find($requestParams['category']);
-            $categoryId = $category->id;
-
-            if (!$category) {
-                $addCategory = new BlogCategories;
-                $addCategory->name = $requestParams['category'];
-                $addCategory->slug = Utils::slugify($requestParams['category']);
-                $addCategory->status = 1;
-                $addCategory->save();
-                $categoryId = $addCategory->id;
-            }
+            $categoryId = B::validateCategory($requestParams['category']);
 
             // Slugify Title
             $slug = Utils::slugify($requestParams['title']);
 
             // Validate Tags
-            $parsedTags;
+            $parsedTags = null;
             if ($request->getParam('tags')) {
-                $parsedTags = $this->validateTags($request->getParam('tags'));
+                $parsedTags = B::validateTags($request->getParam('tags'));
             }
-            
 
+            $videoProvider = null;
+            $videoId = null;
             // Handle Featured Video
-            if ((isset($requestParams['video_id']) && $requestParams['video_id'] != "") && (isset($requestParams['video_provider']) && $requestParams['video_provider'] != "")) {
-                $video_provider = $requestParams['video_provider'];
-                $video_id = $requestParams['video_id'];
-            } elseif (isset($requestParams['video_url']) && $requestParams['video_url'] != "") {
-                $video_provider = VP::findProvider($requestParams['video_url']);
-                if ($video_provider) {
-                    $video_provider = VP::getVideoId($requestParams['video_url']);
-                    $video_id = VP::getVideoId($requestParams['video_url']);
-                }
-            } else {
-                $video_provider = null;
-                $video_id = null;
+            if (($requestParams->video_id && $requestParams->video_id != "")
+                && ($requestParams->video_provider && $requestParams->video_provider != "")) {
+                $videoProvider = $requestParams->video_provider;
+                $videoId = $requestParams->video_id;
+            }
+            if ($requestParams['video_url'] && $requestParams['video_url'] != "") {
+                $videoProvider = VP::getVideoId($requestParams['video_url']);
+                $videoId = VP::getVideoId($requestParams['video_url']);
             }
 
             // Process Publish At Date
-            $publish_at = Carbon::parse($requestParams['publish_at']);
+            $publishAt = Carbon::parse($requestParams['publish_at']);
 
-            // Check Status
-            if (isset($requestParams['status'])) {
-                $status = 1;
-            } else {
-                $status = 0;
-            }
-
-            if ($video_provider && $video_id && $requestParams['featured_image'] == "") {
+            if ($videoProvider && $videoId && $requestParams['featured_image'] == "") {
                 $this->validator->addError('featured_image', 'Featured image is required with a video.');
             }
 
             if ($this->validator->isValid()) {
-                $new_post = new BlogPosts;
-                $new_post->title = $requestParams['title'];
-                $new_post->description = $requestParams['description'];
-                $new_post->slug = $slug;
-                $new_post->content = $requestParams['post_content'];
-                $new_post->featured_image = $requestParams['featured_image'];
-                $new_post->video_provider = $video_provider;
-                $new_post->video_id = $video_id;
-                $new_post->category_id = $categoryId;
-                $new_post->user_id = $loggedUser['id'];
-                $new_post->publish_at = $publish_at;
-                $new_post->status = $status;
-                
-               
-                if ($new_post->save()) {
-                    foreach ($parsedTags as $tag) {
-                        $addTag = new BlogPostsTags;
-                        $addTag->post_id = $new_post->id;
-                        $addTag->tag_id = $tag;
-                        $addTag->save();
-                    }
-
-                    $this->flash('success', 'Your blog has been saved successfully.');
-                    return $this->redirect($response, 'admin-blog');
-                } else {
-                    $this->flashNow('danger', 'There was an error saving your blog.');
+                $newPost = new BlogPosts;
+                $newPost->title = $requestParams['title'];
+                $newPost->description = $requestParams['description'];
+                $newPost->slug = $slug;
+                $newPost->content = $requestParams['post_content'];
+                $newPost->featured_image = $requestParams['featured_image'];
+                $newPost->video_provider = $videoProvider;
+                $newPost->video_id = $videoId;
+                $newPost->category_id = $categoryId;
+                $newPost->user_id = $this->auth->check()->id;
+                $newPost->publish_at = $publishAt;
+                if ($requestParams['status']) {
+                    $newPost->status = 1;
                 }
+                $newPost->save();
+                
+                foreach ($parsedTags as $tag) {
+                    $addTag = new BlogPostsTags;
+                    $addTag->post_id = $newPost->id;
+                    $addTag->tag_id = $tag;
+                    $addTag->save();
+                }
+
+                $this->flash('success', 'Your blog has been saved successfully.');
+                return $this->redirect($response, 'admin-blog');
+
+
+                $this->flashNow('danger', 'There was an error saving your blog.');
             }
         }
 
-        return $this->view->render($response, 'blog-add.twig', ["categories" => BlogCategories::get(), "tags" => BlogTags::get()]);
+        return $this->view->render(
+            $response,
+            'blog-add.twig',
+            array(
+                "categories" => BlogCategories::get(),
+                "tags" => BlogTags::get()
+            )
+        );
     }
 
     // Edit Blog Post
-    public function blogEdit(Request $request, Response $response, $post_id)
+    public function blogEdit(Request $request, Response $response, $postId)
     {
         if ($check = $this->sentinel->hasPerm('blog.update', 'dashboard', $this->config['blog-enabled'])) {
             return $check;
         }
         
         $requestParams = $request->getParams();
-        $loggedUser = $this->auth->check();
 
-        $post = BlogPosts::where('id', $post_id)->with('category')->with('tags')->first();
+        $post = BlogPosts::where('id', $postId)->with('category')->with('tags')->first();
 
         if (!$post) {
             $this->flash('danger', 'That post does not exist.');
             return $this->redirect($response, 'admin-blog');
         }
 
-        if (!$this->auth->check()->inRole('manager') && !$this->auth->check()->inRole('admin') && $post->user_id != $this->auth->check()->id) {
+        if (!$this->auth->check()->inRole('manager')
+            && !$this->auth->check()->inRole('admin')
+            && $post->user_id != $this->auth->check()->id) {
             $this->flash('danger', 'You do not have permission to edit that post.');
             return $this->redirect($response, 'admin-blog');
         }
 
-        $current_post_tags = BlogPostsTags::where('post_id', '=', $post_id)->get();
+        $currentPostTags = BlogPostsTags::where('post_id', '=', $postId)->get();
 
-        $current_tags = array();
-        foreach ($current_post_tags as $ckey => $cvalue) {
-            $current_tags[] = $cvalue['tag_id'];
+        $currentTags = array();
+        foreach ($currentPostTags as $cvalue) {
+            $currentTags[] = $cvalue['tag_id'];
         }
 
         if ($request->isPost()) {
             // Validate Data
-            $validate_data = array(
+            $validateData = array(
 
                 // Validate Form Fields
                 'title' => array(
@@ -209,53 +198,35 @@ class AdminBlog extends Controller
                     )
                 )
             );
+            $this->validator->validate($request, $validateData);
 
-            $this->validator->validate($request, $validate_data);
-
-            // Validate Category
-            $category = BlogCategories::find($requestParams['category']);
-
-            if (!$category) {
-                $addCategory = new BlogCategories;
-                $addCategory->name = $requestParams['category'];
-                $addCategory->slug = Utils::slugify($requestParams['category']);
-                $addCategory->status = 1;
-                $addCategory->save();
-                $category_id = $addCategory->id;
-            } else {
-                $category_id = $category->id;
-            }
-
+            // Validate/Add Category
+            $categoryId = B::validateCategory($requestParams['category']);
 
             // Slugify Title
             $slug = Utils::slugify($requestParams['title']);
 
             // Validate Tags
-            $post_tags = array();
+            $parsedTags = null;
             if ($request->getParam('tags')) {
-                foreach ($request->getParam('tags') as $tkey => $tvalue) {
-                    $post_tags[] = $tvalue;
-                }
+                $parsedTags = B::validateTags($request->getParam('tags'));
             }
-            $parsed_tags = $this->validateTags($post_tags);
 
+            $videoProvider = null;
+            $videoId = null;
             // Handle Featured Video
-            if ((isset($requestParams['video_id']) && $requestParams['video_id'] != "") && (isset($requestParams['video_provider']) && $requestParams['video_provider'] != "")) {
-                $video_provider = $requestParams['video_provider'];
-                $video_id = $requestParams['video_id'];
-            } elseif (isset($requestParams['video_url']) && $requestParams['video_url'] != "") {
-                $video_provider = VP::findProvider($requestParams['video_url']);
-                if ($video_provider) {
-                    $video_provider = VP::getVideoId($requestParams['video_url']);
-                    $video_id = VP::getVideoId($requestParams['video_url']);
-                }
-            } else {
-                $video_provider = null;
-                $video_id = null;
+            if (($requestParams->video_id && $requestParams->video_id != "")
+                && ($requestParams->video_provider && $requestParams->video_provider != "")) {
+                $videoProvider = $requestParams->video_provider;
+                $videoId = $requestParams->video_id;
+            }
+            if ($requestParams['video_url'] && $requestParams['video_url'] != "") {
+                $videoProvider = VP::getVideoId($requestParams['video_url']);
+                $videoId = VP::getVideoId($requestParams['video_url']);
             }
 
             // Process Publish At Date
-            $publish_at = Carbon::parse($requestParams['publish_at']);
+            $publishAt = Carbon::parse($requestParams['publish_at']);
 
             // Check Status
             if (isset($requestParams['status'])) {
@@ -264,7 +235,7 @@ class AdminBlog extends Controller
                 $status = 0;
             }
 
-            if ($video_provider && $video_id && $requestParams['featured_image'] == "") {
+            if ($videoProvider && $videoId && $requestParams['featured_image'] == "") {
                 $this->validator->addError('featured_image', 'Featured image is required with a video.');
             }
 
@@ -276,10 +247,10 @@ class AdminBlog extends Controller
                 if (isset($requestParams['featured_image'])) {
                     $post->featured_image = $requestParams['featured_image'];
                 }
-                $post->video_provider = $video_provider;
-                $post->video_id = $video_id;
-                $post->category_id = $category_id;
-                $post->publish_at = $publish_at;
+                $post->video_provider = $videoProvider;
+                $post->video_id = $videoId;
+                $post->category_id = $categoryId;
+                $post->publish_at = $publishAt;
                 $post->status = $status;
 
                 if ($post->save()) {
@@ -301,7 +272,16 @@ class AdminBlog extends Controller
             }
         }
 
-        return $this->view->render($response, 'blog-edit.twig', ["post" => $post->toArray(), "categories" => BlogCategories::get(), "tags" => BlogTags::get(), "currentTags" => $current_tags]);
+        return $this->view->render(
+            $response,
+            'blog-edit.twig',
+            array(
+                "post" => $post->toArray(),
+                "categories" => BlogCategories::get(),
+                "tags" => BlogTags::get(),
+                "currentTags" => $currentTags
+            )
+        );
     }
 
     // Publish Blog Post
@@ -311,26 +291,13 @@ class AdminBlog extends Controller
             return $check;
         }
 
-        $requestParams = $request->getParams();
-
-        $post = BlogPosts::find($requestParams['post_id']);
-        
-        if ($post) {
-            if (!$this->auth->check()->inRole('manager') && !$this->auth->check()->inRole('admin') && $post->user_id != $this->auth->check()->id) {
-                $this->flash('danger', 'You do not have permission to edit that post.');
-                return $this->redirect($response, 'admin-blog');
-            }
-
-            $post->status = 1;
-
-            if ($post->save()) {
-                $this->flash('success', 'Post successfully published.');
-            } else {
-                $this->flash('danger', 'There was an error publishing your post.');
-            }
-        } else {
-            $this->flash('danger', 'That post does not exist.');
+        $blogutils = new B($this->container);
+        if ($blogutils->publish($request->getParam('post_id'))) {
+            $this->flash('danger', 'Post was published successfully.');
+            return $this->redirect($response, 'admin-blog');
         }
+
+        $this->flash('danger', 'There was an error publishing your post.');
         return $this->redirect($response, 'admin-blog');
     }
 
@@ -341,26 +308,13 @@ class AdminBlog extends Controller
             return $check;
         }
 
-        $requestParams = $request->getParams();
-
-        $post = BlogPosts::find($requestParams['post_id']);
-
-        if ($post) {
-            if (!$this->auth->check()->inRole('manager') && !$this->auth->check()->inRole('admin') && $post->user_id != $this->auth->check()->id) {
-                $this->flash('danger', 'You do not have permission to edit that post.');
-                return $this->redirect($response, 'admin-blog');
-            }
-
-            $post->status = 0;
-
-            if ($post->save()) {
-                $this->flash('success', 'Post successfully unpublished.');
-            } else {
-                $this->flash('danger', 'There was an error unpublishing your post.');
-            }
-        } else {
-            $this->flash('danger', 'That post does not exist.');
+        $blogutils = new B($this->container);
+        if ($blogutils->unpublish($request->getParam('post_id'))) {
+            $this->flash('danger', 'Post was unpublished successfully.');
+            return $this->redirect($response, 'admin-blog');
         }
+
+        $this->flash('danger', 'There was an error unpublishing your post.');
         return $this->redirect($response, 'admin-blog');
     }
 
@@ -371,30 +325,17 @@ class AdminBlog extends Controller
             return $check;
         }
 
-        $requestParams = $request->getParams();
-
-        $post = BlogPosts::find($requestParams['post_id']);
-
-        if ($post) {
-            if (!$this->auth->check()->inRole('manager') && !$this->auth->check()->inRole('admin') && $post->user_id != $this->auth->check()->id) {
-                $this->flash('danger', 'You do not have permission to edit that post.');
-                return $this->redirect($response, 'admin-blog');
-            }
-
-            BlogPostsTags::where('post_id', '=', $post->id)->delete();
-
-            if ($post->delete()) {
-                $this->flash('success', 'Post successfully deleted.');
-            } else {
-                $this->flash('danger', 'There was an error deleting your post.');
-            }
-        } else {
-            $this->flash('danger', 'That post does not exist.');
+        $blogutils = new B($this->container);
+        if ($blogutils->delete($request->getParam('post_id'))) {
+            $this->flash('danger', 'Post was deleted successfully.');
+            return $this->redirect($response, 'admin-blog');
         }
+
+        $this->flash('danger', 'There was an error deleting your post.');
         return $this->redirect($response, 'admin-blog');
     }
 
-    // Preview Blog Post
+    /** @SuppressWarnings(PHPMD.UnusedFormalParameter) */
     public function blogPreview(Request $request, Response $response, $slug)
     {
         if ($check = $this->sentinel->hasPerm('blog.view', 'dashboard', $this->config['blog-enabled'])) {
@@ -403,7 +344,9 @@ class AdminBlog extends Controller
 
         $post = BlogPosts::where('slug', '=', $slug)->first();
 
-        if (!$this->auth->check()->inRole('manager') && !$this->auth->check()->inRole('admin') && $post->user_id != $this->auth->check()->id) {
+        if (!$this->auth->check()->inRole('manager') &&
+            !$this->auth->check()->inRole('admin') &&
+            $post->user_id != $this->auth->check()->id) {
             $this->flash('danger', 'You do not have permission to preview that post.');
             return $this->redirect($response, 'admin-blog');
         }
@@ -417,43 +360,14 @@ class AdminBlog extends Controller
             return $this->redirect($response, 'admin-blog');
         }
 
-        return $this->view->render($response, 'App/blog-post.twig', array("blogPost" => $post[0]->toArray(), 'blogCategories' => $categories, 'blogTags' => $tags));
-    }
-
-    private function validateTags(array $tags)
-    {
-        $output = array();
-        //Loop Through Tags
-        foreach ($tags as $key => $value) {
-
-            // Check if Already Numeric
-            if (is_numeric($value)) {
-                //Check if valid tag
-                $check = BlogTags::where('id', '=', $value)->get();
-                if ($check->count() > 0) {
-                    $output[] = $value;
-                }
-            } else {
-                //Slugify input
-                $slug = Utils::slugify($value);
-
-                //Check if already slug
-                $slug_check = $tag_check->where('slug', '=', $slug)->get();
-                if ($slug_check->count() > 0) {
-                    //$output[] = $slug_check['id'];
-                } else {
-                    $new_tag = new BlogTags;
-                    $new_tag->name = $value;
-                    $new_tag->slug = $slug;
-                    if ($new_tag->save()) {
-                        if ($new_tag->id) {
-                            $output[] = $new_tag->id;
-                        }
-                    }
-                }
-            }
-        }
-
-        return $output;
+        return $this->view->render(
+            $response,
+            'App/blog-post.twig',
+            array(
+                "blogPost" => $post[0]->toArray(),
+                'blogCategories' => $categories,
+                'blogTags' => $tags
+            )
+        );
     }
 }

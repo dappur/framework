@@ -34,11 +34,11 @@ class AdminBlogComments extends Controller
 
         if (!$this->auth->check()->inRole('manager') && !$this->auth->check()->inRole('admin')) {
             $comments = $comments->whereHas(
-                    'post',
+                'post',
                 function ($query) use ($user) {
                     $query->where('user_id', '=', $user);
                 }
-                );
+            );
         }
 
         return $this->view->render($response, 'blog-comments.twig', array("comments" => $comments->get()));
@@ -94,8 +94,8 @@ class AdminBlogComments extends Controller
         $comment = $comment->first();
 
         if ($comment && $comment->delete()) {
-    		$this->flash('success', 'Comment has been deleted.');
-        	return $this->redirect($response, 'admin-blog-comments');
+            $this->flash('success', 'Comment has been deleted.');
+            return $this->redirect($response, 'admin-blog-comments');
         }
 
         $this->flash('danger', 'There was an error deleting your comment.');
@@ -111,11 +111,11 @@ class AdminBlogComments extends Controller
         $comment = $comment->where('id', $request->getParam('comment'));
         if (!$this->auth->check()->inRole('manager') && !$this->auth->check()->inRole('admin')) {
             $comment = $comment->whereHas(
-                    'post',
-                    function ($query) use ($this->auth->check()->id) {
-                        $query->where('user_id', '=', $this->auth->check()->id);
-                    }
-                );
+                'post',
+                function ($query) use ($this->auth->check()->id) {
+                    $query->where('user_id', '=', $this->auth->check()->id);
+                }
+            );
         }
 
         $comment = $comment->first();
@@ -141,11 +141,11 @@ class AdminBlogComments extends Controller
         $comment = $comment->where('id', $request->getParam('comment'));
         if (!$this->auth->check()->inRole('manager') && !$this->auth->check()->inRole('admin')) {
             $comment = $comment->whereHas(
-                    'post',
-                    function ($query) use ($this->auth->check()->id) {
-                        $query->where('user_id', '=', $this->auth->check()->id);
-                    }
-                );
+                'post',
+                function ($query) use ($this->auth->check()->id) {
+                    $query->where('user_id', '=', $this->auth->check()->id);
+                }
+            );
         }
 
         $comment = $comment->first();

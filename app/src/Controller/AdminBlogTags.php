@@ -25,8 +25,8 @@ class AdminBlogTags extends Controller
         }
 
         if ($request->isPost()) {
-            $tag_name = $request->getParam('tag_name');
-            $tag_slug = $request->getParam('tag_slug');
+            $tagName = $request->getParam('tag_name');
+            $tagSlug = $request->getParam('tag_slug');
 
             $this->validator->validate($request, [
                 'tag_name' => V::length(2, 25)->alpha('\''),
@@ -41,8 +41,8 @@ class AdminBlogTags extends Controller
 
             if ($this->validator->isValid()) {
                 $addTag = new BlogTags;
-                $addTag->name = $tag_name;
-                $addTag->slug = $tag_slug;
+                $addTag->name = $tagName;
+                $addTag->slug = $tagSlug;
 
                 if ($addTag->save()) {
                     $this->flash('success', 'Category added successfully.');
@@ -96,10 +96,9 @@ class AdminBlogTags extends Controller
 
         if ($tag) {
             if ($request->isPost()) {
-
                 // Get Vars
-                $tag_name = $request->getParam('tag_name');
-                $tag_slug = $request->getParam('tag_slug');
+                $tagName = $request->getParam('tag_name');
+                $tagSlug = $request->getParam('tag_slug');
 
                 // Validate Data
                 $validate_data = array(
@@ -121,15 +120,15 @@ class AdminBlogTags extends Controller
                 $this->validator->validate($request, $validate_data);
 
                 //Validate Category Slug
-                $checkSlug = $tag->where('id', '!=', $tag_id)->where('slug', '=', $tag_slug)->get()->count();
-                if ($checkSlug > 0 && $tag_slug != $tag['slug']) {
+                $checkSlug = $tag->where('id', '!=', $tag_id)->where('slug', '=', $tagSlug)->get()->count();
+                if ($checkSlug > 0 && $tagSlug != $tag['slug']) {
                     $this->validator->addError('tag_slug', 'Category slug is already in use.');
                 }
 
 
                 if ($this->validator->isValid()) {
-                    $tag->name = $tag_name;
-                    $tag->slug = $tag_slug;
+                    $tag->name = $tagName;
+                    $tag->slug = $tagSlug;
 
                     if ($tag->save()) {
                         $this->flash('success', 'Category has been updated successfully.');
