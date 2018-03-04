@@ -7,12 +7,20 @@ $container['AdminBlog'] = function ($container) {
     return new Dappur\Controller\AdminBlog($container);
 };
 
+$container['AdminBlogCategories'] = function ($container) {
+    return new Dappur\Controller\AdminBlogCategories($container);
+};
+
 $container['AdminBlogComments'] = function ($container) {
     return new Dappur\Controller\AdminBlogComments($container);
 };
 
-$container['AdminEmail'] = function ($container) { 
-    return new Dappur\Controller\AdminEmail($container); 
+$container['AdminBlogTags'] = function ($container) {
+    return new Dappur\Controller\AdminBlogTags($container);
+};
+
+$container['AdminEmail'] = function ($container) {
+    return new Dappur\Controller\AdminEmail($container);
 };
 
 $container['AdminMedia'] = function ($container) {
@@ -31,8 +39,8 @@ $container['AdminSeo'] = function ($container) {
     return new Dappur\Controller\AdminSeo($container);
 };
 
-$container['AdminSettings'] = function ($container) { 
-    return new Dappur\Controller\AdminSettings($container); 
+$container['AdminSettings'] = function ($container) {
+    return new Dappur\Controller\AdminSettings($container);
 };
 
 $container['AdminUsers'] = function ($container) {
@@ -47,8 +55,8 @@ $container['Auth'] = function ($container) {
     return new Dappur\Controller\Auth($container);
 };
 
-$container['Deploy'] = function ($container) { 
-	return new Dappur\Controller\Deploy($container); 
+$container['Deploy'] = function ($container) {
+    return new Dappur\Controller\Deploy($container);
 };
 
 $container['Blog'] = function ($container) {

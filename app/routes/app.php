@@ -1,24 +1,24 @@
 <?php
 // Non Logged Users
 $app->group('', function () {
-	// Home Page
-	$this->map(['GET'], '/', 'App:home')
-		->setName('home');
-	// Privacy Policy
-	$this->map(['GET'], '/privacy', 'App:privacy')
-		->setName('privacy');
-	// Contact 
-	$this->map(['GET', 'POST'], '/contact', 'App:contact')
-		->setName('contact');
-	// Terms and Conditions
-	$this->map(['GET'], '/terms', 'App:terms')
-		->setName('terms');
-	// CSRF
-	$this->map(['GET'], '/csrf', 'App:csrf')
-		->setName('csrf');
-	// Oauth
-	$this->map(['GET'], '/oauth/{slug}', 'Oauth2:oauth2')
-		->setName('oauth');
+    // Home Page
+    $this->map(['GET'], '/', 'App:home')
+        ->setName('home');
+    // Privacy Policy
+    $this->map(['GET'], '/privacy', 'App:privacy')
+        ->setName('privacy');
+    // Contact
+    $this->map(['GET', 'POST'], '/contact', 'App:contact')
+        ->setName('contact');
+    // Terms and Conditions
+    $this->map(['GET'], '/terms', 'App:terms')
+        ->setName('terms');
+    // CSRF
+    $this->map(['GET'], '/csrf', 'App:csrf')
+        ->setName('csrf');
+    // Oauth
+    $this->map(['GET'], '/oauth/{slug}', 'Oauth2:oauth2')
+        ->setName('oauth');
 })
 ->add($container->get('csrf'))
 ->add(new Dappur\Middleware\ Maintenance($container))
@@ -28,19 +28,19 @@ $app->group('', function () {
 ->add(new Dappur\Middleware\Amp($container));
 
 // Requires Authentication
-$app->group('', function () use($app) {
-	// User Profile
-	$app->group('/profile', function() use ($app) {
-		//Profile
-		$this->map(['GET', 'POST'], '/', 'App:profile')
-			->setName('profile');
-		// Check Password
-		$this->map(['POST'], '/password-check', 'App:checkPassword')
-			->setName('password-check');
-		// Change Password
-		$this->map(['POST'], '/change-password', 'App:changePassword')
-			->setName('change-password');
-	});
+$app->group('', function () use ($app) {
+    // User Profile
+    $app->group('/profile', function () use ($app) {
+        //Profile
+        $this->map(['GET', 'POST'], '/', 'App:profile')
+            ->setName('profile');
+        // Check Password
+        $this->map(['POST'], '/password-check', 'App:checkPassword')
+            ->setName('password-check');
+        // Change Password
+        $this->map(['POST'], '/change-password', 'App:changePassword')
+            ->setName('change-password');
+    });
 })
 ->add($container->get('csrf'))
 ->add(new Dappur\Middleware\Auth($container))
@@ -50,16 +50,16 @@ $app->group('', function () use($app) {
 
 // Incomplete Profile Page
 $app->map(['GET','POST'], '/profile/incomplete', 'App:profileIncomplete')
-		->setName('profile-incomplete')
-		->add($container->get('csrf'))
-		->add(new Dappur\Middleware\Auth($container))
-		->add(new Dappur\Middleware\Maintenance($container))
-		->add(new Dappur\Middleware\PageConfig($container));
+        ->setName('profile-incomplete')
+        ->add($container->get('csrf'))
+        ->add(new Dappur\Middleware\Auth($container))
+        ->add(new Dappur\Middleware\Maintenance($container))
+        ->add(new Dappur\Middleware\PageConfig($container));
 
 // Maintenance Mode Bypasses All Middleware
 $app->map(['GET'], '/maintenance', 'App:maintenance')
-		->setName('maintenance-mode');
+        ->setName('maintenance-mode');
 
 // Assets Bypass All Middleware
 $app->map(['GET'], '/asset', 'App:asset')
-		->setName('asset');
+        ->setName('asset');

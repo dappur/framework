@@ -1,7 +1,7 @@
 <?php
 
 // Blog Front End
-$app->group('/blog', function() use ($app) {
+$app->group('/blog', function () use ($app) {
     $app->get('[/{page}]', 'Blog:blog')
         ->setName('blog');
 
@@ -25,13 +25,13 @@ $app->group('/blog', function() use ($app) {
 ->add(new Dappur\Middleware\ProfileCheck($container));
 
 // Blog Admin
-$app->group('/dashboard/blog', function() use ($app) {
+$app->group('/dashboard/blog', function () use ($app) {
     // Main Blog Admin
     $app->get('', 'AdminBlog:blog')
     ->setName('admin-blog');
 
     // Blog Post Actions
-    $app->group('', function() use ($app) {
+    $app->group('', function () use ($app) {
         // Unpublish Blog
         $app->post('/unpublish', 'AdminBlog:blogUnpublish')
             ->setName('admin-blog-unpublish');
@@ -50,7 +50,7 @@ $app->group('/dashboard/blog', function() use ($app) {
     });
 
     // Blog Comments
-    $app->group('/comments', function() use ($app) {
+    $app->group('/comments', function () use ($app) {
         // View Comments
         $app->get('', 'AdminBlogComments:comments')
             ->setName('admin-blog-comments');
@@ -68,7 +68,7 @@ $app->group('/dashboard/blog', function() use ($app) {
     });
 
     // Blog Replies
-    $app->group('/replies', function() use ($app) {
+    $app->group('/replies', function () use ($app) {
 
         // Unpublish Comment
         $app->post('/publish', 'AdminBlogComments:replyUnpublish')
@@ -82,7 +82,7 @@ $app->group('/dashboard/blog', function() use ($app) {
     });
 
     // Blog Categories Actions
-    $app->group('/categories', function() use ($app) {
+    $app->group('/categories', function () use ($app) {
         // Delete Category
         $app->post('/delete', 'AdminBlogCategories:categoriesDelete')
             ->setName('admin-blog-categories-delete');
@@ -95,7 +95,7 @@ $app->group('/dashboard/blog', function() use ($app) {
     });
 
     // Blog Tag Actions
-    $app->group('/tags', function() use ($app) {
+    $app->group('/tags', function () use ($app) {
         // Delete Tag
         $app->post('/delete', 'AdminBlogTags:tagsDelete')
             ->setName('admin-blog-tags-delete');

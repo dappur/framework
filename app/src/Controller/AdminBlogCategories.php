@@ -15,6 +15,9 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use Respect\Validation\Validator as V;
 
+/**
+ * @SuppressWarnings(PHPMD.StaticAccess)
+ */
 class AdminBlogCategories extends Controller
 {
     // Add New Blog Category
@@ -43,12 +46,10 @@ class AdminBlogCategories extends Controller
 
                 if ($addCategory->save()) {
                     $this->flash('success', 'Category added successfully.');
-                } else {
-                    $this->flash('danger', 'There was a problem added the category.');
+                    return $this->redirect($response, 'admin-blog');
                 }
-            } else {
-                $this->flash('danger', 'There was a problem adding the category.');
             }
+            $this->flash('danger', 'An error occured while adding this category.');
         }
 
         return $this->redirect($response, 'admin-blog');
@@ -63,90 +64,85 @@ class AdminBlogCategories extends Controller
 
         $category = BlogCategories::find($request->getParam('category_id'));
 
-        if ($category) {
-            if ($category->delete()) {
-                $this->flash('success', 'Category has been removed.');
-            } else {
-                $this->flash('danger', 'There was a problem removing the category.');
-            }
-        } else {
-            $this->flash('danger', 'There was a problem removing the category.');
+        if (!$category) {
+            $this->flash('danger', 'Category doesn\'t exist.');
+            return $this->redirect($response, 'admin-blog');
         }
 
+        if ($category->delete()) {
+            $this->flash('success', 'Category has been removed.');
+            return $this->redirect($response, 'admin-blog');
+        }
+
+        $this->flash('danger', 'There was a problem removing the category.');
         return $this->redirect($response, 'admin-blog');
     }
 
     // Edit Blog Category
-    public function categoriesEdit(Request $request, Response $response, $categoryid)
+    public function categoriesEdit(Request $request, Response $response, $categoryId)
     {
         if ($check = $this->sentinel->hasPerm('blog_categories.update', 'dashboard', $this->config['blog-enabled'])) {
             return $check;
         }
 
-        if ($request->isPost()) {
-            $category_id = $request->getParam('category_id');
-        } else {
-            $category_id = $categoryid;
-        }
+        $category = BlogCategories::find($categoryId);
 
-        $category = BlogCategories::find($category_id);
-
-        if ($category) {
-            if ($request->isPost()) {
-                
-                // Get Vars
-                $category_name = $request->getParam('category_name');
-                $category_slug = $request->getParam('category_slug');
-
-                // Validate Data
-                $validate_data = array(
-                    'category_name' => array(
-                        'rules' => V::length(2, 25)->alpha('\''),
-                        'messages' => array(
-                            'length' => 'Must be between 2 and 25 characters.',
-                            'alpha' => 'Letters only and can contain \''
-                            )
-                    ),
-                    'category_slug' => array(
-                        'rules' => V::slug(),
-                        'messages' => array(
-                            'slug' => 'May only contain lowercase letters, numbers and hyphens.'
-                            )
-                    )
-                );
-
-                $this->validator->validate($request, $validate_data);
-
-                //Validate Category Slug
-                $checkSlug = $category->where('id', '!=', $category_id)->where('slug', '=', $category_slug)->get()->count();
-                if ($checkSlug > 0 && $category_slug != $category->slug) {
-                    $this->validator->addError('category_slug', 'Category slug is already in use.');
-                }
-
-
-                if ($this->validator->isValid()) {
-                    if ($category->id == 1) {
-                        $this->flash('danger', 'Cannot edit uncategorized category.');
-                        return $this->redirect($response, 'admin-blog');
-                    }
-
-                    $category->name = $category_name;
-                    $category->slug = $category_slug;
-
-                    if ($category->save()) {
-                        $this->flash('success', 'Category has been updated successfully.');
-                    } else {
-                        $this->flash('danger', 'An unknown error occured updating the category.');
-                    }
-
-                    return $this->redirect($response, 'admin-blog');
-                }
-            }
-
-            return $this->view->render($response, 'blog-categories-edit.twig', ['category' => $category]);
-        } else {
+        if (!$category) {
             $this->flash('danger', 'Sorry, that category was not found.');
             return $response->withRedirect($this->router->pathFor('admin-blog'));
         }
+
+        if ($request->isPost()) {
+            // Get Vars
+            $categoryName = $request->getParam('category_name');
+            $categorySlug = $request->getParam('category_slug');
+
+            // Validate Data
+            $validateData = array(
+                'category_name' => array(
+                    'rules' => V::length(2, 25)->alpha('\''),
+                    'messages' => array(
+                        'length' => 'Must be between 2 and 25 characters.',
+                        'alpha' => 'Letters only and can contain \''
+                        )
+                ),
+                'category_slug' => array(
+                    'rules' => V::slug(),
+                    'messages' => array(
+                        'slug' => 'May only contain lowercase letters, numbers and hyphens.'
+                        )
+                )
+            );
+
+            $this->validator->validate($request, $validateData);
+
+            // Validate Category Slug
+            $checkSlug = $category->where('id', '!=', $category->id)
+                ->where('slug', '=', $categorySlug)
+                ->get()
+                ->count();
+            if ($checkSlug > 0 && $categorySlug != $category->slug) {
+                $this->validator->addError('category_slug', 'Category slug is already in use.');
+            }
+
+
+            if ($this->validator->isValid()) {
+                if ($category->id == 1) {
+                    $this->flash('danger', 'Cannot edit uncategorized category.');
+                    return $this->redirect($response, 'admin-blog');
+                }
+
+                $category->name = $categoryName;
+                $category->slug = $categorySlug;
+
+                if ($category->save()) {
+                    $this->flash('success', 'Category has been updated successfully.');
+                    return $this->redirect($response, 'admin-blog');
+                }
+            }
+            $this->flash('danger', 'An error occured updating the category.');
+        }
+
+        return $this->view->render($response, 'blog-categories-edit.twig', ['category' => $category]);
     }
 }

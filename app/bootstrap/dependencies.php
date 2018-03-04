@@ -13,19 +13,19 @@ $container['db'] = function () use ($capsule) {
     return $capsule;
 };
 
-$container['project_dir'] = function ($container) { 
-    $directory = __DIR__ . "/../../"; 
-    return realpath($directory); 
+$container['project_dir'] = function ($container) {
+    $directory = __DIR__ . "/../../";
+    return realpath($directory);
 };
 
-$container['public_dir'] = function ($container) { 
-    $directory = __DIR__ . "/../../public/"; 
-    return realpath($directory); 
+$container['public_dir'] = function ($container) {
+    $directory = __DIR__ . "/../../public/";
+    return realpath($directory);
 };
 
-$container['upload_dir'] = function ($container) { 
-    $directory = __DIR__ . "/../../public/uploads/"; 
-    return realpath($directory); 
+$container['upload_dir'] = function ($container) {
+    $directory = __DIR__ . "/../../public/uploads/";
+    return realpath($directory);
 };
 
 // Bind config table from database
@@ -46,7 +46,7 @@ $container['auth'] = function () {
 };
 
 // Bind User Permissions
-$container['userAccess'] = function($container) {
+$container['userAccess'] = function ($container) {
     return (new \Dappur\Dappurware\Sentinel($container))->userAccess();
 };
 
@@ -62,17 +62,17 @@ $container['validator'] = function () {
 
 // CSRF
 $container['csrf'] = function ($container) {
-
     $guard = new \Slim\Csrf\Guard(
-        $container->settings['csrf']['prefix'], 
-        $storage, 
-        null, 
-        $container->settings['csrf']['storage_limit'], 
-        $container->settings['csrf']['strength'], 
-        $container->settings['csrf']['persist_tokens']);
+        $container->settings['csrf']['prefix'],
+        $storage,
+        null,
+        $container->settings['csrf']['storage_limit'],
+        $container->settings['csrf']['strength'],
+        $container->settings['csrf']['persist_tokens']
+    );
 
     $guard->setFailureCallable(function ($request, $response, $next) use ($container) {
-         return $container['view']
+        return $container['view']
             ->render($response, 'errors/csrf.twig')
             ->withHeader('Content-type', 'text/html')
             ->withStatus(401);
@@ -83,12 +83,12 @@ $container['csrf'] = function ($container) {
 
 // Bind Twig View
 $container['view'] = function ($container) {
-    if (strpos($container['request']->getUri()->getPath(), '/dashboard' ) !== false) {
+    if (strpos($container['request']->getUri()->getPath(), '/dashboard') !== false) {
         $template_path = __DIR__ . '/../views/' . $container->config['dashboard-theme'];
-    }else{
+    } else {
         if ($_SESSION['isAmp']) {
             $template_path = __DIR__ . '/../views/' . $container->config['theme'] . '/amp';
-        }else{
+        } else {
             $template_path = __DIR__ . '/../views/' . $container->config['theme'];
         }
     }
@@ -114,11 +114,17 @@ $container['view'] = function ($container) {
         $view->addExtension(new \Dappur\TwigExtension\Cloudinary());
         $view->getEnvironment()->addGlobal('hasCloudinary', 1);
         if ($container->auth->check() && $container->auth->hasAccess('media.cloudinary')) {
-            $view->getEnvironment()->addGlobal('cloudinaryCmsUrl', \Dappur\Controller\AdminMedia::getCloudinaryCMS($container));
-            $view->getEnvironment()->addGlobal('cloudinarySignature', \Dappur\Controller\AdminMedia::getCloudinaryCMS($container, true));
+            $view->getEnvironment()->addGlobal(
+                'cloudinaryCmsUrl',
+                \Dappur\Controller\AdminMedia::getCloudinaryCMS($container)
+            );
+            $view->getEnvironment()->addGlobal(
+                'cloudinarySignature',
+                \Dappur\Controller\AdminMedia::getCloudinaryCMS($container, true)
+            );
             $view->getEnvironment()->addGLobal('cloudinaryApiKey', $container['settings']['cloudinary']['api_key']);
         }
-    }else{
+    } else {
         $view->addExtension(new \Dappur\TwigExtension\Cloudinary());
         $view->getEnvironment()->addGlobal('hasCloudinary', 0);
     }
@@ -127,8 +133,8 @@ $container['view'] = function ($container) {
         // Get Categories With Count
         $blog_categories = new \Dappur\Model\BlogCategories;
         $blog_categories = $blog_categories->withCount(['posts' => function ($query) {
-                $query->where('blog_posts.status', 1);
-            }])
+            $query->where('blog_posts.status', 1);
+        }])
             ->whereHas('posts', function ($query) {
                 $query->where('blog_posts.status', 1);
             })
@@ -137,8 +143,8 @@ $container['view'] = function ($container) {
         // Get Tags With Count
         $blog_tags = new \Dappur\Model\BlogTags;
         $blog_tags = $blog_tags->withCount(['posts' => function ($query) {
-                $query->where('blog_posts.status', 1);
-            }])
+            $query->where('blog_posts.status', 1);
+        }])
             ->whereHas('posts', function ($query) {
                 $query->where('blog_posts.status', 1);
             })
@@ -160,7 +166,7 @@ $container['view'] = function ($container) {
     $view->getEnvironment()->addGlobal('uploadDir', $container['upload_dir']);
     
     $page_name = $container['request']->getAttribute('name');
-    if (strpos($container['request']->getUri()->getPath(), '/dashboard' ) !== false) {
+    if (strpos($container['request']->getUri()->getPath(), '/dashboard') !== false) {
         $page_settings = new \Dappur\Model\ConfigGroups;
         $page_settings = $page_settings->whereNotNull('page_name')->get();
         $view->getEnvironment()->addGlobal('pageSettings', $page_settings);
@@ -169,17 +175,19 @@ $container['view'] = function ($container) {
 };
 
 // Bind Found Handler
-$container['foundHandler'] = function() {
+$container['foundHandler'] = function () {
     return new \Slim\Handlers\Strategies\RequestResponseArgs();
 };
 
 // Bind Monolog Logging System if Enables
-$container['logger'] = function($container) {
+$container['logger'] = function ($container) {
 
     // Stream Log output to file
     $logger = new Monolog\Logger($container['settings']['logger']['log_name']);
-    $file_stream = new \Monolog\Handler\StreamHandler(__DIR__ . "/../../storage/log/monolog/" . date("Y-m-d-") . $container['settings']['logger']['log_file_name']);
-    $logger->pushHandler($file_stream);
+    $logPath = __DIR__ . "/../../storage/log/monolog/";
+    $logFile =  date("Y-m-d-") . $container['settings']['logger']['log_file_name'];
+    $fileStream = new \Monolog\Handler\StreamHandler($logPath . $logFile);
+    $logger->pushHandler($fileStream);
     
     //Stream log output to Logentries
     if ($container['settings']['logger']['le_token'] != '') {
@@ -191,25 +199,23 @@ $container['logger'] = function($container) {
 };
 
 // Cloudinary PHP API
-$container['cloudinary'] = function($container) {
-    
+$container['cloudinary'] = function ($container) {
     if ($container['settings']['cloudinary']['enabled']) {
         \Cloudinary::config(
-        array( "cloud_name" => $container['settings']['cloudinary']['cloud_name'], 
-            "api_key" => $container['settings']['cloudinary']['api_key'], 
-            "api_secret" => $container['settings']['cloudinary']['api_secret'])
+            array( "cloud_name" => $container['settings']['cloudinary']['cloud_name'],
+                "api_key" => $container['settings']['cloudinary']['api_key'],
+                "api_secret" => $container['settings']['cloudinary']['api_secret']
+            )
         );
 
         return new \Cloudinary;
-    }else{
+    } else {
         return false;
     }
-    
 };
 
 // Mail Relay
-$container['mail'] = function($container) {
-    
+$container['mail'] = function ($container) {
     $mail_settings = $container['settings']['mail'];
 
     $mail = new \PHPMailer;
@@ -222,14 +228,14 @@ $container['mail'] = function($container) {
             $mail->isSMTP();                                            // Set mailer to use SMTP
             $mail->Host = 'smtp.mailgun.org';                           // Specify main and backup server
             $mail->Port = 587;                                          // Set the SMTP port
-            $mail->SMTPAuth = true;                                     // SMTP username
-            $mail->Username = $mail_settings['mailgun']['username'];    // SMTP username from https://mailgun.com/cp/domains
-            $mail->Password = $mail_settings['mailgun']['password'];    // SMTP password from https://mailgun.com/cp/domains
+            $mail->SMTPAuth = true;                                     // SMTP Auth
+            $mail->Username = $mail_settings['mailgun']['username'];    // SMTP Username
+            $mail->Password = $mail_settings['mailgun']['password'];    // SMTP Password
             $mail->SMTPSecure = 'tls';                                  // Enable encryption, 'ssl'
             break;
         
         default:
             break;
     }
-    return $mail; 
+    return $mail;
 };

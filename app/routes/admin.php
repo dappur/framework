@@ -1,13 +1,13 @@
 <?php
 
-$app->group('/dashboard', function () use($app) {
+$app->group('/dashboard', function () use ($app) {
 
     // Dashboard Home
     $app->get('', 'Admin:dashboard')
         ->setName('dashboard');
 
     // Users Routes
-    $app->group('/users', function() use ($app) {
+    $app->group('/users', function () use ($app) { 
         // User List
         $app->get('', 'AdminUsers:users')
             ->setName('admin-users');
@@ -22,7 +22,7 @@ $app->group('/dashboard', function () use($app) {
             ->setName('admin-users-delete');
 
         //User Roles
-        $app->group('/roles', function() use ($app) {
+        $app->group('/roles', function () use ($app) {
             $app->post('/delete', 'AdminRoles:rolesDelete')
                 ->setName('admin-roles-delete');
             $app->map(['GET', 'POST'], '/edit/{role}', 'AdminRoles:rolesEdit')
@@ -33,7 +33,8 @@ $app->group('/dashboard', function () use($app) {
     });
 
     // Global Settings
-    $app->map(['GET', 'POST'], '/settings/global', 'AdminSettings:settingsGlobal')->setName('settings-global');
+    $app->map(['GET', 'POST'], '/settings/global', 'AdminSettings:settingsGlobal')
+        ->setName('settings-global');
     $app->post('/settings/add', 'AdminSettings:settingsGlobalAdd')
         ->setName('settings-global-add');
     $app->post('/settings/group/add', 'AdminSettings:settingsGlobalAddGroup')
@@ -41,16 +42,19 @@ $app->group('/dashboard', function () use($app) {
     $app->post('/settings/group/delete', 'AdminSettings:settingsGlobalDeleteGroup')
         ->setName('settings-global-group-delete');
 
-    $app->map(['GET', 'POST'], '/settings/page-settings/{page_name}', 'AdminSettings:settingsPage')->setName('settings-page');
+    $app->map(['GET', 'POST'], '/settings/page-settings/{page_name}', 'AdminSettings:settingsPage')
+        ->setName('settings-page');
     
     // Edit Settings.json
-    $app->map(['GET', 'POST'], '/developer/settings', 'AdminSettings:settingsDeveloper')->setName('settings-developer');
+    $app->map(['GET', 'POST'], '/developer/settings', 'AdminSettings:settingsDeveloper')
+        ->setName('settings-developer');
 
     // My Account
-    $app->map(['GET', 'POST'], '/my-account', 'Admin:myAccount')->setName('my-account');
+    $app->map(['GET', 'POST'], '/my-account', 'Admin:myAccount')
+        ->setName('my-account');
 
     // Media Manager
-    $app->group('/media', function () use($app) {
+    $app->group('/media', function () use ($app) {
         // Media
         $app->map(['GET'], '', 'AdminMedia:media')
             ->setName('admin-media');
@@ -72,7 +76,7 @@ $app->group('/dashboard', function () use($app) {
     });
 
     // Email Manager
-    $app->group('/email', function () use($app) {
+    $app->group('/email', function () use ($app) {
 
         $app->map(['GET'], '', 'AdminEmail:email')
             ->setName('admin-email');
@@ -100,7 +104,7 @@ $app->group('/dashboard', function () use($app) {
     });
 
     // SEO Manager
-    $app->group('/seo', function () use($app) {
+    $app->group('/seo', function () use ($app) {
 
         $app->map(['GET'], '', 'AdminSeo:seo')
             ->setName('admin-seo');
@@ -119,7 +123,7 @@ $app->group('/dashboard', function () use($app) {
     });
 
     // SEO Manager
-    $app->group('/oauth2', function () use($app) {
+    $app->group('/oauth2', function () use ($app) {
         $app->map(['GET'], '', 'AdminOauth2:providers')
             ->setName('admin-oauth2');
 

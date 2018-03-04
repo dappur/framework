@@ -15,8 +15,14 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use Respect\Validation\Validator as V;
 
+/**
+ * @SuppressWarnings(PHPMD.StaticAccess)
+ */
 class AdminBlogComments extends Controller
 {
+    /**
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
     public function comments(Request $request, Response $response)
     {
         if ($check = $this->sentinel->hasPerm('blog.view', 'dashboard', $this->config['blog-enabled'])) {
@@ -49,7 +55,8 @@ class AdminBlogComments extends Controller
         if ($check = $this->sentinel->hasPerm('blog.view', 'dashboard', $this->config['blog-enabled'])) {
             return $check;
         }
-        $comment = BlogPostsComments::with('replies', 'post', 'post.tags', 'post.category', 'post.author')->find($request->getAttribute('route')->getArgument('comment_id'));
+        $comment = BlogPostsComments::with('replies', 'post', 'post.tags', 'post.category', 'post.author')
+            ->find($request->getAttribute('route')->getArgument('comment_id'));
         if (!$this->auth->check()->inRole('manager') && !$this->auth->check()->inRole('admin')) {
             $userId = $this->auth->check()->id;
 
@@ -82,11 +89,12 @@ class AdminBlogComments extends Controller
         $comment = new BlogPostsComments;
         $comment = $comment->where('id', $request->getParam('comment'));
         if (!$this->auth->check()->inRole('manager') && !$this->auth->check()->inRole('admin')) {
+            $userId = $this->auth->check()->id;
             $comment = $comment->where('id', $request->getParam('comment'))
                 ->whereHas(
                     'post',
-                    function ($query) use ($this->auth->check()->id) {
-                        $query->where('user_id', $this->auth->check()->id);
+                    function ($query) use ($userId) {
+                        $query->where('user_id', $userId);
                     }
                 );
         }
@@ -110,10 +118,11 @@ class AdminBlogComments extends Controller
         $comment = new BlogPostsComments;
         $comment = $comment->where('id', $request->getParam('comment'));
         if (!$this->auth->check()->inRole('manager') && !$this->auth->check()->inRole('admin')) {
+            $userId = $this->auth->check()->id;
             $comment = $comment->whereHas(
                 'post',
-                function ($query) use ($this->auth->check()->id) {
-                    $query->where('user_id', '=', $this->auth->check()->id);
+                function ($query) use ($userId) {
+                    $query->where('user_id', '=', $userId);
                 }
             );
         }
@@ -140,10 +149,11 @@ class AdminBlogComments extends Controller
         $comment = new BlogPostsComments;
         $comment = $comment->where('id', $request->getParam('comment'));
         if (!$this->auth->check()->inRole('manager') && !$this->auth->check()->inRole('admin')) {
+            $userId = $this->auth->check()->id;
             $comment = $comment->whereHas(
                 'post',
-                function ($query) use ($this->auth->check()->id) {
-                    $query->where('user_id', '=', $this->auth->check()->id);
+                function ($query) use ($userId) {
+                    $query->where('user_id', '=', $userId);
                 }
             );
         }
@@ -171,7 +181,6 @@ class AdminBlogComments extends Controller
         $reply = BlogPostsReplies::find($request->getParam('reply'));
         if (!$this->auth->check()->inRole('manager') && !$this->auth->check()->inRole('admin')) {
             $userId = $this->auth->check()->id;
-
             $reply = BlogPostsReplies::where('id', $request->getParam('reply'))
                 ->whereHas(
                     'comment.post',
@@ -185,17 +194,20 @@ class AdminBlogComments extends Controller
         if (!$reply) {
             $this->flash('danger', 'You do not have permnission to do that.');
             return $this->redirect($response, 'admin-blog-comments');
-        } else {
-            $reply->status = 1;
-
-            if ($reply->save()) {
-                $this->flash('success', 'Reply has been published.');
-                return $response->withRedirect($this->router->pathFor('admin-blog-comment-details', ['comment_id' => $reply->comment_id]));
-            } else {
-                $this->flash('danger', 'There was an error publishing your reply.');
-                return $response->withRedirect($this->router->pathFor('admin-blog-comment-details', ['comment_id' => $reply->comment_id]));
-            }
         }
+
+        $reply->status = 1;
+
+        if ($reply->save()) {
+            $this->flash('success', 'Reply has been published.');
+        }
+
+        return $response->withRedirect($this->router->pathFor(
+            'admin-blog-comment-details',
+            [
+                'comment_id' => $reply->comment_id
+            ]
+        ));
     }
 
     public function replyUnpublish(Request $request, Response $response)
@@ -204,12 +216,14 @@ class AdminBlogComments extends Controller
             return $check;
         }
 
-        $reply_id = $request->getParam('reply');
+        $replyId = $request->getParam('reply');
+
+        $reply = BlogPostsReplies::find($replyId);
 
         if (!$this->auth->check()->inRole('manager') && !$this->auth->check()->inRole('admin')) {
             $userId = $this->auth->check()->id;
 
-            $reply = BlogPostsReplies::where('id', $reply_id)
+            $reply = BlogPostsReplies::where('id', $replyId)
                 ->whereHas(
                     'comment.post',
                     function ($query) use ($userId) {
@@ -217,24 +231,25 @@ class AdminBlogComments extends Controller
                     }
                 )
                 ->first();
-        } else {
-            $reply = BlogPostsReplies::find($reply_id);
         }
 
         if (!$reply) {
             $this->flash('danger', 'You do not have permnission to do that.');
             return $this->redirect($response, 'admin-blog-comments');
-        } else {
-            $reply->status = 0;
-
-            if ($reply->save()) {
-                $this->flash('success', 'Reply has been unpublished.');
-                return $response->withRedirect($this->router->pathFor('admin-blog-comment-details', ['comment_id' => $reply->comment_id]));
-            } else {
-                $this->flash('danger', 'There was an error unpublishing your reply.');
-                return $response->withRedirect($this->router->pathFor('admin-blog-comment-details', ['comment_id' => $reply->comment_id]));
-            }
         }
+
+        $reply->status = 0;
+
+        if ($reply->save()) {
+            $this->flash('success', 'Reply has been unpublished.');
+        }
+
+        return $response->withRedirect($this->router->pathFor(
+            'admin-blog-comment-details',
+            [
+                'comment_id' => $reply->comment_id
+            ]
+        ));
     }
 
     public function replyDelete(Request $request, Response $response)
@@ -243,12 +258,12 @@ class AdminBlogComments extends Controller
             return $check;
         }
 
-        $reply_id = $request->getParam('reply');
-
+        $replyId = $request->getParam('reply');
+        $reply = BlogPostsReplies::find($replyId);
         if (!$this->auth->check()->inRole('manager') && !$this->auth->check()->inRole('admin')) {
             $userId = $this->auth->check()->id;
 
-            $reply = BlogPostsReplies::where('id', $reply_id)
+            $reply = BlogPostsReplies::where('id', $replyId)
                 ->whereHas(
                     'comment.post',
                     function ($query) use ($userId) {
@@ -256,21 +271,22 @@ class AdminBlogComments extends Controller
                     }
                 )
                 ->first();
-        } else {
-            $reply = BlogPostsReplies::find($reply_id);
         }
 
         if (!$reply) {
             $this->flash('danger', 'You do not have permnission to do that.');
             return $this->redirect($response, 'admin-blog-comments');
-        } else {
-            if ($reply->delete()) {
-                $this->flash('success', 'Reply has been deleted.');
-                return $response->withRedirect($this->router->pathFor('admin-blog-comment-details', ['comment_id' => $reply->comment_id]));
-            } else {
-                $this->flash('danger', 'There was an error deleting your reply.');
-                return $response->withRedirect($this->router->pathFor('admin-blog-comment-details', ['comment_id' => $reply->comment_id]));
-            }
         }
+
+        if ($reply->delete()) {
+            $this->flash('success', 'Reply has been deleted.');
+        }
+
+        return $response->withRedirect($this->router->pathFor(
+            'admin-blog-comment-details',
+            [
+                'comment_id' => $reply->comment_id
+            ]
+        ));
     }
 }
