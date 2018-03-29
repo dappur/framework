@@ -6,11 +6,11 @@
         {% for group in settingsGrouped %}
 
             <div class="panel panel-primary">
-                <div class="panel-heading">
+                <div class="panel-heading" data-toggle="collapse" data-target="#{{ group.name|replace({' ': ""}) }}" style="cursor: pointer;">
                     {{ group.name }}
                 </div>
                 
-                <div class="panel-body">
+                <div class="panel-body collapse {% if loop.first %}in{% endif %}" id="{{ group.name|replace({' ': ""}) }}">
                         {% for item in group.config %}
                             {% if item.type_id == 3 %}
                                 {{ configMacro.configTheme(item.name, item.description, "theme", item.value, themeList) }}
@@ -26,6 +26,8 @@
                                 {{ configMacro.configBoolean(item.name, item.description, item.value) }}
                             {% elseif item.type_id == 7 %}
                                 {{ configMacro.configHtml(item.name, item.description, item.value) }}
+                            {% elseif item.type_id == 8 %}
+                                {{ configMacro.configColor(item.name, item.description, item.value) }}
                             {% else %}
                                 {{ configMacro.configDefault(item.name, item.description, item.value) }}
                             {% endif %}

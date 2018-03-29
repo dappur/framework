@@ -8,25 +8,25 @@ class AddOauth extends Migration
     /**
     *
     * Write your reversible migrations using this method.
-    * 
+    *
     * Dappur Framework uses Laravel Eloquent ORM as it's database connector.
     *
     * More information on writing eloquent migrations is available here:
     * https://laravel.com/docs/5.4/migrations
     *
-    * Remember to use both the up() and down() functions in order to be able to roll back. 
-    * 
-    * 	Create Table Sample
-    * 	$this->schema->create('sample', function (Blueprint $table) {
-	*     	$table->increments('id');
-	*    	$table->string('email')->unique();
-	*    	$table->string('last_name')->nullable();
-	*    	$table->string('first_name')->nullable();
-	*    	$table->timestamps();
-    *  	});
-    * 
-    * 	Drop Table Sample
-    * 	$this->schema->dropIfExists('sample');
+    * Remember to use both the up() and down() functions in order to be able to roll back.
+    *
+    *   Create Table Sample
+    *   $this->schema->create('sample', function (Blueprint $table) {
+    *       $table->increments('id');
+    *       $table->string('email')->unique();
+    *       $table->string('last_name')->nullable();
+    *       $table->string('first_name')->nullable();
+    *       $table->timestamps();
+    *   });
+    *
+    *   Drop Table Sample
+    *   $this->schema->dropIfExists('sample');
     */
     
     public function up()
@@ -68,7 +68,7 @@ class AddOauth extends Migration
                 "token_url" => "https://graph.facebook.com/oauth/access_token",
                 "resource_url" => "https://graph.facebook.com/me?fields=id,email,first_name,last_name",
                 "button" => "facebook",
-                "login" => 0, 
+                "login" => 0,
                 "status" => 0
             ),
             array(
@@ -79,7 +79,7 @@ class AddOauth extends Migration
                 "token_url" => "https://accounts.google.com/o/oauth2/token",
                 "resource_url" => "https://www.googleapis.com/oauth2/v1/userinfo",
                 "button" => "google",
-                "login" => 0, 
+                "login" => 0,
                 "status" => 0
             ),
             array(
@@ -90,7 +90,7 @@ class AddOauth extends Migration
                 "token_url" => "https://api.twitter.com/oauth2/token",
                 "resource_url" => "account/verify_credentials",
                 "button" => "twitter",
-                "login" => 0, 
+                "login" => 0,
                 "status" => 0
             ),
             array(
@@ -99,9 +99,20 @@ class AddOauth extends Migration
                 "scopes" => null,
                 "authorize_url" => "https://www.linkedin.com/oauth/v2/authorization",
                 "token_url" => "https://www.linkedin.com/oauth/v2/accessToken",
-                "resource_url" => "https://api.linkedin.com/v1/people/~:(id,email-address)?format=json",
+                "resource_url" => "https://api.linkedin.com/v1/people/~:(id,email-address,first-name,last-name)?format=json",
                 "button" => "linkedin",
-                "login" => 0, 
+                "login" => 0,
+                "status" => 0
+            ),
+            array(
+                "name" => "Instagram",
+                "slug" => "instagram",
+                "scopes" => "basic",
+                "authorize_url" => "https://api.instagram.com/oauth/authorize",
+                "token_url" => "https://api.instagram.com/oauth/access_token",
+                "resource_url" => "https://api.instagram.com/v1/users/self",
+                "button" => "instagram",
+                "login" => 0,
                 "status" => 0
             ),
             array(
@@ -112,7 +123,7 @@ class AddOauth extends Migration
                 "token_url" => "https://github.com/login/oauth/access_token",
                 "resource_url" => "https://api.github.com/user",
                 "button" => "github",
-                "login" => 0, 
+                "login" => 0,
                 "status" => 0
             )
         );
@@ -133,7 +144,7 @@ class AddOauth extends Migration
 
         // Add Oauth2 Config Group
         $config = new Dappur\Model\ConfigGroups;
-        $config->name = "oauth2";
+        $config->name = "Oauth2";
         $config->description = "Oauth2 Login Provider Settings";
         $config->save();
 
@@ -166,7 +177,6 @@ class AddOauth extends Migration
         $auditor_role = $this->sentinel->findRoleByName('Auditor');
         $auditor_role->addPermission('oauth2.view');
         $auditor_role->save();
-
     }
 
     public function down()

@@ -2,7 +2,8 @@
 
 namespace Dappur\TwigExtension;
 
-class Recaptcha extends \Twig_Extension {
+class Recaptcha extends \Twig_Extension
+{
 
     /**
      * @var \Slim\Csrf\Guard
@@ -14,26 +15,28 @@ class Recaptcha extends \Twig_Extension {
         $this->recaptcha = $recaptcha;
     }
 
-    public function getName() {
+    public function getName()
+    {
         return 'recaptcha';
     }
 
-    public function getFunctions() {
+    public function getFunctions()
+    {
         return [
             new \Twig_SimpleFunction('recaptcha', array($this, 'recaptcha'), array('is_safe' => array('html'))),
             new \Twig_SimpleFunction('recaptchaJs', array($this, 'recaptchaJs'), array('is_safe' => array('html')))
         ];
     }
 
-    public function recaptcha() {
-
+    public function recaptcha()
+    {
         return '<div id="recaptcha">
                     <div class="g-recaptcha" data-sitekey="' . $this->recaptcha['site_key'] . '"></div>
                 </div>';
     }
 
-    public function recaptchaJs() {
-
+    public function recaptchaJs()
+    {
         return '<script src="https://www.google.com/recaptcha/api.js"></script>';
     }
 }

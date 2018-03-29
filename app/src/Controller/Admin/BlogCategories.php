@@ -1,10 +1,10 @@
 <?php
 
-namespace Dappur\Controller;
+namespace Dappur\Controller\Admin;
 
 use Carbon\Carbon;
 use Dappur\Dappurware\VideoParser as VP;
-use Dappur\Model\BlogCategories;
+use Dappur\Model\BlogCategories as BC;
 use Dappur\Model\BlogTags;
 use Dappur\Model\BlogPosts;
 use Dappur\Model\BlogPostsComments;
@@ -18,7 +18,7 @@ use Respect\Validation\Validator as V;
 /**
  * @SuppressWarnings(PHPMD.StaticAccess)
  */
-class AdminBlogCategories extends Controller
+class BlogCategories extends Controller
 {
     // Add New Blog Category
     public function categoriesAdd(Request $request, Response $response)
@@ -33,14 +33,14 @@ class AdminBlogCategories extends Controller
                 'category_slug' => V::slug()
             ]);
 
-            $checkSlug = BlogCategories::where('slug', '=', $request->getParam('category_slug'))->get()->count();
+            $checkSlug = BC::where('slug', '=', $request->getParam('category_slug'))->get()->count();
 
             if ($checkSlug > 0) {
                 $this->validator->addError('category_slug', 'Slug already in use.');
             }
 
             if ($this->validator->isValid()) {
-                $addCategory = new BlogCategories;
+                $addCategory = new BC;
                 $addCategory->name = $request->getParam('category_name');
                 $addCategory->slug = $request->getParam('category_slug');
 
@@ -62,7 +62,7 @@ class AdminBlogCategories extends Controller
             return $check;
         }
 
-        $category = BlogCategories::find($request->getParam('category_id'));
+        $category = BC::find($request->getParam('category_id'));
 
         if (!$category) {
             $this->flash('danger', 'Category doesn\'t exist.');
@@ -85,7 +85,7 @@ class AdminBlogCategories extends Controller
             return $check;
         }
 
-        $category = BlogCategories::find($categoryId);
+        $category = BC::find($categoryId);
 
         if (!$category) {
             $this->flash('danger', 'Sorry, that category was not found.');

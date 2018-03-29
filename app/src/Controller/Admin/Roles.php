@@ -1,30 +1,31 @@
 <?php
 
-namespace Dappur\Controller;
+namespace Dappur\Controller\Admin;
 
 use Dappur\Model\RoleUsers;
-use Dappur\Model\Roles;
+use Dappur\Model\Roles as R;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use Respect\Validation\Validator as V;
 
-class AdminRoles extends Controller{
-
-    public function rolesAdd(Request $request, Response $response){
-        
-        if($check = $this->sentinel->hasPerm('role.create')){
+/**
+ * @SuppressWarnings(PHPMD.StaticAccess)
+ */
+class Roles extends Controller
+{
+    public function rolesAdd(Request $request, Response $response)
+    {
+        if ($check = $this->sentinel->hasPerm('role.create')) {
             return $check;
         }
 
         if ($request->isPost()) {
-
             $this->validator->validate($request, [
                 'role_name' => V::length(2, 25)->alpha('\''),
                 'role_slug' => V::slug()
             ]);
 
             if ($this->validator->isValid()) {
-
                 $role = $this->auth->getRoleRepository()->createModel()->create([
                     'name' => $request->getParam('role_name'),
                     'slug' => $request->getParam('role_slug'),
@@ -33,107 +34,106 @@ class AdminRoles extends Controller{
 
                 if ($role) {
                     $this->flash('success', 'Role has been successfully added.');
-                }else{
-                    $this->flash('danger', 'There was a problem adding the role.');
+                    return $this->redirect($response, 'admin-users');
                 }
-            }else{
-                $this->flash('danger', 'There was a problem adding the role.');
             }
-            return $this->redirect($response, 'admin-users');
         }
 
+        $this->flash('danger', 'There was a problem adding the role.');
+        return $this->redirect($response, 'admin-users');
     }
 
-    public function rolesDelete(Request $request, Response $response){
-
-        if($check = $this->sentinel->hasPerm('role.delete')){
+    public function rolesDelete(Request $request, Response $response)
+    {
+        if ($check = $this->sentinel->hasPerm('role.delete')) {
             return $check;
         }
 
-        if (is_numeric($request->getParam('role_id')) && $role != 1) {
+        $role = R::find($request->getParam('role_id'));
+
+        if ($role && $role->id != 1) {
 
             RoleUsers::where('role_id', '=', $request->getParam('role_id'))->delete();
-
-            $remove_role = Roles::find($request->getParam('role_id'));
-
-            if ($remove_role->delete()) {
+            
+            $removeRole = R::find($request->getParam('role_id'));
+            if ($removeRole->delete()) {
                 $this->flash('success', 'Role has been removed.');
-            }else{
-                $this->flash('danger', 'There was a problem removing the role.');
+                return $this->redirect($response, 'admin-users');
             }
-        }else{
-            $this->flash('danger', 'There was a problem removing the role.');
         }
 
+        $this->flash('danger', 'There was a problem removing the role.');
         return $this->redirect($response, 'admin-users');
-
     }
 
-    public function rolesEdit(Request $request, Response $response, $roleid){
-        
-        if($check = $this->sentinel->hasPerm('role.update')){
+    public function rolesEdit(Request $request, Response $response, $roleid)
+    {
+        if ($check = $this->sentinel->hasPerm('role.update')) {
             return $check;
         }
 
-        $role = Roles::find($roleid);
+        $role = R::find($roleid);
 
         if ($role) {
             if ($request->isPost()) {
-
                 // Validate Data
-                $validate_data = array(
+                $validateData = array(
                     'role_name' => array(
-                        'rules' => V::length(2, 25)->alpha('\''), 
+                        'rules' => V::length(2, 25)->alpha('\''),
                         'messages' => array(
                             'length' => 'Must be between 2 and 25 characters.',
                             'alpha' => 'Letters only and can contain \''
                             )
                     ),
                     'role_slug' => array(
-                        'rules' => V::slug(), 
+                        'rules' => V::slug(),
                         'messages' => array(
                             'slug' => 'May only contain lowercase letters, numbers and hyphens.'
                             )
                     )
                 );
 
-                $this->validator->validate($request, $validate_data);
+                $this->validator->validate($request, $validateData);
 
                 //Validate Role Name
-                $check_name = $role->where('id', '!=', $request->getParam('role_id'))->where('name', '=', $request->getParam('role_name'))->get()->count();
-                if ($check_name > 0) {
+                $checkName = $role->where('id', '!=', $request->getParam('role_id'))
+                    ->where('name', '=', $request->getParam('role_name'))
+                    ->get()
+                    ->count();
+                if ($checkName > 0) {
                     $this->validator->addError('role_name', 'Role name is already in use.');
                 }
 
                 //Validate Role Name
-                $check_slug = $role->where('id', '!=', $request->getParam('role_id'))->where('slug', '=', $request->getParam('role_slug'))->get()->count();
-                if ($check_slug > 0) {
+                $checkSlug = $role->where('id', '!=', $request->getParam('role_id'))
+                    ->where('slug', '=', $request->getParam('role_slug'))
+                    ->get()
+                    ->count();
+                if ($checkSlug > 0) {
                     $this->validator->addError('role_slug', 'Role slug is already in use.');
                 }
 
                 // Create Permissions Array
-                $permissions_array = array();
+                $permissionsArray = array();
                 foreach ($request->getParam('perm_name') as $pkey => $pvalue) {
+                    $val = false;
                     if ($request->getParam('perm_value')[$pkey] == "true") {
                         $val = true;
-                    }else{
-                        $val = false;
                     }
-                    $permissions_array[$pvalue] = $val;
+                    $permissionsArray[$pvalue] = $val;
                 }
 
 
 
                 if ($this->validator->isValid()) {
+                    $updateRole = $role;
+                    $updateRole->name = $request->getParam('role_name');
+                    $updateRole->slug = $request->getParam('role_slug');
+                    $updateRole->save();
 
-                    $update_role = $role;
-                    $update_role->name = $request->getParam('role_name');
-                    $update_role->slug = $request->getParam('role_slug');
-                    $update_role->save();
-
-                    $role_perms = $this->auth->findRoleById($request->getParam('role_id'));
-                    $role_perms->permissions = $permissions_array;
-                    $role_perms->save();
+                    $rolePerms = $this->auth->findRoleById($request->getParam('role_id'));
+                    $rolePerms->permissions = $permissionsArray;
+                    $rolePerms->save();
 
                     $this->flash('success', 'Role has been updated successfully.');
                     return $this->redirect($response, 'admin-users');
@@ -141,13 +141,9 @@ class AdminRoles extends Controller{
             }
 
             return $this->view->render($response, 'roles-edit.twig', ['role' => $role]);
-
-        }else{
-            $this->flash('danger', 'Sorry, that role was not found.');
-            return $response->withRedirect($this->router->pathFor('admin-users'));
         }
-
-
+        
+        $this->flash('danger', 'Sorry, that role was not found.');
+        return $response->withRedirect($this->router->pathFor('admin-users'));
     }
-
 }

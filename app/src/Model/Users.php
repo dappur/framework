@@ -1,8 +1,10 @@
 <?php
 namespace Dappur\Model;
-use Cartalyst\Sentinel\Users\EloquentUser;
-class Users extends EloquentUser {
 
+use Cartalyst\Sentinel\Users\EloquentUser;
+
+class Users extends EloquentUser
+{
     protected $table = 'users';
     protected $primaryKey = 'id';
     protected $fillable = [
@@ -16,15 +18,18 @@ class Users extends EloquentUser {
     protected $loginNames = ['username', 'email'];
     protected $hidden = array('pivot');
 
-    public function profile(){
+    public function profile()
+    {
         return $this->hasOne('\Dappur\Model\UsersProfile', 'user_id', 'id');
     }
 
-    public function posts(){
+    public function posts()
+    {
         return $this->hasMany('\Dappur\Model\BlogPosts', 'user_id', 'id');
     }
 
-    public function oauth2() {
-        return $this->hasMany('Oauth2', 'user_id', 'id');
+    public function oauth2()
+    {
+        return $this->hasMany('\Dappur\Model\Oauth2Users', 'user_id', 'id');
     }
 }

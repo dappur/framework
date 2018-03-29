@@ -122,7 +122,11 @@ $(document).on('click', '.dappur-html-edit', function(){
 $('#html-modal').on('hidden.bs.modal', function () {
     resetHtmlModal();
     $(".tinymce").html('');
-})
+});
+
+$(function () {
+    $('.colorpicker-component').colorpicker();
+});
 
 function resetHtmlModal(){
     $(".dappur-save-html").data("html", "");

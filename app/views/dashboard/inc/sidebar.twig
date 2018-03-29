@@ -57,30 +57,9 @@
     </li>
     {% endif %}
 
-    {% if auth.hasAccess('settings.view') %}
-    <li>
-        <a href="javascript:;" data-toggle="collapse" data-target="#page-settings-menu"><i class="fa fa-fw fa-wrench"></i> Page Settings <i class="fa fa-fw fa-caret-down"></i></a>
-        <ul id="page-settings-menu" class="collapse {% if currentRoute starts with '/dashboard/settings/page-settings/' %}in{% endif %} nav">
-            {% for item in pageSettings %}
-                <li class="{% if currentRoute starts with '/dashboard/settings/page-settings/' ~ item.page_name %}active{% endif %}">
-                    <a href="{{ path_for('settings-page', {'page_name': item.page_name})}}"><i class="fa fa-life-ring fa-fw"></i> {{item.name}}</a>
-                </li>
-            {% endfor %}
-        </ul>
-    </li>
-    {% endif %}
-
     {% if auth.hasAccess('oauth2.view') and config['oauth2-enabled'] %}
-    <li>
-        <a href="javascript:;" data-toggle="collapse" data-target="#oauth2-menu"><i class="fa fa-fw fa-user-circle"></i> Oauth2 <i class="fa fa-fw fa-caret-down"></i></a>
-        <ul id="oauth2-menu" class="collapse {% if currentRoute starts with '/dashboard/oauth2' %}in{% endif %} nav">
-            <li  {% if currentRoute == '/dashboard/oauth2' %}class="active"{% endif %}>
-                <a href="{{ path_for('admin-oauth2')}}"><i class="fa fa-user-circle fa-fw"></i> Providers</a>
-            </li>
-            <li  {% if currentRoute starts with '/dashboard/oauth2/users' %}class="active"{% endif %}>
-                <a href="{{ path_for('admin-oauth2-users')}}"><i class="fa fa-user-circle fa-fw"></i> Users</a>
-            </li>
-        </ul>
+    <li  {% if currentRoute == '/dashboard/oauth2' %}class="active"{% endif %}>
+        <a href="{{ path_for('admin-oauth2')}}"><i class="fa fa-user-circle fa-fw"></i> Oauth2 Providers</a>
     </li>
     {% endif %}
 
@@ -96,7 +75,20 @@
     </li>
     {% endif %}
 
-    {% if auth.hasAccess('developer.view') and config['showInAdmin'] %}
+    {% if auth.hasAccess('settings.view') %}
+    <li>
+        <a href="javascript:;" data-toggle="collapse" data-target="#page-settings-menu"><i class="fa fa-fw fa-wrench"></i> Page Settings <i class="fa fa-fw fa-caret-down"></i></a>
+        <ul id="page-settings-menu" class="collapse {% if currentRoute starts with '/dashboard/settings/page-settings/' %}in{% endif %} nav">
+            {% for item in pageSettings %}
+                <li class="{% if currentRoute starts with '/dashboard/settings/page-settings/' ~ item.page_name %}active{% endif %}">
+                    <a href="{{ path_for('settings-page', {'page_name': item.page_name})}}"><i class="fa fa-life-ring fa-fw"></i> {{item.name}}</a>
+                </li>
+            {% endfor %}
+        </ul>
+    </li>
+    {% endif %}
+
+    {% if auth.hasAccess('developer.view') and showInAdmin %}
     <li>
         <a href="javascript:;" data-toggle="collapse" data-target="#developer-tools-menu"><i class="fa fa-fw fa-wrench"></i> Developer Tools <i class="fa fa-fw fa-caret-down"></i></a>
         <ul id="developer-tools-menu" class="collapse {% if currentRoute starts with '/dashboard/developer/settings' %}in{% endif %} nav">
@@ -105,6 +97,9 @@
                     <a href="{{ path_for('settings-developer')}}"><i class="fa fa-life-ring fa-fw"></i> settings.json</a>
                 </li>
             {% endif %}
+            <li class="{% if currentRoute starts with '/dashboard/developer/logs' %}active{% endif %}">
+                <a href="{{ path_for('developer-logs')}}"><i class="fa fa-life-ring fa-fw"></i> Logfiles</a>
+            </li>
         </ul>
     </li>
     {% endif %}

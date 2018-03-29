@@ -177,3 +177,7 @@
     margin-right: 0px;
     margin-left: 5px;
  }
+
+ .swal2-container {
+  z-index: 2000;
+}

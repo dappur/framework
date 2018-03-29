@@ -1,6 +1,6 @@
 <?php
 
-namespace Dappur\Controller;
+namespace Dappur\Controller\Admin;
 
 use Carbon\Carbon;
 use Dappur\Dappurware\VideoParser as VP;
@@ -18,7 +18,7 @@ use Respect\Validation\Validator as V;
 /**
  * @SuppressWarnings(PHPMD.StaticAccess)
  */
-class AdminBlogComments extends Controller
+class BlogComments extends Controller
 {
     /**
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
@@ -31,7 +31,7 @@ class AdminBlogComments extends Controller
 
         $user = $this->auth->check()->id;
 
-        $comments = BlogPostsComments::withCount('replies', 'pending_replies')
+        $comments = BlogPostsComments::withCount('replies', 'pendingReplies')
                 ->with([
                     'post' => function ($query) {
                         $query->select('id', 'title');

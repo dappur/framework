@@ -90,7 +90,7 @@
 								<b>Category:</b> <a href="{{path_for('blog-category', {'slug': post.category.slug})}}">{{ post.category.name }}</a> 
 							</div>
 							<div>
-								<b>Comments:</b> {{ post.comments_count - post.pending_comments_count }}</a> 
+								<b>Comments:</b> {{ post.comments_count - post.pendingComments_count }}</a> 
 							</div>
 							<p class="card-text"><b>Description:</b> {{post.description}}</p>
 							<p class="card-text">{{post.content|striptags|length > 350 ? post.content|striptags|slice(0, 350) ~ '...' : post.content|striptags}}</p>

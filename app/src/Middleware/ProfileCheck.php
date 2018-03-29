@@ -4,11 +4,11 @@ namespace Dappur\Middleware;
 
 use Dappur\Model\Users;
 
-class ProfileCheck extends Middleware{
-
-    public function __invoke($request, $response, $next){
-
-    	if ($this->auth->check()) {
+class ProfileCheck extends Middleware
+{
+    public function __invoke($request, $response, $next)
+    {
+        if ($this->auth->check()) {
             $user = $this->auth->check();
             $err = 0;
             if (!$user->first_name || $user->first_name == "") {
@@ -22,7 +22,11 @@ class ProfileCheck extends Middleware{
             }
 
             if ($err) {
-                $this->flash->addMessage('warning', 'Oops!  It appears that your profile is missing some information.  Please review/correct your profile below in order to continue.');
+                $this->flash->addMessage(
+                    'warning',
+                    'Oops!  It appears that your profile is missing some information.'.
+                        '  Please review/correct your profile below in order to continue.'
+                );
                 return $response->withRedirect($this->router->pathFor('profile-incomplete'));
             }
         }

@@ -3,12 +3,15 @@ All notable changes to this project will be documented in this file as of v2.1.0
 
 ## [Unreleased]
 ### Added
+- Session helper to the container
 - PHPMD and PHPCS into require-dev
 - Admin section for Oauth2 Providers
 - Oauth 2 Login Provider Support
 - Added profile check for incomplete profiles
 
 ### Changed
+- Simplified cloudinary twig extension to most used functions
+- Fixed CSRF issue on local cms media upload
 - Exclude oauth pub route from seo settings
 - Exclude all global except site settings from email placeholders
 - Fixed Flash messages so that each message shown in a seperate panel

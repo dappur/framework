@@ -1,6 +1,6 @@
 <?php
 
-namespace Dappur\Controller;
+namespace Dappur\Controller\Admin;
 
 use Carbon\Carbon;
 use Dappur\Dappurware\Blog as B;
@@ -18,7 +18,7 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Respect\Validation\Validator as V;
 
 /** @SuppressWarnings(PHPMD.StaticAccess) */
-class AdminBlog extends Controller
+class Blog extends Controller
 {
 
     public function __construct(ContainerInterface $container)
@@ -140,7 +140,7 @@ class AdminBlog extends Controller
         }
 
         if ($this->blogUtils->publish()) {
-            $this->flash('danger', 'Post was published successfully.');
+            $this->flash('success', 'Post was published successfully.');
             return $this->redirect($response, 'admin-blog');
         }
 
@@ -170,7 +170,7 @@ class AdminBlog extends Controller
         }
 
         if ($this->blogUtils->unpublish()) {
-            $this->flash('danger', 'Post was unpublished successfully.');
+            $this->flash('success', 'Post was unpublished successfully.');
             return $this->redirect($response, 'admin-blog');
         }
 
@@ -200,7 +200,7 @@ class AdminBlog extends Controller
         }
 
         if ($this->blogUtils->delete()) {
-            $this->flash('danger', 'Post was deleted successfully.');
+            $this->flash('success', 'Post was deleted successfully.');
             return $this->redirect($response, 'admin-blog');
         }
 

@@ -53,6 +53,16 @@
 		    <span id="{{ id }}-help-block" class="help-block">{{ error(name) }}</span>
 		</div>
 {% endmacro %}
+{% macro configColor(name, description, type, value) %}
+	    <div class="col-md-6 form-group{% if has_error(name) %} has-error{% endif %}">
+			<label for="{{ name }}">{{ description }} - ({{name}})</label>
+			<div class="input-group colorpicker-component">
+				  <input type="text" class="form-control" value="{{ value }}"/>
+				  <span class="input-group-addon"><i></i></span>
+			</div>
+		    <span id="{{ id }}-help-block" class="help-block">{{ error(name) }}</span>
+		</div>
+{% endmacro %}
 
 {% macro configBoolean(name, description, value) %}
 	    <div class="col-md-6 form-group{% if has_error(name) %} has-error{% endif %}">

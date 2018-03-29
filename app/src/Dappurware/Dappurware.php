@@ -6,7 +6,6 @@ use Interop\Container\ContainerInterface;
 
 class Dappurware
 {
-    
     protected $container;
 
     public function __construct(ContainerInterface $container)

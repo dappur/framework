@@ -110,6 +110,11 @@
         },
         "github": {
             "client_id": "",
+            "client_secret": "",
+            "app_name": ""
+        },
+        "instagram": {
+            "client_id": "",
             "client_secret": ""
         }
     }

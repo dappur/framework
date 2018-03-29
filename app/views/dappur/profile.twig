@@ -35,7 +35,7 @@
 				<div class="row">
 					<div class="col-md-6 acc-col">
 						<section>
-							<h3>Profile</h3>
+							<h3>Profile <i class="fa fa-edit" id="edit-profile" style="font-size: 15px; cursor: pointer;"> Edit</i></h3>
 							<form action="{{currentRoute}}" class="ng-pristine ng-valid" method="post" role="form">
 								<div class="row">
 									<div class="col-md-6">
@@ -61,7 +61,7 @@
 								<div class="row">
 									<div class="col-md-12">
 										<div class="btn-div pull-right">
-											<button type="submit" name="save_profile" class="btn btn-primary" style="display: none;">Save Profile</button>
+											<button type="submit" id="save-profile" name="save_profile" class="btn btn-primary" style="display: none;">Save Profile</button>
 										</div>
 									</div>
 								</div>
@@ -105,15 +105,22 @@
 
 {% block javascript %}
     <script src="{{ asset('dappur/js/change-password.min.js') }}"></script>
-
-    {% if requestParams['comment_login'] %}
     <script type="text/javascript">
-    $(document).ready(function(){
-    	$('html, body').animate({
-		    scrollTop: ($('#comments').offset().top -175)
-		},500);
-	});
-    {% endif %}
+	    {% if requestParams['comment_login'] %}
+	    $(document).ready(function(){
+	    	$('html, body').animate({
+			    scrollTop: ($('#comments').offset().top -175)
+			},500);
+		});
+	    {% endif %}
+
+	    $(document).on('click', '#edit-profile', function(){
+			$(this).hide();
+			$('input:disabled, textarea:disabled').each(function () {
+		       $(this).removeAttr('disabled');
+		    });
+		    $("#save-profile").show();
+		});
     </script>
     
     

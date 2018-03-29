@@ -4,28 +4,31 @@ namespace Dappur\TwigExtension;
 
 use Psr\Http\Message\RequestInterface;
 
-class JsonDecode extends \Twig_Extension {
-
+class JsonDecode extends \Twig_Extension
+{
     protected $request;
 
-    public function __construct(RequestInterface $request) {
+    public function __construct(RequestInterface $request)
+    {
         $this->request = $request;
     }
 
-    public function getName() {
+    public function getName()
+    {
         return 'json_decode';
     }
 
-    public function getFilters() {
+    public function getFilters()
+    {
         return array(
             new \Twig_SimpleFilter('json_decode', array($this, 'jsonDecode')),
         );
     }
 
-    public function jsonDecode($str) {
+    public function jsonDecode($str)
+    {
+        $array = json_decode($str);
 
-        $current_url = $this->request->getUri()->getBaseUrl() . $this->request->getUri()->getPath();
-
-        return $current_url;
+        return $array;
     }
 }

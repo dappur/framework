@@ -1,9 +1,10 @@
 <?php
 namespace Dappur\Model;
+
 use Illuminate\Database\Eloquent\Model;
 
-class BlogTags extends Model {
-
+class BlogTags extends Model
+{
     protected $table = 'blog_tags';
     protected $primaryKey = 'id';
     protected $fillable = [
@@ -11,7 +12,8 @@ class BlogTags extends Model {
         'slug'
     ];
 
-    public function posts(){
-    	return $this->belongsToMany('\Dappur\Model\BlogPosts', 'blog_posts_tags', 'tag_id', 'post_id');
+    public function posts()
+    {
+        return $this->belongsToMany('\Dappur\Model\BlogPosts', 'blog_posts_tags', 'tag_id', 'post_id');
     }
 }

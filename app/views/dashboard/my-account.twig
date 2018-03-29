@@ -75,8 +75,8 @@
                             <div class="form-group">
                                 <label>User Roles</label>
                                 <ul>
-                                {% for role in userAccess.roles %}
-                                    <li>{{role}}</li>
+                                {% for role in auth.check().getRoles() %}
+                                    <li>{{role.slug}}</li>
                                 {% endfor %}
                                 </ul>
                             </div>

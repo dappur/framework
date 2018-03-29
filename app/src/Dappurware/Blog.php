@@ -21,7 +21,6 @@ class Blog extends Dappurware
     protected $videoProvider;
     protected $videoId;
     protected $publishAt;
-    protected $blogEdit;
 
     public function __construct(ContainerInterface $container)
     {
@@ -32,7 +31,6 @@ class Blog extends Dappurware
         $this->videoProvider = null;
         $this->videoId = null;
         $this->publishAt = Carbon::now();
-        $this->blogEdit = false;
     }
 
     public function addPost()
@@ -213,7 +211,7 @@ class Blog extends Dappurware
         $this->validator->validate($this->container->request, $validateData);
 
         $checkTitle = BlogPosts::where('title', $this->container->request->getParam('title'));
-        if ($this->blogEdit) {
+        if ($postId) {
             $checkTitle = $checkTitle->where('id', '!=', $postId);
         }
         if ($checkTitle->first()) {
@@ -251,7 +249,7 @@ class Blog extends Dappurware
     {
         $slug = Utils::slugify($this->container->request->getParam('title'));
         $checkSlug = BlogPosts::where('slug', $slug);
-        if ($this->blogEdit) {
+        if ($postId) {
             $checkSlug = $checkSlug->where('id', '!=', $postId);
         }
         if ($checkSlug->first()) {

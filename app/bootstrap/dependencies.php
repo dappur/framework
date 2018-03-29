@@ -13,6 +13,10 @@ $container['db'] = function () use ($capsule) {
     return $capsule;
 };
 
+$container['session'] = function () use ($container) {
+    return new \SlimSession\Helper;
+};
+
 $container['project_dir'] = function ($container) {
     $directory = __DIR__ . "/../../";
     return realpath($directory);
@@ -83,14 +87,9 @@ $container['csrf'] = function ($container) {
 
 // Bind Twig View
 $container['view'] = function ($container) {
+    $template_path = __DIR__ . '/../views/' . $container->config['theme'];
     if (strpos($container['request']->getUri()->getPath(), '/dashboard') !== false) {
         $template_path = __DIR__ . '/../views/' . $container->config['dashboard-theme'];
-    } else {
-        if ($_SESSION['isAmp']) {
-            $template_path = __DIR__ . '/../views/' . $container->config['theme'] . '/amp';
-        } else {
-            $template_path = __DIR__ . '/../views/' . $container->config['theme'];
-        }
     }
 
     $view = new \Slim\Views\Twig(
@@ -116,11 +115,11 @@ $container['view'] = function ($container) {
         if ($container->auth->check() && $container->auth->hasAccess('media.cloudinary')) {
             $view->getEnvironment()->addGlobal(
                 'cloudinaryCmsUrl',
-                \Dappur\Controller\AdminMedia::getCloudinaryCMS($container)
+                \Dappur\Controller\Admin\Media::getCloudinaryCMS($container)
             );
             $view->getEnvironment()->addGlobal(
                 'cloudinarySignature',
-                \Dappur\Controller\AdminMedia::getCloudinaryCMS($container, true)
+                \Dappur\Controller\Admin\Media::getCloudinaryCMS($container, true)
             );
             $view->getEnvironment()->addGLobal('cloudinaryApiKey', $container['settings']['cloudinary']['api_key']);
         }
@@ -158,7 +157,6 @@ $container['view'] = function ($container) {
     $view->getEnvironment()->addGlobal('auth', $container['auth']);
     $view->getEnvironment()->addGlobal('config', $container['config']);
     $view->getEnvironment()->addGlobal('displayErrorDetails', $container['settings']['displayErrorDetails']);
-    $view->getEnvironment()->addGlobal('userAccess', $container['userAccess']);
     $view->getEnvironment()->addGlobal('currentRoute', $container['request']->getUri()->getPath());
     $view->getEnvironment()->addGlobal('requestParams', $container['request']->getParams());
     $view->getEnvironment()->addGlobal('projectDir', $container['project_dir']);
@@ -169,7 +167,9 @@ $container['view'] = function ($container) {
     if (strpos($container['request']->getUri()->getPath(), '/dashboard') !== false) {
         $page_settings = new \Dappur\Model\ConfigGroups;
         $page_settings = $page_settings->whereNotNull('page_name')->get();
+        $view->getEnvironment()->addGlobal('userAccess', $container['userAccess']);
         $view->getEnvironment()->addGlobal('pageSettings', $page_settings);
+        $view->getEnvironment()->addGlobal('showInAdmin', $container['settings']['showInAdmin']);
     }
     return $view;
 };

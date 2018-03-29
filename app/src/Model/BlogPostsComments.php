@@ -1,9 +1,10 @@
 <?php
 namespace Dappur\Model;
+
 use Illuminate\Database\Eloquent\Model;
 
-class BlogPostsComments extends Model {
-
+class BlogPostsComments extends Model
+{
     protected $table = 'blog_posts_comments';
     protected $primaryKey = 'id';
     protected $fillable = [
@@ -13,23 +14,28 @@ class BlogPostsComments extends Model {
         'status'
     ];
 
-    public function replies(){
+    public function replies()
+    {
         return $this->hasMany('\Dappur\Model\BlogPostsReplies', 'comment_id', 'id');
     }
 
-    public function post(){
+    public function post()
+    {
         return $this->belongsTo('\Dappur\Model\BlogPosts', 'post_id');
     }
 
-     public function approved_replies(){
+    public function approvedReplies()
+    {
         return $this->hasMany('\Dappur\Model\BlogPostsReplies', 'comment_id', 'id')->where('status', 1);
     }
 
-    public function pending_replies(){
+    public function pendingReplies()
+    {
         return $this->hasMany('\Dappur\Model\BlogPostsReplies', 'comment_id', 'id')->where('status', 0);
     }
 
-    public function user(){
+    public function user()
+    {
         return $this->belongsTo('\Dappur\Model\users', 'user_id');
     }
 }

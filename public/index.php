@@ -26,6 +26,9 @@ foreach (glob(__DIR__ . '/../app/routes/*.php') as $filename)
     require $filename;
 }
 
+// Load Global Middleware
+require __DIR__ . '/../app/bootstrap/middleware.php';
+
 //Load Error Handlers
 require __DIR__ . '/../app/bootstrap/errors.php';
 

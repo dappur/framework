@@ -8,18 +8,140 @@ use Dappur\Model\Config;
 use Dappur\Model\ConfigGroups;
 use Dappur\Model\Emails;
 use Dappur\Model\EmailsTemplates;
+use Interop\Container\ContainerInterface;
+use Ramsey\Uuid\Uuid;
+use Respect\Validation\Validator as V;
 
+/**
+ * @SuppressWarnings(PHPMD)
+ */
 class Email extends Dappurware
 {
-    
-    public function getPlaceholders(){
+    public function __construct(ContainerInterface $container)
+    {
+        parent::__construct($container);
+    }
 
+    public function addTemplate()
+    {
+        $this->validateTemplate();
+
+        if ($this->validator->isValid()) {
+            $requestParams = $this->container->request->getParams();
+
+            $addTemplate = new EmailsTemplates;
+            $addTemplate->name = $requestParams['name'];
+            $addTemplate->slug = $requestParams['slug'];
+            $addTemplate->description = $requestParams['description'];
+            $addTemplate->subject = $requestParams['subject'];
+            $addTemplate->html = $requestParams['html'];
+            $addTemplate->plain_text = $requestParams['plain_text'];
+            if ($requestParams['placeholders']) {
+                $addTemplate->placeholders = json_encode($requestParams['placeholders']);
+            }
+
+            if ($addTemplate->save()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public function updateTemplate($templateId = null)
+    {
+        $template = EmailsTemplates::find($templateId);
+
+        $this->validateTemplate($templateId);
+
+        if ($this->validator->isValid()) {
+            $requestParams = $this->container->request->getParams();
+
+            $template->name = $requestParams['name'];
+            $template->slug = $requestParams['slug'];
+            $template->description = $requestParams['description'];
+            $template->subject = $requestParams['subject'];
+            $template->html = $requestParams['html'];
+            $template->plain_text = $requestParams['plain_text'];
+            if ($requestParams['placeholders']) {
+                $template->placeholders = json_encode($requestParams['placeholders']);
+            }
+
+            if ($template->save()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private function validateTemplate($templateId = null)
+    {
+        $requestParams = $this->container->request->getParams();
+
+        $this->container->validator->validate(
+            $this->container->request,
+            array(
+                'name' => array(
+                    'rules' => V::alnum('\'-".,?!@#$%^&')->length(4, 32),
+                    'messages' => array(
+                        'alnum' => 'May only contain letters and numbers.',
+                        'length' => 'Must be between 4 and 32 characters.'
+                    )
+                ),
+                'slug' => array(
+                    'rules' => V::slug()->length(4, 32),
+                    'messages' => array(
+                        'slug' => 'Must be in slug format.',
+                        'length' => 'Must be between 4 and 32 characters.'
+                    )
+                ),
+                'description' => array(
+                    'rules' => V::alnum('\'-".,?!@#$%^&')->length(4, 255),
+                    'messages' => array(
+                        'alnum' => 'May only contain letters and numbers.',
+                        'length' => 'Must be between 4 and 255 characters.'
+                    )
+                )
+            )
+        );
+
+        // Check for Dupe Slug
+        $slugCheck = EmailsTemplates::where('slug', $requestParams['slug']);
+        if ($templateId) {
+            $slugCheck = $slugCheck->where('id', '!=', $templateId);
+        }
+        if ($slugCheck->first()) {
+            $this->container->validator->addError('slug', 'Slug is already in use.');
+        }
+        
+        // Check Plain Text for HTML
+        if (strip_tags($requestParams['plain_text']) != $requestParams['plain_text']) {
+            $this->container->validator->addError('plain_text', 'Plain Text cannot contain HTML.');
+        }
+
+        // Process Placeholders
+        if ($requestParams['placeholders']) {
+            foreach ($requestParams['placeholders'] as $plvalue) {
+                if (!V::alnum('_')->lowercase()->validate($plvalue)) {
+                    $this->container->validator->addError(
+                        'placeholders',
+                        'All custom data fields must be in this_format.'
+                    );
+                }
+            }
+        }
+
+        return true;
+    }
+
+    public function getPlaceholders()
+    {
         $output = array();
 
         $users = Users::first()->toArray();
 
-        foreach ($users as $key => $value) {
-            
+        foreach (array_keys($users) as $key) {
             if ($key == "password" || $key == "permissions") {
                 continue;
             }
@@ -28,36 +150,34 @@ class Email extends Dappurware
         }
 
         // Only include Site Settings
-        $site_settings = ConfigGroups::with('config')->find(1);
+        $siteSettings = ConfigGroups::with('config')->find(1);
 
-        foreach ($site_settings->config as $key2 => $value2) {
-            $output[$site_settings->name][] = array("name" => "settings_" . str_replace("-", "_", $value2->name), "value" => $value2->value);
+        foreach ($siteSettings->config as $value2) {
+            $output[$siteSettings->name][] = array(
+                "name" => "settings_" . str_replace("-", "_", $value2->name),
+                "value" => $value2->value
+            );
         }
             
         return $output;
-
     }
 
-    public function sendTemplate(Array $send_to, $template_slug = null, Array $params = null){
-
+    public function sendTemplate(array $sendTo, $templateSlug = null, array $params = null)
+    {
         $output = array();
 
         $placeholders = $this->getPlaceholders();
 
-        $template = EmailsTemplates::where('slug', '=', $template_slug)->first();
+        $template = EmailsTemplates::where('slug', '=', $templateSlug)->first();
 
-        $recipients = $this->parseRecipients($send_to);
+        $recipients = $this->parseRecipients($sendTo);
 
         if (!empty($recipients)) {
-        
             if ($template) {
-
                 // Get Email Bodies
                 $html = $template->html;
-                $plain_text = $template->plain_text;
+                $plainText = $template->plain_text;
                 $subject = $template->subject;
-
-                // Set Up Placeholders
                 
                 // Process Custom Placeholders
                 $tplaceholders = json_decode($template->placeholders);
@@ -69,160 +189,197 @@ class Email extends Dappurware
                         }
                     }
                 }
-                
 
                 // Send Email To Users
                 if (!empty($recipients['users'])) {
                     foreach ($recipients['users'] as $uvalue) {
                         // Process Bodies with Custom and System Placeholders
-                        $user_temp = Users::find($uvalue);
-                        $placeholders_temp = $placeholders;
+                        $userTemp = Users::find($uvalue);
+                        $placeholdersTemp = $placeholders;
 
-                        if ($user_temp) {
+                        if ($userTemp) {
                             foreach ($placeholders['User Info'] as $key => $sssvalue) {
-                                $placeholders_temp['User Info'][$key]['value'] = $user_temp[str_replace("user_", "", $sssvalue['name'])];
+                                $tempValue = str_replace("user_", "", $sssvalue['name']);
+                                $placeholdersTemp['User Info'][$key]['value'] = $userTemp[$tempValue];
                             }
                         }
 
-                        $placeholders_temp = $this->preparePlaceholders($placeholders_temp);
+                        $placeholdersTemp = $this->preparePlaceholders($placeholdersTemp);
 
                         // Process HTML Email
-                        $html_temp = new \Twig_Environment(new \Twig_Loader_Array([$template->slug . '_html' => $html]));
-                        $html_temp = $html_temp->render($template->slug . '_html', $placeholders_temp);
+                        $htmlTemp = new \Twig_Environment(new \Twig_Loader_Array([$template->slug . '_html' => $html]));
+                        $htmlTemp = $htmlTemp->render($template->slug . '_html', $placeholdersTemp);
 
                         // Process Plain Text Email
-                        $plain_text_temp = new \Twig_Environment(new \Twig_Loader_Array([$template->slug . '_pt' => $plain_text]));
-                        $plain_text_temp = $plain_text_temp->render($template->slug . '_pt', $placeholders_temp);
+                        $plainTextTemp = new \Twig_Environment(
+                            new \Twig_Loader_Array(
+                                [$template->slug . '_pt' => $plainText]
+                            )
+                        );
+                        $plainTextTemp = $plainTextTemp->render($template->slug . '_pt', $placeholdersTemp);
 
                         //Process Subject
-                        $subject_temp = new \Twig_Environment(new \Twig_Loader_Array([$template->slug . '_sub' => $subject]));
-                        $subject_temp = $subject_temp->render($template->slug . '_sub', $placeholders_temp);
+                        $subjectTemp = new \Twig_Environment(
+                            new \Twig_Loader_Array(
+                                [$template->slug . '_sub' => $subject]
+                            )
+                        );
+                        $subjectTemp = $subjectTemp->render($template->slug . '_sub', $placeholdersTemp);
 
-                        $send = $this->send($user_temp->email, html_entity_decode($subject_temp), $html_temp, $plain_text_temp, $template->id);
+                        $send = $this->send(
+                            $userTemp->email,
+                            html_entity_decode($subjectTemp),
+                            $htmlTemp,
+                            $plainTextTemp,
+                            $template->id
+                        );
 
                         if ($send['result']) {
-                            $output['results']['success'][] = array("email" => $user_temp->email);
-                        }else{
-                            $output['results']['errors'][] = array("email" => $user_temp->email, "error" => $result['error']);
+                            $output['results']['success'][] = array("email" => $userTemp->email);
+                        }
+                        
+                        if (!$send['result']) {
+                            $output['results']['errors'][] = array(
+                                "email" => $userTemp->email,
+                                "error" => $result['error']
+                            );
                         }
                     }
                 }
 
                 // Send Email to Email Addresses
                 if (!empty($recipients['email'])) {
-
-                    $placeholders_temp = $this->preparePlaceholders($placeholders);
+                    $placeholdersTemp = $this->preparePlaceholders($placeholders);
                     
                     foreach ($recipients['email'] as $evalue) {
                         // Process HTML Email
-                        $html_temp = new \Twig_Environment(new \Twig_Loader_Array([$template->slug . '_html' => $html]));
-                        $html_temp = $html_temp->render($template->slug . '_html', $placeholders_temp);
+                        $htmlTemp = new \Twig_Environment(new \Twig_Loader_Array([$template->slug . '_html' => $html]));
+                        $htmlTemp = $htmlTemp->render($template->slug . '_html', $placeholdersTemp);
 
                         // Process Plain Text Email
-                        $plain_text_temp = new \Twig_Environment(new \Twig_Loader_Array([$template->slug . '_pt' => $plain_text]));
-                        $plain_text_temp = $plain_text_temp->render($template->slug . '_pt', $placeholders_temp);
+                        $plainTextTemp = new \Twig_Environment(new \Twig_Loader_Array(
+                            [$template->slug . '_pt' => $plainText]
+                        ));
+                        $plainTextTemp = $plainTextTemp->render($template->slug . '_pt', $placeholdersTemp);
 
                         //Process Subject
-                        $subject_temp = new \Twig_Environment(new \Twig_Loader_Array([$template->slug . '_sub' => $subject]));
-                        $subject_temp = $subject_temp->render($template->slug . '_sub', $placeholders_temp);
+                        $subjectTemp = new \Twig_Environment(new \Twig_Loader_Array(
+                            [$template->slug . '_sub' => $subject]
+                        ));
+                        $subjectTemp = $subjectTemp->render($template->slug . '_sub', $placeholdersTemp);
 
-                        $send = $this->send($evalue, html_entity_decode($subject_temp), $html_temp, $plain_text_temp, $template->id);
+                        $send = $this->send(
+                            $evalue,
+                            html_entity_decode($subjectTemp),
+                            $htmlTemp,
+                            $plainTextTemp,
+                            $template->id
+                        );
 
-                        if ($send['result']){
+                        if ($send['result']) {
                             $output['results']['success'][] = array("email" => $evalue);
-                        }else{
-                            $output['results']['errors'][] = array("email" => $evalue, "error" => $result['error']);
                         }
 
+                        if (!$send['result']) {
+                            $output['results']['errors'][] = array("email" => $evalue, "error" => $result['error']);
+                        }
                     }
                 }
-                
-                
-            }else{
+            }
+
+            if (!$template) {
                 $output['status'] = "error";
                 $output['message'] = "No valid template was selected.";
             }
-        }else{
+        }
+
+        if (empty($recipients)) {
             $output['status'] = "error";
             $output['message'] = "There were no recipients to send to.";
         }
 
         return $output;
-
     }
 
-    public function sendEmail(Array $send_to, $subject, $html, $plain_text){
-
+    public function sendEmail(array $sendTo, $subject, $html, $plainText)
+    {
         $output = array();
 
         $placeholders = Email::getPlaceholders();
 
-        $recipients = Email::parseRecipients($send_to);
+        $recipients = Email::parseRecipients($sendTo);
 
         if (!empty($recipients)) {
-
             // Send Email To Users
             if (!empty($recipients['users'])) {
                 foreach ($recipients['users'] as $uvalue) {
                     // Process Bodies with Custom and System Placeholders
-                    $user_temp = Users::find($uvalue);
-                    $placeholders_temp = $placeholders;
+                    $userTemp = Users::find($uvalue);
+                    $placeholdersTemp = $placeholders;
 
-                    if ($user_temp) {
+                    if ($userTemp) {
                         foreach ($placeholders['User Info'] as $key => $sssvalue) {
-                            $placeholders_temp['User Info'][$key]['value'] = $user_temp[str_replace("user_", "", $sssvalue['name'])];
+                            $placeholdersTemp['User Info'][$key]['value'] =
+                                $userTemp[str_replace("user_", "", $sssvalue['name'])];
                         }
                     }
 
-                    $placeholders_temp = $this->preparePlaceholders($placeholders_temp);
+                    $placeholdersTemp = $this->preparePlaceholders($placeholdersTemp);
 
                     // Process HTML Email
-                    $html_temp = new \Twig_Environment(new \Twig_Loader_Array(['email_html' => $html]));
-                    $html_temp = $html_temp->render('email_html', $placeholders_temp);
+                    $htmlTemp = new \Twig_Environment(new \Twig_Loader_Array(['email_html' => $html]));
+                    $htmlTemp = $htmlTemp->render('email_html', $placeholdersTemp);
 
                     // Process Plain Text Email
-                    $plain_text_temp = new \Twig_Environment(new \Twig_Loader_Array(['email_pt' => $plain_text]));
-                    $plain_text_temp = $plain_text_temp->render('email_pt', $placeholders_temp);
+                    $plainTextTemp = new \Twig_Environment(new \Twig_Loader_Array(['email_pt' => $plainText]));
+                    $plainTextTemp = $plainTextTemp->render('email_pt', $placeholdersTemp);
 
                     //Process Subject
-                    $subject_temp = new \Twig_Environment(new \Twig_Loader_Array(['email_sub' => $subject]));
-                    $subject_temp = $subject_temp->render('email_sub', $placeholders_temp);
+                    $subjectTemp = new \Twig_Environment(new \Twig_Loader_Array(['email_sub' => $subject]));
+                    $subjectTemp = $subjectTemp->render('email_sub', $placeholdersTemp);
 
-                    if (Email::send($user_temp->email, html_entity_decode($subject_temp), $html_temp, $plain_text_temp)) {
-                        $output['results']['success'][] = array("email" => $user_temp->email);
-                    }else{
-                        $output['results']['errors'][] = array("email" => $user_temp->email, "error" => $result['error']);
+                    $sendEmail = Email::send($userTemp->email, html_entity_decode($subjectTemp), $htmlTemp, $plainTextTemp);
+
+                    if ($sendEmail) {
+                        $output['results']['success'][] = array("email" => $userTemp->email);
                     }
+
+                    if (!$sendEmail) {
+                        $output['results']['errors'][] = array("email" => $userTemp->email, "error" => $result['error']);
+                    }   
+                    
                 }
             }
 
             // Send Email to Email Addresses
             if (!empty($recipients['email'])) {
                 foreach ($recipients['email'] as $evalue) {
-
-                    $placeholders_temp = $this->preparePlaceholders($placeholders);
+                    $placeholdersTemp = $this->preparePlaceholders($placeholders);
 
                     // Process HTML Email
-                    $html_temp = new \Twig_Environment(new \Twig_Loader_Array(['email_html' => $html]));
-                    $html_temp = $html_temp->render('email_html', $placeholders_temp);
+                    $htmlTemp = new \Twig_Environment(new \Twig_Loader_Array(['email_html' => $html]));
+                    $htmlTemp = $htmlTemp->render('email_html', $placeholdersTemp);
 
                     // Process Plain Text Email
-                    $plain_text_temp = new \Twig_Environment(new \Twig_Loader_Array(['email_pt' => $plain_text]));
-                    $plain_text_temp = $plain_text_temp->render('email_pt', $placeholders_temp);
+                    $plainTextTemp = new \Twig_Environment(new \Twig_Loader_Array(['email_pt' => $plainText]));
+                    $plainTextTemp = $plainTextTemp->render('email_pt', $placeholdersTemp);
 
                     //Process Subject
-                    $subject_temp = new \Twig_Environment(new \Twig_Loader_Array(['email_sub' => $subject]));
-                    $subject_temp = $subject_temp->render('email_sub', $placeholders_temp);
+                    $subjectTemp = new \Twig_Environment(new \Twig_Loader_Array(['email_sub' => $subject]));
+                    $subjectTemp = $subjectTemp->render('email_sub', $placeholdersTemp);
 
-                    if (Email::send($evalue, $subject_temp, $html_temp, $plain_text_temp)){
+                    $sendEmail = Email::send($evalue, $subjectTemp, $htmlTemp, $plainTextTemp);
+                    if ($sendEmail) {
                         $output['results']['success'][] = array("email" => $evalue);
-                    }else{
+                    }
+                    if (!$sendEmail) {
                         $output['results']['errors'][] = array("email" => $evalue, "error" => $result['error']);
                     }
-
                 }
             }
-        }else{
+        }
+
+        if (empty($recipients)) {
             $output['status'] = "error";
             $output['message'] = "There were no recipients to send to.";
         }
@@ -230,36 +387,37 @@ class Email extends Dappurware
         return $output;
     }
 
-    private function parseRecipients(Array $send_to){
+    private function parseRecipients(array $sendTo)
+    {
         $output = array();
         $output['users'] = array();
-        foreach ($send_to as $value) {
+        foreach ($sendTo as $value) {
             if (is_int($value)) {
                 // If int, get user email
                 if ($this->auth->findById($value)) {
                     $output['users'][] = $value;
                 }
-                
-            }else if (filter_var($value, FILTER_VALIDATE_EMAIL)) {
+            }
+
+            if (filter_var($value, FILTER_VALIDATE_EMAIL)) {
                 // If email, check if user
-                $email_user = $this->container->auth->findByCredentials(['login' => $value]);
-                if ($email_user) {
+                $emailUser = $this->container->auth->findByCredentials(['login' => $value]);
+                if ($emailUser) {
                     if (!in_array($value, $output['users'])) {
-                        $output['users'][] = $email_user->id;
+                        $output['users'][] = $emailUser->id;
                     }
-                }else{
-                    $output['email'][] = $value;
                 }
                 
-            }else{
-                //if other, check to see if user role exists for slug
-                $role = $this->auth->findRoleBySlug($value);
-                if ($role) {
-                    $users = $role->users()->get(['id']);
-                    foreach ($users as $value) {
-                        if (!in_array($value, $output['users'])) {
-                            $output['users'][] = $value['id'];
-                        }
+                $output['email'][] = $value;
+            }
+
+            //if other, check to see if user role exists for slug
+            $role = $this->auth->findRoleBySlug($value);
+            if ($role) {
+                $users = $role->users()->get(['id']);
+                foreach ($users as $value) {
+                    if (!in_array($value, $output['users'])) {
+                        $output['users'][] = $value['id'];
                     }
                 }
             }
@@ -268,25 +426,23 @@ class Email extends Dappurware
         return $output;
     }
 
-    private function preparePlaceholders($placeholders){
-        
+    private function preparePlaceholders($placeholders)
+    {
         $output = array();
 
         foreach ($placeholders as $value) {
-            
-            foreach ($value as $key2 => $value2) {
+            foreach ($value as $value2) {
                 if (isset($value2['value'])) {
                     $output[$value2['name']] = $value2['value'];
                 }
             }
-
         }
 
         return $output;
     }
 
-    private function send($email, $subject, $html, $plain_text, $template_id = null){
-
+    private function send($email, $subject, $html, $plainText, $templateId = null)
+    {
         $output = array();
 
         $mail = $this->mail;
@@ -298,36 +454,40 @@ class Email extends Dappurware
 
         $mail->Subject = $subject;
         $mail->Body    = $html;
-        $mail->AltBody = $plain_text;
+        $mail->AltBody = $plainText;
 
-        if(!$mail->send()) {
+        if (!$mail->send()) {
             $output['result'] = false;
             $output['error'] = $mail->ErrorInfo;
-        } else {
-            if ($this->settings['mail']['logging']) {
-
-                //Delete Old Emails
-                if ($this->settings['mail']['log_retention']) {
-                    Emails::where('created_at', '<', Carbon::now()->subDays($this->settings['mail']['log_retention']))->delete();
-                }
-
-                $add_email = new Emails;
-                $add_email->secure_id = bin2hex(random_bytes(22) + microtime());
-                $add_email->template_id = $template_id;
-                $add_email->send_to = $email;
-                $add_email->subject = $subject;
-                if (in_array("html", $this->settings['mail']['log_details'])) {
-                    $add_email->html = $html;
-                }
-                if (in_array("plain_text", $this->settings['mail']['log_details'])) {
-                    $add_email->plain_text = $plain_text;
-                }
-                $add_email->save();
-            }
-            $output['result'] = true;
+            return $output;
         }
+
+        if ($this->settings['mail']['logging']) {
+            //Delete Old Emails
+            if ($this->settings['mail']['log_retention']) {
+                Emails::where(
+                    'created_at',
+                    '<',
+                    Carbon::now()->subDays($this->settings['mail']['log_retention'])
+                )->delete();
+            }
+
+            $addEmail = new Emails;
+            $addEmail->secure_id = Uuid::uuid4()->toString();
+            $addEmail->template_id = $templateId;
+            $addEmail->send_to = $email;
+            $addEmail->subject = $subject;
+            if (in_array("html", $this->settings['mail']['log_details'])) {
+                $addEmail->html = $html;
+            }
+            if (in_array("plain_text", $this->settings['mail']['log_details'])) {
+                $addEmail->plain_text = $plainText;
+            }
+            $addEmail->save();
+        }
+
+        $output['result'] = true;
 
         return $output;
     }
-
 }

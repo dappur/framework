@@ -1,6 +1,6 @@
 {% import 'macros/form.twig' as form %}
 
-<section class="content-item" id="comments">
+<section class="content-item" id="comments" style="margin: 25px 0 20px 0;">
 	<div class="row">
 		<div class="col-xs-12">
 			{% if auth.check() %}
@@ -59,8 +59,8 @@
                 </form>
                 <div style="clear: both;"></div>
             {% endif %}
-            <h3>{{ post.approved_comments|length }} Comments</h3>
-            {% for comment in post.approved_comments %}
+            <h3>{{ post.approvedComments|length }} Comments</h3>
+            {% for comment in post.approvedComments %}
 
                 <div class="media">
                     <a class="pull-left" href="#"><img class="media-object" src="https://www.gravatar.com/avatar/{{ comment.user.email|md5 }}?d=identicon" alt=""></a>
@@ -93,7 +93,7 @@
                         </form>
                         </p>
                     	<p>
-                    		{% for reply in comment.approved_replies %}
+                    		{% for reply in comment.approvedReplies %}
                     		<div class="media">
 			                    <a class="pull-left" href="#"><img class="media-object" src="https://www.gravatar.com/avatar/{{ reply.user.email|md5 }}?d=identicon" alt=""></a>
 			                    <div class="media-body">

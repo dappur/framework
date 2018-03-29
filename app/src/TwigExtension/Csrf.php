@@ -4,7 +4,8 @@ namespace Dappur\TwigExtension;
 
 use Psr\Http\Message\RequestInterface as Request;
 
-class Csrf extends \Twig_Extension {
+class Csrf extends \Twig_Extension
+{
 
     /**
      * @var \Slim\Csrf\Guard
@@ -36,21 +37,25 @@ class Csrf extends \Twig_Extension {
         ];
     }
 
-    public function getName() {
+    public function getName()
+    {
         return 'csrf';
     }
 
-    public function getFunctions() {
+    public function getFunctions()
+    {
         return [
             new \Twig_SimpleFunction('csrf', array($this, 'csrf'), array('is_safe' => array('html')))
         ];
     }
 
-    public function csrf() {
-
+    public function csrf()
+    {
         return '
-            <input type="hidden" name="' . $this->csrf->getTokenNameKey() .'" value="' . $this->csrf->getTokenName() . '">
-            <input type="hidden" name="' . $this->csrf->getTokenValueKey() . '" value="' . $this->csrf->getTokenValue() . '">
+            <input type="hidden" name="' . $this->csrf->getTokenNameKey() .
+            '" value="' . $this->csrf->getTokenName() . '">
+            <input type="hidden" name="' . $this->csrf->getTokenValueKey() .
+            '" value="' . $this->csrf->getTokenValue() . '">
         ';
     }
 }

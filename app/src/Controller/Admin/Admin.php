@@ -1,6 +1,6 @@
 <?php
 
-namespace Dappur\Controller;
+namespace Dappur\Controller\Admin;
 
 use Dappur\Model\ContactRequests;
 use Dappur\Model\Users;

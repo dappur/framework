@@ -8,28 +8,30 @@ use Dflydev\FigCookies\FigResponseCookies;
 use Dflydev\FigCookies\SetCookie;
 use Dflydev\FigCookies\Cookie;
 
+/** @SuppressWarnings(PHPMD.StaticAccess) */
 class Cookies
 {
     // Get Response Cookie
-    public function getResponseCookie($response, $name){
-
+    public function getResponseCookie($response, $name)
+    {
         $response = FigResponseCookies::get($response, $name);
         return $response;
-
     }
 
     // Set New Response Cookie
-	public function setResponseCookie($response, $name, $value = true, $expiration = 0){
-
+    public function setResponseCookie($response, $name, $value = null, $expiration = 0)
+    {
+        $expiration = 1;
         if ($expiration == 0) {
-            $expiration = 30; //Expire After 30 Days
-        }else if (is_numeric($expiration)) {
+            $expiration = 30;
+        }
+        if (is_numeric($expiration)) {
             $expiration = $expiration;
-        }else{
-            $expiration = 1; //Default to One Day
         }
 
-        $response = FigResponseCookies::set($response, SetCookie::create($name)
+        $response = FigResponseCookies::set(
+            $response,
+            SetCookie::create($name)
             ->withExpires(Carbon::parse()->timestamp + 60*60*24*$expiration)
             ->withValue($value)
         );
@@ -38,14 +40,14 @@ class Cookies
     }
 
     // Modify Response Cookie
-    public function modifyResponseCookie($response, $name, $value = true, $expiration = 0){
-
+    public function modifyResponseCookie($response, $name, $value = null, $expiration = 0)
+    {
+        $expiration = 1;
         if ($expiration == 0) {
             $expiration = 30; //Expire After 30 Days
-        }else if (is_numeric($expiration)) {
+        }
+        if (is_numeric($expiration)) {
             $expiration = $expiration;
-        }else{
-            $expiration = 1; //Default to One Day
         }
 
         $modify = function (SetCookie $setCookie) {
@@ -67,34 +69,34 @@ class Cookies
     }
 
     // Delete Response Cookie
-    public function removeResponseCookie($response, $name){
+    public function removeResponseCookie($response, $name)
+    {
         $response = FigResponseCookies::remove($response, $name);
         return $response;
     }
 
     // Get Reuqest Cookie
-    public function getRequestCookie($request, $name){
-
+    public function getRequestCookie($request, $name)
+    {
         $request = FigRequestCookies::get($request, $name);
         return $request;
-
     }
 
     // Set New Request Cookie
-    public function setRequestCookie($request, $name, $value = true){
-
+    public function setRequestCookie($request, $name, $value = null)
+    {
         if (empty($name)) {
             return false;
-        }else{
-            $request = FigRequestCookies::set($request, Cookie::create($name, $value));
         }
 
-        return $request;
+        $request = FigRequestCookies::set($request, Cookie::create($name, $value));
 
+        return $request;
     }
 
     // Modify Request Cookie
-    public function modifyRequestCookie($request, $name, $value = true) {
+    public function modifyRequestCookie($request, $name, $value = null)
+    {
         $modify = function (Cookie $cookie) {
             $value = $cookie->getValue();
 
@@ -107,12 +109,9 @@ class Cookies
     }
 
     // Delete Request Cookie
-    public function removeRequestCookie($request, $name){
-        
+    public function removeRequestCookie($request, $name)
+    {
         $request = FigRequestCookies::remove($request, $name);
         return $request;
-
     }
-
-    
 }

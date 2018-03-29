@@ -420,14 +420,23 @@ var DappurMedia = new function() {
         $('#fileupload').fileupload({
             autoUpload : true,
             singleFileUploads: false,
+            add: function (e, data) {
+                $.getJSON('/csrf', function(csrfData){
+                    processCsrf(csrfData);
+                });
+
+                function processCsrf(csrfData){
+                    data.formData = {};
+                    data.formData[csrfData.name_key] = csrfData.name;
+                    data.formData[csrfData.value_key] = csrfData.value;
+                    data.submit();
+                }
+            },
             done: function (e, data) {
                 DappurMedia.getFolder(currentFolder);
-                $.getJSON( "/csrf", function( data ) {
-                    $('input[name='+data.name_key+']').val(data.name);
-                    $('input[name='+data.value_key+']').val(data.value);
-                });
             }
         });
+
     });
 
     $(document).ready(function() {

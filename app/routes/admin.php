@@ -1,6 +1,6 @@
 <?php
 
-$app->group('/dashboard', function () use ($app) {
+$app->group('/dashboard', function () use ($app, $container) {
 
     // Dashboard Home
     $app->get('', 'Admin:dashboard')
@@ -45,9 +45,13 @@ $app->group('/dashboard', function () use ($app) {
     $app->map(['GET', 'POST'], '/settings/page-settings/{page_name}', 'AdminSettings:settingsPage')
         ->setName('settings-page');
     
-    // Edit Settings.json
-    $app->map(['GET', 'POST'], '/developer/settings', 'AdminSettings:settingsDeveloper')
+    // View Settings.json
+    $app->map(['GET'], '/developer/settings', 'AdminSettings:settingsDeveloper')
         ->setName('settings-developer');
+
+    // View Logs
+    $app->map(['GET'], '/developer/logs', 'AdminSettings:developerLogs')
+        ->setName('developer-logs');
 
     // My Account
     $app->map(['GET', 'POST'], '/my-account', 'Admin:myAccount')
@@ -122,13 +126,10 @@ $app->group('/dashboard', function () use ($app) {
             ->setName('admin-seo-default');
     });
 
-    // SEO Manager
+    // Oauth Manager
     $app->group('/oauth2', function () use ($app) {
         $app->map(['GET'], '', 'AdminOauth2:providers')
             ->setName('admin-oauth2');
-
-        $app->map(['GET'], '/users', 'AdminOauth2:oauth2Users')
-            ->setName('admin-oauth2-users');
 
         $app->map(['GET','POST'], '/add', 'AdminOauth2:oauth2Add')
             ->setName('admin-oauth2-add');
@@ -149,6 +150,95 @@ $app->group('/dashboard', function () use ($app) {
     // Contact Requests
     $app->map(['GET'], '/contact', 'Admin:contact')
         ->setName('admin-contact');
+
+    // Blog Admin
+    $app->group('/blog', function () use ($app) {
+        // Main Blog Admin
+        $app->get('', 'AdminBlog:blog')
+        ->setName('admin-blog');
+
+        // Blog Post Actions
+        $app->group('', function () use ($app) {
+            // Unpublish Blog
+            $app->post('/unpublish', 'AdminBlog:blogUnpublish')
+                ->setName('admin-blog-unpublish');
+            // Publish Blog
+            $app->post('/publish', 'AdminBlog:blogPublish')
+                ->setName('admin-blog-publish');
+            // Edit Blog Post
+            $app->map(['GET', 'POST'], '/edit[/{post_id}]', 'AdminBlog:blogEdit')
+                ->setName('admin-blog-edit');
+            // Add Blog Post
+            $app->map(['GET', 'POST'], '/add', 'AdminBlog:blogAdd')
+                ->setName('admin-blog-add');
+            // Delete Blog Post
+            $app->post('/delete', 'AdminBlog:blogDelete')
+                ->setName('admin-blog-delete');
+        });
+
+        // Blog Comments
+        $app->group('/comments', function () use ($app) {
+            // View Comments
+            $app->get('', 'AdminBlogComments:comments')
+                ->setName('admin-blog-comments');
+            $app->get('/{comment_id}', 'AdminBlogComments:commentDetails')
+                ->setName('admin-blog-comment-details');
+            // Unpublish Comment
+            $app->post('/publish', 'AdminBlogComments:commentUnpublish')
+                ->setName('admin-blog-comment-unpublish');
+            // Publish Comment
+            $app->post('/unpublish', 'AdminBlogComments:commentPublish')
+                ->setName('admin-blog-comment-publish');
+            // Delte Comment
+            $app->post('/delete', 'AdminBlogComments:commentDelete')
+                ->setName('admin-blog-comment-delete');
+        });
+
+        // Blog Replies
+        $app->group('/replies', function () use ($app) {
+
+            // Unpublish Comment
+            $app->post('/publish', 'AdminBlogComments:replyUnpublish')
+                ->setName('admin-blog-reply-unpublish');
+            // Publish Comment
+            $app->post('/unpublish', 'AdminBlogComments:replyPublish')
+                ->setName('admin-blog-reply-publish');
+            // Delte Comment
+            $app->post('/delete', 'AdminBlogComments:replyDelete')
+                ->setName('admin-blog-reply-delete');
+        });
+
+        // Blog Categories Actions
+        $app->group('/categories', function () use ($app) {
+            // Delete Category
+            $app->post('/delete', 'AdminBlogCategories:categoriesDelete')
+                ->setName('admin-blog-categories-delete');
+            // Edit Category
+            $app->map(['GET', 'POST'], '/edit[/{category}]', 'AdminBlogCategories:categoriesEdit')
+                ->setName('admin-blog-categories-edit');
+            // Add Category
+            $app->post('/add', 'AdminBlogCategories:categoriesAdd')
+                ->setName('admin-blog-categories-add');
+        });
+
+        // Blog Tag Actions
+        $app->group('/tags', function () use ($app) {
+            // Delete Tag
+            $app->post('/delete', 'AdminBlogTags:tagsDelete')
+                ->setName('admin-blog-tags-delete');
+            // Edit Tag
+            $app->map(['GET', 'POST'], '/edit[/{tag_id}]', 'AdminBlogTags:tagsEdit')
+                ->setName('admin-blog-tags-edit');
+            // Delete Tag
+            $app->post('/add', 'AdminBlogTags:tagsAdd')
+                ->setName('admin-blog-tags-add');
+        });
+
+        // Preview Blog Post
+        $app->get('/preview[/{slug}]', 'AdminBlog:blogPreview')
+            ->setName('admin-blog-preview');
+    })
+    ->add(new Dappur\Middleware\BlogCheck($container));
 })
 ->add(new Dappur\Middleware\Auth($container))
 ->add(new Dappur\Middleware\Admin($container))

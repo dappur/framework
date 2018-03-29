@@ -1,9 +1,10 @@
 <?php
 namespace Dappur\Model;
+
 use Illuminate\Database\Eloquent\Model;
 
-class BlogCategories extends Model {
-
+class BlogCategories extends Model
+{
     protected $table = 'blog_categories';
     protected $primaryKey = 'id';
     protected $fillable = [
@@ -11,8 +12,8 @@ class BlogCategories extends Model {
         'slug'
     ];
 
-    public function posts() {
+    public function posts()
+    {
         return $this->hasMany('\Dappur\Model\BlogPosts', 'category_id');
     }
-    
 }

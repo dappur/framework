@@ -8,16 +8,16 @@ use Phinx\Migration\AbstractMigration;
 use Cartalyst\Sentinel\Native\Facades\Sentinel;
 use Cartalyst\Sentinel\Native\SentinelBootstrapper;
 
-class Migration extends AbstractMigration {
-    
+class Migration extends AbstractMigration
+{
     public $capsule;
     public $schema;
     public $sentinel;
 
     public function init()
     {
-        $settings = file_get_contents( __DIR__ . '/../../../settings.json' );
-        $settings = json_decode($settings, TRUE);
+        $settings = file_get_contents(__DIR__ . '/../../../settings.json');
+        $settings = json_decode($settings, true);
         $dbconf = $settings['db'][$settings['environment']];
 
         $this->capsule = new Capsule;
@@ -37,7 +37,10 @@ class Migration extends AbstractMigration {
         $this->capsule->setAsGlobal();
         $this->schema = $this->capsule->schema();
 
-        $this->sentinel = (new Sentinel(new SentinelBootstrapper(__DIR__ . '/../../bootstrap/sentinel.php')))->getSentinel();
-
+        $this->sentinel = (
+            new Sentinel(
+                new SentinelBootstrapper(__DIR__ . '/../../bootstrap/sentinel.php')
+            )
+        )->getSentinel();
     }
 }

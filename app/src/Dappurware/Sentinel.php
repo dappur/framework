@@ -4,47 +4,26 @@ namespace Dappur\Dappurware;
 
 class Sentinel extends Dappurware
 {
-    public function userAccess(){
-        $sentinel = $this->auth;
-        $user = $sentinel->check();
+    public function userAccess()
+    {
+        $user = $this->auth->check();
 
         $permissions = [];
         $rolesSlugs = [];
 
         if ($user) {
-            foreach ($user->getRoles() as $key => $value) {
+            foreach ($user->getRoles() as $value) {
                 $rolesSlugs[] = $value->slug;
             }
 
-            $roles = $sentinel->getRoleRepository()->createModel()->whereIn('slug', $rolesSlugs)->get();
-
-            foreach ($roles as $role) {
-                foreach ($role->permissions as $key => $value) {
-                    if ($value == 1) {
-                        $permissions[] = $key;
-                    }
-                }
-            }
-
-            foreach ($user->permissions as $key => $value) {
-                if (!in_array($key, $permissions) && $value == 1) {
-                    $permissions[] = $key;
-                }
-
-                if (in_array($key, $permissions) && $value == 0) {
-                    $key = array_search($key, $permissions);
-                    unset($permissions[$key]);
-                }
-            }
-
+            $permissions = $this->getUserPermissions($user, $rolesSlugs);
         }
-        return array('roles' => $rolesSlugs, 'permissions' => $permissions);
+        return array('permissions' => $permissions);
     }
 
-    public function hasPerm($permission, $redirect_to = 'home', $enabled = 1){
-        
+    public function hasPerm($permission, $redirectTo = 'home', $enabled = 1)
+    {
         if (!$this->auth->hasAccess($permission) || !$enabled) {
-
             $user = $this->auth->check();
 
             $error = new \Slim\Flash\Messages();
@@ -52,10 +31,36 @@ class Sentinel extends Dappurware
             
             $this->logger->addWarning("Unauthorized Access", array("user_id" => $user->id));
 
-            return $this->response->withRedirect($this->router->pathFor($redirect_to));
-
-        }else{
-            return false;
+            return $this->response->withRedirect($this->router->pathFor($redirectTo));
         }
+
+        return false;
+    }
+
+    private function getUserPermissions($user, $rolesSlugs)
+    {
+        $permissions = [];
+        $roles = $this->auth->getRoleRepository()->createModel()->whereIn('slug', $rolesSlugs)->get();
+
+        foreach ($roles as $role) {
+            foreach ($role->permissions as $key => $value) {
+                if ($value == 1) {
+                    $permissions[] = $key;
+                }
+            }
+        }
+
+        foreach ($user->permissions as $key => $value) {
+            if (!in_array($key, $permissions) && $value == 1) {
+                $permissions[] = $key;
+            }
+
+            if (in_array($key, $permissions) && $value == 0) {
+                $key = array_search($key, $permissions);
+                unset($permissions[$key]);
+            }
+        }
+
+        return $permissions;
     }
 }

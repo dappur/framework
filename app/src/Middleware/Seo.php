@@ -1,23 +1,23 @@
 <?php
 
 namespace Dappur\Middleware;
+
 use Dappur\Model\Seo as SeoModel;
 
-class Seo extends Middleware{
+class Seo extends Middleware
+{
+    public function __invoke($request, $response, $next)
+    {
+        $page = $request->getAttribute('route')->getName();
 
-    public function __invoke($request, $response, $next){
+        $seoConfig = SeoModel::where('page', '=', $page)->first();
 
-    	$page = $request->getAttribute('route')->getName();
+        if (!$seoConfig) {
+            $seoConfig = SeoModel::where('default', 1)->first();
+        }
 
-    	$seo_config = SeoModel::where('page', '=', $page)->first();
-
-    	if (!$seo_config) {
-    		$seo_config = SeoModel::where('default', 1)->first();
-    	}
-
-        $this->view->getEnvironment()->addGlobal('seo', $seo_config);
+        $this->view->getEnvironment()->addGlobal('seo', $seoConfig);
 
         return $next($request, $response);
-
     }
 }
