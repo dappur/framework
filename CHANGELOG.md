@@ -3,6 +3,7 @@ All notable changes to this project will be documented in this file as of v2.1.0
 
 ## [Unreleased]
 ### Added
+- Social Profiles to Users page in Dashboard
 - Session helper to the container
 - PHPMD and PHPCS into require-dev
 - Admin section for Oauth2 Providers
