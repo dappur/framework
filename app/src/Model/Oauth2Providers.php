@@ -18,4 +18,15 @@ class Oauth2Providers extends Model
         'login',
         'status'
     ];
+
+    public function users(){
+        return $this->hasManyThrough(
+            '\Dappur\Model\Oauth2Users',
+            '\Dappur\Model\Users',
+            'id',
+            'provider_id',
+            'id',
+            'id'
+        );
+    }
 }

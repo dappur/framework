@@ -2,9 +2,12 @@
 
 namespace Dappur\Controller\Admin;
 
+use Carbon\Carbon;
 use Dappur\Model\ContactRequests;
+use Dappur\Model\Oauth2Providers;
 use Dappur\Model\Users;
 use Dappur\Model\UsersProfile;
+use Illuminate\Database\Capsule\Manager as DB;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use Respect\Validation\Validator as V;
@@ -37,7 +40,38 @@ class Admin extends Controller
             return $check;
         }
 
-        return $this->view->render($response, 'dashboard.twig');
+        // Get Users By Month
+        $users = Users::select(DB::raw('count(id) as total'), 'created_at')
+        ->where('created_at', '>', Carbon::now()->subYear())
+        ->get()
+        ->groupBy(function($date) {
+            //return Carbon::parse($date->created_at)->format('Y'); // grouping by years
+            return Carbon::parse($date->created_at)->format('Y-m'); // grouping by months
+        });
+        $usersByMonth = [];
+        foreach ($users as $key => $value) {
+            $usersByMonth[] = array("month" => $key, "total" => $value[0]->total);
+        }
+        $usersByMonth = json_encode($usersByMonth);
+
+        // Get Users Last 90 Days
+        $users2 = Users::select(DB::raw('count(id) as total'), 'created_at')
+        ->where('created_at', '>', Carbon::now()->subDays(90))
+        ->get()
+        ->groupBy(function($date) {
+            //return Carbon::parse($date->created_at)->format('Y'); // grouping by years
+            return Carbon::parse($date->created_at)->format('Y-m-d'); // grouping by months
+        });
+        $usersByDay = [];
+        foreach ($users2 as $key => $value) {
+            $usersByDay[] = array("date" => $key, "total" => $value[0]->total);
+        }
+        $usersByDay = json_encode($usersByDay);
+
+        // Get Oauth2 Providers
+        $providers = Oauth2Providers::withCount(['users'])->get();
+
+        return $this->view->render($response, 'dashboard.twig', array("usersByMonth" => $usersByMonth, "usersByDay" => $usersByDay, "providers" => $providers));
     }
 
     public function myAccount(Request $request, Response $response)

@@ -2,6 +2,11 @@
 
 {% block title %}{{config['site-name']}} || Dashboard{% endblock %}
 
+{% block stylesheets %}
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css">
+<link href="{{ asset('dappur/css/bootstrap-social.min.css') }}" rel="stylesheet">
+{% endblock %}
+
 {% block body %}
     <div class="container-fluid">
 	    <div class="row">
@@ -16,5 +21,90 @@
 	            </ol>
 	        </div>
 	    </div>
+
+	    <div class="row">
+	    	<div class="col-md-6">
+		    	<div class="panel panel-primary">
+		    		<div class="panel-heading">
+		    			<h3 class="panel-title">Total Users Per Month</h3>
+		    		</div>
+		    		<div class="panel-body">
+		    			<div id="users-per-month"></div>	
+		    		</div>
+		    	</div>
+		    </div>
+		    <div class="col-md-6">
+		    	<div class="panel panel-primary">
+		    		<div class="panel-heading">
+		    			<h3 class="panel-title">New Users Last 90 Days</h3>
+		    		</div>
+		    		<div class="panel-body">
+		    			<div id="users-last-90"></div>	
+		    		</div>
+		    	</div>
+		    </div>
+	    </div>
+
+	    <div class="row">
+	    	<div class="col-md-12">
+		    	<div class="panel panel-primary">
+		    		<div class="panel-heading">
+		    			<h3 class="panel-title">Social Media Users</h3>
+		    		</div>
+		    		<div class="panel-body">
+		    			<div class="row">
+		    				{% for provider in providers %}
+		    				    <div class="col-md-2">
+			    					<div class="panel panel-primary">
+							    		<div class="panel-heading">
+							    			<h3 class="panel-title">{{provider.name}}</h3>
+							    		</div>
+							    		<div class="panel-body">
+							    			<span href="{{ authorize_url(provider.id, client_ids[provider.id], 1) }}" class="btn btn-block btn-social btn-{{provider.button}} form-control">
+                                                <span class="fa fa-{{provider.button}}"></span> {{provider.users_count}} Users Total
+                                            </span>
+							    		</div>
+							    	</div>
+			    				</div>
+		    				{% endfor %}
+		    			</div>	
+		    		</div>
+		    	</div>
+		    </div>
+	    </div>
 	</div>
+{% endblock %}
+
+{% block javascript %}
+<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script>
+
+<script>
+var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+Morris.Bar({
+  element: 'users-per-month',
+  data: {{ usersByMonth|raw }},
+  xkey: 'month',
+  ykeys: ['total'],
+  labels: ['New Users'],
+  xLabelFormat: function(x) { // <--- x.getMonth() returns valid index
+    var month = months[new Date(x.src.month).getMonth()];
+    return month;
+  },
+  dateFormat: function(x) {
+    var month = months[new Date(x.src.month).getMonth()];
+    return month;
+  },
+});
+
+Morris.Area({
+  element: 'users-last-90',
+  data: {{ usersByDay|raw }},
+  xkey: 'date',
+  ykeys: ['total'],
+  labels: ['New Users']
+});
+
+</script>
 {% endblock %}
