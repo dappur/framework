@@ -31,15 +31,28 @@ $(document).on('change', '#add_type', function(){
     }else if (type_id == 5) {
         $('#value_input').html('<div class="input-group dm-input" data-name="add_value" data-value=""></div>');
         DappurMedia.refreshInputs();
-
     }else if (type_id == 4) {
         $('#value_input').html('<input type="text" name="add_value" id="add_value" class="form-control" value="" placeholder="Value">');
     }else if (type_id == 3) {
         $('#value_input').html('<input type="text" name="add_value" id="add_value" class="form-control" value="" placeholder="Value">');
+    }else if (type_id == 8) {
+        $('#value_input').html('<input type="text" name="add_value" id="add_value" class="form-control jscolor" value="" placeholder="Value">');
+        var input = document.getElementById('add_value');
+        var picker = new jscolor(input, {width:243, height:150, borderColor:'#FFF', insetColor:'#FFF', backgroundColor:'#666', hash:true});
     }else if (type_id == 2) {
         $('#value_input').html('<input type="text" name="add_value" id="add_value" class="form-control" value="" placeholder="Value">');
     }else if (type_id == 1) {
         $('#value_input').html('<input type="text" name="add_value" id="add_value" class="form-control" value="" placeholder="Value">');
+    }else if( type_id == 7){
+        $('#value_input').html('<div class="row">'+
+                    '<div class="col-md-6">'+
+                        '<button type="button" class="btn btn-info dappur-html-preview form-control" data-html="add_value">Preview</button>'+
+                        '<input type="hidden" name="add_value" id="add_value" value="">'+
+                    '</div>'+
+                    '<div class="col-md-6">'+
+                        '<button type="button" class="btn btn-warning dappur-html-edit form-control" data-html="add_value">Edit HTML</button>'+
+                    '</div>'+
+                '</div>')
     }else{
         $('#value_input').html('<input type="text" name="add_value" id="add_value" class="form-control" value="" placeholder="Value">');
     }
@@ -122,10 +135,6 @@ $(document).on('click', '.dappur-html-edit', function(){
 $('#html-modal').on('hidden.bs.modal', function () {
     resetHtmlModal();
     $(".tinymce").html('');
-});
-
-$(function () {
-    $('.colorpicker-component').colorpicker();
 });
 
 function resetHtmlModal(){

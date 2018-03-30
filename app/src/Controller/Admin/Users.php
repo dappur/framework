@@ -22,7 +22,7 @@ class Users extends Controller
             return $check;
         }
 
-        return $this->view->render($response, 'users.twig', ["users" => U::get(), "roles" => Roles::get()]);
+        return $this->view->render($response, 'users.twig', ["users" => U::with('oauth2', 'oauth2.provider')->get(), "roles" => Roles::get()]);
     }
     
     public function usersAdd(Request $request, Response $response)

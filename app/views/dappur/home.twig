@@ -2,7 +2,7 @@
 
 {% block body %}
 	<div class="container">
-	    <div class="jumbotron">
+	    <div class="jumbotron" style="background-color: {{ page_config['home-paragraph-color'] }};">
 	    	<div class="row">
 		    	<div class="col-md-12" style="text-align: right;">
 		    		{% if auth.user() %}

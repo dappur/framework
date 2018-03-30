@@ -5,6 +5,9 @@
 {% block stylesheets %}
 <link href="https://cdn.datatables.net/1.10.15/css/dataTables.bootstrap.min.css" rel="stylesheet">
 <link href="https://cdn.datatables.net/responsive/2.1.1/css/responsive.bootstrap.min.css" rel="stylesheet">
+{% if config['oauth2-enabled'] %}
+<link href="{{ asset('dappur/css/bootstrap-social.min.css') }}" rel="stylesheet">
+{% endif %}
 {% endblock %}
 
 {% block body %}
@@ -42,6 +45,9 @@
                                     <th>Last Name</th>
                                     <th>Email</th>
                                     <th>Username</th>
+                                    {% if config['oauth2-enabled'] %}
+                                    <th>Social</th>
+                                    {% endif %}
                                     <th>Roles</th>
                                     <th>Actions</th>
                                 </tr>
@@ -53,6 +59,13 @@
                                         <td>{{ user.last_name }}</td>
                                         <td>{{ user.email }}</td>
                                         <td>{{ user.username }}</td>
+                                        {% if config['oauth2-enabled'] %}
+                                        <td>
+                                            {% for provider in user.oauth2 %}
+                                                <button class="btn btn-sm btn-{{provider.provider.slug}}"><i class="fa fa-{{provider.provider.slug}}"></i></button>
+                                            {% endfor %}
+                                        </td>
+                                        {% endif %}
                                         <td>
                                             {% for userRole in user.roles %}
                                                 {{ userRole.name }}{% if not loop.last %},{% endif %}

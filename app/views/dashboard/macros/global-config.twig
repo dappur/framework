@@ -53,13 +53,11 @@
 		    <span id="{{ id }}-help-block" class="help-block">{{ error(name) }}</span>
 		</div>
 {% endmacro %}
-{% macro configColor(name, description, type, value) %}
+{% macro configColor(name, description, value) %}
 	    <div class="col-md-6 form-group{% if has_error(name) %} has-error{% endif %}">
 			<label for="{{ name }}">{{ description }} - ({{name}})</label>
-			<div class="input-group colorpicker-component">
-				  <input type="text" class="form-control" value="{{ value }}"/>
-				  <span class="input-group-addon"><i></i></span>
-			</div>
+			<input type="text" name="{{ name }}" id="{{ name }}" class="form-control jscolor {width:243, height:150,
+    borderColor:'#FFF', insetColor:'#FFF', backgroundColor:'#666', hash:true}" value="{{ value }}"/>
 		    <span id="{{ id }}-help-block" class="help-block">{{ error(name) }}</span>
 		</div>
 {% endmacro %}
