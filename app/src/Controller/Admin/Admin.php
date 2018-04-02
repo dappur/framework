@@ -13,6 +13,7 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Respect\Validation\Validator as V;
 use Slim\Views\PhpRenderer;
 
+/** @SuppressWarnings(PHPMD.StaticAccess) */
 class Admin extends Controller
 {
     /**
@@ -44,7 +45,7 @@ class Admin extends Controller
         $users = Users::select(DB::raw('count(id) as total'), 'created_at')
         ->where('created_at', '>', Carbon::now()->subYear())
         ->get()
-        ->groupBy(function($date) {
+        ->groupBy(function ($date) {
             //return Carbon::parse($date->created_at)->format('Y'); // grouping by years
             return Carbon::parse($date->created_at)->format('Y-m'); // grouping by months
         });
@@ -58,7 +59,7 @@ class Admin extends Controller
         $users2 = Users::select(DB::raw('count(id) as total'), 'created_at')
         ->where('created_at', '>', Carbon::now()->subDays(90))
         ->get()
-        ->groupBy(function($date) {
+        ->groupBy(function ($date) {
             //return Carbon::parse($date->created_at)->format('Y'); // grouping by years
             return Carbon::parse($date->created_at)->format('Y-m-d'); // grouping by months
         });
@@ -71,7 +72,15 @@ class Admin extends Controller
         // Get Oauth2 Providers
         $providers = Oauth2Providers::withCount(['users'])->get();
 
-        return $this->view->render($response, 'dashboard.twig', array("usersByMonth" => $usersByMonth, "usersByDay" => $usersByDay, "providers" => $providers));
+        return $this->view->render(
+            $response,
+            'dashboard.twig',
+            array(
+                "usersByMonth" => $usersByMonth,
+                "usersByDay" => $usersByDay,
+                "providers" => $providers
+            )
+        );
     }
 
     public function myAccount(Request $request, Response $response)
