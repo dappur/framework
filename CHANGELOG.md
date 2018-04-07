@@ -3,7 +3,11 @@ All notable changes to this project will be documented in this file as of v2.1.0
 
 ## [Unreleased]
 ### Added
+- DataTables searchable ajax on data intensive dashboard tables.
 - Initial deployment file
+
+### Changed
+- Oauth Provider `access_token` to text from varchar.
 
 ## [2.3.0]
 ### Added
