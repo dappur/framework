@@ -23,7 +23,7 @@ class BlogPosts extends Model
 
     public function category()
     {
-        return $this->hasOne('\Dappur\Model\BlogCategories', 'id', 'category_id');
+        return $this->belongsTo('\Dappur\Model\BlogCategories', 'category_id');
     }
 
     public function tags()

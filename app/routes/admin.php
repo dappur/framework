@@ -7,7 +7,7 @@ $app->group('/dashboard', function () use ($app, $container) {
         ->setName('dashboard');
 
     // Users Routes
-    $app->group('/users', function () use ($app) { 
+    $app->group('/users', function () use ($app) {
         // User List
         $app->get('', 'AdminUsers:users')
             ->setName('admin-users');
@@ -20,6 +20,9 @@ $app->group('/dashboard', function () use ($app, $container) {
         // Delete User
         $app->post('/delete', 'AdminUsers:usersDelete')
             ->setName('admin-users-delete');
+        // User Ajax
+        $app->get('/datatables', 'AdminUsers:dataTables')
+            ->setName('admin-users-datatables');
 
         //User Roles
         $app->group('/roles', function () use ($app) {
@@ -81,7 +84,6 @@ $app->group('/dashboard', function () use ($app, $container) {
 
     // Email Manager
     $app->group('/email', function () use ($app) {
-
         $app->map(['GET'], '', 'AdminEmail:email')
             ->setName('admin-email');
 
@@ -105,11 +107,14 @@ $app->group('/dashboard', function () use ($app, $container) {
 
         $app->map(['POST'], '/test', 'AdminEmail:testEmail')
             ->setName('admin-email-test');
+
+        // Email Ajax
+        $app->get('/datatables', 'AdminEmail:dataTables')
+            ->setName('admin-email-datatables');
     });
 
     // SEO Manager
     $app->group('/seo', function () use ($app) {
-
         $app->map(['GET'], '', 'AdminSeo:seo')
             ->setName('admin-seo');
 
@@ -156,6 +161,9 @@ $app->group('/dashboard', function () use ($app, $container) {
         // Main Blog Admin
         $app->get('', 'AdminBlog:blog')
         ->setName('admin-blog');
+
+        $app->get('/datatables', 'AdminBlog:datatables')
+        ->setName('admin-blog-datatables');
 
         // Blog Post Actions
         $app->group('', function () use ($app) {

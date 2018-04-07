@@ -10,9 +10,83 @@ use Respect\Validation\Validator as V;
 
 /**
  * @SuppressWarnings(PHPMD.StaticAccess)
+ * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
  */
 class Users extends Controller
 {
+    public function dataTables(Request $request, Response $response)
+    {
+        if ($check = $this->sentinel->hasPerm('user.view')) {
+            return $check;
+        }
+  
+        $totalData = U::count();
+            
+        $totalFiltered = $totalData;
+
+        $limit = $request->getParam('length');
+        $start = $request->getParam('start');
+        $order = $request->getParam('columns')[$request->getParam('order')[0]['column']]['data'];
+        $dir = $request->getParam('order')[0]['dir'];
+
+        $users = U::select('id', 'first_name', 'last_name', 'email', 'username')
+            ->with('roles', 'oauth2', 'oauth2.provider')
+            ->skip($start)
+            ->take($limit)
+            ->orderBy($order, $dir);
+            
+        if (!empty($request->getParam('search')['value'])) {
+            $search = $request->getParam('search')['value'];
+
+            $users =  $users->where('first_name', 'LIKE', "%{$search}%")
+                    ->orWhere('last_name', 'LIKE', "%{$search}%")
+                    ->orWhere('email', 'LIKE', "%{$search}%")
+                    ->orWhere('username', 'LIKE', "%{$search}%")
+                    ->orWhereHas(
+                        'oauth2.provider',
+                        function ($query) use ($search) {
+                            $query->where('name', 'LIKE', "%{$search}%");
+                        }
+                    )
+                    ->orWhereHas(
+                        'roles',
+                        function ($query) use ($search) {
+                            $query->where('name', 'LIKE', "%{$search}%");
+                        }
+                    );
+
+            $totalFiltered = U::where('first_name', 'LIKE', "%{$search}%")
+                    ->orWhere('last_name', 'LIKE', "%{$search}%")
+                    ->orWhere('email', 'LIKE', "%{$search}%")
+                    ->orWhere('username', 'LIKE', "%{$search}%")
+                    ->orWhereHas(
+                        'roles',
+                        function ($query) use ($search) {
+                            $query->where('name', 'LIKE', "%{$search}%");
+                        }
+                    )
+                    ->orWhereHas(
+                        'roles',
+                        function ($query) use ($search) {
+                            $query->where('name', 'LIKE', "%{$search}%");
+                        }
+                    )
+                    ->count();
+        }
+          
+        $jsonData = array(
+            "draw"            => intval($request->getParam('draw')),
+            "recordsTotal"    => intval($totalData),
+            "recordsFiltered" => intval($totalFiltered),
+            "data"            => $users->get()->toArray()
+            );
+
+        return $response->withJSON(
+            $jsonData,
+            200
+        );
+    }
+
     /**
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
@@ -22,7 +96,11 @@ class Users extends Controller
             return $check;
         }
 
-        return $this->view->render($response, 'users.twig', ["users" => U::with('oauth2', 'oauth2.provider')->get(), "roles" => Roles::get()]);
+        return $this->view->render(
+            $response,
+            'users.twig',
+            ["roles" => Roles::get()]
+        );
     }
     
     public function usersAdd(Request $request, Response $response)

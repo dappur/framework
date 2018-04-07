@@ -35,7 +35,7 @@ class Blog extends Controller
             return $check;
         }
 
-        $posts = BlogPosts::with('category') ->withCount('comments', 'replies');
+        $posts = BlogPosts::with('category')->withCount('comments', 'replies');
 
         if (!$this->auth->check()->inRole('manager') && !$this->auth->check()->inRole('admin')) {
             $posts = $posts->where('user_id', $this->auth->check()->id);
@@ -49,6 +49,52 @@ class Blog extends Controller
                 "tags" => BlogTags::get(),
                 "posts" => $posts->get()
             )
+        );
+    }
+
+    public function dataTables(Request $request, Response $response)
+    {
+        if ($check = $this->sentinel->hasPerm('blog.view')) {
+            return $check;
+        }
+  
+        $totalData = BlogPosts::count();
+            
+        $totalFiltered = $totalData;
+
+        $limit = $request->getParam('length');
+        $start = $request->getParam('start');
+        $order = $request->getParam('columns')[$request->getParam('order')[0]['column']]['data'];
+        $dir = $request->getParam('order')[0]['dir'];
+
+        $posts = BlogPosts::select('id', 'title', 'slug', 'created_at', 'publish_at', 'category_id', 'status')
+            ->with('category')
+            ->orderBy($order, $dir)
+            ->withCount('comments', 'replies')
+            ->skip($start)
+            ->take($limit);
+            
+        if (!empty($request->getParam('search')['value'])) {
+            $search = $request->getParam('search')['value'];
+
+            $posts =  $posts->where('title', 'LIKE', "%{$search}%")
+                    ->orWhere('slug', 'LIKE', "%{$search}%");
+
+            $totalFiltered = BlogPosts::where('title', 'LIKE', "%{$search}%")
+                    ->orWhere('slug', 'LIKE', "%{$search}%")
+                    ->count();
+        }
+          
+        $jsonData = array(
+            "draw"            => intval($request->getParam('draw')),
+            "recordsTotal"    => intval($totalData),
+            "recordsFiltered" => intval($totalFiltered),
+            "data"            => $posts->get()->toArray()
+            );
+
+        return $response->withJSON(
+            $jsonData,
+            200
         );
     }
 
