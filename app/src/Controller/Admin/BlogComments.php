@@ -196,6 +196,7 @@ class BlogComments extends Controller
         if ($check = $this->sentinel->hasPerm('blog.view', 'dashboard', $this->config['blog-enabled'])) {
             return $check;
         }
+
         $comment = new BlogPostsComments;
         $comment = $comment->where('id', $request->getParam('comment'));
         if (!$this->auth->check()->inRole('manager') && !$this->auth->check()->inRole('admin')) {

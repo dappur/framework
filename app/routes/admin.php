@@ -199,10 +199,10 @@ $app->group('/dashboard', function () use ($app, $container) {
             $app->get('/{comment_id}', 'AdminBlogComments:commentDetails')
                 ->setName('admin-blog-comment-details');
             // Unpublish Comment
-            $app->post('/publish', 'AdminBlogComments:commentUnpublish')
+            $app->post('/unpublish', 'AdminBlogComments:commentUnpublish')
                 ->setName('admin-blog-comment-unpublish');
             // Publish Comment
-            $app->post('/unpublish', 'AdminBlogComments:commentPublish')
+            $app->post('/publish', 'AdminBlogComments:commentPublish')
                 ->setName('admin-blog-comment-publish');
             // Delte Comment
             $app->post('/delete', 'AdminBlogComments:commentDelete')

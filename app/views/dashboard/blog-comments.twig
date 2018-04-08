@@ -89,14 +89,14 @@
                                             '</form>';
                             }else{
                                 var result = result + ' <form action="/dashboard/blog/comments/publish" method="post" style="display: inline;">'+
-                                        '<input type="hidden" name="comment" value="{{ comment.id }}" />'+
+                                        '<input type="hidden" name="comment" value="'+data.id+'" />'+
                                         '{{csrf()}}'+
                                         '<button class="btn btn-success btn-xs swal-confirm" data-swtitle="Are you sure?" data-swmessage="This comment will be published.">'+
                                             '<span class="fa fa-fw fa-check"></span>'+
                                         '</button>'+
                                     '</form>'+
-                                    '<form action="/dashboard/blog/comments/delete" method="post" style="display: inline;">'+
-                                        '<input type="hidden" name="comment" value="{{ comment.id }}" />'+
+                                    ' <form action="/dashboard/blog/comments/delete" method="post" style="display: inline;">'+
+                                        '<input type="hidden" name="comment" value="'+data.id+'" />'+
                                         '{{csrf()}}'+
                                         '<button class="btn btn-danger btn-xs swal-confirm" data-swtitle="Are you sure?" data-swmessage="This comment will be permanently deleted and you will not be able to recover it.">'+
                                             '<span class="fa fa-fw fa-trash"></span>'+
