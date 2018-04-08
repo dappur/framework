@@ -45,51 +45,12 @@
                                     <th>Last Name</th>
                                     <th>Email</th>
                                     <th>Username</th>
-                                    {% if config['oauth2-enabled'] %}
                                     <th>Social</th>
-                                    {% endif %}
                                     <th>Roles</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                {% for user in users %}
-                                    <tr>
-                                        <td>{{ user.first_name }}</td>
-                                        <td>{{ user.last_name }}</td>
-                                        <td>{{ user.email }}</td>
-                                        <td>{{ user.username }}</td>
-                                        {% if config['oauth2-enabled'] %}
-                                        <td>
-                                            {% for provider in user.oauth2 %}
-                                                <button class="btn btn-sm btn-{{provider.provider.slug}}"><i class="fa fa-{{provider.provider.slug}}"></i></button>
-                                            {% endfor %}
-                                        </td>
-                                        {% endif %}
-                                        <td>
-                                            {% for userRole in user.roles %}
-                                                {{ userRole.name }}{% if not loop.last %},{% endif %}
-                                            {% endfor %}
-                                        </td>
-                                        <td>
-                                            {% if user.id != 1 and auth.hasAccess('user.edit') %}
-                                            <a href="{{ path_for('admin-users-edit', {'user_id': user.id}) }}" class="btn btn-primary btn-xs">
-                                                <span class="fa fa-fw fa-pencil"></span>
-                                            </a>
-                                            {% endif %}
-                                            {% if user.id != 1 and auth.hasAccess('user.delete') %}
-                                                <form action="{{ path_for('admin-users-delete') }}" method="post" style="display: inline;">
-                                                    <input type="hidden" name="user_id" value="{{ user.id }}" />
-                                                    {{csrf()}}
-                                                    <button class="btn btn-danger btn-xs swal-confirm" data-swtitle="Are you sure?" data-swmessage="This account will be permanently deleted and you will not be able to recover it.">
-                                                        <span class="fa fa-fw fa-close"></span>
-                                                    </button>
-                                                </form>
-                                            {% endif %}
-                                        </td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
+                            <tbody></tbody>
                         </table>
                     </div>
                 </div>
@@ -197,10 +158,72 @@
 <!-- Page-Level Demo Scripts - Tables - Use for reference -->
 <script>
 $(document).ready(function() {
-    
+
     $('#users_table').DataTable({
         responsive: true,
-        stateSave: true
+        stateSave: true,
+        "processing": true,
+        "serverSide": true,
+        "ajax":{
+                 "url": "/dashboard/users/datatables",
+                 "dataType": "json",
+                 "type": "GET"
+               },
+        "columns": [
+            { "data": "first_name" },
+            { "data": "last_name" },
+            { "data": "email" },
+            { "data": "username" },
+            {
+                "data": "oauth2",
+                "orderable": false,
+                "render": function ( data, type, full, meta ) {
+                    var oauth2 = [];
+                        $.each(data, function( key, value ) {
+                            oauth2.push('<button class="btn btn-sm btn-'+value.provider.slug+'"><i class="fa fa-'+value.provider.slug+'"></i></button>');
+                        });
+                    
+                    return oauth2.join(' ');
+                }
+            },
+            {
+                "data": "roles",
+                "orderable": false,
+                "render": function ( data, type, full, meta ) {
+                    var roles = [];
+                        $.each(data, function( key, value ) {
+                            roles.push(value.name);
+                        });
+                    
+                    return roles.join(', ');
+                }
+            },
+            { 
+                "data": "id",
+                "orderable": false,
+                "render": function ( data ) {
+                    var result = "";
+                    {% if auth.hasAccess('user.edit') %}
+                    var result = result + ' <a href="/dashboard/users/edit/'+data+'" class="btn btn-primary btn-xs">'+
+                        '<span class="fa fa-fw fa-pencil"></span>'+
+                    '</a>';
+                    {% endif %}
+                    if (data == 1) {
+                        return result;
+                    }
+                    {% if auth.hasAccess('user.delete') %}
+                        var result = result + ' <form action="/dashboard/users/delete" method="post" style="display: inline;">'+
+                            '<input type="hidden" name="user_id" value="'+data+'" />'+
+                            '{{csrf()}}'+
+                            '<button class="btn btn-danger btn-xs swal-confirm" data-swtitle="Are you sure?" data-swmessage="This account will be permanently deleted and you will not be able to recover it.">'+
+                                '<span class="fa fa-fw fa-close"></span>'+
+                            '</button>'+
+                        '</form>';
+                    {% endif %}
+                    return result;
+                }
+            }
+        ]
 
     });
 

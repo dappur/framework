@@ -1,6 +1,6 @@
 {
     "framework": "dappur",
-    "version": "2.3.0",
+    "version": "2.3.1",
     "displayErrorDetails": false,
     "showInAdmin": false,
     "environment": "development",
@@ -17,7 +17,7 @@
             "prefix": "",
             "timezone": "+00:00"
         },
-        "production": {
+        "staging": {
             "driver": "mysql",
             "host": "localhost",
             "port": 3306,
@@ -29,7 +29,7 @@
             "prefix": "",
             "timezone": "+00:00"
         },
-        "demo": {
+        "production": {
             "driver": "mysql",
             "host": "localhost",
             "port": 3306,

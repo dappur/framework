@@ -24,6 +24,50 @@ class Email extends Controller
         $this->email = $email;
     }
 
+    public function dataTables(Request $request, Response $response)
+    {
+        if ($check = $this->sentinel->hasPerm('email.view')) {
+            return $check;
+        }
+  
+        $totalData = Emails::count();
+            
+        $totalFiltered = $totalData;
+
+        $limit = $request->getParam('length');
+        $start = $request->getParam('start');
+        $order = $request->getParam('columns')[$request->getParam('order')[0]['column']]['data'];
+        $dir = $request->getParam('order')[0]['dir'];
+
+        $emails = Emails::select('id', 'send_to', 'subject', 'created_at')
+            ->skip($start)
+            ->take($limit)
+            ->orderBy($order, $dir);
+            
+        if (!empty($request->getParam('search')['value'])) {
+            $search = $request->getParam('search')['value'];
+
+            $emails =  $emails->where('send_to', 'LIKE', "%{$search}%")
+                    ->orWhere('subject', 'LIKE', "%{$search}%");
+
+            $totalFiltered = Emails::where('send_to', 'LIKE', "%{$search}%")
+                    ->orWhere('subject', 'LIKE', "%{$search}%")
+                    ->count();
+        }
+          
+        $jsonData = array(
+            "draw"            => intval($request->getParam('draw')),
+            "recordsTotal"    => intval($totalData),
+            "recordsFiltered" => intval($totalFiltered),
+            "data"            => $emails->get()->toArray()
+            );
+
+        return $response->withJSON(
+            $jsonData,
+            200
+        );
+    }
+
     /**
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */

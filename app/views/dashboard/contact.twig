@@ -44,17 +44,7 @@
                                     <th>Comment</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                {% for c in contactRequests %}
-                                    <tr>
-                                        <td>{{ c.created_at }}</td>
-                                        <td>{{ c.name }}</td>
-                                        <td>{{ c.email }}</td>
-                                        <td>{{ c.phone }}</td>
-                                        <td>{{ c.comment }}</td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
+                            <tbody></tbody>
                         </table>
                     </div>
                 </div>
@@ -74,10 +64,23 @@
 $(document).ready(function() {
     
     $('#contact_table').DataTable({
-        responsive: true,
-        stateSave: true
-
-    });
+            responsive: true,
+            stateSave: true,
+            "processing": true,
+            "serverSide": true,
+            "ajax":{
+                     "url": "/dashboard/contact/datatables",
+                     "dataType": "json",
+                     "type": "GET"
+                   },
+            "columns": [
+                { "data": "created_at" },
+                { "data": "name" },
+                { "data": "email" },
+                { "data": "phone" },
+                { "data": "comment" }
+            ]
+        });
 });
 </script>
 {% endblock %}

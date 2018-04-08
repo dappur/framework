@@ -51,11 +51,9 @@ class Csrf extends \Twig_Extension
 
     public function csrf()
     {
-        return '
-            <input type="hidden" name="' . $this->csrf->getTokenNameKey() .
-            '" value="' . $this->csrf->getTokenName() . '">
-            <input type="hidden" name="' . $this->csrf->getTokenValueKey() .
-            '" value="' . $this->csrf->getTokenValue() . '">
-        ';
+        return '<input type="hidden" name="' . $this->csrf->getTokenNameKey() .
+            '" value="' . $this->csrf->getTokenName() .
+            '"><input type="hidden" name="' . $this->csrf->getTokenValueKey() .
+            '" value="' . $this->csrf->getTokenValue() . '">';
     }
 }

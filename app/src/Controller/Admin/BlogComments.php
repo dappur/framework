@@ -17,6 +17,7 @@ use Respect\Validation\Validator as V;
 
 /**
  * @SuppressWarnings(PHPMD.StaticAccess)
+ * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
  */
 class BlogComments extends Controller
 {
@@ -48,6 +49,86 @@ class BlogComments extends Controller
         }
 
         return $this->view->render($response, 'blog-comments.twig', array("comments" => $comments->get()));
+    }
+
+    public function datatables(Request $request, Response $response)
+    {
+        if ($check = $this->sentinel->hasPerm('blog.view')) {
+            return $check;
+        }
+
+        // Check User
+        $isUser = false;
+        if (!$this->auth->check()->inRole('manager') && !$this->auth->check()->inRole('admin')) {
+            $isUser = true;
+        }
+  
+        $totalData = BlogPostsComments::count();
+            
+        $totalFiltered = $totalData;
+
+        $limit = $request->getParam('length');
+        $start = $request->getParam('start');
+        $order = $request->getParam('columns')[$request->getParam('order')[0]['column']]['data'];
+        $dir = $request->getParam('order')[0]['dir'];
+
+        // Check User
+        
+        $comments = BlogPostsComments::
+            select(
+                'blog_posts_comments.created_at',
+                'blog_posts_comments.id',
+                'blog_posts.title as name',
+                'blog_posts_comments.comment',
+                'blog_posts.user_id as user_id',
+                'blog_posts_comments.status'
+            )
+            ->leftJoin('blog_posts', 'blog_posts_comments.post_id', '=', 'blog_posts.id')
+            ->withCount('replies', 'pendingReplies')
+            ->orderBy($order, $dir)
+            ->skip($start)
+            ->take($limit);
+
+        if ($isUser) {
+            $comments = $comments->where('blog_posts.user_id', $this->auth->check()->id);
+        }
+
+        if (!empty($request->getParam('search')['value'])) {
+            $search = $request->getParam('search')['value'];
+
+            $comments =  $comments->where('blog_posts_comments.comment', 'LIKE', "%{$search}%")
+                ->orWhere('blog_posts.title', 'LIKE', "%{$search}%");
+
+            $totalFiltered = BlogPostsComments::
+                select(
+                    'blog_posts_comments.created_at',
+                    'blog_posts_comments.id',
+                    'blog_posts.title as name',
+                    'blog_posts_comments.comment',
+                    'blog_posts.user_id as user_id'
+                )
+                ->leftJoin('blog_posts', 'blog_posts_comments.post_id', '=', 'blog_posts.id')
+                ->where('blog_posts_comments.comment', 'LIKE', "%{$search}%")
+                ->orWhere('blog_posts.title', 'LIKE', "%{$search}%");
+
+            if ($isUser) {
+                $totalFiltered = $totalFiltered->where('blog_posts.user_id', $this->auth->check()->id);
+            }
+
+             $totalFiltered = $totalFiltered->count();
+        }
+          
+        $jsonData = array(
+            "draw"            => intval($request->getParam('draw')),
+            "recordsTotal"    => intval($totalData),
+            "recordsFiltered" => intval($totalFiltered),
+            "data"            => $comments->get()->toArray()
+            );
+
+        return $response->withJSON(
+            $jsonData,
+            200
+        );
     }
 
     public function commentDetails(Request $request, Response $response)
@@ -115,6 +196,7 @@ class BlogComments extends Controller
         if ($check = $this->sentinel->hasPerm('blog.view', 'dashboard', $this->config['blog-enabled'])) {
             return $check;
         }
+
         $comment = new BlogPostsComments;
         $comment = $comment->where('id', $request->getParam('comment'));
         if (!$this->auth->check()->inRole('manager') && !$this->auth->check()->inRole('admin')) {

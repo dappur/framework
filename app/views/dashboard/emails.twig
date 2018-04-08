@@ -44,22 +44,7 @@
                                     <th>Actions</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                {% for email in emails %}
-                                    <tr>
-                                        <td>{{ email.created_at }}</td>
-                                        <td>{{ email.subject }}</td>
-                                        <td>{{ email.send_to }}</td>
-                                        <td>
-                                            {% if auth.hasAccess('email.view') %}
-                                            <a href="{{ path_for('admin-email-details', {'email': email.id}) }}" class="btn btn-primary btn-xs">
-                                                <span class="fa fa-fw fa-eye"></span>
-                                            </a>
-                                            {% endif %}
-                                        </td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
+                            <tbody></tbody>
                         </table>
                     </div>
                 </div>
@@ -80,7 +65,32 @@ $(document).ready(function() {
     
     $('#emails_table').DataTable({
         responsive: true,
-        stateSave: true
+        stateSave: true,
+        "processing": true,
+        "serverSide": true,
+        "ajax":{
+                 "url": "/dashboard/email/datatables",
+                 "dataType": "json",
+                 "type": "GET"
+               },
+        "columns": [
+            { "data": "created_at" },
+            { "data": "send_to" },
+            { "data": "subject" },
+            { 
+                "data": "id",
+                "orderable": false,
+                "render": function ( data ) {
+                    var result = "";
+                    {% if auth.hasAccess('email.view') %}
+                    var result = result + '<a href="/dashboard/email/view/'+data+'" class="btn btn-primary btn-xs">'+
+                        '<span class="fa fa-fw fa-eye"></span>'+
+                    '</a>';
+                    {% endif %}
+                    return result;
+                }
+            }
+        ]
 
     });
 });

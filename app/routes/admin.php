@@ -7,7 +7,7 @@ $app->group('/dashboard', function () use ($app, $container) {
         ->setName('dashboard');
 
     // Users Routes
-    $app->group('/users', function () use ($app) { 
+    $app->group('/users', function () use ($app) {
         // User List
         $app->get('', 'AdminUsers:users')
             ->setName('admin-users');
@@ -20,6 +20,9 @@ $app->group('/dashboard', function () use ($app, $container) {
         // Delete User
         $app->post('/delete', 'AdminUsers:usersDelete')
             ->setName('admin-users-delete');
+        // User Ajax
+        $app->get('/datatables', 'AdminUsers:dataTables')
+            ->setName('admin-users-datatables');
 
         //User Roles
         $app->group('/roles', function () use ($app) {
@@ -81,7 +84,6 @@ $app->group('/dashboard', function () use ($app, $container) {
 
     // Email Manager
     $app->group('/email', function () use ($app) {
-
         $app->map(['GET'], '', 'AdminEmail:email')
             ->setName('admin-email');
 
@@ -105,11 +107,14 @@ $app->group('/dashboard', function () use ($app, $container) {
 
         $app->map(['POST'], '/test', 'AdminEmail:testEmail')
             ->setName('admin-email-test');
+
+        // Email Ajax
+        $app->get('/datatables', 'AdminEmail:dataTables')
+            ->setName('admin-email-datatables');
     });
 
     // SEO Manager
     $app->group('/seo', function () use ($app) {
-
         $app->map(['GET'], '', 'AdminSeo:seo')
             ->setName('admin-seo');
 
@@ -151,11 +156,18 @@ $app->group('/dashboard', function () use ($app, $container) {
     $app->map(['GET'], '/contact', 'Admin:contact')
         ->setName('admin-contact');
 
+    // Contact Requests
+    $app->map(['GET'], '/contact/datatables', 'Admin:contactDatatables')
+        ->setName('admin-contact-datatables');
+
     // Blog Admin
     $app->group('/blog', function () use ($app) {
         // Main Blog Admin
         $app->get('', 'AdminBlog:blog')
         ->setName('admin-blog');
+
+        $app->get('/datatables', 'AdminBlog:datatables')
+        ->setName('admin-blog-datatables');
 
         // Blog Post Actions
         $app->group('', function () use ($app) {
@@ -181,13 +193,16 @@ $app->group('/dashboard', function () use ($app, $container) {
             // View Comments
             $app->get('', 'AdminBlogComments:comments')
                 ->setName('admin-blog-comments');
+            // Datatables
+            $app->get('/datatables', 'AdminBlogComments:datatables')
+                ->setName('admin-blog-comment-datatables');
             $app->get('/{comment_id}', 'AdminBlogComments:commentDetails')
                 ->setName('admin-blog-comment-details');
             // Unpublish Comment
-            $app->post('/publish', 'AdminBlogComments:commentUnpublish')
+            $app->post('/unpublish', 'AdminBlogComments:commentUnpublish')
                 ->setName('admin-blog-comment-unpublish');
             // Publish Comment
-            $app->post('/unpublish', 'AdminBlogComments:commentPublish')
+            $app->post('/publish', 'AdminBlogComments:commentPublish')
                 ->setName('admin-blog-comment-publish');
             // Delte Comment
             $app->post('/delete', 'AdminBlogComments:commentDelete')

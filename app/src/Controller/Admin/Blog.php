@@ -17,7 +17,10 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use Respect\Validation\Validator as V;
 
-/** @SuppressWarnings(PHPMD.StaticAccess) */
+/**
+ * @SuppressWarnings(PHPMD.StaticAccess)
+ * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
+ */
 class Blog extends Controller
 {
 
@@ -35,7 +38,7 @@ class Blog extends Controller
             return $check;
         }
 
-        $posts = BlogPosts::with('category') ->withCount('comments', 'replies');
+        $posts = BlogPosts::with('category')->withCount('comments', 'replies');
 
         if (!$this->auth->check()->inRole('manager') && !$this->auth->check()->inRole('admin')) {
             $posts = $posts->where('user_id', $this->auth->check()->id);
@@ -49,6 +52,90 @@ class Blog extends Controller
                 "tags" => BlogTags::get(),
                 "posts" => $posts->get()
             )
+        );
+    }
+
+    public function dataTables(Request $request, Response $response)
+    {
+        if ($check = $this->sentinel->hasPerm('blog.view')) {
+            return $check;
+        }
+
+        // Check User
+        $isUser = false;
+        if (!$this->auth->check()->inRole('manager') && !$this->auth->check()->inRole('admin')) {
+            $isUser = true;
+        }
+  
+        $totalData = BlogPosts::count();
+            
+        $totalFiltered = $totalData;
+
+        $limit = $request->getParam('length');
+        $start = $request->getParam('start');
+        $order = $request->getParam('columns')[$request->getParam('order')[0]['column']]['data'];
+        $dir = $request->getParam('order')[0]['dir'];
+
+        $posts = BlogPosts::select(
+            'blog_posts.id',
+            'blog_posts.title',
+            'blog_posts.slug',
+            'blog_posts.created_at',
+            'blog_posts.publish_at',
+            'blog_posts.category_id',
+            'blog_posts.status',
+            'blog_categories.name as category'
+        )
+            ->leftJoin('blog_categories', 'blog_posts.category_id', '=', 'blog_categories.id')
+            ->withCount('comments', 'replies')
+            ->orderBy($order, $dir)
+            ->skip($start)
+            ->take($limit);
+
+        // Check User
+        if ($isUser) {
+            $posts = $posts->where('user_id', $this->auth->check()->id);
+        }
+
+        if (!empty($request->getParam('search')['value'])) {
+            $search = $request->getParam('search')['value'];
+
+            $posts =  $posts->where('blog_posts.title', 'LIKE', "%{$search}%")
+                    ->orWhere('blog_posts.slug', 'LIKE', "%{$search}%")
+                    ->orWhere('blog_categories.name', 'LIKE', "%{$search}%");
+
+            $totalFiltered = BlogPosts::select(
+                'blog_posts.id',
+                'blog_posts.title',
+                'blog_posts.slug',
+                'blog_posts.created_at',
+                'blog_posts.publish_at',
+                'blog_posts.category_id',
+                'blog_posts.status',
+                'blog_categories.name as category'
+            )
+                ->leftJoin('blog_categories', 'blog_posts.category_id', '=', 'blog_categories.id')
+                ->where('blog_posts.title', 'LIKE', "%{$search}%")
+                ->orWhere('blog_posts.slug', 'LIKE', "%{$search}%")
+                ->orWhere('blog_categories.name', 'LIKE', "%{$search}%");
+
+            if ($isUser) {
+                $totalFiltered = $totalFiltered->where('user_id', $this->auth->check()->id);
+            }
+
+             $totalFiltered = $totalFiltered->count();
+        }
+          
+        $jsonData = array(
+            "draw"            => intval($request->getParam('draw')),
+            "recordsTotal"    => intval($totalData),
+            "recordsFiltered" => intval($totalFiltered),
+            "data"            => $posts->get()->toArray()
+            );
+
+        return $response->withJSON(
+            $jsonData,
+            200
         );
     }
 

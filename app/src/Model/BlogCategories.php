@@ -16,4 +16,10 @@ class BlogCategories extends Model
     {
         return $this->hasMany('\Dappur\Model\BlogPosts', 'category_id');
     }
+
+    public function name()
+    {
+        $query =  $this->select('name')->get()->pluck('name');
+        return $query;
+    }
 }
