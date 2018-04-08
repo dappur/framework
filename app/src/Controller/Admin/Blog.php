@@ -17,7 +17,10 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use Respect\Validation\Validator as V;
 
-/** @SuppressWarnings(PHPMD.StaticAccess) */
+/**
+ * @SuppressWarnings(PHPMD.StaticAccess)
+ * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
+ */
 class Blog extends Controller
 {
 
@@ -57,6 +60,12 @@ class Blog extends Controller
         if ($check = $this->sentinel->hasPerm('blog.view')) {
             return $check;
         }
+
+        // Check User
+        $isUser = false;
+        if (!$this->auth->check()->inRole('manager') && !$this->auth->check()->inRole('admin')) {
+            $isUser = true;
+        }
   
         $totalData = BlogPosts::count();
             
@@ -83,6 +92,11 @@ class Blog extends Controller
             ->skip($start)
             ->take($limit);
 
+        // Check User
+        if ($isUser) {
+            $posts = $posts->where('user_id', $this->auth->check()->id);
+        }
+
         if (!empty($request->getParam('search')['value'])) {
             $search = $request->getParam('search')['value'];
 
@@ -103,8 +117,13 @@ class Blog extends Controller
                 ->leftJoin('blog_categories', 'blog_posts.category_id', '=', 'blog_categories.id')
                 ->where('blog_posts.title', 'LIKE', "%{$search}%")
                 ->orWhere('blog_posts.slug', 'LIKE', "%{$search}%")
-                ->orWhere('blog_categories.name', 'LIKE', "%{$search}%")
-                ->count();
+                ->orWhere('blog_categories.name', 'LIKE', "%{$search}%");
+
+            if ($isUser) {
+                $totalFiltered = $totalFiltered->where('user_id', $this->auth->check()->id);
+            }
+
+             $totalFiltered = $totalFiltered->count();
         }
           
         $jsonData = array(

@@ -193,6 +193,9 @@ $app->group('/dashboard', function () use ($app, $container) {
             // View Comments
             $app->get('', 'AdminBlogComments:comments')
                 ->setName('admin-blog-comments');
+            // Datatables
+            $app->get('/datatables', 'AdminBlogComments:datatables')
+                ->setName('admin-blog-comment-datatables');
             $app->get('/{comment_id}', 'AdminBlogComments:commentDetails')
                 ->setName('admin-blog-comment-details');
             // Unpublish Comment

@@ -29,51 +29,12 @@
                                 <th>Created At</th>
                                 <th>Post</th>
                                 <th>Comment</th>
-                                <th>Pending Replies / Total</th>
+                                <th>Replies</th>
+                                <th>Pending</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            {% for comment in comments %}
-                                <tr class="{% if comment.status %}success{% else %}warning{% endif %}">
-                                    <td>{{ comment.created_at }}</td>
-                                    <td>{{ comment.post.title }}</td>
-                                    <td>{{ comment.comment }}</td>
-                                    <td class="{% if comment.pending_replies_count > 0 %}danger{% endif %}">
-                                        {{ comment.pending_replies_count }} / {{ comment.replies_count }}
-                                    </td>
-                                    <td>
-                                        <a href="{{ path_for('admin-blog-comment-details', {comment_id: comment.id}) }}">
-                                            <button class="btn btn-default btn-xs"><span class="fa fa-fw fa-comments"></span> </button>
-                                        </a>
-                                        {% if comment.status == 1 %}
-                                            <form action="{{ path_for('admin-blog-comment-unpublish') }}" method="post" style="display: inline;">
-                                                <input type="hidden" name="comment" value="{{ comment.id }}" />
-                                                {{csrf()}}
-                                                <button class="btn btn-warning btn-xs swal-confirm" data-swtitle="Are you sure?" data-swmessage="This comment will not be publicly viewable.">
-                                                    <span class="fa fa-fw fa-close"></span>
-                                                </button>
-                                            </form>
-                                        {% else %}
-                                            <form action="{{ path_for('admin-blog-comment-publish') }}" method="post" style="display: inline;">
-                                                <input type="hidden" name="comment" value="{{ comment.id }}" />
-                                                {{csrf()}}
-                                                <button class="btn btn-success btn-xs swal-confirm" data-swtitle="Are you sure?" data-swmessage="This comment will be published.">
-                                                    <span class="fa fa-fw fa-check"></span>
-                                                </button>
-                                            </form>
-                                            <form action="{{ path_for('admin-blog-comment-delete') }}" method="post" style="display: inline;">
-                                                <input type="hidden" name="comment" value="{{ comment.id }}" />
-                                                {{csrf()}}
-                                                <button class="btn btn-danger btn-xs swal-confirm" data-swtitle="Are you sure?" data-swmessage="This comment will be permanently deleted and you will not be able to recover it.">
-                                                    <span class="fa fa-fw fa-trash"></span>
-                                                </button>
-                                            </form>
-                                        {% endif %}
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
+                        <tbody></tbody>
                     </table>
                 </div>
             </div>
@@ -93,7 +54,68 @@
         
         $('#comments-table').DataTable({
             responsive: true,
-            stateSave: true
+            stateSave: true,
+            "processing": true,
+            "serverSide": true,
+            "ajax":{
+                     "url": "/dashboard/blog/comments/datatables",
+                     "dataType": "json",
+                     "type": "GET"
+                   },
+            "columns": [
+                { "data": "created_at" },
+                { "data": "name" },
+                { "data": "comment" },
+                { "data": "replies_count" },
+                { "data": "pending_replies_count" },
+                { 
+                    "data": function( data ){
+                        return data;
+                    },
+                    "orderable": false,
+                    "render": function ( data ) {
+                        var result = "";
+                        {% if auth.hasAccess('blog.edit') %}
+                            var result = result + ' <a href="/dashboard/blog/comments/'+data.id+'" class="btn btn-primary btn-xs">'+
+                                '<span class="fa fa-fw fa-comments"></span>'+
+                            '</a>';
+                            if (data.status == 1) {
+                                var result = result + ' <form action="/dashboard/blog/comments/unpublish" method="post" style="display: inline;">'+
+                                                '<input type="hidden" name="comment" value="'+data.id+'" />'+
+                                                '{{csrf()}}'+
+                                                '<button class="btn btn-warning btn-xs swal-confirm" data-swtitle="Are you sure?" data-swmessage="This comment will not be publicly viewable.">'+
+                                                   ' <span class="fa fa-fw fa-close"></span>'+
+                                                '</button>'+
+                                            '</form>';
+                            }else{
+                                var result = result + ' <form action="/dashboard/blog/comments/publish" method="post" style="display: inline;">'+
+                                        '<input type="hidden" name="comment" value="{{ comment.id }}" />'+
+                                        '{{csrf()}}'+
+                                        '<button class="btn btn-success btn-xs swal-confirm" data-swtitle="Are you sure?" data-swmessage="This comment will be published.">'+
+                                            '<span class="fa fa-fw fa-check"></span>'+
+                                        '</button>'+
+                                    '</form>'+
+                                    '<form action="/dashboard/blog/comments/delete" method="post" style="display: inline;">'+
+                                        '<input type="hidden" name="comment" value="{{ comment.id }}" />'+
+                                        '{{csrf()}}'+
+                                        '<button class="btn btn-danger btn-xs swal-confirm" data-swtitle="Are you sure?" data-swmessage="This comment will be permanently deleted and you will not be able to recover it.">'+
+                                            '<span class="fa fa-fw fa-trash"></span>'+
+                                        '</button>'+
+                                    '</form>';
+                            }
+                        {% endif %}
+
+                        return result;
+                    }
+                }
+            ],
+            "fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
+                if (aData.status) {
+                    $('td', nRow).addClass('success');
+                }else{
+                    $('td', nRow).addClass('danger');
+                }
+            }
         });
     });
     </script>
