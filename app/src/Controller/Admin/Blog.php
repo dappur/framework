@@ -67,22 +67,44 @@ class Blog extends Controller
         $order = $request->getParam('columns')[$request->getParam('order')[0]['column']]['data'];
         $dir = $request->getParam('order')[0]['dir'];
 
-        $posts = BlogPosts::select('id', 'title', 'slug', 'created_at', 'publish_at', 'category_id', 'status')
-            ->with('category')
-            ->orderBy($order, $dir)
+        $posts = BlogPosts::select(
+            'blog_posts.id',
+            'blog_posts.title',
+            'blog_posts.slug',
+            'blog_posts.created_at',
+            'blog_posts.publish_at',
+            'blog_posts.category_id',
+            'blog_posts.status',
+            'blog_categories.name as category'
+        )
+            ->leftJoin('blog_categories', 'blog_posts.category_id', '=', 'blog_categories.id')
             ->withCount('comments', 'replies')
+            ->orderBy($order, $dir)
             ->skip($start)
             ->take($limit);
-            
+
         if (!empty($request->getParam('search')['value'])) {
             $search = $request->getParam('search')['value'];
 
-            $posts =  $posts->where('title', 'LIKE', "%{$search}%")
-                    ->orWhere('slug', 'LIKE', "%{$search}%");
+            $posts =  $posts->where('blog_posts.title', 'LIKE', "%{$search}%")
+                    ->orWhere('blog_posts.slug', 'LIKE', "%{$search}%")
+                    ->orWhere('blog_categories.name', 'LIKE', "%{$search}%");
 
-            $totalFiltered = BlogPosts::where('title', 'LIKE', "%{$search}%")
-                    ->orWhere('slug', 'LIKE', "%{$search}%")
-                    ->count();
+            $totalFiltered = BlogPosts::select(
+                'blog_posts.id',
+                'blog_posts.title',
+                'blog_posts.slug',
+                'blog_posts.created_at',
+                'blog_posts.publish_at',
+                'blog_posts.category_id',
+                'blog_posts.status',
+                'blog_categories.name as category'
+            )
+                ->leftJoin('blog_categories', 'blog_posts.category_id', '=', 'blog_categories.id')
+                ->where('blog_posts.title', 'LIKE', "%{$search}%")
+                ->orWhere('blog_posts.slug', 'LIKE', "%{$search}%")
+                ->orWhere('blog_categories.name', 'LIKE', "%{$search}%")
+                ->count();
         }
           
         $jsonData = array(
