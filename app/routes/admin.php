@@ -156,6 +156,10 @@ $app->group('/dashboard', function () use ($app, $container) {
     $app->map(['GET'], '/contact', 'Admin:contact')
         ->setName('admin-contact');
 
+    // Contact Requests
+    $app->map(['GET'], '/contact/datatables', 'Admin:contactDatatables')
+        ->setName('admin-contact-datatables');
+
     // Blog Admin
     $app->group('/blog', function () use ($app) {
         // Main Blog Admin
