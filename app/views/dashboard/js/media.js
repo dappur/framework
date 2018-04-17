@@ -491,11 +491,12 @@ var DappurMedia = new function() {
             });
             
         }else if (source == "blog_featured") {
-            window.parent.$("#featured_thumbnail").html('<img src="'+filePath+'" class="img-responsive" alt="Featured Image" style="width: 100%;"><input type="hidden" name="featured_image" value="'+filePath+'">');            
+            window.parent.$("#featured_thumbnail").html('<img src="'+filePath+'" class="img-responsive" alt="Featured Image" style="width: 100%;">');     
+            window.parent.$("#featured_image").val(filePath);       
             window.parent.$("#media-modal").modal("hide");
         }else if (source == "seo_featured") {
             window.parent.$("#featured_thumbnail").html('<img src="'+filePath+'" class="img-responsive" alt="Featured Image" style="width: 100%;">');     
-            window.parent.$("#featured_image").val(filePath);     
+            window.parent.$("#featured_image").val(filePath);
             window.parent.$("#media-modal").modal("hide");
         }
        
