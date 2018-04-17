@@ -2,6 +2,8 @@
 All notable changes to this project will be documented in this file as of v2.1.0.
 
 ## [Unreleased]
+### Changed
+- Fixed deploy URL failing CSRF check
 
 ## [2.3.1]
 ### Added

@@ -1,6 +1,6 @@
 <?php
 // Non Logged Users
-$app->group('', function () use($app, $container, $settings) {
+$app->group('', function () use ($app, $container, $settings) {
     // Home Page
     $this->map(['GET'], '/', 'App:home')
         ->setName('home');
@@ -19,11 +19,6 @@ $app->group('', function () use($app, $container, $settings) {
     // Oauth
     $this->map(['GET'], '/oauth/{slug}', 'Oauth2:oauth2')
         ->setName('oauth');
-
-    //Deployment
-    $this->map(['GET', 'POST'], '/' . $settings['deployment']['deploy_url'], 'Deploy:deploy')
-        ->setName('deploy')
-        ->add(new Dappur\Middleware\Deploy($container));
 })
 ->add($container->get('csrf'))
 ->add(new Dappur\Middleware\ Maintenance($container))
@@ -40,3 +35,8 @@ $app->map(['GET'], '/maintenance', 'App:maintenance')
 // Assets Bypass All Middleware
 $app->map(['GET'], '/asset', 'App:asset')
         ->setName('asset');
+
+//Deployment
+$app->map(['GET', 'POST'], '/' . $settings['deployment']['deploy_url'], 'Deploy:deploy')
+    ->setName('deploy')
+    ->add(new Dappur\Middleware\Deploy($container));
