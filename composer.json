@@ -33,7 +33,7 @@
         "dflydev/fig-cookies": "^1.0",
         "cloudinary/cloudinary_php": "^1.8",
         "robmorgan/phinx": "^0.9.1",
-        "phpmailer/phpmailer": "^5.2",
+        "phpmailer/phpmailer": "^6.0",
         "JasonGrimes/Paginator": "^1.0",
         "abraham/twitteroauth": "^0.7.4",
         "ramsey/uuid": "^3.7",

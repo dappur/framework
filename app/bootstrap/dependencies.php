@@ -218,7 +218,7 @@ $container['cloudinary'] = function ($container) {
 $container['mail'] = function ($container) {
     $mail_settings = $container['settings']['mail'];
 
-    $mail = new \PHPMailer;
+    $mail = new \PHPMailer\PHPMailer\PHPMailer;
 
     switch ($mail_settings['relay']) {
         case 'phpmail':
