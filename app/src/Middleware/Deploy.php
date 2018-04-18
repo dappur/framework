@@ -54,10 +54,12 @@ class Deploy extends Middleware
             throw new \Exception('Hook secret does not match.');
         }
 
-        if ($request->getAttribute('payload')) {
-            $payload = json_decode($request->getAttribute('payload'));
+        if ($_REQUEST['payload']) {
+            $payload = json_decode($_REQUEST['payload']);
             if ($payload->ref != 'refs/heads/' . $this->container->settings['deployment']['repo_branch']) {
-                return $response->write('This branch was not deployed.');
+                return $response->write(
+                    'The ' + $this->container->settings['deployment']['repo_branch'] + ' branch was not deployed.'
+                );
             }
         }
 
