@@ -53,14 +53,20 @@ class Deploy extends Middleware
             $this->logger->addError("Deployment", array("message" => "Hook secret does not match."));
             throw new \Exception('Hook secret does not match.');
         }
-
-        if ($_REQUEST['payload']) {
-            $payload = json_decode($_REQUEST['payload']);
-            if ($payload->ref != 'refs/heads/' . $this->container->settings['deployment']['repo_branch']) {
-                return $response->write(
-                    'The ' + $this->container->settings['deployment']['repo_branch'] + ' branch was not deployed.'
-                );
+     
+        if ($request->getParam('payload')) {
+            $payload = json_decode($request->getParam('payload'));
+            if ($payload->ref == 'refs/heads/' . $this->container->settings['deployment']['repo_branch']) {
+                return true;
             }
+
+            if ($payload->release->target_commitish == $this->container->settings['deployment']['repo_branch']) {
+                return true;
+            }
+
+            return $response->write(
+                'The ' + $this->container->settings['deployment']['repo_branch'] + ' branch was not deployed.'
+            );
         }
 
         $this->logger->addError("Deployment", array("message" => "An unknown error occured deploying from Github."));

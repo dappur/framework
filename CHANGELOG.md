@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file as of v2.1.0
 
 ## [2.3.2] - 2018-04-17
 ### Added
+- Made deployment middleware work with github release events
 - Added environment support to phinx.php
 
 ### Changed
@@ -12,6 +13,9 @@ All notable changes to this project will be documented in this file as of v2.1.0
 - Fixed `Insert Into Post` for the Cloudinary inputs
 - Fixed featured image in dashboard media.js
 - Fixed deploy URL failing CSRF check
+
+### Removed
+- Removed Dappur name from template img alt tags
 
 ## [2.3.1]
 ### Added
