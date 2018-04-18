@@ -2,6 +2,8 @@
 All notable changes to this project will be documented in this file as of v2.1.0.
 
 ## [Unreleased]
+
+## [2.3.2] - 2018-04-17
 ### Added
 - Added environment support to phinx.php
 
@@ -116,7 +118,8 @@ All notable changes to this project will be documented in this file as of v2.1.0
 - Internalized all assets, they are now served from the view folder and not from the public dir.
 
 
-[Unreleased]: https://github.com/dappur/framework/compare/v2.3.1...HEAD
+[Unreleased]: https://github.com/dappur/framework/compare/v2.3.2...HEAD
+[2.3.2]: https://github.com/dappur/framework/compare/v2.3.1...v2.3.2
 [2.3.1]: https://github.com/dappur/framework/compare/v2.3.0...v2.3.1
 [2.3.0]: https://github.com/dappur/framework/compare/v2.2.0...v2.3.0
 [2.2.0]: https://github.com/dappur/framework/compare/v2.1.3...v2.2.0
