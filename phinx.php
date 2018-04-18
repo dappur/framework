@@ -36,4 +36,3 @@ foreach ($dbconf as $key => $value) {
 }
 
 return $output;
-die(var_dump($output));
