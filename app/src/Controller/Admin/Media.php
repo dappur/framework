@@ -55,7 +55,7 @@ class Media extends Controller
         
         // Prepare Cloudinary CMS Params
         $params = array("timestamp" => $timestamp);
-        if ($signatureOnly) {
+        if (is_null($signatureOnly)) {
             $params['mode'] = "tinymce";
         }
 
