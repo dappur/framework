@@ -2,6 +2,9 @@
 All notable changes to this project will be documented in this file as of v2.1.0.
 
 ## [Unreleased]
+### Added
+- Added environment support to phinx.php
+
 ### Changed
 - Update for PHPMailer v6
 - Fixed `Insert Into Post` for the Cloudinary inputs
