@@ -3,7 +3,7 @@ All notable changes to this project will be documented in this file as of v2.1.0
 
 ## [Unreleased]
 ### Changed
-- Fixed "Insert Into Post" for the Cloudinary inputs
+- Fixed `Insert Into Post` for the Cloudinary inputs
 - Fixed featured image in dashboard media.js
 - Fixed deploy URL failing CSRF check
 
