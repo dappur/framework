@@ -15,19 +15,19 @@ class JsonDecode extends \Twig_Extension
 
     public function getName()
     {
-        return 'json_decode';
+        return 'jsonDecode';
     }
 
     public function getFilters()
     {
         return array(
-            new \Twig_SimpleFilter('json_decode', array($this, 'jsonDecode')),
+            new \Twig_SimpleFilter('jsonDecode', array($this, 'jsonDecode')),
         );
     }
 
     public function jsonDecode($str)
     {
-        $array = json_decode($str);
+        $array = json_decode($str, true);
 
         return $array;
     }
