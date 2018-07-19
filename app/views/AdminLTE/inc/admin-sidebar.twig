@@ -135,7 +135,7 @@
 			        <ul class="treeview-menu {% if currentRoute starts with '/dashboard/settings/page-settings/' %}in{% endif %}">
 			            {% for item in pageSettings %}
 			                <li class="{% if currentRoute starts with '/dashboard/settings/page-settings/' ~ item.page_name %}active{% endif %}">
-			                    <a href="{{ path_for('settings-page', {'page_name': item.page_name})}}"><i class="fa fa-file-o fa-fw"></i> {{item.name}}</a>
+			                    <a href="{{ path_for('settings-page', {'page_name': item.page_name})}}"><i class="fa fa-file-o fa-fw"></i> {{item.page_name}}</a>
 			                </li>
 			            {% endfor %}
 			        </ul>
