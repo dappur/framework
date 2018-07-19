@@ -82,6 +82,41 @@ class Email extends Controller
         return $this->view->render($response, 'emails.twig', array("emails" => $emails));
     }
 
+    /**
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
+    public function searchUsers(Request $request, Response $response)
+    {
+        if ($check = $this->sentinel->hasPerm('email.create', 'dashboard')) {
+            return $check;
+        }
+
+        $return = new \stdClass();
+        $return->status = "error";
+
+        if (!$request->getParam('search')) {
+            $return->message = "Search term not defined.";
+            return $response->withJSON($return, 200, JSON_UNESCAPED_UNICODE);
+        }
+
+        $users = \Dappur\Model\Users::where(function ($query) use ($request) {
+                $query->where('first_name', 'LIKE', "%{$request->getParam('search')}%")
+                    ->orWhere('last_name', 'LIKE', "%{$request->getParam('search')}%")
+                    ->orWhere('username', 'LIKE', "%{$request->getParam('search')}%")
+                    ->orWhere('email', 'LIKE', "%{$request->getParam('search')}%");
+        });
+
+        if ($users->count() == 0) {
+            $return->message = "No results.";
+            return $response->withJSON($return, 200, JSON_UNESCAPED_UNICODE);
+        }
+
+        $return->status = "success";
+        $return->results = $users->get();
+
+        return $response->withJSON($return, 200, JSON_UNESCAPED_UNICODE);
+    }
+
     public function emailDetails(Request $request, Response $response)
     {
         if ($check = $this->sentinel->hasPerm('email.details', 'dashboard')) {
@@ -197,11 +232,6 @@ class Email extends Controller
 
         $requestParams = $request->getParams();
 
-        $users = Users::orderBy('first_name')
-            ->orderBy('last_name')
-            ->select('first_name', 'last_name', 'id', 'email')
-            ->get();
-
         if ($request->isPost()) {
             // Validate Text Fields
             $this->validator->validate(
@@ -228,10 +258,9 @@ class Email extends Controller
                 )
             );
             
-            // Check user
-            $userCheck = Users::find($requestParams['send_to']);
-            if (!$userCheck) {
-                $this->validator->addError('slug', 'User does not exist.');
+            // Check send_to
+            if (empty($request->getParam('send_to'))) {
+                $this->validator->addError('send_to', 'Please enter an email address.');
             }
             
             // Check Plain Text for HTML
@@ -242,7 +271,7 @@ class Email extends Controller
             if ($this->validator->isValid()) {
                 $email = new E($this->container);
                 $email = $email->sendEmail(
-                    array($userCheck->id),
+                    $request->getParam('send_to'),
                     $request->getParam('subject'),
                     $request->getParam('html'),
                     $request->getParam('plain_text')
@@ -261,8 +290,7 @@ class Email extends Controller
             $response,
             'emails-new.twig',
             array(
-                "placeholders" => $placeholders,
-                "users" => $users
+                "placeholders" => $placeholders
             )
         );
     }

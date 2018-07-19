@@ -1,6 +1,6 @@
 {
     "framework": "dappur",
-    "version": "2.3.2",
+    "version": "2.4.0",
     "displayErrorDetails": false,
     "showInAdmin": false,
     "environment": "development",
@@ -43,6 +43,7 @@
         }
     },
     "view": {
+        "template_path": "../app/views/",
         "twig": {
             "cache": false,
             "debug": false,
@@ -60,8 +61,12 @@
     },
     "logger": {
         "log_name": "Dappur",
+        "log_path": "../storage/log/monolog/",
         "log_file_name": "dappur.log",
         "le_token": ""
+    },
+    "cron": {
+        "token": ""
     },
     "cloudinary": {
         "enabled": false,
@@ -75,11 +80,11 @@
         "deploy_url": "deploy",
         "deploy_token": "",
         "repo_url": "",
-        "repo_branch": ""
+        "repo_branch": "master"
     },
     "mail": {
         "relay": "phpmail",
-        "logging": false,
+        "logging": true,
         "log_details": ["html", "plain_text"],
         "log_retention": 30,
         "mailgun": {
@@ -110,8 +115,7 @@
         },
         "github": {
             "client_id": "",
-            "client_secret": "",
-            "app_name": ""
+            "client_secret": ""
         },
         "instagram": {
             "client_id": "",

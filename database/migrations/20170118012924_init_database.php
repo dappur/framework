@@ -97,7 +97,7 @@ class InitDatabase extends Migration
             $table->increments('id');
             $table->string('name')->unique();
             $table->string('description')->nullable();
-            $table->string('page_name')->unique()->nullable();
+            $table->string('page_name')->nullable();
             $table->timestamps();
         });
 

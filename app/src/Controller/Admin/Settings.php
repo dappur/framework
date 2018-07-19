@@ -2,6 +2,7 @@
 
 namespace Dappur\Controller\Admin;
 
+use Dappur\Dappurware\FileResponse;
 use Dappur\Dappurware\Settings as S;
 use Dappur\Model\Config;
 use Dappur\Model\ConfigGroups;
@@ -12,6 +13,7 @@ use Respect\Validation\Validator as V;
 
 /**
  * @SuppressWarnings(PHPMD.StaticAccess)
+ * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
  */
 class Settings extends Controller
 {
@@ -35,24 +37,67 @@ class Settings extends Controller
         return $this->view->render($response, 'developer-logs.twig', array("logFiles" => $logFiles));
     }
 
-    public function settingsDeveloper(Request $request, Response $response)
+    /**
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
+    public function export(Request $request, Response $response)
     {
-        if ($check = $this->sentinel->hasPerm('settings.developer', 'dashboard') and $this->config['showInAdmin']) {
+        if ($check = $this->sentinel->hasPerm('settings.export', 'dashboard')) {
             return $check;
         }
 
-        $settingsFile = S::getSettingsFile();
+        $group =  $request->getParam('group_id');
+        $page =  $request->getParam('page_name');
+        $all =  $request->getParam('all');
 
-        $requestParams = $request->getParsedBody();
-        
-        return $this->view->render(
+        if ($group) {
+            $export = ConfigGroups::with('config')->where('id', $group)->get();
+
+            if (!$export) {
+                $this->flash('danger', 'Export unsuccessful.  Group Not Found.');
+                return $this->redirect($response, 'settings-global');
+            }
+            $fileDesc = strtolower($export[0]->name);
+        }
+
+        if ($page) {
+            $export = ConfigGroups::with('config')->where("page_name", $page)->get();
+
+            if (!$export) {
+                $this->flash('danger', 'Export unsuccessful.  Page Not Found.');
+                return $this->redirect($response, 'settings-global');
+            }
+            $fileDesc = $page;
+        }
+
+        if ($all) {
+            $export = ConfigGroups::with('config')->get();
+
+            if (!$export) {
+                $this->flash('danger', 'Export unsuccessful.  Page Not Found.');
+                return $this->redirect($response, 'settings-global');
+            }
+            $fileDesc = "all";
+        }
+
+        $final = array();
+        $final['framework'] = $this->settings['framework'];
+        $final['version'] = $this->settings['version'];
+        $final['config'] = $export->toArray();
+
+        $tempFile = tmpfile();
+        fwrite($tempFile, json_encode($final, JSON_PRETTY_PRINT));
+        $metaDatas = stream_get_meta_data($tempFile);
+        $filePath = $metaDatas['uri'];
+        return FileResponse::getResponse(
             $response,
-            'settings-developer.twig',
-            array(
-                "settingsFile" => $settingsFile,
-                "postVars" => $requestParams
-            )
+            $filePath,
+            $this->settings['framework'] .
+            "-" .
+            preg_replace('/[^a-zA-Z0-9]/', "-", $fileDesc) .
+            "-" . date("Y-m-d-H-i-s") . ".json"
         );
+        fclose($tempFile);
     }
     
     public function settingsGlobal(Request $request, Response $response)
@@ -100,6 +145,34 @@ class Settings extends Controller
                 "allRoutes" => $allRoutes
             )
         );
+    }
+
+    /**
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
+    public function save(Request $request, Response $response)
+    {
+        if ($check = $this->sentinel->hasPerm('settings.update', 'dashboard')) {
+            return $check;
+        }
+
+        $output = array();
+        $output['status'] = "error";
+        $output['message'] = "An unknown error occured.";
+
+        foreach ($request->getParams() as $key => $value) {
+            $checkItem = \Dappur\Model\Config::where('name', $key)->first();
+            if ($checkItem) {
+                $checkItem->value = $value;
+                if ($checkItem->save()) {
+                    $output['status'] = "success";
+                    $output['message'] = $checkItem->name . " has been successfully updated.";
+                    return json_encode($output);
+                }
+            }
+        }
+
+        return json_encode($output);
     }
 
     public function settingsGlobalAdd(Request $request, Response $response)
@@ -236,11 +309,6 @@ class Settings extends Controller
             );
         }
 
-        $checkName = ConfigGroups::where('page_name', '=', $allPostVars['page_name'])->get()->count();
-        if ($checkName > 0) {
-            $this->validator->addError('page_name', 'Name is already in use.');
-        }
-
         if ($this->validator->isValid()) {
             $configOption = new ConfigGroups;
             $configOption->name = $allPostVars['group_name'];
@@ -312,7 +380,7 @@ class Settings extends Controller
             return $check;
         }
 
-        $pageSettings = ConfigGroups::where('page_name', '=', $pageName)->with('config')->skip(0)->take(1)->get();
+        $pageSettings = ConfigGroups::where('page_name', '=', $pageName)->with('config')->get();
 
         $timezones = S::getTimezones();
         $themeList = S::getThemeList();
@@ -347,9 +415,135 @@ class Settings extends Controller
                 "configGroups" => $groups,
                 "themeList" => $themeList,
                 "timezones" => $timezones,
-                "requestParams" => $allPostVars
+                "requestParams" => $allPostVars,
+                "pageName" => $pageName
             )
         );
+    }
+
+    /**
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
+    public function import(Request $request, Response $response)
+    {
+        if ($check = $this->sentinel->hasPerm('settings.import', 'dashboard')) {
+            return $check;
+        }
+
+        $return = new \stdClass();
+        $return->status = "error";
+
+        if (!$request->getUploadedFiles()['import_file']) {
+            $return->message = "No file detected.";
+            return $response->withJSON($return, 200, JSON_UNESCAPED_UNICODE);
+        }
+
+        $file = $request->getUploadedFiles()['import_file'];
+
+        $json = $file->getStream();
+
+        if (!$this->isJson($json)) {
+            $return->message = "error - not a valid json file";
+            return $response->withJSON($return, 200, JSON_UNESCAPED_UNICODE);
+        }
+        $overwrite = false;
+        if ($request->getParam('overwrite')) {
+            $overwrite = true;
+        }
+
+        $import = $this->processImport($json, $overwrite);
+
+        if ($import->status) {
+            $return->status = "success";
+            $this->flash('success', 'Settings imported successfully');
+        }
+
+        if (!$import->status) {
+            $return->message = $import->message;
+        }
+        
+        return $response->withJSON($return, 200, JSON_UNESCAPED_UNICODE);
+    }
+
+    public function processImport($json, $overwrite = 0)
+    {
+        $decoded = json_decode($json);
+
+        // Create Return Object
+        $return = new \stdClass();
+        $return->status = false;
+
+        if (!$decoded->framework || $decoded->framework != $this->settings['framework']) {
+            $return->message = "Framework mismatch.";
+            return $return;
+        }
+
+        if (!$decoded->version || $decoded->version != $this->settings['version']) {
+            $return->message = "Version mismatch.";
+            return $return;
+        }
+
+        foreach ($decoded->config as $value) {
+            $group = $this->importGroup($value, $overwrite);
+            $this->importConfig($group, $value->config, $overwrite);
+        }
+
+        $return->status = true;
+        return $return;
+    }
+
+    private function importGroup($value, $overwrite = 0)
+    {
+        // Check if Exists
+        $group = \Dappur\Model\ConfigGroups::find($value->id);
+
+        // Update Group if Overwrite
+        if ($overwrite && $group) {
+            $group->name = $value->name;
+            $group->description = $value->description;
+            $group->page_name = $value->page_name;
+            $group->save();
+        }
+
+        if (!$group) {
+            // Create Group
+            $group = new \Dappur\Model\ConfigGroups;
+            $group->name = $value->name;
+            $group->description = $value->description;
+            $group->page_name = $value->page_name;
+            $group->save();
+        }
+        return $group;
+    }
+
+    private function importConfig($group, $config, $overwrite = 0)
+    {
+        // Process Config Items
+        foreach ($config as $cfg) {
+            // Check if Item Exists
+            $config = \Dappur\Model\Config::where('name', $cfg->name)->where('group_id', $group->id)->first();
+
+            // Update Config if Overwrite
+            if ($overwrite && $config) {
+                $config->group_id = $group->id;
+                $config->type_id = $cfg->type_id;
+                $config->name = $cfg->name;
+                $config->description = $cfg->description;
+                $config->value = $cfg->value;
+                $config->save();
+            }
+
+            if (!$config) {
+                // Create Config Item
+                $config = new \Dappur\Model\Config;
+                $config->group_id = $group->id;
+                $config->type_id = $cfg->type_id;
+                $config->name = $cfg->name;
+                $config->description = $cfg->description;
+                $config->value = $cfg->value;
+                $config->save();
+            }
+        }
     }
 
     private function getRouteNames()
@@ -363,5 +557,11 @@ class Settings extends Controller
         asort($allRoutes);
 
         return $allRoutes;
+    }
+
+    private function isJson($string)
+    {
+        json_decode($string);
+        return (json_last_error() == JSON_ERROR_NONE);
     }
 }

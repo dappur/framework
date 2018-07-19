@@ -4,7 +4,7 @@ $app->group('', function () use ($app) {
     // User Profile
     $app->group('/profile', function () use ($app) {
         //Profile
-        $this->map(['GET', 'POST'], '/', 'Profile:profile')
+        $this->map(['GET', 'POST'], '', 'Profile:profile')
             ->setName('profile');
         // Check Password
         $this->map(['POST'], '/password-check', 'Profile:checkPassword')

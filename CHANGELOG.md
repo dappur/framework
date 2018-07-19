@@ -1,7 +1,23 @@
 # Changelog
-All notable changes to this project will be documented in this file as of v2.1.0.
 
 ## [Unreleased]
+
+## [2.4.0] - 2018-07-19
+### Added
+- AdminLTE Bootstrap Theme for the dashboard has replaced the old dashboard template
+- Import/Export of site and page settings
+- Cron job support using Jobby
+- Gravatar Twig Extension
+- Developer log viewer using JSTree in the dashboard
+
+### Changed
+- Fixed jsonDecode Twig extension
+- Cleaned Up admin routes
+- Site and page settings can now be individually edited without refreshing the page.
+- Fixed Breadcrumbs on all admin pages
+
+### Removed
+- Removed settings.json from the developer dashboard.
 
 ## [2.3.2] - 2018-04-17
 ### Added
@@ -122,7 +138,8 @@ All notable changes to this project will be documented in this file as of v2.1.0
 - Internalized all assets, they are now served from the view folder and not from the public dir.
 
 
-[Unreleased]: https://github.com/dappur/framework/compare/v2.3.2...HEAD
+[Unreleased]: https://github.com/dappur/framework/compare/v2.4.0...HEAD
+[2.4.0]: https://github.com/dappur/framework/compare/v2.3.2...v2.4.0
 [2.3.2]: https://github.com/dappur/framework/compare/v2.3.1...v2.3.2
 [2.3.1]: https://github.com/dappur/framework/compare/v2.3.0...v2.3.1
 [2.3.0]: https://github.com/dappur/framework/compare/v2.2.0...v2.3.0

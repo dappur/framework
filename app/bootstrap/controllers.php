@@ -19,6 +19,10 @@ $container['AdminBlogTags'] = function ($container) {
     return new \Dappur\Controller\Admin\BlogTags($container);
 };
 
+$container['AdminDeveloper'] = function ($container) {
+    return new \Dappur\Controller\Admin\Developer($container);
+};
+
 $container['AdminEmail'] = function ($container) {
     return new \Dappur\Controller\Admin\Email($container);
 };
@@ -53,6 +57,10 @@ $container['App'] = function ($container) {
 
 $container['Auth'] = function ($container) {
     return new \Dappur\Controller\Auth($container);
+};
+
+$container['Cron'] = function ($container) {
+    return new \Dappur\Controller\Cron($container);
 };
 
 $container['Deploy'] = function ($container) {
