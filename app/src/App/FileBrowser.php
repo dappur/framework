@@ -5,9 +5,9 @@ namespace Dappur\App;
 /**
  * Copied from https://github.com/vakata/jstree-php-demos/blob/master/filebrowser/index.php
  * @SuppressWarnings(PHPMD.StaticAccess)
+ * @SuppressWarnings(PHPMD.CyclomaticComplexity)
  */
 
-// @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
 class FileBrowser
 {
     ini_set('open_basedir', realpath(dirname(__FILE__) . "/../../../storage/log/"));
@@ -50,6 +50,7 @@ class FileBrowser
             throw new Exception('Base directory does not exist');
         }
     }
+
     public function lst($pathId, $with_root = false)
     {
         $dir = $this->path($pathId);
@@ -94,6 +95,7 @@ class FileBrowser
         }
         return $res;
     }
+
     public function data($pathId)
     {
         if (strpos($pathId, ":")) {
