@@ -14,22 +14,26 @@ $app->group('/dashboard', function () use ($app, $container) {
 
     $app->map(['GET', 'POST'], '/settings/page-settings/{page_name}', 'AdminSettings:settingsPage')
         ->setName('settings-page');
-    
-    // View Settings.json
-    $app->map(['GET'], '/developer/settings', 'AdminSettings:settingsDeveloper')
-        ->setName('settings-developer');
 
     // View Logs
-    $app->map(['GET'], '/developer/logs', 'AdminSettings:developerLogs')
+    $app->map(['GET'], '/developer/logs', 'AdminDeveloper:logs')
         ->setName('developer-logs');
 
+    // Get Logs
+    $app->map(['GET'], '/developer/logs/get', 'AdminDeveloper:get')
+        ->setName('developer-logs-get');
+
     // Export Settings
-    $app->get('/settings/export[/{group_id}]', 'AdminSettings:export')
+    $app->get('/settings/export', 'AdminSettings:export')
         ->setName('settings-export');
 
     // Import Settings
     $app->post('/settings/import', 'AdminSettings:import')
         ->setName('settings-import');
+
+    // Import Settings
+    $app->post('/settings/save', 'AdminSettings:save')
+        ->setName('settings-save');
 })
 ->add(new Dappur\Middleware\Auth($container))
 ->add(new Dappur\Middleware\Admin($container))

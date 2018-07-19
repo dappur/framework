@@ -109,6 +109,7 @@ $container['view'] = function ($container) {
     $view->addExtension(new \Dappur\TwigExtension\Csrf($container['csrf']));
     $view->addExtension(new \Awurth\SlimValidation\ValidatorExtension($container['validator']));
     $view->addExtension(new \Dappur\TwigExtension\Md5($container['request']));
+    $view->addExtension(new \Dappur\TwigExtension\Gravatar($container['request']));
     if ($container['cloudinary']) {
         $view->addExtension(new \Dappur\TwigExtension\Cloudinary());
         $view->getEnvironment()->addGlobal('hasCloudinary', 1);
@@ -166,7 +167,7 @@ $container['view'] = function ($container) {
     $page_name = $container['request']->getAttribute('name');
     if (strpos($container['request']->getUri()->getPath(), '/dashboard') !== false) {
         $page_settings = new \Dappur\Model\ConfigGroups;
-        $page_settings = $page_settings->whereNotNull('page_name')->get();
+        $page_settings = $page_settings->whereNotNull('page_name')->groupBy('page_name')->orderBy('name')->get();
         $view->getEnvironment()->addGlobal('userAccess', $container['userAccess']);
         $view->getEnvironment()->addGlobal('pageSettings', $page_settings);
         $view->getEnvironment()->addGlobal('showInAdmin', $container['settings']['showInAdmin']);

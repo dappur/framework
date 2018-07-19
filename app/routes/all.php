@@ -16,6 +16,9 @@ $app->group('', function () use ($app, $container, $settings) {
     // CSRF
     $this->map(['GET'], '/csrf', 'App:csrf')
         ->setName('csrf');
+    // Cron Jobs
+    $this->map(['GET'], '/cron', 'Cron:run')
+        ->setName('cron');
     // Oauth
     $this->map(['GET'], '/oauth/{slug}', 'Oauth2:oauth2')
         ->setName('oauth');

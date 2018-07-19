@@ -28,7 +28,7 @@
 					</h4>
 				</div><!-- Image -->
 				<div class="ui-image"><!-- User Image -->
-				<img alt="Profile Picture" class="img-responsive" height="100" src="https://www.gravatar.com/avatar/{{ auth.user.email|md5 }}?d=identicon" width="100"></div>
+				<img alt="Profile Picture" class="img-responsive" height="100" src="{{gravatar(auth.user.email, 200)}}" width="100"></div>
 			</div><!-- Head Ends -->
 			<!-- Content Starts -->
 			<div class="ui-content">
@@ -74,21 +74,21 @@
 						<section>
 							<h3>Connect With Us</h3>
 							<div class="row">
-								<div class="col-md-6">
-									{% for provider in providers %}
-				                        <div class="form-group">
-				                        	{% if provider.id in user_providers %}
-					                            <button class="btnbtn-block btn-social btn-{{provider.button}} form-control" disabled>
-					                                <span class="fa fa-{{provider.button}}"></span> {{provider.name}} <span class="pull-right" style="color: #98FB98;"><i class="fa fa-check"></i> Connected</span>
-					                            </button>
-				                            {% else %}
-					                            <a href="{{ authorize_url(provider.id, client_ids[provider.id], 1) }}" class="btnbtn-block btn-social btn-{{provider.button}} form-control">
-					                                <span class="fa fa-{{provider.button}}"></span> Connect {{provider.name}}
-					                            </a>
-				                            {% endif %}
-				                        </div>
-				                    {% endfor %}
-						        </div>
+								{% for provider in providers %}
+									<div class="col-md-6">
+					                        <div class="form-group">
+					                        	{% if provider.id in user_providers %}
+						                            <button class="btnbtn-block btn-social btn-{{provider.button}} form-control" disabled>
+						                                <span class="fa fa-{{provider.button}}"></span> {{provider.name}} <span class="pull-right" style="color: #98FB98;"><i class="fa fa-check"></i> Connected</span>
+						                            </button>
+					                            {% else %}
+						                            <a href="{{ authorize_url(provider.id, client_ids[provider.id], 1) }}" class="btnbtn-block btn-social btn-{{provider.button}} form-control">
+						                                <span class="fa fa-{{provider.button}}"></span> Connect {{provider.name}}
+						                            </a>
+					                            {% endif %}
+					                        </div>
+							        </div>
+						        {% endfor %}
 						    </div>
 						</section>
 						{% endif %}

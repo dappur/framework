@@ -1,7 +1,5 @@
 <?php
-
 $app->group('/dashboard', function () use ($app, $container) {
-
     // Email Manager
     $app->group('/email', function () use ($app) {
         $app->map(['GET'], '', 'AdminEmail:email')
@@ -31,8 +29,11 @@ $app->group('/dashboard', function () use ($app, $container) {
         // Email Ajax
         $app->get('/datatables', 'AdminEmail:dataTables')
             ->setName('admin-email-datatables');
+
+        // Email Ajax
+        $app->get('/search-users', 'AdminEmail:searchUsers')
+            ->setName('admin-email-search-users');
     });
-    
 })
 ->add(new Dappur\Middleware\Auth($container))
 ->add(new Dappur\Middleware\Admin($container))

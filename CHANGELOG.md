@@ -1,7 +1,21 @@
 # Changelog
-All notable changes to this project will be documented in this file as of v2.1.0.
 
 ## [Unreleased]
+
+## [2.4.0] - 2018-04-17
+### Added
+- AdminLTE Bootstrap Theme for the dashboard has replaced the old dashboard template
+- Import/Export of site and page settings
+- Cron job support using Jobby
+- Gravatar Twig Extension
+
+### Changed
+- Fixed jsonDecode Twig extension
+- Cleaned Up admin routes
+- Site and page settings can now be individually edited without refreshing the page.
+
+### Removed
+- Removed settings.json from the developer dashboard.
 
 ## [2.3.2] - 2018-04-17
 ### Added
