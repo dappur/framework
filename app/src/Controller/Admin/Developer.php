@@ -18,6 +18,8 @@ class Developer extends Controller
      */
     public function logs(Request $request, Response $response)
     {
+        ini_set('open_basedir', realpath(dirname(__FILE__) . "/../../../storage/log/"));
+        
         if ($check = $this->sentinel->hasPerm('settings.developer', 'dashboard')) {
             return $check;
         }
