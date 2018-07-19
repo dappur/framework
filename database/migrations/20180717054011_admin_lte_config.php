@@ -42,6 +42,6 @@ class AdminLteConfig extends Migration
 
     public function down()
     {
-        $config = \Dappur\Model\Config::where('name', "adminlte-skin")->first()->delete();
+        \Dappur\Model\Config::where('name', "adminlte-skin")->first()->delete();
     }
 }
