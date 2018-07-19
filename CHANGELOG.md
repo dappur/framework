@@ -1,6 +1,8 @@
 # Changelog
 
 ## [Unreleased]
+### Removed
+- Removed initial migration SQL dump.
 
 ## [2.4.0] - 2018-07-19
 ### Added
