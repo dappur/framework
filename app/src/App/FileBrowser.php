@@ -7,11 +7,11 @@ namespace Dappur\App;
  * @SuppressWarnings(PHPMD.StaticAccess)
  */
 
-// Limit To Log Folder
-ini_set('open_basedir', realpath(dirname(__FILE__) . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . "..".DIRECTORY_SEPARATOR."storage".DIRECTORY_SEPARATOR."log".DIRECTORY_SEPARATOR));
-
+// @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
 class FileBrowser
 {
+    ini_set('open_basedir', realpath(dirname(__FILE__) . "/../../../storage/log/"));
+
     protected $base = null;
 
     protected function real($path)
@@ -27,14 +27,14 @@ class FileBrowser
         }
         return $temp;
     }
-    protected function path($id)
+    protected function path($pathId)
     {
-        $id = str_replace('/', DIRECTORY_SEPARATOR, $id);
-        $id = trim($id, DIRECTORY_SEPARATOR);
-        $id = $this->real($this->base . DIRECTORY_SEPARATOR . $id);
-        return $id;
+        $pathId = str_replace('/', DIRECTORY_SEPARATOR, $pathId);
+        $pathId = trim($pathId, DIRECTORY_SEPARATOR);
+        $pathId = $this->real($this->base . DIRECTORY_SEPARATOR . $pathId);
+        return $pathId;
     }
-    protected function id($path)
+    protected function pathId($path)
     {
         $path = $this->real($path);
         $path = substr($path, strlen($this->base));
@@ -50,9 +50,9 @@ class FileBrowser
             throw new Exception('Base directory does not exist');
         }
     }
-    public function lst($id, $with_root = false)
+    public function lst($pathId, $with_root = false)
     {
-        $dir = $this->path($id);
+        $dir = $this->path($pathId);
         $lst = @scandir($dir);
         if (!$lst) {
             throw new Exception('Could not list path: ' . $dir);
@@ -67,25 +67,42 @@ class FileBrowser
                 continue;
             }
             if (is_dir($dir . DIRECTORY_SEPARATOR . $item)) {
-                $res[] = array('text' => $item, 'children' => true,  'id' => $this->id($dir . DIRECTORY_SEPARATOR . $item), 'icon' => 'folder');
+                $res[] = array(
+                    'text' => $item,
+                    'children' => true,
+                    'id' => $this->pathId($dir . DIRECTORY_SEPARATOR . $item),
+                    'icon' => 'folder'
+                );
             } else {
-                $res[] = array('text' => $item, 'children' => false, 'id' => $this->id($dir . DIRECTORY_SEPARATOR . $item), 'type' => 'file', 'icon' => 'file file-'.substr($item, strrpos($item, '.') + 1));
+                $res[] = array(
+                    'text' => $item,
+                    'children' => false,
+                    'id' => $this->pathId($dir . DIRECTORY_SEPARATOR . $item),
+                    'type' => 'file',
+                    'icon' => 'file file-'.substr($item, strrpos($item, '.') + 1)
+                );
             }
         }
-        if ($with_root && $this->id($dir) === '/') {
-            $res = array(array('text' => basename($this->base), 'children' => $res, 'id' => '/', 'icon'=>'folder', 'state' => array('opened' => true, 'disabled' => true)));
+        if ($with_root && $this->pathId($dir) === '/') {
+            $res = array(array(
+                'text' => basename($this->base),
+                'children' => $res,
+                'id' => '/',
+                'icon'=>'folder',
+                'state' => array('opened' => true, 'disabled' => true)
+            ));
         }
         return $res;
     }
-    public function data($id)
+    public function data($pathId)
     {
-        if (strpos($id, ":")) {
-            $id = array_map(array($this, 'id'), explode(':', $id));
-            return array('type'=>'multiple', 'content'=> 'Multiple selected: ' . implode(' ', $id));
+        if (strpos($pathId, ":")) {
+            $pathId = array_map(array($this, 'id'), explode(':', $pathId));
+            return array('type'=>'multiple', 'content'=> 'Multiple selected: ' . implode(' ', $pathId));
         }
-        $dir = $this->path($id);
+        $dir = $this->path($pathId);
         if (is_dir($dir)) {
-            return array('type'=>'folder', 'content'=> $id);
+            return array('type'=>'folder', 'content'=> $pathId);
         }
         if (is_file($dir)) {
             $ext = strpos($dir, '.') !== false ? substr($dir, strrpos($dir, '.') + 1) : '';
@@ -116,19 +133,20 @@ class FileBrowser
                 case 'gif':
                 case 'png':
                 case 'bmp':
-                    $dat['content'] = 'data:'.finfo_file(finfo_open(FILEINFO_MIME_TYPE), $dir).';base64,'.base64_encode(file_get_contents($dir));
+                    $dat['content'] = 'data:'.finfo_file(finfo_open(FILEINFO_MIME_TYPE), $dir).
+                        ';base64,'.base64_encode(file_get_contents($dir));
                     break;
                 default:
-                    $dat['content'] = 'File not recognized: '.$this->id($dir);
+                    $dat['content'] = 'File not recognized: '.$this->pathId($dir);
                     break;
             }
             return $dat;
         }
         throw new Exception('Not a valid selection: ' . $dir);
     }
-    public function create($id, $name, $mkdir = false)
+    public function create($pathId, $name, $mkdir = false)
     {
-        $dir = $this->path($id);
+        $dir = $this->path($pathId);
         if (preg_match('([^ a-zа-я-_0-9.]+)ui', $name) || !strlen($name)) {
             throw new Exception('Invalid name: ' . $name);
         }
@@ -137,11 +155,11 @@ class FileBrowser
         } else {
             file_put_contents($dir . DIRECTORY_SEPARATOR . $name, '');
         }
-        return array('id' => $this->id($dir . DIRECTORY_SEPARATOR . $name));
+        return array('id' => $this->pathId($dir . DIRECTORY_SEPARATOR . $name));
     }
-    public function rename($id, $name)
+    public function rename($pathId, $name)
     {
-        $dir = $this->path($id);
+        $dir = $this->path($pathId);
         if ($dir === $this->base) {
             throw new Exception('Cannot rename root');
         }
@@ -158,17 +176,17 @@ class FileBrowser
             }
             rename($dir, $new);
         }
-        return array('id' => $this->id($new));
+        return array('id' => $this->pathId($new));
     }
-    public function remove($id)
+    public function remove($pathId)
     {
-        $dir = $this->path($id);
+        $dir = $this->path($pathId);
         if ($dir === $this->base) {
             throw new Exception('Cannot remove root');
         }
         if (is_dir($dir)) {
             foreach (array_diff(scandir($dir), array(".", "..")) as $f) {
-                $this->remove($this->id($dir . DIRECTORY_SEPARATOR . $f));
+                $this->remove($this->pathId($dir . DIRECTORY_SEPARATOR . $f));
             }
             rmdir($dir);
         }
@@ -177,19 +195,19 @@ class FileBrowser
         }
         return array('status' => 'OK');
     }
-    public function move($id, $par)
+    public function move($pathId, $par)
     {
-        $dir = $this->path($id);
+        $dir = $this->path($pathId);
         $par = $this->path($par);
         $new = explode(DIRECTORY_SEPARATOR, $dir);
         $new = array_pop($new);
         $new = $par . DIRECTORY_SEPARATOR . $new;
         rename($dir, $new);
-        return array('id' => $this->id($new));
+        return array('id' => $this->pathId($new));
     }
-    public function copy($id, $par)
+    public function copy($pathId, $par)
     {
-        $dir = $this->path($id);
+        $dir = $this->path($pathId);
         $par = $this->path($par);
         $new = explode(DIRECTORY_SEPARATOR, $dir);
         $new = array_pop($new);
@@ -201,12 +219,12 @@ class FileBrowser
         if (is_dir($dir)) {
             mkdir($new);
             foreach (array_diff(scandir($dir), array(".", "..")) as $f) {
-                $this->copy($this->id($dir . DIRECTORY_SEPARATOR . $f), $this->id($new));
+                $this->copy($this->pathId($dir . DIRECTORY_SEPARATOR . $f), $this->pathId($new));
             }
         }
         if (is_file($dir)) {
             copy($dir, $new);
         }
-        return array('id' => $this->id($new));
+        return array('id' => $this->pathId($new));
     }
 }
