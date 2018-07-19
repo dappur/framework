@@ -167,7 +167,12 @@ $container['view'] = function ($container) {
     $page_name = $container['request']->getAttribute('name');
     if (strpos($container['request']->getUri()->getPath(), '/dashboard') !== false) {
         $page_settings = new \Dappur\Model\ConfigGroups;
-        $page_settings = $page_settings->whereNotNull('page_name')->groupBy('page_name')->orderBy('name')->get();
+        $page_settings = $page_settings
+            ->select('page_name')
+            ->whereNotNull('page_name')
+            ->groupBy('page_name')
+            ->orderBy('page_name')
+            ->get();
         $view->getEnvironment()->addGlobal('userAccess', $container['userAccess']);
         $view->getEnvironment()->addGlobal('pageSettings', $page_settings);
         $view->getEnvironment()->addGlobal('showInAdmin', $container['settings']['showInAdmin']);
