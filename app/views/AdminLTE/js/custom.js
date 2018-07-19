@@ -1,28 +1,28 @@
 $(document).ready(function(){
-	/* Nice Scroll
-	-------------------------------------------------- */
-	//$("body").niceScroll();
 
-	/* Initialize Labels
-	-------------------------------------------------- */
-	$('input[type=text],input[type=password]').each(function(){
-		if ($(this).val() !== "") {
-			$(".floating-label-form-group").toggleClass("floating-label-form-group-with-value", !!$(this).val());
-		}
-		
-	})
+	// Sweet Alert Confirm Dialog
+    $(document).on('click', '.swal-confirm', function(e) { 
+    	e.preventDefault();
+    	var swtitle = $(this).data('swtitle');
+    	var swmessage = $(this).data('swmessage');
+    	var form = $(this).parents(form);
 
-});
-
-/* Floating Labels
-/* https://github.com/fauxparse/bootstrap-floating-labels
--------------------------------------------------- */
-$(function() {
-	$("body").on("input propertychange", ".floating-label-form-group", function(e) {
-	    $(this).toggleClass("floating-label-form-group-with-value", !!$(e.target).val());
-	}).on("focus", ".floating-label-form-group", function() {
-	    $(this).addClass("floating-label-form-group-with-focus");
-	}).on("blur", ".floating-label-form-group", function() {
-	    $(this).removeClass("floating-label-form-group-with-focus");
-	});
+	    swal({
+	        title: swtitle,
+	        text: swmessage,
+	        type: "warning",
+	        showCancelButton: true,
+	        confirmButtonColor: '#DD6B55',
+	        confirmButtonText: 'Yes, I am sure!',
+	        cancelButtonText: "No, cancel!"
+	    }).then(
+		   	function(result) {
+		   		form.submit();
+		  	},
+		  	function(dismiss){
+		  		return false;
+		  	}
+	    ).catch(swal.noop);
+	    
+    });
 });
