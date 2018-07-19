@@ -6,12 +6,12 @@ namespace Dappur\App;
  * Copied from https://github.com/vakata/jstree-php-demos/blob/master/filebrowser/index.php
  * @SuppressWarnings(PHPMD.StaticAccess)
  * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+ * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
+ * @SuppressWarnings(PHPMD.NPathComplexity)
  */
 
 class FileBrowser
 {
-    ini_set('open_basedir', realpath(dirname(__FILE__) . "/../../../storage/log/"));
-
     protected $base = null;
 
     protected function real($path)
@@ -51,7 +51,7 @@ class FileBrowser
         }
     }
 
-    public function lst($pathId, $with_root = false)
+    public function lst($pathId, $withRoot = 0)
     {
         $dir = $this->path($pathId);
         $lst = @scandir($dir);
@@ -74,7 +74,8 @@ class FileBrowser
                     'id' => $this->pathId($dir . DIRECTORY_SEPARATOR . $item),
                     'icon' => 'folder'
                 );
-            } else {
+            }
+            if (!is_dir($dir . DIRECTORY_SEPARATOR . $item)) {
                 $res[] = array(
                     'text' => $item,
                     'children' => false,
@@ -84,7 +85,7 @@ class FileBrowser
                 );
             }
         }
-        if ($with_root && $this->pathId($dir) === '/') {
+        if ($withRoot && $this->pathId($dir) === '/') {
             $res = array(array(
                 'text' => basename($this->base),
                 'children' => $res,
@@ -146,7 +147,7 @@ class FileBrowser
         }
         throw new Exception('Not a valid selection: ' . $dir);
     }
-    public function create($pathId, $name, $mkdir = false)
+    public function create($pathId, $name, $mkdir = 0)
     {
         $dir = $this->path($pathId);
         if (preg_match('([^ a-zа-я-_0-9.]+)ui', $name) || !strlen($name)) {
@@ -154,7 +155,8 @@ class FileBrowser
         }
         if ($mkdir) {
             mkdir($dir . DIRECTORY_SEPARATOR . $name);
-        } else {
+        }
+        if (!$mkdir) {
             file_put_contents($dir . DIRECTORY_SEPARATOR . $name, '');
         }
         return array('id' => $this->pathId($dir . DIRECTORY_SEPARATOR . $name));
