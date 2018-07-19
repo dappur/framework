@@ -14,6 +14,7 @@ class Developer extends Controller
 {
     /**
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
     public function logs(Request $request, Response $response)
     {
@@ -22,38 +23,52 @@ class Developer extends Controller
         }
         
         if ($request->getParam('operation')) {
-            $fs = new FileBrowser(realpath(dirname(__FILE__) . '/../../../../storage/log'));
+            $fileSystem = new FileBrowser(realpath(dirname(__FILE__) . '/../../../../storage/log'));
             $rslt = null;
             switch ($request->getParam('operation')) {
                 case 'get_node':
-                    $node = $request->getParam('id') && $request->getParam('id') !== '#' ? $request->getParam('id') : '/';
-                    $rslt = $fs->lst($node, ($request->getParam('id') && $request->getParam('id') === '#'));
+                    $node = $request->getParam('id') &&
+                        $request->getParam('id') !== '#' ? $request->getParam('id') : '/';
+                    $rslt = $fileSystem->lst($node, ($request->getParam('id') &&
+                        $request->getParam('id') === '#'));
                     break;
                 case "get_content":
-                    $node = $request->getParam('id') && $request->getParam('id') !== '#' ? $request->getParam('id') : '/';
-                    $rslt = $fs->data($node);
+                    $node = $request->getParam('id') &&
+                        $request->getParam('id') !== '#' ? $request->getParam('id') : '/';
+                    $rslt = $fileSystem->data($node);
                     break;
                 case 'create_node':
-                    $node = $request->getParam('id') && $request->getParam('id') !== '#' ? $request->getParam('id') : '/';
-                    $rslt = $fs->create($node, $request->getParam('text') ? $request->getParam('text') : '', (!$request->getParam('type') || $request->getParam('type') !== 'file'));
+                    $node = $request->getParam('id') &&
+                        $request->getParam('id') !== '#' ? $request->getParam('id') : '/';
+                    $rslt = $fileSystem->create(
+                        $node,
+                        $request->getParam('text') ? $request->getParam('text') : '',
+                        (!$request->getParam('type') || $request->getParam('type') !== 'file')
+                    );
                     break;
                 case 'rename_node':
-                    $node = $request->getParam('id') && $request->getParam('id') !== '#' ? $request->getParam('id') : '/';
-                    $rslt = $fs->rename($node, $request->getParam('text') ? $request->getParam('text') : '');
+                    $node = $request->getParam('id') &&
+                        $request->getParam('id') !== '#' ? $request->getParam('id') : '/';
+                    $rslt = $fileSystem->rename($node, $request->getParam('text') ? $request->getParam('text') : '');
                     break;
                 case 'delete_node':
-                    $node = $request->getParam('id') && $request->getParam('id') !== '#' ? $request->getParam('id') : '/';
-                    $rslt = $fs->remove($node);
+                    $node = $request->getParam('id') &&
+                        $request->getParam('id') !== '#' ? $request->getParam('id') : '/';
+                    $rslt = $fileSystem->remove($node);
                     break;
                 case 'move_node':
-                    $node = $request->getParam('id') && $request->getParam('id') !== '#' ? $request->getParam('id') : '/';
-                    $parn = $request->getParam('parent') && $request->getParam('parent') !== '#' ? $request->getParam('parent') : '/';
-                    $rslt = $fs->move($node, $parn);
+                    $node = $request->getParam('id') &&
+                        $request->getParam('id') !== '#' ? $request->getParam('id') : '/';
+                    $parn = $request->getParam('parent') &&
+                        $request->getParam('parent') !== '#' ? $request->getParam('parent') : '/';
+                    $rslt = $fileSystem->move($node, $parn);
                     break;
                 case 'copy_node':
-                    $node = $request->getParam('id') && $request->getParam('id') !== '#' ? $request->getParam('id') : '/';
-                    $parn = $request->getParam('parent') && $request->getParam('parent') !== '#' ? $request->getParam('parent') : '/';
-                    $rslt = $fs->copy($node, $parn);
+                    $node = $request->getParam('id') &&
+                        $request->getParam('id') !== '#' ? $request->getParam('id') : '/';
+                    $parn = $request->getParam('parent') &&
+                        $request->getParam('parent') !== '#' ? $request->getParam('parent') : '/';
+                    $rslt = $fileSystem->copy($node, $parn);
                     break;
                 default:
                     throw new Exception('Unsupported operation: ' . $request->getParam('operation'));
