@@ -1,6 +1,9 @@
 # Changelog
 
 ## [Unreleased]
+### Changed
+- Cleaned up Migration template
+
 ### Removed
 - Removed initial migration SQL dump.
 
