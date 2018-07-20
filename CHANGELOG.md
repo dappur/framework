@@ -1,11 +1,15 @@
 # Changelog
 
 ## [Unreleased]
+### Fixed
+- CMS Popup Window sizes in the dashboard.
+
 ### Changed
 - Cleaned up Migration template
 
 ### Removed
 - Removed initial migration SQL dump.
+- Removed Dashboard Bootswatch config
 
 ## [2.4.0] - 2018-07-19
 ### Added

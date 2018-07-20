@@ -12,11 +12,11 @@ class InitDatabase extends Migration
     * More information on writing eloquent migrations is available here:
     * https://laravel.com/docs/5.4/migrations
     *
-    * Remember to use both the up() and down() functions in order to be able to roll back. 
+    * Remember to use both the up() and down() functions in order to be able to roll back.
     */
    
     public function up()
-    {   
+    {
         // Create Users Table
         $this->schema->create('users', function (Blueprint $table) {
             $table->increments('id');
@@ -277,8 +277,7 @@ class InitDatabase extends Migration
             array(1, 'bootswatch', 'Site Bootswatch', 4, 'cerulean'),
             array(1, 'logo', 'Site Logo', 5, 'https://res.cloudinary.com/dappur/image/upload/c_scale,w_600/v1479072913/site-images/logo-horizontal.png'),
             array(1, 'header-logo', 'Header Logo', 5, 'https://res.cloudinary.com/dappur/image/upload/c_scale,h_75/v1479072913/site-images/logo-horizontal.png'),
-            array(2, 'dashboard-theme', 'Dashboard Theme', 3, 'dashboard'),
-            array(2, 'dashboard-bootswatch', 'Dashboard Bootswatch', 4, 'slate'),
+            array(2, 'dashboard-theme', 'Dashboard Theme', 3, 'AdminLTE'),
             array(2, 'dashboard-logo', 'Dashboard Logo', 5, 'https://res.cloudinary.com/dappur/image/upload/c_scale,h_75/v1479072913/site-images/logo-horizontal.png'),
             array(1, 'ga', 'Google Analytics UA', 2, ''),
             array(1, 'activation', 'Activation Required', 6, 1),
@@ -512,51 +511,51 @@ class InitDatabase extends Migration
 
         $blog_posts = array(
             array(
-                'id' => 1, 
-                'user_id' => 1, 
-                'category_id' => 1, 
-                'title' => 'Sample Post - No Featured Media', 
-                'description' => 'Sample Post - No Featured Media', 
-                'slug' => 'sample-post-no-featured-media', 
-                'content' => '<div class=\"anyipsum-output\"><p>Bacon ipsum dolor amet shoulder sausage porchetta frankfurter venison meatloaf kielbasa ham hock. Tail kielbasa bresaola pig pork loin, salami turkey shank cupim fatback. Strip steak short loin picanha pig turducken andouille tail, bresaola sirloin. Meatloaf ham pork chop, prosciutto flank t-bone tongue bresaola drumstick ball tip alcatra burgdoggen. Andouille biltong short loin picanha salami tail. Pork loin shoulder pancetta, kevin beef spare ribs salami. Strip steak salami filet mignon, jowl tail ham biltong venison picanha jerky prosciutto boudin pork belly.</p><p>Frankfurter beef tri-tip, short ribs pancetta pork belly kielbasa meatball bacon. Flank pork belly short ribs, bresaola corned beef hamburger salami drumstick chicken cupim. Boudin pork chop meatloaf prosciutto biltong, short loin ham hock ball tip jowl shankle corned beef salami sausage. Flank rump bresaola, cupim pork loin strip steak jowl salami landjaeger short ribs corned beef cow.</p><p>Picanha meatball pancetta short loin leberkas capicola ham hock landjaeger tenderloin jowl. Turkey cow turducken, alcatra fatback shank rump tri-tip pork loin pastrami capicola tail ham sirloin tongue. Ribeye hamburger boudin pork chop tongue pancetta pig turducken sausage. Andouille filet mignon pig tri-tip, fatback cupim ball tip ribeye porchetta flank swine meatloaf kevin. Ground round corned beef boudin pork loin, venison chicken meatloaf ham pork belly alcatra ball tip ham hock picanha porchetta. Pig tri-tip beef ribs shank tongue pork chop cow sirloin porchetta rump kevin sausage short ribs. Ham hock pork chop kevin ground round shank sirloin ham swine filet mignon chicken.</p><p>Tail pork chop rump short ribs, hamburger prosciutto cow biltong pig tenderloin. Corned beef porchetta rump, turkey buffalo tail tenderloin hamburger alcatra t-bone cupim swine prosciutto pastrami. Pork belly picanha t-bone corned beef pork chop. Shank swine brisket pork. Shankle turkey shoulder andouille. Pork loin ribeye spare ribs bresaola, sirloin porchetta andouille cow. Alcatra jowl boudin cow meatball bresaola kevin frankfurter, pork chop beef ribs capicola ground round filet mignon.</p><p>Chicken ribeye bacon, short ribs tongue shoulder ground round picanha bresaola. Tenderloin kevin turducken meatball ground round turkey jerky cupim prosciutto biltong flank. Tail cow chicken pork belly. Ham hock rump corned beef meatloaf.</p></div><div class=\"anyipsum-form-header\">Does your lorem ipsum text long for something a little meatier? Give our generator a try&hellip; it&rsquo;s tasty!</div>', 
-                'featured_image' => NULL, 
-                'video_provider' => NULL, 
-                'video_id' => NULL, 
-                'publish_at' => '2017-12-06 21:14:00', 
-                'status' => 1, 
-                'created_at' => '2017-12-06 21:14:59', 
+                'id' => 1,
+                'user_id' => 1,
+                'category_id' => 1,
+                'title' => 'Sample Post - No Featured Media',
+                'description' => 'Sample Post - No Featured Media',
+                'slug' => 'sample-post-no-featured-media',
+                'content' => '<div class=\"anyipsum-output\"><p>Bacon ipsum dolor amet shoulder sausage porchetta frankfurter venison meatloaf kielbasa ham hock. Tail kielbasa bresaola pig pork loin, salami turkey shank cupim fatback. Strip steak short loin picanha pig turducken andouille tail, bresaola sirloin. Meatloaf ham pork chop, prosciutto flank t-bone tongue bresaola drumstick ball tip alcatra burgdoggen. Andouille biltong short loin picanha salami tail. Pork loin shoulder pancetta, kevin beef spare ribs salami. Strip steak salami filet mignon, jowl tail ham biltong venison picanha jerky prosciutto boudin pork belly.</p><p>Frankfurter beef tri-tip, short ribs pancetta pork belly kielbasa meatball bacon. Flank pork belly short ribs, bresaola corned beef hamburger salami drumstick chicken cupim. Boudin pork chop meatloaf prosciutto biltong, short loin ham hock ball tip jowl shankle corned beef salami sausage. Flank rump bresaola, cupim pork loin strip steak jowl salami landjaeger short ribs corned beef cow.</p><p>Picanha meatball pancetta short loin leberkas capicola ham hock landjaeger tenderloin jowl. Turkey cow turducken, alcatra fatback shank rump tri-tip pork loin pastrami capicola tail ham sirloin tongue. Ribeye hamburger boudin pork chop tongue pancetta pig turducken sausage. Andouille filet mignon pig tri-tip, fatback cupim ball tip ribeye porchetta flank swine meatloaf kevin. Ground round corned beef boudin pork loin, venison chicken meatloaf ham pork belly alcatra ball tip ham hock picanha porchetta. Pig tri-tip beef ribs shank tongue pork chop cow sirloin porchetta rump kevin sausage short ribs. Ham hock pork chop kevin ground round shank sirloin ham swine filet mignon chicken.</p><p>Tail pork chop rump short ribs, hamburger prosciutto cow biltong pig tenderloin. Corned beef porchetta rump, turkey buffalo tail tenderloin hamburger alcatra t-bone cupim swine prosciutto pastrami. Pork belly picanha t-bone corned beef pork chop. Shank swine brisket pork. Shankle turkey shoulder andouille. Pork loin ribeye spare ribs bresaola, sirloin porchetta andouille cow. Alcatra jowl boudin cow meatball bresaola kevin frankfurter, pork chop beef ribs capicola ground round filet mignon.</p><p>Chicken ribeye bacon, short ribs tongue shoulder ground round picanha bresaola. Tenderloin kevin turducken meatball ground round turkey jerky cupim prosciutto biltong flank. Tail cow chicken pork belly. Ham hock rump corned beef meatloaf.</p></div><div class=\"anyipsum-form-header\">Does your lorem ipsum text long for something a little meatier? Give our generator a try&hellip; it&rsquo;s tasty!</div>',
+                'featured_image' => null,
+                'video_provider' => null,
+                'video_id' => null,
+                'publish_at' => '2017-12-06 21:14:00',
+                'status' => 1,
+                'created_at' => '2017-12-06 21:14:59',
                 'updated_at' => '2018-01-25 09:25:10'
             ),
             array(
-                'id' => 2, 
-                'user_id' => 1, 
-                'category_id' => 1, 
-                'title' => 'Sample Post - Featured Image', 
-                'description' => 'Sample Post - Featured Image', 
-                'slug' => 'sample-post-featured-image', 
-                'content' => '<div class=\"anyipsum-output\"><p>Bacon ipsum dolor amet shoulder sausage porchetta frankfurter venison meatloaf kielbasa ham hock. Tail kielbasa bresaola pig pork loin, salami turkey shank cupim fatback. Strip steak short loin picanha pig turducken andouille tail, bresaola sirloin. Meatloaf ham pork chop, prosciutto flank t-bone tongue bresaola drumstick ball tip alcatra burgdoggen. Andouille biltong short loin picanha salami tail. Pork loin shoulder pancetta, kevin beef spare ribs salami. Strip steak salami filet mignon, jowl tail ham biltong venison picanha jerky prosciutto boudin pork belly.</p><p>Frankfurter beef tri-tip, short ribs pancetta pork belly kielbasa meatball bacon. Flank pork belly short ribs, bresaola corned beef hamburger salami drumstick chicken cupim. Boudin pork chop meatloaf prosciutto biltong, short loin ham hock ball tip jowl shankle corned beef salami sausage. Flank rump bresaola, cupim pork loin strip steak jowl salami landjaeger short ribs corned beef cow.</p><p>Picanha meatball pancetta short loin leberkas capicola ham hock landjaeger tenderloin jowl. Turkey cow turducken, alcatra fatback shank rump tri-tip pork loin pastrami capicola tail ham sirloin tongue. Ribeye hamburger boudin pork chop tongue pancetta pig turducken sausage. Andouille filet mignon pig tri-tip, fatback cupim ball tip ribeye porchetta flank swine meatloaf kevin. Ground round corned beef boudin pork loin, venison chicken meatloaf ham pork belly alcatra ball tip ham hock picanha porchetta. Pig tri-tip beef ribs shank tongue pork chop cow sirloin porchetta rump kevin sausage short ribs. Ham hock pork chop kevin ground round shank sirloin ham swine filet mignon chicken.</p><p>Tail pork chop rump short ribs, hamburger prosciutto cow biltong pig tenderloin. Corned beef porchetta rump, turkey buffalo tail tenderloin hamburger alcatra t-bone cupim swine prosciutto pastrami. Pork belly picanha t-bone corned beef pork chop. Shank swine brisket pork. Shankle turkey shoulder andouille. Pork loin ribeye spare ribs bresaola, sirloin porchetta andouille cow. Alcatra jowl boudin cow meatball bresaola kevin frankfurter, pork chop beef ribs capicola ground round filet mignon.</p><p>Chicken ribeye bacon, short ribs tongue shoulder ground round picanha bresaola. Tenderloin kevin turducken meatball ground round turkey jerky cupim prosciutto biltong flank. Tail cow chicken pork belly. Ham hock rump corned beef meatloaf.</p></div><div class=\"anyipsum-form-header\">Does your lorem ipsum text long for something a little meatier? Give our generator a try&hellip; it&rsquo;s tasty!</div>', 
-                'featured_image' => 'https://baconmockup.com/1200/630', 
-                'video_provider' => NULL, 
-                'video_id' => NULL, 
-                'publish_at' => '2017-12-06 21:18:00', 
-                'status' => 1, 
-                'created_at' => '2017-12-06 21:19:25', 
+                'id' => 2,
+                'user_id' => 1,
+                'category_id' => 1,
+                'title' => 'Sample Post - Featured Image',
+                'description' => 'Sample Post - Featured Image',
+                'slug' => 'sample-post-featured-image',
+                'content' => '<div class=\"anyipsum-output\"><p>Bacon ipsum dolor amet shoulder sausage porchetta frankfurter venison meatloaf kielbasa ham hock. Tail kielbasa bresaola pig pork loin, salami turkey shank cupim fatback. Strip steak short loin picanha pig turducken andouille tail, bresaola sirloin. Meatloaf ham pork chop, prosciutto flank t-bone tongue bresaola drumstick ball tip alcatra burgdoggen. Andouille biltong short loin picanha salami tail. Pork loin shoulder pancetta, kevin beef spare ribs salami. Strip steak salami filet mignon, jowl tail ham biltong venison picanha jerky prosciutto boudin pork belly.</p><p>Frankfurter beef tri-tip, short ribs pancetta pork belly kielbasa meatball bacon. Flank pork belly short ribs, bresaola corned beef hamburger salami drumstick chicken cupim. Boudin pork chop meatloaf prosciutto biltong, short loin ham hock ball tip jowl shankle corned beef salami sausage. Flank rump bresaola, cupim pork loin strip steak jowl salami landjaeger short ribs corned beef cow.</p><p>Picanha meatball pancetta short loin leberkas capicola ham hock landjaeger tenderloin jowl. Turkey cow turducken, alcatra fatback shank rump tri-tip pork loin pastrami capicola tail ham sirloin tongue. Ribeye hamburger boudin pork chop tongue pancetta pig turducken sausage. Andouille filet mignon pig tri-tip, fatback cupim ball tip ribeye porchetta flank swine meatloaf kevin. Ground round corned beef boudin pork loin, venison chicken meatloaf ham pork belly alcatra ball tip ham hock picanha porchetta. Pig tri-tip beef ribs shank tongue pork chop cow sirloin porchetta rump kevin sausage short ribs. Ham hock pork chop kevin ground round shank sirloin ham swine filet mignon chicken.</p><p>Tail pork chop rump short ribs, hamburger prosciutto cow biltong pig tenderloin. Corned beef porchetta rump, turkey buffalo tail tenderloin hamburger alcatra t-bone cupim swine prosciutto pastrami. Pork belly picanha t-bone corned beef pork chop. Shank swine brisket pork. Shankle turkey shoulder andouille. Pork loin ribeye spare ribs bresaola, sirloin porchetta andouille cow. Alcatra jowl boudin cow meatball bresaola kevin frankfurter, pork chop beef ribs capicola ground round filet mignon.</p><p>Chicken ribeye bacon, short ribs tongue shoulder ground round picanha bresaola. Tenderloin kevin turducken meatball ground round turkey jerky cupim prosciutto biltong flank. Tail cow chicken pork belly. Ham hock rump corned beef meatloaf.</p></div><div class=\"anyipsum-form-header\">Does your lorem ipsum text long for something a little meatier? Give our generator a try&hellip; it&rsquo;s tasty!</div>',
+                'featured_image' => 'https://baconmockup.com/1200/630',
+                'video_provider' => null,
+                'video_id' => null,
+                'publish_at' => '2017-12-06 21:18:00',
+                'status' => 1,
+                'created_at' => '2017-12-06 21:19:25',
                 'updated_at' => '2018-01-25 09:25:04'
             ),
             array(
-                'id' => 3, 
-                'user_id' => 1, 
-                'category_id' => 1, 
-                'title' => 'Sample Post - Featured Video', 
-                'description' => 'Sample Post - Featured Video', 
-                'slug' => 'sample-post-featured-video', 
-                'content' => '<p>Bacon ipsum dolor amet pancetta short loin picanha drumstick, hamburger beef ribs doner shoulder frankfurter sirloin biltong kielbasa pastrami prosciutto. Boudin cupim burgdoggen, flank ground round shank turkey shankle tail kevin landjaeger. Filet mignon leberkas tongue pig biltong. Venison tri-tip buffalo kielbasa tail leberkas, flank brisket pastrami andouille.</p><p>Shankle rump ground round, pork burgdoggen bresaola spare ribs bacon pork chop cow sausage. Pastrami pork loin kielbasa frankfurter bacon fatback tri-tip swine turducken sirloin. Meatloaf tongue ball tip beef ribs doner fatback rump hamburger pig corned beef kevin meatball buffalo jerky spare ribs. Meatball biltong beef shoulder alcatra sausage swine pork loin tail chicken. Tongue ham hock flank swine beef ribs porchetta pancetta landjaeger strip steak pork loin fatback jerky meatball spare ribs.</p><p>Tail strip steak ham jowl kevin doner shoulder pig shank swine drumstick frankfurter. Bacon drumstick pork belly ribeye andouille sausage tri-tip cow fatback. Filet mignon pig jerky strip steak bresaola meatball brisket beef ribs tail burgdoggen sausage tenderloin t-bone. Andouille landjaeger tri-tip, pork chop chicken t-bone boudin. Kevin ball tip boudin t-bone pork. Short loin jerky pork loin chicken buffalo.</p><p>Burgdoggen capicola sausage pig, frankfurter prosciutto turkey andouille. Pig leberkas short loin tri-tip frankfurter. Landjaeger chuck t-bone, ham kevin strip steak short ribs. Shank flank tail turducken. Meatball jowl pastrami ham hock sirloin kielbasa hamburger. Pig shank bacon pork chop rump fatback.</p><p>Venison shoulder beef ribs, strip steak t-bone tenderloin ground round brisket shankle pork belly. Jowl sausage shankle chuck, rump short ribs short loin. Prosciutto kevin brisket, andouille short loin sausage cow hamburger pancetta shankle capicola strip steak. Ball tip ground round burgdoggen turducken bacon flank, landjaeger leberkas shank short ribs beef swine cupim jerky biltong. Doner t-bone sirloin picanha. Cow boudin filet mignon salami, leberkas kevin ham hock burgdoggen meatloaf beef drumstick sirloin fatback venison. Tenderloin ham boudin rump frankfurter tail pork chop ground round pig landjaeger pastrami tongue flank tri-tip beef.</p>', 
-                'featured_image' => 'https://i1.ytimg.com/vi/1bSDtlARvPI/maxresdefault.jpg', 
-                'video_provider' => 'youtube', 
-                'video_id' => '1bSDtlARvPI', 
-                'publish_at' => '2017-12-06 22:50:00', 
-                'status' => 1, 
-                'created_at' => '2017-12-06 22:50:53', 
+                'id' => 3,
+                'user_id' => 1,
+                'category_id' => 1,
+                'title' => 'Sample Post - Featured Video',
+                'description' => 'Sample Post - Featured Video',
+                'slug' => 'sample-post-featured-video',
+                'content' => '<p>Bacon ipsum dolor amet pancetta short loin picanha drumstick, hamburger beef ribs doner shoulder frankfurter sirloin biltong kielbasa pastrami prosciutto. Boudin cupim burgdoggen, flank ground round shank turkey shankle tail kevin landjaeger. Filet mignon leberkas tongue pig biltong. Venison tri-tip buffalo kielbasa tail leberkas, flank brisket pastrami andouille.</p><p>Shankle rump ground round, pork burgdoggen bresaola spare ribs bacon pork chop cow sausage. Pastrami pork loin kielbasa frankfurter bacon fatback tri-tip swine turducken sirloin. Meatloaf tongue ball tip beef ribs doner fatback rump hamburger pig corned beef kevin meatball buffalo jerky spare ribs. Meatball biltong beef shoulder alcatra sausage swine pork loin tail chicken. Tongue ham hock flank swine beef ribs porchetta pancetta landjaeger strip steak pork loin fatback jerky meatball spare ribs.</p><p>Tail strip steak ham jowl kevin doner shoulder pig shank swine drumstick frankfurter. Bacon drumstick pork belly ribeye andouille sausage tri-tip cow fatback. Filet mignon pig jerky strip steak bresaola meatball brisket beef ribs tail burgdoggen sausage tenderloin t-bone. Andouille landjaeger tri-tip, pork chop chicken t-bone boudin. Kevin ball tip boudin t-bone pork. Short loin jerky pork loin chicken buffalo.</p><p>Burgdoggen capicola sausage pig, frankfurter prosciutto turkey andouille. Pig leberkas short loin tri-tip frankfurter. Landjaeger chuck t-bone, ham kevin strip steak short ribs. Shank flank tail turducken. Meatball jowl pastrami ham hock sirloin kielbasa hamburger. Pig shank bacon pork chop rump fatback.</p><p>Venison shoulder beef ribs, strip steak t-bone tenderloin ground round brisket shankle pork belly. Jowl sausage shankle chuck, rump short ribs short loin. Prosciutto kevin brisket, andouille short loin sausage cow hamburger pancetta shankle capicola strip steak. Ball tip ground round burgdoggen turducken bacon flank, landjaeger leberkas shank short ribs beef swine cupim jerky biltong. Doner t-bone sirloin picanha. Cow boudin filet mignon salami, leberkas kevin ham hock burgdoggen meatloaf beef drumstick sirloin fatback venison. Tenderloin ham boudin rump frankfurter tail pork chop ground round pig landjaeger pastrami tongue flank tri-tip beef.</p>',
+                'featured_image' => 'https://i1.ytimg.com/vi/1bSDtlARvPI/maxresdefault.jpg',
+                'video_provider' => 'youtube',
+                'video_id' => '1bSDtlARvPI',
+                'publish_at' => '2017-12-06 22:50:00',
+                'status' => 1,
+                'created_at' => '2017-12-06 22:50:53',
                 'updated_at' => '2018-01-25 09:23:01'
             )
         );
@@ -665,7 +664,6 @@ class InitDatabase extends Migration
             $ins_config->value = $ivalue['value'];
             $ins_config->save();
         }
-        
     }
 
     public function down()
