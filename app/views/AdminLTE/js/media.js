@@ -11,32 +11,32 @@ var DappurMedia = new function() {
         switch (type) {
             case "menu":
 
-                $("#media-modal-body").html('<iframe id="dappurmedia" width="100%" height="475px" frameborder="0" marginheight="0" marginwidth="0" src="'+
+                $("#media-modal-body").html('<iframe id="dappurmedia" width="100%" height="500" frameborder="0" marginheight="0" marginwidth="0" src="'+
                     this.managerUrl+
                     '?source=menu"></iframe>'
                 );
                 break;
             case "input":
 
-                $("#media-modal-body").html('<iframe id="dappurmedia" width="100%" height="475px" frameborder="0" marginheight="0" marginwidth="0" src="'+
+                $("#media-modal-body").html('<iframe id="dappurmedia" width="100%" height="500" frameborder="0" marginheight="0" marginwidth="0" src="'+
                     this.managerUrl+
                     '?source=input&target='+target+'"></iframe>'
                 );
                 break;
             case "blog":
-                $("#media-modal-body").html('<iframe id="dappurmedia" width="100%" height="475px" frameborder="0" marginheight="0" marginwidth="0" src="'+
+                $("#media-modal-body").html('<iframe id="dappurmedia" width="100%" height="500" frameborder="0" marginheight="0" marginwidth="0" src="'+
                     this.managerUrl+
                     '?source=blog&target='+target+'"></iframe>'
                 );
                 break;
             case "blog_featured":
-                $("#media-modal-body").html('<iframe id="dappurmedia" width="100%" height="475px" frameborder="0" marginheight="0" marginwidth="0" src="'+
+                $("#media-modal-body").html('<iframe id="dappurmedia" width="100%" height="500" frameborder="0" marginheight="0" marginwidth="0" src="'+
                     this.managerUrl+
                     '?source=blog_featured&target='+target+'"></iframe>'
                 );
                 break;
             case "seo_featured":
-                $("#media-modal-body").html('<iframe id="dappurmedia" width="100%" height="475px" frameborder="0" marginheight="0" marginwidth="0" src="'+
+                $("#media-modal-body").html('<iframe id="dappurmedia" width="100%" height="500" frameborder="0" marginheight="0" marginwidth="0" src="'+
                     this.managerUrl+
                     '?source=blog_featured&target='+target+'"></iframe>'
                 );
