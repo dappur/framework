@@ -12,7 +12,7 @@ var DappurCloudinary = new function() {
             remote: this.cmsUrl,
             remoteHelper: "https://cloudinary.com/easyXDM.name.html",
             container: "media-modal-body",
-            props: {style: {width: "100%", height: "490px"}},
+            props: {style: {width: "100%", height: "500px"}},
             onMessage: function(message, origin){
                 var json = JSON.parse(message);
 
