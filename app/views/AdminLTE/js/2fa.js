@@ -38,7 +38,7 @@ $(document).on('change', '#2fa', function(){
                         }else if (parsed.result == "success"){
                             swal({
                                 title: title,
-                                html: 'Please scan the following QR code or enter the secret into your authenticator app and enter the response to enable two factor authentication.'+
+                                html: 'Please scan the following QR code or enter the secret into your authenticator app and enter the code you receive to enable two factor authentication.'+
                                     '<br /><img src="'+ parsed.qr +'" style="max-width: 100%" /><br /><b>Secret: </b>'+parsed.secret+'<br />'+
                                     '<div class="row"><div class="col-md-6 col-md-offset-3"><input type="number" id="swal-input1" style="text-align: center;" class="swal2-input form-control" placeholder="Code"></div></div>',
                                 showCancelButton: true,
