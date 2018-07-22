@@ -6,10 +6,6 @@ $app->group('/dashboard', function () use ($app, $container) {
     $app->get('', 'Admin:dashboard')
         ->setName('dashboard');
 
-    // My Account
-    $app->map(['GET', 'POST'], '/my-account', 'Admin:myAccount')
-        ->setName('my-account');
-
     // Contact Requests
     $app->map(['GET'], '/contact', 'Admin:contact')
         ->setName('admin-contact');
