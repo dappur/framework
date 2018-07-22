@@ -15,6 +15,7 @@
 ### Removed
 - Removed initial migration SQL dump.
 - Removed Dashboard Bootswatch config
+- Remove composer.lock from gitignore.
 
 ## [2.4.0] - 2018-07-19
 ### Added
