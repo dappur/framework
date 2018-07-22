@@ -110,6 +110,10 @@ class Profile extends Controller
     {
         $user = $this->auth->check();
 
+        if (!$user['2fa']) {
+            return $this->redirect($response, 'profile');
+        }
+
         if ($request->isPost()) {
             $tfa = new \RobThree\Auth\TwoFactorAuth($this->config['site-name']);
             if ($tfa->verifyCode($user['2fa'], $request->getParam('code'))) {

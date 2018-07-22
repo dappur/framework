@@ -152,8 +152,8 @@
 <script src="https://cdn.datatables.net/1.10.15/js/dataTables.bootstrap.min.js"></script>
 <script src="https://cdn.datatables.net/responsive/2.1.1/js/dataTables.responsive.min.js"></script>
 <script src="https://cdn.datatables.net/responsive/2.1.1/js/responsive.bootstrap.min.js"></script>
+<script src="{{ asset('AdminLTE/js/users.min.js') }}"></script>
 
-<!-- Page-Level Demo Scripts - Tables - Use for reference -->
 <script>
 $(document).ready(function() {
 
@@ -199,18 +199,29 @@ $(document).ready(function() {
             { 
                 "data": "id",
                 "orderable": false,
-                "render": function ( data ) {
+                "render": function ( data, type, full, meta ) {
                     var result = "";
                     {% if auth.hasAccess('user.edit') %}
-                    var result = result + ' <a href="/dashboard/users/edit/'+data+'" class="btn btn-primary btn-xs">'+
+                    var result = result + ' <a href="/dashboard/users/edit/'+data+'" class="btn btn-primary btn-xs" title="Edit User">'+
                         '<span class="fa fa-fw fa-pencil"></span>'+
                     '</a>';
+
                     {% endif %}
                     if (data == 1) {
                         return result;
                     }
+                    {% if auth.hasAccess('user.edit') %}
+                    var result = result + ' <button class="btn btn-warning btn-xs change-user-password" data-userid="'+data+'" title="Change Password">'+
+                        '<span class="fa fa-fw fa-lock"></span>'+
+                    '</button>';
+                    if (full['2fa']) {
+                        var result = result + ' <button class="btn btn-info btn-xs disable2fa" data-userid="'+data+'" title="Disable 2FA">'+
+                            '<span class="fa fa-fw fa-key"></span>'+
+                        '</button>';
+                    }
+                    {% endif %}
                     {% if auth.hasAccess('user.delete') %}
-                        var result = result + ' <form action="/dashboard/users/delete" method="post" style="display: inline;">'+
+                        var result = result + ' <form action="/dashboard/users/delete" method="post" style="display: inline;" title="Delete User">'+
                             '<input type="hidden" name="user_id" value="'+data+'" />'+
                             '{{csrf()}}'+
                             '<button class="btn btn-danger btn-xs swal-confirm" data-swtitle="Are you sure?" data-swmessage="This account will be permanently deleted and you will not be able to recover it.">'+

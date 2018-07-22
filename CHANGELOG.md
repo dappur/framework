@@ -3,6 +3,7 @@
 ## [Unreleased]
 ### Added
 - Two Factor Authentication using the package from RobThree
+- Option in ddashboard to change user password and disable 2fa
 
 ### Fixed
 - CMS Popup Window sizes in the dashboard.

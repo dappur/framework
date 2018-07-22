@@ -28,6 +28,14 @@ $app->group('/dashboard', function () use ($app, $container) {
             $app->post('/add', 'AdminRoles:rolesAdd')
                 ->setName('admin-roles-add');
         });
+
+        // Change User Password
+        $app->map(['POST'], '/change-password', 'AdminUsers:changePassword')
+            ->setName('admin-user-change-password');
+
+        // Change User Password
+        $app->map(['POST'], '/2fa/disable', 'AdminUsers:disable2fa')
+            ->setName('admin-users-disable-2fa');
     });
 })
 ->add(new Dappur\Middleware\Auth($container))

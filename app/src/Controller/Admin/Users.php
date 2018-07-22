@@ -29,7 +29,7 @@ class Users extends Controller
         $order = $request->getParam('columns')[$request->getParam('order')[0]['column']]['data'];
         $dir = $request->getParam('order')[0]['dir'];
 
-        $users = U::select('id', 'first_name', 'last_name', 'email', 'username')
+        $users = U::select('id', 'first_name', 'last_name', 'email', 'username', '2fa')
             ->with('roles', 'oauth2', 'oauth2.provider')
             ->skip($start)
             ->take($limit)
@@ -270,6 +270,90 @@ class Users extends Controller
                 $this->validator->addError('email', 'User already exists with this email.');
             }
         }
+    }
+
+    /**
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
+    public function changePassword(Request $request, Response $response)
+    {
+        if ($check = $this->sentinel->hasPerm('user.update')) {
+            return $check;
+        }
+
+        $validateData['password'] = array(
+            'rules' => V::noWhitespace()->length(6, 25),
+            'messages' => array(
+                'length' => 'Must be between 6 and 25 characters.'
+            )
+        );
+
+        $validateData['confirm'] = array(
+            'rules' => V::equals($this->request->getParam('password')),
+            'messages' => array(
+                'equals' => 'Passwords do not match.'
+            )
+        );
+        $this->validator->validate($this->request, $validateData);
+        if (!$this->validator->isValid()) {
+            $output['status'] = "error";
+            $output['message'] = "Invalid password, please try again.";
+            return $response->withJson($output);
+        }
+
+        // Check User
+        $user = $this->auth->findById($request->getParam('user_id'));
+
+        if (!$user) {
+            $output['status'] = "error";
+            $output['message'] = "user was not found.";
+            return $response->withJson($output);
+        }
+
+        // Update User
+        $credentials = [
+            'password' => $request->getParam('password'),
+        ];
+
+        if ($this->auth->update($user, $credentials)) {
+            $output['status'] = "success";
+            return $response->withJson($output);
+        }
+
+        $output['status'] = "error";
+        $output['message'] = "An unknown error occurred.";
+        return $response->withJson($output);
+    }
+
+    /**
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
+    public function disable2fa(Request $request, Response $response)
+    {
+        if ($check = $this->sentinel->hasPerm('user.update')) {
+            return $check;
+        }
+
+        // Check User Id
+        $user = \Dappur\Model\Users::find($request->getParam('user_id'));
+
+        if (!$user) {
+            $output['status'] = "error";
+            $output['message'] = "user was not found.";
+            return $response->withJson($output);
+        }
+
+        $user['2fa'] = null;
+
+        if ($user->save()) {
+            $output['status'] = "success";
+            return $response->withJson($output);
+        }
+
+
+        $output['status'] = "error";
+        $output['message'] = "An unknown error occurred.";
+        return $response->withJson($output);
     }
 
     private function editUser($user = null)
