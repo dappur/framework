@@ -16,6 +16,7 @@
 - Removed initial migration SQL dump.
 - Removed Dashboard Bootswatch config
 - Remove composer.lock from gitignore.
+- `My Account` from dashboard in favor of Frontend Profile Page
 
 ## [2.4.0] - 2018-07-19
 ### Added
