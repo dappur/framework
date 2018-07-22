@@ -307,4 +307,8 @@ $(function () {
         tempInput.attr('disabled', true);
         configButton.html(editDisplay);
     });
+
+    $(document).on( "click", '[data-toggle="collapse"]', function () {
+        $(this).children('i').toggleClass('fa-minus fa-plus');
+    } );
 });

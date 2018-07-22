@@ -1,6 +1,6 @@
 {% extends 'base.twig' %}
 
-{% block title %}{{config['site-name']}} || New Email Template{% endblock %}
+{% block title %}{{config['site-name']}} || New Template{% endblock %}
 
 {% block stylesheets %}
     <link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.7/summernote.css" rel="stylesheet">
@@ -9,7 +9,7 @@
 {% block body %}
     <div class="container-fluid">
         <div class="row">
-            <div class="col-lg-12">
+            <div class="col-lg-12 content-header">
                 <h1 class="page-header">
                     Emails <small>New Template</small>
                 </h1>
@@ -29,13 +29,12 @@
 
         <div class="row">
             <div class="col-lg-12">
-                <div class="panel panel-primary">
-                    <div class="panel-heading">
-                        New Email Template
+                <div class="box box-primary">
+                    <div class="box-header">
+                        <h3 class="box-title">New Template</h3>
                     </div>
-                    
-                    <div class="panel-body">
-                        <form action="{{ currentRoute }}" method="POST" role="form">
+                    <form action="{{ currentRoute }}" method="POST" role="form">
+                        <div class="box-body">
                             <div class="col-md-6">
                                 <div class="row">
                                     <div class="col-md-6">
@@ -119,8 +118,8 @@
                                 </div>
                             </div>
                             {{ csrf() }}
-                        </form>
-                    </div>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>

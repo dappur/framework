@@ -1,11 +1,16 @@
 # Changelog
 
 ## [Unreleased]
+### Added
+- Two Factor Authentication using the package from RobThree
+
 ### Fixed
 - CMS Popup Window sizes in the dashboard.
 
 ### Changed
 - Cleaned up Migration template
+- AdminLTE breadcrumbs and page titles
+- Changed dashboard panels to AdminLTE boxes
 
 ### Removed
 - Removed initial migration SQL dump.

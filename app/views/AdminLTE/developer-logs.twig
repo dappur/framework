@@ -41,7 +41,7 @@
 {% block body %}
     <div class="container-fluid">
         <div class="row" id="header-row">
-            <div class="col-lg-12">
+            <div class="col-lg-12 content-header">
                 <h1 class="page-header">
                     Logs <small>Overview</small>
                 </h1>
@@ -52,7 +52,7 @@
                     <li>
                         <i class="fa fa-life-ring"></i> Developer
                     </li>
-                    <li>
+                    <li class="active">
                         <i class="fa fa-clipboard"></i> Logs
                     </li>
                 </ol>
@@ -61,12 +61,12 @@
 
         <div class="row">
             <div class="col-lg-12">
-                <div class="panel panel-info">
-                    <div class="panel-heading">
-                        <div>Log Directory </div>
+                <div class="box box-info">
+                    <div class="box-header">
+                        <div class="box-title">Log Directory </div>
                     </div>
 
-                    <div id="jstree" role="main">
+                    <div id="jstree" class="box-body" role="main">
                         <div id="tree"></div>
                         <div id="data">
                             <div class="content code" style="display:none;"><textarea id="code" readonly="readonly" style="white-space: pre; overflow-wrap: normal; overflow-x: scroll;"></textarea></div>

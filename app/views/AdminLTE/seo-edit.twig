@@ -10,7 +10,7 @@
 {% endblock %}
 
 {% block body %}
-        <div class="col-lg-12">
+        <div class="col-lg-12 content-header">
             <h1 class="page-header">Edit SEO Configuration</h1>
             <ol class="breadcrumb">
                 <li>
@@ -26,13 +26,13 @@
         </div>
 
         <div class="col-lg-12">
-            <div class="panel panel-primary">
-                <div class="panel-heading">
-                    <b>Page Name:</b> {{ route_info.name }} - <b>Pattern:</b> {{ route_info.pattern }}
+            <div class="box box-primary">
+                <div class="box-header">
+                    <h3 class="box-title"><b>Page Name:</b> {{ route_info.name }} - <b>Pattern:</b> {{ route_info.pattern }}</h3>
                 </div>
-                
-                <div class="panel-body">
-                    <form action="{{ currentRoute }}" method="POST" role="form">
+                <form action="{{ currentRoute }}" method="POST" role="form">
+                    <div class="box-body">
+                        
                         <div class="col-md-12">
                             <div class="row">
                                 <h4 style="font-weight: bold;">Details</h4>
@@ -137,16 +137,14 @@
                                 </div>
                             </div>
                         </div>
-                        
-                        <div class="col-md-4 col-md-offset-4">
-                            <div class="form-group">
-                                <button type="submit" class="btn btn-success form-control">Save SEO Configuration</button>
-                            </div>
-                        </div>
                         {{ csrf() }}
-                        <input type="hidden" name="user_id" value="{{user.id}}" />
-                    </form>
-                </div>
+                    </div>
+                    <div class="box-footer">
+                        <div class="col-md-4 col-md-offset-4">
+                            <button type="submit" class="btn btn-success form-control">Save SEO Config</button>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
 

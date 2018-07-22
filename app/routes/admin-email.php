@@ -37,4 +37,5 @@ $app->group('/dashboard', function () use ($app, $container) {
 })
 ->add(new Dappur\Middleware\Auth($container))
 ->add(new Dappur\Middleware\Admin($container))
-->add($container->get('csrf'));
+->add($container->get('csrf'))
+->add(new Dappur\Middleware\TwoFactorAuth($container));

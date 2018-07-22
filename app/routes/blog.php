@@ -22,4 +22,5 @@ $app->group('/blog', function () use ($app) {
 ->add(new Dappur\Middleware\BlogCheck($container))
 ->add(new Dappur\Middleware\PageConfig($container))
 ->add(new Dappur\Middleware\Seo($container))
-->add(new Dappur\Middleware\ProfileCheck($container));
+->add(new Dappur\Middleware\ProfileCheck($container))
+->add(new Dappur\Middleware\TwoFactorAuth($container));

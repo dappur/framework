@@ -6,7 +6,7 @@
 {% endblock %}
 
 {% block body %}
-	{#
+	
     <!-- Content Header (Page header) -->
 	<section class="content-header">
 		<h1>Dashboard <small>Control panel</small></h1>
@@ -105,7 +105,7 @@
 					<div class="box-body chat" id="chat-box">
 						<!-- chat item -->
 						<div class="item">
-							<img alt="user image" class="online" src="dist/img/user4-128x128.jpg">
+							<img alt="user image" class="online" src="https://baconmockup.com/160/160">
 							<p class="message"><a class="name" href="#"><small class="text-muted pull-right"><i class="fa fa-clock-o"></i> 2:15</small> Mike Doe</a> I would like to meet you to discuss the latest news about the arrival of the new theme. They say it is going to be one the best themes on the market</p>
 							<div class="attachment">
 								<h4>Attachments:</h4>
@@ -117,12 +117,12 @@
 						</div><!-- /.item -->
 						<!-- chat item -->
 						<div class="item">
-							<img alt="user image" class="offline" src="dist/img/user3-128x128.jpg">
+							<img alt="user image" class="offline" src="https://baconmockup.com/160/160">
 							<p class="message"><a class="name" href="#"><small class="text-muted pull-right"><i class="fa fa-clock-o"></i> 5:15</small> Alexander Pierce</a> I would like to meet you to discuss the latest news about the arrival of the new theme. They say it is going to be one the best themes on the market</p>
 						</div><!-- /.item -->
 						<!-- chat item -->
 						<div class="item">
-							<img alt="user image" class="offline" src="dist/img/user2-160x160.jpg">
+							<img alt="user image" class="offline" src="https://baconmockup.com/160/160">
 							<p class="message"><a class="name" href="#"><small class="text-muted pull-right"><i class="fa fa-clock-o"></i> 5:30</small> Susan Doe</a> I would like to meet you to discuss the latest news about the arrival of the new theme. They say it is going to be one the best themes on the market</p>
 						</div><!-- /.item -->
 					</div><!-- /.chat -->
@@ -243,7 +243,8 @@
 					<div class="box-header">
 						<!-- tools box -->
 						<div class="pull-right box-tools">
-							<button class="btn btn-primary btn-sm daterange pull-right" data-toggle="tooltip" title="Date range" type="button"><i class="fa fa-calendar"></i></button> <button class="btn btn-primary btn-sm pull-right" data-toggle="tooltip" data-widget="collapse" style="margin-right: 5px;" title="Collapse" type="button"><i class="fa fa-minus"></i></button>
+							<button class="btn btn-primary btn-sm daterange pull-right" data-toggle="tooltip" title="Date range" type="button"><i class="fa fa-calendar"></i></button> 
+							<button class="btn btn-primary btn-sm pull-right" data-toggle="tooltip" data-widget="collapse" style="margin-right: 5px;" title="Collapse" type="button"><i class="fa fa-minus"></i></button>
 						</div><!-- /. tools -->
 						<i class="fa fa-map-marker"></i>
 						<h3 class="box-title">Visitors</h3>
@@ -374,8 +375,9 @@
 			</section><!-- right col -->
 		</div><!-- /.row (main row) -->
 	</section>
-	#}
+	
 {% endblock %}
 
 {% block javascript %}
+	<script src="{{ asset('AdminLTE/js/pages/dashboard.js') }}"></script>
 {% endblock %}

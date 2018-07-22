@@ -11,6 +11,7 @@ class Users extends EloquentUser
         'email',
         'username',
         'password',
+        '2fa',
         'last_name',
         'first_name',
         'permissions',

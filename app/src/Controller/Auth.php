@@ -174,8 +174,7 @@ class Auth extends Controller
     {
         $this->auth->logout();
 
-        $this->session->delete('oauth2-redirect');
-        $this->session->delete('oauth2-state');
+        $this->session->clear();
 
         $this->flash('success', 'You have been logged out.');
         return $this->redirect($response, 'home');

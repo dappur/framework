@@ -27,7 +27,8 @@ $app->group('', function () use ($app, $container, $settings) {
 ->add(new Dappur\Middleware\ Maintenance($container))
 ->add(new Dappur\Middleware\PageConfig($container))
 ->add(new Dappur\Middleware\Seo($container))
-->add(new Dappur\Middleware\ProfileCheck($container));
+->add(new Dappur\Middleware\ProfileCheck($container))
+->add(new Dappur\Middleware\TwoFactorAuth($container));
 
 // Maintenance Mode Bypasses All Middleware
 $app->map(['GET'], '/maintenance', 'App:maintenance')

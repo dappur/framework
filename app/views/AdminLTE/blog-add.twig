@@ -10,7 +10,7 @@
 {% endblock %}
 
 {% block body %}
-        <div class="col-lg-12">
+        <div class="col-lg-12 content-header">
             <h1 class="page-header">Add New Blog Post</h1>
             <ol class="breadcrumb">
                 <li>
@@ -26,164 +26,166 @@
         </div>
 
         <div class="col-lg-12">
-            <div class="panel panel-primary">
-                <div class="panel-heading">
-                    Add Blog Post
+            <div class="box box-primary">
+                <div class="box-header">
+                    <h3 class="box-title">Add Blog Post</h3>
                 </div>
 
-                
-                <div class="panel-body">
-                    <form action="{{ currentRoute }}" method="POST" role="form">
-                        <div class="col-md-8">
-                            <div class="form-group{% if has_error('title') %} has-error{% endif %}">
-                                <label for="title">Title</label>
-                                <input type="text" name="title" class="form-control" id="title" placeholder="Title" value="{% if requestParams.title %}{{requestParams.title}}{% endif %}" required="required">
-                                <span class="help-block">{{ error('title') }}</span>
-                            </div>
-
-                            <div class="form-group{% if has_error('description') %} has-error{% endif %}">
-                                <label for="description">Description</label>
-                                <input type="text" name="description" class="form-control" id="description" placeholder="Description" value="{% if requestParams.description %}{{requestParams.description}}{% endif %}" required="required">
-                                <span class="help-block">{{ error('description') }}</span>
-                            </div>
-
-                            <div class="form-group{% if has_error('post_content') %} has-error{% endif %}">
-                                <label for="post_content">Content</label>
-                                <textarea name="post_content" class="form-control tinymce" id="post_content" placeholder="Post Content" required="required">
-                                    {% if requestParams.post_content %}{{requestParams.post_content}}{% endif %}
-                                </textarea>
-                                <span class="help-block">{{ error('post_content') }}</span>
-                            </div>
-
-                        </div>
+                <form action="{{ currentRoute }}" method="POST" role="form">
+                    <div class="box-body">
                         
-                        <div class="col-md-4">
-
-                            <div class="form-group{% if has_error('category') %} has-error{% endif %}">
-                                <label for="category">Category</label>
-                                <select name="category" id="category" class="form-control" required="required">
-                                    <option value="">Select Category</option>
-                                    {% for category in categories %}
-                                        <option value="{{ category.id }}" {% if requestParams.category == category.id %}SELECTED{% endif %}>{{ category.name }}</option>
-                                    {% endfor %}
-                                </select>
-                                <span class="help-block">{{ error('category') }}</span>
-                            </div>
-
-                            <div class="form-group{% if has_error('tags') %} has-error{% endif %}">
-                                <label for="tags">Tags</label>
-                                <select data-placeholder="Choose some Tags..." name="tags[]" id="tags" class="form-control" multiple="" tabindex="3">
-                                    <option value=""></option>
-                                    {% for tag in tags %}
-                                        <option value="{{ tag.id }}">{{ tag.name }}</option>
-                                    {% endfor %}
-                                </select>
-                                <span class="help-block">{{ error('tags') }}</span>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group{% if has_error('publish_at') %} has-error{% endif %}">
-                                        <label for="publish_at">Publish At <span style="font-weight: normal;">({{config['timezone']}})</span></label>
-                                        <input type="text" name="publish_at" class="form-control" id="publish_at" placeholder="Publish At" value="{% if requestParams.publish_at %}{{requestParams.publish_at}}{% endif %}" required="required">
-                                        <span class="help-block">{{ error('publish_at') }}</span>
-                                    </div>
+                            <div class="col-md-8">
+                                <div class="form-group{% if has_error('title') %} has-error{% endif %}">
+                                    <label for="title">Title</label>
+                                    <input type="text" name="title" class="form-control" id="title" placeholder="Title" value="{% if requestParams.title %}{{requestParams.title}}{% endif %}" required="required">
+                                    <span class="help-block">{{ error('title') }}</span>
                                 </div>
 
-                                <div class="col-md-6">
-                                    <div class="form-group{% if has_error('status') %} has-error{% endif %}">
-                                        <label for="status">Status </label>
-                                        <br /><input type="checkbox" name="status" class="form-control" id="status" {% if requestParams.status %}checked{% endif %}>
-                                        <span class="help-block">{{ error('status') }}</span>
-                                    </div>
+                                <div class="form-group{% if has_error('description') %} has-error{% endif %}">
+                                    <label for="description">Description</label>
+                                    <input type="text" name="description" class="form-control" id="description" placeholder="Description" value="{% if requestParams.description %}{{requestParams.description}}{% endif %}" required="required">
+                                    <span class="help-block">{{ error('description') }}</span>
                                 </div>
-                            </div>
 
-                            <div class="form-group{% if has_error('featured_image') %} has-error{% endif %}">
-                                <label for="cl_upload">Featured Image (Recommended 1200px by 630px)</label>
-                                <span class="help-block">{{ error('featured_image') }}</span>
-                                <div class="row">
-                                    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-                                        <div class="form-group">
-                                            <a class="btn btn-block upload-featured-local">
-                                                <span class="fa fa-upload"></span> Local CMS
-                                            </a>
-                                        </div>
-                                    </div>
-                                    {% if hasCloudinary %}
-                                    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-                                        <div class="form-group">
-                                            <a class="btn btn-block upload-featured-cloudinary">
-                                                <span class="fa fa-upload"></span> Cloudinary
-                                            </a>
-                                        </div>
-                                    </div>
-                                    {% endif %}
-                                    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-                                        <div class="form-group">
-                                            <a class="btn btn-danger btn-block youtube-image" style="display: none;">
-                                                <span class="fa fa-upload"></span> YouTube
-                                            </a>
-                                        </div>
-                                    </div>
+                                <div class="form-group{% if has_error('post_content') %} has-error{% endif %}">
+                                    <label for="post_content">Content</label>
+                                    <textarea name="post_content" class="form-control tinymce" id="post_content" placeholder="Post Content" required="required">
+                                        {% if requestParams.post_content %}{{requestParams.post_content}}{% endif %}
+                                    </textarea>
+                                    <span class="help-block">{{ error('post_content') }}</span>
+                                </div>
+
+                            </div>
+                            
+                            <div class="col-md-4">
+
+                                <div class="form-group{% if has_error('category') %} has-error{% endif %}">
+                                    <label for="category">Category</label>
+                                    <select name="category" id="category" class="form-control" required="required">
+                                        <option value="">Select Category</option>
+                                        {% for category in categories %}
+                                            <option value="{{ category.id }}" {% if requestParams.category == category.id %}SELECTED{% endif %}>{{ category.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <span class="help-block">{{ error('category') }}</span>
+                                </div>
+
+                                <div class="form-group{% if has_error('tags') %} has-error{% endif %}">
+                                    <label for="tags">Tags</label>
+                                    <select data-placeholder="Choose some Tags..." name="tags[]" id="tags" class="form-control" multiple="" tabindex="3">
+                                        <option value=""></option>
+                                        {% for tag in tags %}
+                                            <option value="{{ tag.id }}">{{ tag.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <span class="help-block">{{ error('tags') }}</span>
                                 </div>
                                 <div class="row">
-                                    <div class="col-xs-12">
-                                        <div class="form-group" id="featured_thumbnail" delete-token="">
-                                                {% if requestParams.featured_image != ""  %}
-                                                    <img src="{{ requestParams.featured_image}}" class="img-responsive" alt="Image" style="width: 100%;">
-                                                {% else %}
-                                                    <img src="https://placehold.it/400x210?text=No+Featured+Photo" class="img-responsive" alt="Image" style="width: 100%;">
-                                                {% endif %}
+                                    <div class="col-md-6">
+                                        <div class="form-group{% if has_error('publish_at') %} has-error{% endif %}">
+                                            <label for="publish_at">Publish At <span style="font-weight: normal;">({{config['timezone']}})</span></label>
+                                            <input type="text" name="publish_at" class="form-control" id="publish_at" placeholder="Publish At" value="{% if requestParams.publish_at %}{{requestParams.publish_at}}{% endif %}" required="required">
+                                            <span class="help-block">{{ error('publish_at') }}</span>
                                         </div>
-                                        <input type="hidden" name="featured_image" id="featured_image" value="{% if requestParams.featured_image != "" %}{{ requestParams.featured_image }}{% endif %}">
                                     </div>
-                                </div> 
 
-                            </div>
-                            <div class="form-group{% if has_error('video_id') or has_error('video_provider') %} has-error{% endif %}" id="fv_group">
-                                <label for="video_id">Featured Video <button type="button" class="btn btn-sm btn-danger blog-del-video" style="display: none;"><i class="fa fa-close"></i> Delete</button></label>
-                                <div class="input-group">
-                                    <input type="text" class="form-control" id="video_url" name="video_url" placeholder="Youtube/Vimeo URL" value="{{requestParams.video_url}}">
-                                    <input type="hidden" name="video_provider" id="video_provider" value="{{requestParams.video_provider}}" />
-                                    <input type="hidden" name="video_id" id="video_id" value="{{requestParams.video_id}}" />
-                                    
-                                    <span class="input-group-btn">
-                                        <button class="btn btn-default" id="fvButton">
-                                            <i class="fa fa-arrow-right"></i>
-                                        </button>
-                                    </span>
+                                    <div class="col-md-6">
+                                        <div class="form-group{% if has_error('status') %} has-error{% endif %}">
+                                            <label for="status">Status </label>
+                                            <br /><input type="checkbox" name="status" class="form-control" id="status" {% if requestParams.status %}checked{% endif %}>
+                                            <span class="help-block">{{ error('status') }}</span>
+                                        </div>
+                                    </div>
                                 </div>
-                                <span class="help-block">{{ error('video_id') }}</span>
-                                <span class="help-block">{{ error('video_provider') }}</span>
 
-                                <div id="video_preview">
-                                    {% if requestParams.video_id and requestParams.video_provider %}
-                                        {% if requestParams.video_provider == "youtube" %}
-                                            <div class="video-container">
-                                                <iframe src="https://www.youtube.com/embed/{{requestParams.video_id}}" frameborder="0" allowfullscreen></iframe>
+                                <div class="form-group{% if has_error('featured_image') %} has-error{% endif %}">
+                                    <label for="cl_upload">Featured Image (Recommended 1200px by 630px)</label>
+                                    <span class="help-block">{{ error('featured_image') }}</span>
+                                    <div class="row">
+                                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                                            <div class="form-group">
+                                                <a class="btn btn-block upload-featured-local">
+                                                    <span class="fa fa-upload"></span> Local CMS
+                                                </a>
                                             </div>
+                                        </div>
+                                        {% if hasCloudinary %}
+                                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                                            <div class="form-group">
+                                                <a class="btn btn-block upload-featured-cloudinary">
+                                                    <span class="fa fa-upload"></span> Cloudinary
+                                                </a>
+                                            </div>
+                                        </div>
                                         {% endif %}
+                                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                                            <div class="form-group">
+                                                <a class="btn btn-danger btn-block youtube-image" style="display: none;">
+                                                    <span class="fa fa-upload"></span> YouTube
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-xs-12">
+                                            <div class="form-group" id="featured_thumbnail" delete-token="">
+                                                    {% if requestParams.featured_image != ""  %}
+                                                        <img src="{{ requestParams.featured_image}}" class="img-responsive" alt="Image" style="width: 100%;">
+                                                    {% else %}
+                                                        <img src="https://placehold.it/400x210?text=No+Featured+Photo" class="img-responsive" alt="Image" style="width: 100%;">
+                                                    {% endif %}
+                                            </div>
+                                            <input type="hidden" name="featured_image" id="featured_image" value="{% if requestParams.featured_image != "" %}{{ requestParams.featured_image }}{% endif %}">
+                                        </div>
+                                    </div> 
 
-                                        {% if requestParams.video_provider == "vimeo" %}
-                                            <div class="video-container">
-                                                <iframe src="https://player.vimeo.com/video/{{requestParams.video_id}}" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowfullscreen></iframe>
-                                            </div>
-                                        {% endif %}
-                                    {% endif %}
                                 </div>
-                                
+                                <div class="form-group{% if has_error('video_id') or has_error('video_provider') %} has-error{% endif %}" id="fv_group">
+                                    <label for="video_id">Featured Video <button type="button" class="btn btn-sm btn-danger blog-del-video" style="display: none;"><i class="fa fa-close"></i> Delete</button></label>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" id="video_url" name="video_url" placeholder="Youtube/Vimeo URL" value="{{requestParams.video_url}}">
+                                        <input type="hidden" name="video_provider" id="video_provider" value="{{requestParams.video_provider}}" />
+                                        <input type="hidden" name="video_id" id="video_id" value="{{requestParams.video_id}}" />
+                                        
+                                        <span class="input-group-btn">
+                                            <button class="btn btn-default" id="fvButton">
+                                                <i class="fa fa-arrow-right"></i>
+                                            </button>
+                                        </span>
+                                    </div>
+                                    <span class="help-block">{{ error('video_id') }}</span>
+                                    <span class="help-block">{{ error('video_provider') }}</span>
+
+                                    <div id="video_preview">
+                                        {% if requestParams.video_id and requestParams.video_provider %}
+                                            {% if requestParams.video_provider == "youtube" %}
+                                                <div class="video-container">
+                                                    <iframe src="https://www.youtube.com/embed/{{requestParams.video_id}}" frameborder="0" allowfullscreen></iframe>
+                                                </div>
+                                            {% endif %}
+
+                                            {% if requestParams.video_provider == "vimeo" %}
+                                                <div class="video-container">
+                                                    <iframe src="https://player.vimeo.com/video/{{requestParams.video_id}}" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowfullscreen></iframe>
+                                                </div>
+                                            {% endif %}
+                                        {% endif %}
+                                    </div>
+                                </div>
                             </div>
 
-                        </div>
-                        
+                            {{ csrf() }}
+                    </div>
+
+                    <div class="box-footer">
                         <div class="col-md-4 col-md-offset-4">
-                            <div class="form-group">
-                                <button type="submit" class="btn btn-success form-control">Save New Blog Post</button>
-                            </div>
+                            <button type="submit" class="btn btn-success form-control">Save New Blog Post</button>
                         </div>
-                        {{ csrf() }}
-                    </form>
-                </div>
+                    </div>
+
+                </form>
+                <div style="clear: both:"></div>
+
             </div>
         </div>
 

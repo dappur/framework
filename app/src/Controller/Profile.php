@@ -64,6 +64,67 @@ class Profile extends Controller
         return json_encode(array("result" => "error"));
     }
 
+    /**
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
+    public function twoFactor(Request $request, Response $response)
+    {
+        $user = $this->auth->check();
+        $credentials = [
+            'email'    => $user->email,
+            'password' => $request->getParam('password'),
+        ];
+
+        $tfa = new \RobThree\Auth\TwoFactorAuth($this->config['site-name']);
+
+        if ($request->getAttribute('route')->getArgument('validate') &&
+            $request->getAttribute('route')->getArgument('validate') == "validate") {
+            if ($tfa->verifyCode($this->session->get('2fa-secret'), $request->getParam('code'))) {
+                $user['2fa'] = $this->session->get('2fa-secret');
+                $user->save();
+                $this->session->delete('2fa-secret');
+                $this->session->set('2fa-confirmed', true);
+                return json_encode(array("result" => "success"));
+            }
+            return json_encode(array("result" => "error"));
+        }
+
+        if ($this->auth->stateless($credentials)) {
+            if ($request->getParam('status2fa') == "true") {
+                $secret = $tfa->createSecret();
+                $qrImage = $tfa->getQRCodeImageAsDataUri($this->config['site-name'] . " - " . $user->username, $secret);
+                $this->session->set('2fa-secret', $secret);
+                return json_encode(array("result" => "success", "secret" => $secret, "qr" => $qrImage));
+            }
+            if ($request->getParam('status2fa') == "false") {
+                $user['2fa'] = null;
+                $user->save();
+                return json_encode(array("result" => "disabled"));
+            }
+        }
+        
+        return json_encode(array("result" => "error"));
+    }
+
+    public function twoFactorConfirm(Request $request, Response $response)
+    {
+        $user = $this->auth->check();
+
+        if ($request->isPost()) {
+            $tfa = new \RobThree\Auth\TwoFactorAuth($this->config['site-name']);
+            if ($tfa->verifyCode($user['2fa'], $request->getParam('code'))) {
+                $this->session->set('2fa-confirmed', true);
+                $this->flash('success', 'You have been successfully logged in.');
+                return $this->redirect($response, 'profile');
+            }
+            if (!$tfa->verifyCode($user['2fa'], $request->getParam('code'))) {
+                $this->validator->addError('code', 'Code was invalid.');
+            }
+        }
+
+        return $this->view->render($response, '2fa-confirm.twig', array("user" => $user));
+    }
+
     public function profile(Request $request, Response $response)
     {
         $user = $this->auth->check();

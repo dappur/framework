@@ -5,18 +5,19 @@
 
         {% for group in settingsGrouped %}
 
-            <div class="panel panel-primary">
-                <div class="panel-heading" data-toggle="collapse" data-target="#{{ group.name|replace({' ': ""}) }}" style="cursor: pointer;">
-                    <div class="pull-left">{{ group.name }}</div>
-                    <div class="pull-right">
+            <div class="box box-primary {% if not loop.first %}collapsed-box{% endif %}">
+                <div class="box-header" style="cursor: pointer;">
+                    <div class="pull-left box-title">{{ group.name }}</div>
+                    <div class="pull-right box-tools">
+                        <button class="btn btn-primary btn-sm pull-right" data-toggle="tooltip" data-widget="collapse" title="Collapse" type="button"><i class="fa fa-{% if loop.first %}minus{% else %}plus{% endif %}"></i></button>
                         <a href="{{path_for('settings-export')}}?group_id={{group.id}}">
-                            <i class="fa fa-download"></i> Export
+                             <button class="btn btn-primary btn-sm pull-right" data-toggle="tooltip" style="margin-right: 5px;"  title="Export Group" type="button"><i class="fa fa-download"></i> Export</button>
                         </a>
                     </div>
                     <div style="clear: both;"></div>
                 </div>
                 
-                <div class="panel-body collapse {% if loop.first %}in{% endif %}" id="{{ group.name|replace({' ': ""}) }}">
+                <div class="box-body {% if loop.first %}in{% endif %}" id="{{ group.name|replace({' ': ""}) }}">
                         {% for item in group.config %}
                             {% if item.type_id == 3 %}
                                 {{ configMacro.configTheme(item.name, item.description, "theme", item.value, themeList) }}
