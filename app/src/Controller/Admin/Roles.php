@@ -96,20 +96,18 @@ class Roles extends Controller
                 $this->validator->validate($request, $validateData);
 
                 //Validate Role Name
-                $checkName = $role->where('id', '!=', $request->getParam('role_id'))
-                    ->where('name', '=', $request->getParam('role_name'))
-                    ->get()
-                    ->count();
-                if ($checkName > 0) {
+                $checkName = $role->where('id', '!=', $role->id)
+                    ->where('name', '=', $role->name)
+                    ->first();
+                if ($checkName) {
                     $this->validator->addError('role_name', 'Role name is already in use.');
                 }
 
                 //Validate Role Name
-                $checkSlug = $role->where('id', '!=', $request->getParam('role_id'))
-                    ->where('slug', '=', $request->getParam('role_slug'))
-                    ->get()
-                    ->count();
-                if ($checkSlug > 0) {
+                $checkSlug = $role->where('id', '!=', $role->id)
+                    ->where('slug', '=', $role->name)
+                    ->first();
+                if ($checkSlug) {
                     $this->validator->addError('role_slug', 'Role slug is already in use.');
                 }
 
@@ -131,7 +129,7 @@ class Roles extends Controller
                     $updateRole->slug = $request->getParam('role_slug');
                     $updateRole->save();
 
-                    $rolePerms = $this->auth->findRoleById($request->getParam('role_id'));
+                    $rolePerms = $this->auth->findRoleById($updateRole->id);
                     $rolePerms->permissions = $permissionsArray;
                     $rolePerms->save();
 

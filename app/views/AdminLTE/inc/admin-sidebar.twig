@@ -123,6 +123,22 @@
 			    </li>
 		    {% endif %}
 
+		    {% if auth.hasAccess('pages.view') %}
+			    <li class="treeview {% if currentRoute starts with '/dashboard/pages' %}active{% endif %}">
+			        <a href="javascript:;"><i class="fa fa-fw fa-book"></i> Custom Pages <i class="fa fa-fw fa-caret-down"></i></a>
+			        <ul class="treeview-menu {% if currentRoute starts with '/dashboard/pages' %}in{% endif %}">
+			            <li  {% if currentRoute == '/dashboard/pages' or currentRoute starts with '/dashboard/seo/edit' %}class="active"{% endif %}>
+					        <a href="{{ path_for('admin-pages')}}"><i class="fa fa-bookmark fa-fw"></i> All Pages</a>
+					    </li>
+					    {% if auth.hasAccess('pages.create') %}
+			            <li  {% if currentRoute starts with '/dashboard/pages/add' %}class="active"{% endif %}>
+			                <a href="{{ path_for('admin-pages-add')}}"><i class="fa fa-plus fa-fw"></i> New Page</a>
+			            </li>
+			            {% endif %}
+			        </ul>
+			    </li>
+		    {% endif %}
+
 		    {% if auth.hasAccess('settings.view') %}
 			    <li {% if currentRoute == '/dashboard/settings/global' %}class="active"{% endif %}>
 			        <a href="{{ path_for('settings-global')}}"><i class="fa fa-cogs fa-fw"></i> Global Settings</a>

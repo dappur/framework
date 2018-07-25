@@ -181,7 +181,12 @@ class AddOauth extends Migration
 
     public function down()
     {
-        $this->schema->dropIfExists('oauth2_providers');
         $this->schema->dropIfExists('oauth2_users');
+        $this->schema->dropIfExists('oauth2_providers');
+        
+        // Delete Config and Group
+        $delGroup = \Dappur\Model\ConfigGroups::where('name', 'Oauth2')->first();
+        $delConfig = \Dappur\Model\Config::where('group_id', $delGroup->id)->delete();
+        $delGroup->delete();
     }
 }

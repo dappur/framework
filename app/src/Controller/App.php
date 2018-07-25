@@ -129,6 +129,56 @@ class App extends Controller
 
     /**
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+     * @SuppressWarnings(PHPMD.NPathComplexity)
+     */
+    public function customRoute(Request $request, Response $response)
+    {
+        $route = \Dappur\Model\Routes::where('name', $request->getAttribute('route')->getName())
+            ->with('roles')
+            ->where('status', 1)
+            ->first();
+
+        if (!$route) {
+            throw new NotFoundException($request, $response);
+        }
+
+        // Check for If Permissions are set
+        if (($route->permission && !$this->auth->check()) ||
+            ($route->roles->count() > 0 && !$this->auth->check())
+        ) {
+            $this->flash('warning', 'You must be logged in to access this page.');
+            //return $response->withRedirect($response, 'login', array(), array('redirect' => $route->name));
+            return $response->withRedirect($this->router->pathFor('login', array(), array('redirect' => $route->name)));
+
+        }
+
+        // Check For permission if logged in and set
+        if ($route->permission && $this->auth->check()) {
+            return $this->sentinel->hasPerm($route->permission);
+        }
+
+        // Check for role if logged in and set
+        if ($route->roles && $this->auth->check()) {
+            $userRoles = $this->auth->check()->roles->pluck('id')->toArray();
+            $access = false;
+            foreach ($route->roles as $rval) {
+                if (in_array($rval->id, $userRoles)) {
+                    $access = true;
+                }
+            }
+
+            if (!$access) {
+                $this->flash('danger', 'You do not have permission to access that page.');
+                return $this->redirect($response, 'home');
+            }
+        }
+
+        return $this->view->render($response, 'custom-route.twig', array('route' => $route));
+    }
+
+    /**
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function maintenance(Request $request, Response $response)
     {

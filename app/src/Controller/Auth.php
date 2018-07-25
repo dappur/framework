@@ -139,8 +139,8 @@ class Auth extends Controller
             if ($this->validator->isValid()) {
                 if ($this->processLogin($credentials, $remember)) {
                     $this->flashNow('success', 'You have been logged in.');
-                    if ($request->getParam('redirect') !== null) {
-                        return $response->withRedirect($request->getParam('redirect'));
+                    if ($request->getParam('redirect')) {
+                        return $this->redirect($response, $request->getParam('redirect'));
                     }
                     if ($this->auth->inRole("admin")) {
                         return $this->redirect($response, 'dashboard');

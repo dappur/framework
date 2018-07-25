@@ -3,10 +3,12 @@
 ## [Unreleased]
 ### Added
 - Two Factor Authentication using the package from RobThree
-- Option in ddashboard to change user password and disable 2fa
+- Option in dashboard to change user password and disable 2fa
+- Custom page builder (alpha don't expect much, yet!).  Create custom pages and routes with a WYSIWYG bootstrap editor.
 
 ### Fixed
 - CMS Popup Window sizes in the dashboard.
+- Bug in Dashboard edit role not allowing save
 
 ### Changed
 - Cleaned up Migration template

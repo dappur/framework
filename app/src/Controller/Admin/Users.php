@@ -149,7 +149,7 @@ class Users extends Controller
 
         foreach (Roles::get() as $rolevalue) {
             if (!in_array($rolevalue['slug'], $rolesArray)) {
-                if ($rolevalue['slug'] == 'admin' && $this->request->getParam('user_id') == 1) {
+                if ($rolevalue['slug'] == 'admin' && $this->auth->check()->id == 1) {
                     continue;
                 }
 
@@ -381,7 +381,7 @@ class Users extends Controller
             echo $rolevalue['slug'] . "<br>";
             
             if (!in_array($rolevalue['slug'], $rolesArray)) {
-                if ($rolevalue['slug'] == 'admin' && $this->request->getParam('user_id') == 1) {
+                if ($rolevalue['slug'] == 'admin' && $this->auth->check()->id == 1) {
                     continue;
                 }
 

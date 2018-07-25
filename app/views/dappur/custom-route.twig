@@ -1,0 +1,13 @@
+{% extends 'base.twig' %}
+
+{% block stylesheets %}
+    {{ route.css|raw }}
+{% endblock %}
+
+{% block body %}
+	{{ route.content|raw }}
+{% endblock %}
+
+{% block javascript %}
+    {{ route.js|raw }}
+{% endblock %}

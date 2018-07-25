@@ -1,3 +1,4 @@
+{% if flash.getMessages() %}
 <div class="container">
     {% for name, messages in flash.getMessages() %}
         {% for message in messages %}
@@ -10,3 +11,4 @@
             {% endfor %}
     {% endfor %}
 </div>
+{% endif %}

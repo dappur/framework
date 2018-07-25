@@ -37,6 +37,9 @@
                         {{ form.custom('recaptcha', recaptcha()) }}
                         
                         {{ csrf() }}
+                        {% if requestParams.redirect %}
+                            <input type="hidden" name="redirect" value="{{ requestParams.redirect }}" class="btn btn-primary">
+                        {% endif %}
                         <input type="submit" value="Login" class="btn btn-primary">
                     </form>
                 </div>

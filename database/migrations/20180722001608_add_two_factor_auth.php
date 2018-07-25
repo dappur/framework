@@ -45,7 +45,7 @@ class AddTwoFactorAuth extends Migration
         );
 
         // Seed Config Table
-        foreach ($init_config as $key => $value) {
+        foreach ($init_config as $value) {
             $config = new Dappur\Model\Config;
             $config->group_id = $value[0];
             $config->name = $value[1];
@@ -62,7 +62,9 @@ class AddTwoFactorAuth extends Migration
             $table->dropColumn('2fa');
         });
 
-        $config = \Dappur\Model\ConfigGroups::where('name', '2FA')->first();
-        $config->delete();
+        // Delete Config and Group
+        $delGroup = \Dappur\Model\ConfigGroups::where('name', '2FA')->first();
+        $delConfig = \Dappur\Model\Config::where('group_id', $delGroup->id)->delete();
+        $delGroup->delete();
     }
 }

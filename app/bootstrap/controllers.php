@@ -35,6 +35,10 @@ $container['AdminOauth2'] = function ($container) {
     return new \Dappur\Controller\Admin\Oauth2($container);
 };
 
+$container['AdminPages'] = function ($container) {
+    return new \Dappur\Controller\Admin\Pages($container);
+};
+
 $container['AdminRoles'] = function ($container) {
     return new \Dappur\Controller\Admin\Roles($container);
 };

@@ -24,7 +24,7 @@ $app->group('', function () use ($app, $container, $settings) {
         ->setName('oauth');
 })
 ->add($container->get('csrf'))
-->add(new Dappur\Middleware\ Maintenance($container))
+->add(new Dappur\Middleware\Maintenance($container))
 ->add(new Dappur\Middleware\PageConfig($container))
 ->add(new Dappur\Middleware\Seo($container))
 ->add(new Dappur\Middleware\ProfileCheck($container))
