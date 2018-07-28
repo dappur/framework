@@ -112,7 +112,7 @@
 			        <a href="javascript:;"><i class="fa fa-fw fa-sitemap"></i> SEO <i class="fa fa-fw fa-caret-down"></i></a>
 			        <ul class="treeview-menu {% if currentRoute starts with '/dashboard/seo' %}in{% endif %}">
 			            <li  {% if currentRoute == '/dashboard/seo' or currentRoute starts with '/dashboard/seo/edit' %}class="active"{% endif %}>
-					        <a href="{{ path_for('admin-seo')}}"><i class="fa fa-user-circle fa-fw"></i> All Settings</a>
+					        <a href="{{ path_for('admin-seo')}}"><i class="fa fa-user-circle fa-fw"></i> All Configs</a>
 					    </li>
 					    {% if auth.hasAccess('seo.create') %}
 			            <li  {% if currentRoute starts with '/dashboard/seo/add' %}class="active"{% endif %}>

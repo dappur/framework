@@ -124,34 +124,6 @@
 {% endblock %}
 
 {% block javascript %}
-<script>
-$(document).on('click', '#addPermButton', function() {
-    $("#permissionsRow").append(`   <div>
-                                        <div class="col-xs-6">
-                                            <div class="form-group">
-                                                <input type="text" name="perm_name[]" class="form-control" placeholder="Permission Name" required="required">
-                                            </div>
-                                        </div>
-
-                                        <div class="col-xs-5">
-                                            <div class="form-group">
-                                                <select name="perm_value[]" class="form-control" required="required">
-                                                    <option value="true">True</option>
-                                                    <option value="false">False</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="col-xs-1">
-                                            <a class="btn btn-primary btn-danger removePerm"><span class="fa fa-fw fa-close"></span> </a>
-                                        </div>
-                                    </div>
-                                `);
-
-
-});
-$(document).on('click', '.removePerm', function() {
-    $(this).parent().parent().remove();
-})
-</script>
+<script type="text/javascript" src="{{ asset('AdminLTE/js/users.min.js') }}"></script>
 {% endblock %}
 

@@ -58,29 +58,5 @@
 <script src="https://cdn.datatables.net/1.10.15/js/dataTables.bootstrap.min.js"></script>
 <script src="https://cdn.datatables.net/responsive/2.1.1/js/dataTables.responsive.min.js"></script>
 <script src="https://cdn.datatables.net/responsive/2.1.1/js/responsive.bootstrap.min.js"></script>
-
-<!-- Page-Level Demo Scripts - Tables - Use for reference -->
-<script>
-$(document).ready(function() {
-    
-    $('#contact_table').DataTable({
-            responsive: true,
-            stateSave: true,
-            "processing": true,
-            "serverSide": true,
-            "ajax":{
-                     "url": "/dashboard/contact/datatables",
-                     "dataType": "json",
-                     "type": "GET"
-                   },
-            "columns": [
-                { "data": "created_at" },
-                { "data": "name" },
-                { "data": "email" },
-                { "data": "phone" },
-                { "data": "comment" }
-            ]
-        });
-});
-</script>
+<script src="{{ asset('AdminLTE/js/contact.min.js') }}"></script>
 {% endblock %}

@@ -52,7 +52,6 @@
 {% block body %}
 	<div class="container">
 		<div class="row">
-			<!-- Blog Entries Column -->
 			<div class="col-md-8">
 
 			    <div class="card mb-4">
@@ -98,28 +97,24 @@
 
 				{% include 'inc/blog-comments.twig' %}
 				
-			</div><!-- Sidebar Widgets Column -->
+			</div>
 			<div class="col-md-4">
 		    	{% include 'inc/blog-sidebar.twig' %}
 		    </div>
-		</div><!-- /.row -->
-	</div><!-- /.container -->
+		</div>
+	</div>
 {% endblock %}
 
 {% block javascript %}
     {{ recaptchaJs() }}
-    
     <script src="{{ asset('dappur/js/blog-comments.js') }}"></script>
-
     {% if requestParams['comment_login'] %}
-    <script type="text/javascript">
-    $(document).ready(function(){
-    	$('html, body').animate({
-		    scrollTop: ($('#comments').offset().top -175)
-		},500);
-	});
+	    <script type="text/javascript">
+	    $(document).ready(function(){
+	    	$('html, body').animate({
+			    scrollTop: ($('#comments').offset().top -175)
+			},500);
+		});
+		</script>
     {% endif %}
-    </script>
-    
-    
 {% endblock %}

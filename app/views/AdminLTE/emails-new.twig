@@ -99,14 +99,7 @@
 
 {% block javascript %}
 <script src="https://cdn.ckeditor.com/4.7.2/standard-all/ckeditor.js"></script>
-<script src="{{ asset('AdminLTE/js/email.min.js') }}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
-<script>
-    function validateEmail(email) {
-        var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        return re.test(String(email).toLowerCase());
-    }
-    
-</script>
+<script src="{{ asset('AdminLTE/js/email.min.js') }}"></script>
 {% endblock %}
 
