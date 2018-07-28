@@ -82,7 +82,7 @@ $(document).ready(function() {
                 "data": "pattern",
                 "orderable": false,
                 "render": function ( data, type, full, meta ) {
-                    return "/"+data;
+                    return '<a href="/'+data+'" target="_blank">/'+data+'</a>';
                     
                 }
             },
