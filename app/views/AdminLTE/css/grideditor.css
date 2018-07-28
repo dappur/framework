@@ -436,3 +436,7 @@
 .ge-canvas.ge-layout-desktop .col-md-12 {
   width: 100%;
 }
+
+.ge-container-active > .glyphicon {
+  color: green;
+}

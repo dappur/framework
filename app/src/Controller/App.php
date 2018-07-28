@@ -144,11 +144,8 @@ class App extends Controller
         }
 
         // Check for If Permissions are set
-        if (($route->permission && !$this->auth->check()) ||
-            ($route->roles->count() > 0 && !$this->auth->check())
-        ) {
+        if ((($route->permission || $route->roles->count() > 0) && !$this->auth->check())) {
             $this->flash('warning', 'You must be logged in to access this page.');
-            //return $response->withRedirect($response, 'login', array(), array('redirect' => $route->name));
             return $response->withRedirect($this->router->pathFor('login', array(), array('redirect' => $route->name)));
 
         }
@@ -159,7 +156,7 @@ class App extends Controller
         }
 
         // Check for role if logged in and set
-        if ($route->roles && $this->auth->check()) {
+        if ($route->roles->count() > 0 && $this->auth->check()) {
             $userRoles = $this->auth->check()->roles->pluck('id')->toArray();
             $access = false;
             foreach ($route->roles as $rval) {

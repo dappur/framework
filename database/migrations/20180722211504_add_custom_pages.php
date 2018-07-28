@@ -54,14 +54,7 @@ class AddCustomPages extends Migration
         $ins = new \Dappur\Model\Routes;
         $ins->name = "custom-demo";
         $ins->pattern = "custom/demo";
-        $ins->content = '<div class="container">
-            <div class="row">
-                <div class="col-xs-12 text-center">
-                    This is a custom route.  Custom routes can be set and edited from within the dashboard.  
-                    Custom CSS and Javascript can be added as well.
-                </div>
-            </div>
-        </div>';
+        $ins->content = '<div class="row"><div class="col-md-12 col-sm-12 col-xs-12 column"><div class="ge-content ge-content-type-tinymce" data-ge-content-type="tinymce"><p style="text-align: center;" data-mce-style="text-align: center;">This is a custom route. Custom routes can be set and edited from within the dashboard. Custom CSS and Javascript can be added as well.</p></div></div></div>';
         $ins->status = 1;
         $ins->save();
 

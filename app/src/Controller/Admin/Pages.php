@@ -147,7 +147,7 @@ class Pages extends Controller
                 $insRole->save();
             }
 
-            $this->flash('success', $insPage->name . "has been successfully created.");
+            $this->flash('success', $insPage->name . " has been successfully created.");
             return $this->redirect($response, 'admin-pages');
         }
 
@@ -220,7 +220,7 @@ class Pages extends Controller
                 $insRole->save();
             }
 
-            $this->flash('success', $routeCheck->name . "has been successfully updated.");
+            $this->flash('success', $routeCheck->name . " has been successfully updated.");
             return $this->redirect($response, 'admin-pages');
         }
 

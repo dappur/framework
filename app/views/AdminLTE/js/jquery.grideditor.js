@@ -280,6 +280,24 @@ $.fn.gridEditor = function( options ) {
                         });
                     }
                 });
+                
+                /* Add tool into top level rows to wrap or remove a container div. */
+                var isTopLevel = row.parent("#"+baseElem.attr('id')).length || row.parent(".container").parent("#"+baseElem.attr('id')).length;
+                var isTopActive = row.parent(".container").parent("#"+baseElem.attr('id')).length;
+                if (isTopLevel) { 
+                    createTool(drawer, 'Container', 'add-container'+((isTopActive) ? ' ge-container-active' : ''), 'glyphicon-inbox', { 
+                        click: function() {
+                            if ($(this).closest('.row.ui-sortable').parent('.container').length) {
+                                row.unwrap();
+                                $(this).removeClass('ge-container-active');
+                            }else{
+                                row.wrap('<div class="container"></div>');
+                                $(this).addClass('ge-container-active');
+                            }
+                        }
+                    });
+                }
+
                 createTool(drawer, 'Add column', 'ge-add-column', 'glyphicon-plus-sign', function() {
                     row.append(createColumn(3));
                     init();

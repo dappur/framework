@@ -43,7 +43,7 @@
                                         <span class="help-block">{{ error('name') }}</span>
                                     </div>
                                     <div class="form-group{% if has_error('pattern') %} has-error{% endif %}">
-                                        <label for="pattern">Route</label>
+                                        <label for="pattern">Route<br /><span style="color: red;">https://{{config.domain}}/</span><span style="color: green;">{route}</span></label>
                                         <input type="text" name="pattern" class="form-control" id="pattern" placeholder="Route" value="{% if requestParams.pattern %}{{requestParams.pattern}}{% endif %}" required="required">
                                         <span class="help-block">{{ error('pattern') }}</span>
                                     </div>
@@ -156,7 +156,8 @@
                         
                     }
                 }
-            }
+            },
+            row_classes: [{label: 'Example class', cssClass: 'container'}],
         });
     });
     $(document).on('submit', 'form', function(e) {

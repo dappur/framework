@@ -22,7 +22,7 @@
                         <i class="fa fa-dashboard"></i> Dashboard
                     </li>
                     <li class="active">
-                        <i class="fa fa-book"></i> Custom Pages
+                        <i class="fa fa-book"></i> Pages
                     </li>
                 </ol>
             </div>
@@ -119,13 +119,13 @@ $(document).ready(function() {
                 "render": function ( data, type, full, meta ) {
                     var result = "";
                     {% if auth.hasAccess('pages.update') %}
-                    var result = result + ' <a href="/dashboard/pages/edit/'+data+'" class="btn btn-primary btn-xs" title="Edit User">'+
+                    var result = result + ' <a href="/dashboard/pages/edit/'+data+'" class="btn btn-primary btn-xs" title="Edit Page">'+
                         '<span class="fa fa-fw fa-pencil"></span>'+
                     '</a>';
 
                     {% endif %}
                     {% if auth.hasAccess('pages.delete') %}
-                        var result = result + ' <form action="/dashboard/pages/delete" method="post" style="display: inline;" title="Delete User">'+
+                        var result = result + ' <form action="/dashboard/pages/delete" method="post" style="display: inline;" title="Delete Page">'+
                             '<input type="hidden" name="page_id" value="'+data+'" />'+
                             '{{csrf()}}'+
                             '<button class="btn btn-danger btn-xs swal-confirm" data-swtitle="Are you sure?" data-swmessage="This page will be permanently deleted and you will not be able to recover it.">'+

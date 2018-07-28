@@ -125,7 +125,7 @@
 
 		    {% if auth.hasAccess('pages.view') %}
 			    <li class="treeview {% if currentRoute starts with '/dashboard/pages' %}active{% endif %}">
-			        <a href="javascript:;"><i class="fa fa-fw fa-book"></i> Custom Pages <i class="fa fa-fw fa-caret-down"></i></a>
+			        <a href="javascript:;"><i class="fa fa-fw fa-book"></i> Pages <i class="fa fa-fw fa-caret-down"></i></a>
 			        <ul class="treeview-menu {% if currentRoute starts with '/dashboard/pages' %}in{% endif %}">
 			            <li  {% if currentRoute == '/dashboard/pages' or currentRoute starts with '/dashboard/seo/edit' %}class="active"{% endif %}>
 					        <a href="{{ path_for('admin-pages')}}"><i class="fa fa-bookmark fa-fw"></i> All Pages</a>
