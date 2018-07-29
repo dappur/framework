@@ -4,13 +4,15 @@
 ### Added
 - Two Factor Authentication using the package from RobThree
 - Option in dashboard to change user password and disable 2fa
-- Custom page builder (alpha don't expect much, yet!).  Create custom pages and routes with a WYSIWYG bootstrap editor.
+- Create custom pages and routes with a WYSIWYG bootstrap editor. Uses Grid-Editor by Frontwise
 
 ### Fixed
 - CMS Popup Window sizes in the dashboard.
 - Bug in Dashboard edit role not allowing save
 
 ### Changed
+- Integrated Frontwise grid editor into blog editor
+- Cleaned up javascript on admin dashboard
 - Cleaned up Migration template
 - AdminLTE breadcrumbs and page titles
 - Changed dashboard panels to AdminLTE boxes

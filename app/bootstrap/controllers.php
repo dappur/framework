@@ -31,6 +31,10 @@ $container['AdminMedia'] = function ($container) {
     return new \Dappur\Controller\Admin\Media($container);
 };
 
+$container['AdminMenus'] = function ($container) {
+    return new \Dappur\Controller\Admin\Menus($container);
+};
+
 $container['AdminOauth2'] = function ($container) {
     return new \Dappur\Controller\Admin\Oauth2($container);
 };

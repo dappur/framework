@@ -1,0 +1,386 @@
+{% extends 'base.twig' %}
+
+{% block title %}{{config['site-name']}} || Menus{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/css/select2.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2-bootstrap-theme/0.1.0-beta.10/select2-bootstrap.min.css">
+    <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-iconpicker/1.9.0/css/bootstrap-iconpicker.min.css" />
+{% endblock %}
+
+{% block body %}
+        <div class="col-lg-12 content-header">
+            <h1 class="page-header">Menus</h1>
+            <ol class="breadcrumb">
+                <li>
+                    <i class="fa fa-dashboard"></i> Dashboard
+                </li>
+                <li class="active">
+                    <i class="fa fa-map"></i> Menus
+                </li>
+            </ol>
+        </div>
+
+        <div class="col-md-4">
+            <div class="box panel-primary">
+                <div class="box-header">
+                    <h3 class="box-title">All Menus</h3>
+                    <div class="pull-right">
+                        <button id="btnNew" type="button" class="btn btn-xs btn-success">
+                            <i class="fa fa-plus"></i> New Menu
+                        </button>
+                    </div>
+                </div>
+                <div class="box-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <tbody id="frmBody">
+                                {% for menu in menus %}
+                                    <tr>
+                                        <td data-menu="{{menu.id}}" class="menu-selector{% if loop.first %} success{% endif %}" style="cursor: pointer;">
+                                            {{menu.name}}
+                                            <div class="pull-right">
+                                                <button type="button" data-menu="{{menu.id}}" class="btn btn-xs btn-info export-menu">
+                                                    <span class="fa fa-download"></span>
+                                                </button> 
+                                                <button type="button" data-menu="{{menu.id}}" class="btn btn-xs btn-danger delete-menu">
+                                                    <span class="fa fa-close"></span>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="form-group">
+                        <textarea id="out" class="form-control" cols="50" rows="10"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="box panel-primary">
+                <div class="box-header">
+                    <h3 class="box-title">Visual Editor</h3>
+                    <div class="pull-right">
+                        <button id="btnReload" type="button" class="btn btn-xs btn-default">
+                            <i class="glyphicon glyphicon-refresh"></i> Reset
+                        </button>
+                    </div>
+                </div>
+                <div class="box-body">
+                    <ul id="myEditor" class="sortableLists list-group"></ul>
+                    <div class="form-group">
+                        <button id="btnSave" type="button" class="btn btn-success form-control" style="display: none;"><i class="glyphicon glyphicon-ok"></i> Save Menu</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="box panel-primary">
+                <div class="box-header">
+                    <h3 class="box-title">New Menu Item</h3>
+                </div>
+                <div class="box-body">
+                    <form id="frmEdit" class="form-horizontal">
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <label for="text" class="control-label">Text</label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control item-menu" id="text" name="text" placeholder="Text">
+                                    <div class="input-group-btn">
+                                        <button id="myEditor_icon" class="btn btn-default" data-iconset="fontawesome" data-icon="" type="button"></button>
+                                    </div>
+                                    <input type="hidden" name="icon" class="item-menu">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <label for="page" class="control-label">Link To</label>
+                                <select name="page" id="page" class="form-control item-menu select2">
+                                    <option></option>
+                                    {% for route in routes %}
+                                        <option value="{{route}}">{{route}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <label for="active" class="control-label">Active Pages</label>
+                                <select name="active" id="active" class="form-control item-menu select2" multiple>
+                                    {% for route in routes %}
+                                        <option value="{{route}}">{{route}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <label for="roles" class="control-label">Limit to Roles</label>
+                                <select name="roles" id="roles" class="form-control item-menu select2" multiple>
+                                    {% for role in roles %}
+                                        <option value="{{role.slud}}">{{role.name}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-6">
+                                <label for="auth" class="control-label">Auth Only</label>
+                                <input type="checkbox" class="item-menu bstoggle" name="auth" id="auth" data-toggle="toggle" data-on="Yes" data-off="No" data-onstyle="success" data-offstyle="danger" data-width="100%" value="false">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="guest" class="control-label">Guest Only</label>
+                                <input type="checkbox" class="item-menu bstoggle" name="guest" id="guest" data-toggle="toggle" data-on="Enabled" data-off="Disabled" data-onstyle="success" data-offstyle="danger" data-width="100%" value="false">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="permission" class="control-label">Permission</label>
+                                <input type="text" class="form-control item-menu" id="permission" name="permission" placeholder="permission.*">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="target" class="control-label">Target</label>
+                                <select name="target" id="target" class="form-control item-menu select2">
+                                    <option value="_self">Self</option>
+                                    <option value="_blank">Blank</option>
+                                    <option value="_top">Top</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <label for="title" class="control-label">Tooltip</label>
+                                <input type="text" class="form-control item-menu" id="title" name="title" placeholder="Tooltip">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="box-footer">
+                    <div class="pull-right">
+                        <button type="button" id="btnUpdate" class="btn btn-primary" disabled style="display: none;"><i class="fa fa-refresh"></i> Update</button>
+                        <button type="button" id="btnCancel" class="btn btn-danger" disabled style="display: none;"><i class="fa fa-close"></i> Cancel</button>
+                        <button type="button" id="btnAdd" class="btn btn-success"><i class="fa fa-plus"></i> Add</button>
+                    </div>
+                    <div style="clear: both;"></div>
+                </div>
+            </div>
+        </div>
+        <div style="clear: both"></div>
+
+{% endblock %}
+
+{% block javascript %}
+<!-- Select2 Dropdowns -->
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/js/select2.min.js" type="text/javascript"></script>
+<script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+<script src="{{asset('AdminLTE/js/iconset-fontawesome-4.7.0.js')}}"></script>
+<script src="{{asset('AdminLTE/js/bootstrap-iconpicker.js')}}"></script>
+<script src="{{asset('AdminLTE/js/jquery-menu-editor.js')}}"></script>
+<script>
+
+    // menu items
+    var activeMenu = {% if menus[0].id %}{{ menus[0].id }}{% else %}0{% endif %};
+    var strjson = {% if menus[0].json %}{{ menus[0].json|raw }}{% else %}[]{% endif %};
+    //icon picker options
+    var iconPickerOptions = {searchText: 'Search...', labelHeader: '{0} de {1} Pags.'};
+    //sortable list options
+    var sortableListOptions = {
+        placeholderCss: {'background-color': 'cyan'}
+    };
+    var editor = new MenuEditor('myEditor', {listOptions: sortableListOptions, iconPicker: iconPickerOptions, labelEdit: 'Edit'});
+    editor.setForm($('#frmEdit'));
+    editor.setUpdateButton($('#btnUpdate'));
+    editor.setCancelButton($('#btnCancel'));
+    editor.setData(strjson);
+    
+    $('#btnReload').on('click', function () {
+        editor.setData(strjson);
+        $("#btnSave").hide();
+    });
+    $('#btnSave').on('click', function () {
+        var str = editor.getString();
+        DappurCSRF.csrfAjax( 
+            '{{ path_for("admin-menus-update") }}', 
+            {menu_id: activeMenu, json: str}, 
+            function(data){
+                if (data.result == "error") {
+                    swal("Error", "An error occurred retrieving that menu:<br />"+data.message, "error");
+                }else if(data.result == "success"){
+                    swal("Success", "Your menu has been saved successfully.", "success");
+                    $("#out").text(editor.getString());
+                    editor.clearForm();
+                    $("#btnSave").hide();
+                }else{
+                    swal("Error", "An unknown error occurred saving your menu.", "error");
+                }
+
+            }
+        );
+        $("#out").text(str);
+    });
+    $("#btnUpdate").click(function(){
+        editor.update();
+    });
+
+    $("#btnCancel").click(function(){
+        editor.clearForm();
+    });
+
+    $('#btnAdd').click(function(){
+        editor.add();
+    });
+
+    $('.select2').select2({
+        width: '100%'
+    });
+
+    $('#btnNew').click(function(){
+        swal({
+            title: 'Enter a Menu Name',
+            input: 'text',
+            inputAttributes: {
+                autocapitalize: 'off'
+            },
+            showCancelButton: true,
+            confirmButtonText: 'Add menu',
+            showLoaderOnConfirm: true,
+            reverseButtons: true,
+            confirmButtonColor: 'green',
+            cancelButtonColor: 'red',
+            preConfirm: (name) => {
+                return new Promise(function (resolve, reject) {
+                    DappurCSRF.csrfAjax( 
+                        '{{ path_for("admin-menus-add") }}', 
+                        {name: name}, 
+                        function(data){
+                            if (data.result == "error") {
+                                reject(data.message);
+                            }else if(data.result == "success"){
+                                console.log(data);
+                                $("#frmBody").append('<tr><td data-menu="'+data.menu.id+'" class="menu-selector" style="cursor: pointer;">'+
+                                    data.menu.name+
+                                    '<div class="pull-right">'+
+                                        '<button type="button" data-menu="'+data.menu.id+'" class="btn btn-xs btn-info export-menu">'+
+                                            '<span class="fa fa-download"></span>'+
+                                        '</button> '+
+                                        '<button type="button" data-menu="'+data.menu.id+'" class="btn btn-xs btn-danger delete-menu">'+
+                                            '<span class="fa fa-close"></span>'+
+                                        '</button>'+
+                                    '</div>'+
+                                '</td></tr>');
+                                resolve();
+                            }else{
+                                reject('An unknown error occured.');
+                            }
+
+                        }
+                    );
+                });
+            },
+            allowOutsideClick: () => !swal.isLoading()
+        }).then((name) => {
+            swal("", name+" has been successfully created.", "success");
+        });
+    });
+
+    $('#auth, #guest').change(function() {
+      $(this).val($(this).prop('checked'));
+    });
+
+    $(document).on('click', '.menu-selector', function(){
+        var elem = $(this);
+        $.get('{{path_for("admin-menus-get")}}', { menu_id: elem.data("menu") }, function(data) {
+            if (data.result == "success") {
+                if (!data.menu.json) {
+                    editor.setData([]);
+                    strjson = [];
+                }else{
+                    editor.setData(data.menu.json);
+                    strjson = data.menu.json;
+                }
+                editor.clearForm();
+                $("#out").text(editor.getString());
+                $('.menu-selector').removeClass('success');
+                elem.addClass('success');
+                $("#btnSave").hide();
+                activeMenu = data.menu.id;
+            }else{
+                swal("Error", "An error occurred retrieving that menu:<br />"+data.message, "error");
+            }
+        });
+    });
+
+    $(document).on('click', '.delete-menu', function(e){
+        e.stopImmediatePropagation();
+        var elem = $(this);
+        swal({
+            title: "Are you sure?",
+            text: "This menu will be permanently deleted and will not be recoverable.",
+            type: "warning",
+            showCancelButton: true,
+            cancelButtonText: 'No, cancel!',
+            confirmButtonText: 'Yes, I am sure!',
+            reverseButtons: true,
+            cancelButtonColor: 'red',
+            confirmButtonColor: 'green'
+        }).then(function(isConfirm) {
+            DappurCSRF.csrfAjax( 
+                '{{ path_for("admin-menus-delete") }}', 
+                {menu_id: elem.data('menu')}, 
+                function(data){
+                    if (data.result == "error") {
+                        swal("", data.message, "error");
+                    }else if(data.result == "success"){
+                        swal("", "Menu has been successfully deleted.", "success");
+                        if (elem.data('menu') == activeMenu) {
+                            $(".menu-selector").first().trigger('click');
+                        }
+                        elem.closest('tr').remove();
+                    }else{
+                        swal("", "An unknown error occurred.", "error");
+                    }
+
+                }
+            );
+        });
+    });
+    $("#frmEdit").on('change', 'select', function(){
+        processCancel();
+    });
+    $("#frmEdit").on('keyup', 'input', function(){
+        processCancel();
+    });
+    $("#frmEdit").on('change', '.bstoggle', function(){
+        processCancel();
+    });
+    $('#myEditor').on("DOMSubtreeModified",function(){
+        $("#btnSave").show();
+    });
+
+    function processCancel(){
+        var hasVal = false;
+        $.each($('#frmEdit input, select'), function(){
+            if ($(this).val() != "" &&
+                $(this).val() != "false" &&
+                $(this).val() != "_self" &&
+                $(this).val() != "fa-" &&
+                $(this).val() != "empty") {
+                hasVal = true;
+            }
+        });
+
+        if (hasVal) {
+            $("#btnCancel").attr("disabled", false);
+            $("#btnCancel").show();
+        }else{
+            $("#btnCancel").attr("disabled", true);
+            $("#btnCancel").hide();
+        }
+    }
+</script>
+{% endblock %}
+

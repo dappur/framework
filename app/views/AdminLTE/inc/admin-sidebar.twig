@@ -139,6 +139,12 @@
 			    </li>
 		    {% endif %}
 
+		    {% if auth.hasAccess('menus.view') %}
+			    <li {% if currentRoute starts with '/dashboard/menus' %}class="active"{% endif %}>
+			        <a href="{{ path_for('admin-menus')}}"><i class="fa fa-map fa-fw"></i> Menus</a>
+			    </li>
+		    {% endif %}
+
 		    {% if auth.hasAccess('settings.view') %}
 			    <li {% if currentRoute == '/dashboard/settings/global' %}class="active"{% endif %}>
 			        <a href="{{ path_for('settings-global')}}"><i class="fa fa-cogs fa-fw"></i> Global Settings</a>
