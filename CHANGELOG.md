@@ -1,6 +1,8 @@
 # Changelog
 
 ## [Unreleased]
+
+## [2.5.0]
 ### Added
 - New bootstrap menu editor integrated into dashboard using the Jquery Menu Editor package from davicotico
 	- Easiy add and edit the dashboard and frontend menus from the dashboard
@@ -173,7 +175,8 @@
 - Internalized all assets, they are now served from the view folder and not from the public dir.
 
 
-[Unreleased]: https://github.com/dappur/framework/compare/v2.4.0...HEAD
+[Unreleased]: https://github.com/dappur/framework/compare/v2.5.0...HEAD
+[2.5.0]: https://github.com/dappur/framework/compare/v2.4.0...v2.5.0
 [2.4.0]: https://github.com/dappur/framework/compare/v2.3.2...v2.4.0
 [2.3.2]: https://github.com/dappur/framework/compare/v2.3.1...v2.3.2
 [2.3.1]: https://github.com/dappur/framework/compare/v2.3.0...v2.3.1
