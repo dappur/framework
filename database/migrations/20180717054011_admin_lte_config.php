@@ -36,7 +36,7 @@ class AdminLteConfig extends Migration
         $config->name = "adminlte-skin";
         $config->description = "AdminLTE Skin";
         $config->type_id = 2;
-        $config->value = "skin-black";
+        $config->value = "skin-yellow";
         $config->save();
     }
 

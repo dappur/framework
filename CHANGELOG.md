@@ -2,6 +2,20 @@
 
 ## [Unreleased]
 ### Added
+- New bootstrap menu editor integrated into dashboard using the Jquery Menu Editor package from davicotico
+	- Easiy add and edit the dashboard and frontend menus from the dashboard
+	- Import and Export menus
+	- Visual interface allowing full control over each menu item
+		- Text & Icon
+		- Link to Page
+		- Pages to toggle for active class
+		- Limit menu items to certain roles
+		- Limit pages to display for authed or guest users only
+		- Limit page to display based on permission
+		- Control target of href
+		- Tooltip text
+		- HTML Element ID
+		- Custom classes for each item
 - Two Factor Authentication using the package from RobThree
 - Option in dashboard to change user password and disable 2fa
 - Create custom pages and routes with a WYSIWYG bootstrap editor. Uses Grid-Editor by Frontwise
