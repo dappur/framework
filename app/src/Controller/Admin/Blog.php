@@ -57,7 +57,7 @@ class Blog extends Controller
 
     public function dataTables(Request $request, Response $response)
     {
-        if ($check = $this->sentinel->hasPerm('blog.view')) {
+        if ($check = $this->sentinel->hasPerm('blog.view', 'dashboard')) {
             return $check;
         }
 

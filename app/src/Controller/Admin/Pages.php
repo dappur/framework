@@ -15,7 +15,7 @@ class Pages extends Controller
 {
     public function datatables(Request $request, Response $response)
     {
-        if ($check = $this->sentinel->hasPerm('pages.view')) {
+        if ($check = $this->sentinel->hasPerm('pages.view', 'dashboard')) {
             return $check;
         }
   
@@ -79,7 +79,7 @@ class Pages extends Controller
      */
     public function view(Request $request, Response $response)
     {
-        if ($check = $this->sentinel->hasPerm('pages.view')) {
+        if ($check = $this->sentinel->hasPerm('pages.view', 'dashboard')) {
             return $check;
         }
 
@@ -95,7 +95,7 @@ class Pages extends Controller
      */
     public function add(Request $request, Response $response)
     {
-        if ($check = $this->sentinel->hasPerm('pages.create')) {
+        if ($check = $this->sentinel->hasPerm('pages.create', 'dashboard')) {
             return $check;
         }
 
@@ -163,7 +163,7 @@ class Pages extends Controller
      */
     public function edit(Request $request, Response $response, $routeId)
     {
-        if ($check = $this->sentinel->hasPerm('pages.update')) {
+        if ($check = $this->sentinel->hasPerm('pages.update', 'dashboard')) {
             return $check;
         }
 
@@ -171,7 +171,7 @@ class Pages extends Controller
         $routeCheck = \Dappur\Model\Routes::with('roles')->find($routeId);
         if (!$routeCheck) {
             $this->flash('danger', "Route doesnt exist.");
-            return $this->redirect($response, 'admin-pages');
+            return $this->redirect($response, 'admin-pages', 'dashboard');
         }
 
         if ($request->isPost()) {
@@ -236,7 +236,7 @@ class Pages extends Controller
      */
     public function delete(Request $request, Response $response)
     {
-        if ($check = $this->sentinel->hasPerm('pages.delete')) {
+        if ($check = $this->sentinel->hasPerm('pages.delete', 'dashboard')) {
             return $check;
         }
 

@@ -16,7 +16,7 @@ class Users extends Controller
 {
     public function dataTables(Request $request, Response $response)
     {
-        if ($check = $this->sentinel->hasPerm('user.view')) {
+        if ($check = $this->sentinel->hasPerm('user.view', 'dashboard')) {
             return $check;
         }
   
@@ -92,7 +92,7 @@ class Users extends Controller
      */
     public function users(Request $request, Response $response)
     {
-        if ($check = $this->sentinel->hasPerm('user.view')) {
+        if ($check = $this->sentinel->hasPerm('user.view', 'dashboard')) {
             return $check;
         }
 
@@ -105,7 +105,7 @@ class Users extends Controller
     
     public function usersAdd(Request $request, Response $response)
     {
-        if ($check = $this->sentinel->hasPerm('user.create')) {
+        if ($check = $this->sentinel->hasPerm('user.create', 'dashboard')) {
             return $check;
         }
 

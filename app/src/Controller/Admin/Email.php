@@ -26,7 +26,7 @@ class Email extends Controller
 
     public function dataTables(Request $request, Response $response)
     {
-        if ($check = $this->sentinel->hasPerm('email.view')) {
+        if ($check = $this->sentinel->hasPerm('email.view', 'dashboard')) {
             return $check;
         }
   

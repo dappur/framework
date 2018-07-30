@@ -21,7 +21,7 @@ class Admin extends Controller
      */
     public function contact(Request $request, Response $response)
     {
-        if ($check = $this->sentinel->hasPerm('contact.view')) {
+        if ($check = $this->sentinel->hasPerm('contact.view', 'dashboard')) {
             return $check;
         }
 
@@ -34,7 +34,7 @@ class Admin extends Controller
 
     public function contactDatatables(Request $request, Response $response)
     {
-        if ($check = $this->sentinel->hasPerm('contact.view')) {
+        if ($check = $this->sentinel->hasPerm('contact.view', 'dashboard')) {
             return $check;
         }
   

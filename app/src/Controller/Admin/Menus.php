@@ -18,7 +18,7 @@ class Menus extends Controller
      */
     public function view(Request $request, Response $response)
     {
-        if ($check = $this->sentinel->hasPerm('pages.view')) {
+        if ($check = $this->sentinel->hasPerm('pages.view', 'dashboard')) {
             return $check;
         }
 
@@ -37,7 +37,7 @@ class Menus extends Controller
         $output['result'] = "error";
         $output['message'] = "An unknown error occured";
 
-        if (!$this->auth->hasAccess('menus.view')) {
+        if (!$this->auth->hasAccess('menus.view', 'dashboard')) {
             $output['message'] = "Permission denied";
             return $response->withJson($output);
         }
@@ -65,7 +65,7 @@ class Menus extends Controller
         $output['result'] = "error";
         $output['message'] = "An unknown error occured";
 
-        if (!$this->auth->hasAccess('menus.update')) {
+        if (!$this->auth->hasAccess('menus.update', 'dashboard')) {
             $output['message'] = "Permission denied";
             return $response->withJson($output);
         }
@@ -92,7 +92,7 @@ class Menus extends Controller
      */
     public function menus(Request $request, Response $response)
     {
-        if ($check = $this->sentinel->hasPerm('menus.create')) {
+        if ($check = $this->sentinel->hasPerm('menus.create', 'dashboard')) {
             return $check;
         }
 

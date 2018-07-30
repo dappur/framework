@@ -15,7 +15,7 @@ class Roles extends Controller
 {
     public function rolesAdd(Request $request, Response $response)
     {
-        if ($check = $this->sentinel->hasPerm('role.create')) {
+        if ($check = $this->sentinel->hasPerm('role.create', 'dashboard')) {
             return $check;
         }
 
@@ -45,7 +45,7 @@ class Roles extends Controller
 
     public function rolesDelete(Request $request, Response $response)
     {
-        if ($check = $this->sentinel->hasPerm('role.delete')) {
+        if ($check = $this->sentinel->hasPerm('role.delete', 'dashboard')) {
             return $check;
         }
 
@@ -68,7 +68,7 @@ class Roles extends Controller
 
     public function rolesEdit(Request $request, Response $response, $roleid)
     {
-        if ($check = $this->sentinel->hasPerm('role.update')) {
+        if ($check = $this->sentinel->hasPerm('role.update', 'dashboard')) {
             return $check;
         }
 

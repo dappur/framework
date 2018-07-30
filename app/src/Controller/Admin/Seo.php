@@ -20,7 +20,7 @@ class Seo extends Controller
      */
     public function seo(Request $request, Response $response)
     {
-        if ($check = $this->sentinel->hasPerm('seo.view')) {
+        if ($check = $this->sentinel->hasPerm('seo.view', 'dashboard')) {
             return $check;
         }
 
@@ -32,7 +32,7 @@ class Seo extends Controller
      */
     public function seoAdd(Request $request, Response $response)
     {
-        if ($check = $this->sentinel->hasPerm('seo.create')) {
+        if ($check = $this->sentinel->hasPerm('seo.create', 'dashboard')) {
             return $check;
         }
 
@@ -104,7 +104,7 @@ class Seo extends Controller
 
     public function seoDelete(Request $request, Response $response)
     {
-        if ($check = $this->sentinel->hasPerm('seo.delete')) {
+        if ($check = $this->sentinel->hasPerm('seo.delete', 'dashboard')) {
             return $check;
         }
 
@@ -161,7 +161,7 @@ class Seo extends Controller
 
     public function seoEdit(Request $request, Response $response)
     {
-        if ($check = $this->sentinel->hasPerm('seo.update')) {
+        if ($check = $this->sentinel->hasPerm('seo.update', 'dashboard')) {
             return $check;
         }
 
