@@ -53,7 +53,7 @@ class BlogComments extends Controller
 
     public function datatables(Request $request, Response $response)
     {
-        if ($check = $this->sentinel->hasPerm('blog.view'), 'dashboard') {
+        if ($check = $this->sentinel->hasPerm('blog.view', 'dashboard')) {
             return $check;
         }
 
