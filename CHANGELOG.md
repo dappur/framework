@@ -1,6 +1,9 @@
 # Changelog
 
 ## [Unreleased]
+### Fixed
+- Updated permission redirect to dashboard for all controllers
+
 ### Changed
 - Removed composer.lock from the main repo
 
