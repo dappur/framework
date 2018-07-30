@@ -829,7 +829,7 @@ function MenuEditor(idSelector, options) {
         e.preventDefault();
         itemEditing = $(this).closest('li');
         editItem(itemEditing);
-        $('#active, #roles').select2({
+        $('#active, #roles, #page').select2({
             width: '100%'
         });
         $('#classes').select2({
@@ -941,7 +941,7 @@ function MenuEditor(idSelector, options) {
     }
 
     function resetAddons() {
-        $('#active, #roles').select2({
+        $('#active, #roles, #page').select2({
             width: '100%'
         });
         $('#classes').html("");
