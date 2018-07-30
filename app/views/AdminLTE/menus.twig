@@ -44,9 +44,11 @@
                                                 <a href="/dashboard/menus/export?menu_id={{menu.id}}" class="btn btn-xs btn-info export-menu">
                                                     <span class="fa fa-download"></span>
                                                 </a> 
-                                                <button type="button" data-menu="{{menu.id}}" class="btn btn-xs btn-danger delete-menu">
-                                                    <span class="fa fa-close"></span>
-                                                </button>
+                                                {% if menu.id != 1 and menu.id != 2 %}
+                                                    <button type="button" data-menu="{{menu.id}}" class="btn btn-xs btn-danger delete-menu">
+                                                        <span class="fa fa-close"></span>
+                                                    </button>
+                                                {% endif %}
                                             </div>
                                         </td>
                                     </tr>

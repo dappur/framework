@@ -169,7 +169,7 @@ class Menus extends Controller
             return $response->withJson($output);
         }
 
-        if ($menu->id == 1) {
+        if ($menu->id == 1 || $menu->id == 2) {
             $output['message'] = "You cannot delete the default menu.";
             return $response->withJson($output);
         }
