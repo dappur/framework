@@ -37,6 +37,8 @@
                                 {{ configMacro.configHtml(item.name, item.description, item.value) }}
                             {% elseif item.type_id == 8 %}
                                 {{ configMacro.configColor(item.name, item.description, item.value) }}
+                            {% elseif item.type_id == 9 %}
+                                {{ configMacro.configMenu(item.name, item.description, item.value, menus) }}
                             {% else %}
                                 {{ configMacro.configDefault(item.name, item.description, item.value) }}
                             {% endif %}

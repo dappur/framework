@@ -142,7 +142,8 @@ class Settings extends Controller
                 "themeList" => $themeList,
                 "timezones" => $timezones,
                 "bsThemes" => $bootswatch,
-                "allRoutes" => $allRoutes
+                "allRoutes" => $allRoutes,
+                "menus" => \Dappur\Model\Menus::get()
             )
         );
     }
@@ -254,7 +255,8 @@ class Settings extends Controller
                 "timezones" => $timezones,
                 "bsThemes" => $bootswatch,
                 "requestParams" => $allPostVars,
-                "allRoutes" => $allRoutes
+                "allRoutes" => $allRoutes,
+                "menus" => \Dappur\Model\Menus::get()
             )
         );
     }
@@ -339,7 +341,8 @@ class Settings extends Controller
                 "timezones" => $timezones,
                 "bsThemes" => $bootswatch,
                 "allRoutes" => $allRoutes,
-                "requestParams" => $allPostVars
+                "requestParams" => $allPostVars,
+                "menus" => \Dappur\Model\Menus::get()
             )
         );
     }
@@ -416,7 +419,8 @@ class Settings extends Controller
                 "themeList" => $themeList,
                 "timezones" => $timezones,
                 "requestParams" => $allPostVars,
-                "pageName" => $pageName
+                "pageName" => $pageName,
+                "menus" => \Dappur\Model\Menus::get()
             )
         );
     }

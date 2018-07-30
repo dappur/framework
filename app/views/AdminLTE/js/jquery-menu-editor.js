@@ -829,8 +829,19 @@ function MenuEditor(idSelector, options) {
         e.preventDefault();
         itemEditing = $(this).closest('li');
         editItem(itemEditing);
-        $('.select2').select2({
+        $('#active, #roles').select2({
             width: '100%'
+        });
+        $('#classes').select2({
+            width: '100%',
+            tags: true,
+            createTag: function (params) {
+                return {
+                    id: params.term,
+                    text: params.term,
+                    newOption: true
+                }
+            }
         });
         $("[data-toggle='toggle']").bootstrapToggle('destroy');
         $.each($("[data-toggle='toggle']"), function(k, v) {
@@ -890,7 +901,14 @@ function MenuEditor(idSelector, options) {
     function editItem($item) {
         var data = $item.data();
         $.each(data, function (p, v) {
-            $form.find("[name=" + p + "]").val(v);
+            if (p == "classes") {
+                $.each(v, function (pp, vv){
+                    $("#classes").append('<option value="'+vv+'" selected>'+vv+'</option>');
+                });
+            }else{
+                $form.find("[name=" + p + "]").val(v);
+            }
+            
         });
         $form.find(".item-menu").first().focus();
         if (data.hasOwnProperty('icon')) {
@@ -923,8 +941,20 @@ function MenuEditor(idSelector, options) {
     }
 
     function resetAddons() {
-        $('.select2').select2({
+        $('#active, #roles').select2({
             width: '100%'
+        });
+        $('#classes').html("");
+        $('#classes').select2({
+            width: '100%',
+            tags: true,
+            createTag: function (params) {
+                return {
+                    id: params.term,
+                    text: params.term,
+                    newOption: true
+                }
+            }
         });
         $("[data-toggle='toggle']").bootstrapToggle('destroy');
         $.each($("[data-toggle='toggle']"), function(k, v) {

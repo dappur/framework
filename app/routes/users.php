@@ -25,7 +25,8 @@ $app->group('', function () use ($app) {
 ->add(new Dappur\Middleware\PageConfig($container))
 ->add(new Dappur\Middleware\Seo($container))
 ->add(new Dappur\Middleware\ProfileCheck($container))
-->add(new Dappur\Middleware\TwoFactorAuth($container));
+->add(new Dappur\Middleware\TwoFactorAuth($container))
+->add(new Dappur\Middleware\RouteName($container));
 
 // Incomplete Profile Page
 $app->map(['GET','POST'], '/profile/incomplete', 'Profile:profileIncomplete')
@@ -35,7 +36,8 @@ $app->map(['GET','POST'], '/profile/incomplete', 'Profile:profileIncomplete')
     ->add(new Dappur\Middleware\Maintenance($container))
     ->add(new Dappur\Middleware\PageConfig($container))
     ->add(new Dappur\Middleware\Seo($container))
-    ->add(new Dappur\Middleware\TwoFactorAuth($container));
+    ->add(new Dappur\Middleware\TwoFactorAuth($container))
+    ->add(new Dappur\Middleware\RouteName($container));
 
 $app->map(['GET', 'POST'], '/2fa/confirm', 'Profile:twoFactorConfirm')
     ->setName('2fa-confirm')
@@ -43,4 +45,5 @@ $app->map(['GET', 'POST'], '/2fa/confirm', 'Profile:twoFactorConfirm')
     ->add(new Dappur\Middleware\Auth($container))
     ->add(new Dappur\Middleware\Maintenance($container))
     ->add(new Dappur\Middleware\PageConfig($container))
-    ->add(new Dappur\Middleware\Seo($container));
+    ->add(new Dappur\Middleware\Seo($container))
+    ->add(new Dappur\Middleware\RouteName($container));

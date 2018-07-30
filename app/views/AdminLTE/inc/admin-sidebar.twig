@@ -10,146 +10,31 @@
 		</div>
 		<ul class="sidebar-menu" data-widget="tree">
 			<li class="header">NAVIGATION</li>
-
-			<li {% if currentRoute == '/dashboard' %}class="active"{% endif %}>
-		        <a href="{{ path_for('dashboard')}}"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
-		    </li>
-
-		    {% if auth.hasAccess('user.view') %}
-		    	 <li class="treeview {% if currentRoute starts with '/dashboard/users' %}active{% endif %}">
-			        <a href="javascript:;"><i class="fa fa-fw fa-users"></i> Users <i class="fa fa-fw fa-caret-down"></i></a>
-			        <ul class="treeview-menu {% if currentRoute starts with '/dashboard/users' %}in{% endif %}">
-			            <li {% if currentRoute starts with '/dashboard/users/edit' or currentRoute == '/dashboard/users' %}class="active"{% endif %}>
-					        <a href="{{ path_for('admin-users')}}"><i class="fa fa-fw fa-users"></i> All Users</a>
-					    </li>
-			            {% if auth.hasAccess('user.create') %}
-			                <li  {% if currentRoute starts with '/dashboard/users/add' %}class="active"{% endif %}>
-			                    <a href="{{ path_for('admin-users-add')}}"><i class="fa fa-plus fa-fw"></i> New User</a>
-			                </li>
-			            {% endif %}
-			        </ul>
-			    </li>
-		    
-		    {% endif %}
-
-		    {% if auth.hasAccess('email.view') %}
-			    <li class="treeview {% if currentRoute starts with '/dashboard/email' %}active{% endif %}">
-			        <a href="javascript:;"><i class="fa fa-fw fa-envelope"></i> Emails <i class="fa fa-fw fa-caret-down"></i></a>
-			        <ul class="treeview-menu {% if currentRoute starts with '/dashboard/email' %}in{% endif %}">
-			            <li  {% if currentRoute == '/dashboard/email' %}class="active"{% endif %}>
-			                <a href="{{ path_for('admin-email')}}"><i class="fa fa-envelope fa-fw"></i> Sent Emails</a>
-			            </li>
-			            {% if auth.hasAccess('email.create') %}
-			                <li  {% if currentRoute starts with '/dashboard/email/new' %}class="active"{% endif %}>
-			                    <a href="{{ path_for('admin-email-new')}}"><i class="fa fa-send fa-fw"></i> New Email</a>
-			                </li>
-			            {% endif %}
-			            {% if auth.hasAccess('email.templates') %}
-			                <li  {% if currentRoute == '/dashboard/email/templates' or currentRoute starts with '/dashboard/email/templates/edit' %}class="active"{% endif %}>
-			                    <a href="{{ path_for('admin-email-template')}}"><i class="fa fa-envelope-square fa-fw"></i> Templates</a>
-			                </li>
-			                <li  {% if currentRoute starts with '/dashboard/email/templates/add' %}class="active"{% endif %}>
-			                    <a href="{{ path_for('admin-email-template-add')}}"><i class="fa fa-plus fa-fw"></i> New Template</a>
-			                </li>
-			            {% endif %}
-			        </ul>
-			    </li>
-		    {% endif %}
-
-		    {% if auth.hasAccess('blog.view') and config['blog-enabled'] %}
-			    <li class="treeview {% if currentRoute starts with '/dashboard/blog' %}active{% endif %}">
-			        <a href="javascript:;"><i class="fa fa-fw fa-newspaper-o"></i> Blog <i class="fa fa-fw fa-caret-down"></i></a>
-			        <ul class="treeview-menu {% if currentRoute starts with '/dashboard/blog' %}in{% endif %}">
-			            <li  {% if currentRoute == '/dashboard/blog' or currentRoute starts with '/dashboard/blog/edit' %}class="active"{% endif %}>
-			                <a href="{{ path_for('admin-blog')}}"><i class="fa fa-newspaper-o fa-fw"></i> Blog Posts</a>
-			            </li>
-			            <li  {% if currentRoute starts with '/dashboard/blog/comments' %}class="active"{% endif %}>
-			                <a href="{{ path_for('admin-blog-comments')}}"><i class="fa fa-comment fa-fw"></i> Comments</a>
-			            </li>
-			            <li  {% if currentRoute starts with '/dashboard/blog/add' %}class="active"{% endif %}>
-			                <a href="{{ path_for('admin-blog-add')}}"><i class="fa fa-plus fa-fw"></i> New Post</a>
-			            </li>
-			        </ul>
-			    </li>
-		    {% endif %}
-
-		    {% if auth.hasAccess('media.local') %}
-			    <li {% if currentRoute starts with '/dashboard/media' %}class="active"{% endif %}>
-			        <a style="cursor: pointer;" id="media-menu"><i class="fa fa-cloud fa-fw"></i> Local CMS</a>
-			    </li>
-		    {% endif %}
-
-		    {% if hasCloudinary and auth.hasAccess('media.cloudinary') %}
-			    <li>
-			        <a style="cursor: pointer;" id="cloudinary-menu"><i class="fa fa-cloud fa-fw"></i> Cloudinary CMS</a>
-			    </li>
-		    {% endif %}
-
-		    {% if auth.hasAccess('contact.view') %}
-			    <li {% if currentRoute starts with '/dashboard/contact' %}class="active"{% endif %}>
-			        <a href="{{ path_for('admin-contact')}}"><i class="fa fa-address-book fa-fw"></i> Contact Requests</a>
-			    </li>
-		    {% endif %}
-
-		    {% if auth.hasAccess('oauth2.view') and config['blog-enabled'] %}
-			    <li class="treeview {% if currentRoute starts with '/dashboard/oauth2' %}active{% endif %}">
-			        <a href="javascript:;"><i class="fa fa-fw fa-user-circle"></i> Oauth2 Providers <i class="fa fa-fw fa-caret-down"></i></a>
-			        <ul class="treeview-menu {% if currentRoute starts with '/dashboard/oauth2' %}in{% endif %}">
-			            <li  {% if currentRoute == '/dashboard/oauth2' or currentRoute starts with '/dashboard/oauth2/edit' %}class="active"{% endif %}>
-					        <a href="{{ path_for('admin-oauth2')}}"><i class="fa fa-user-circle fa-fw"></i> Oauth2 Providers</a>
-					    </li>
-					    {% if auth.hasAccess('oauth2.create') %}
-			            <li  {% if currentRoute starts with '/dashboard/oauth2/add' %}class="active"{% endif %}>
-			                <a href="{{ path_for('admin-oauth2-add')}}"><i class="fa fa-plus fa-fw"></i> New Provider</a>
-			            </li>
-			            {% endif %}
-			        </ul>
-			    </li>
-		    {% endif %}
-
-		    {% if auth.hasAccess('seo.view') and config['blog-enabled'] %}
-			    <li class="treeview {% if currentRoute starts with '/dashboard/seo' %}active{% endif %}">
-			        <a href="javascript:;"><i class="fa fa-fw fa-sitemap"></i> SEO <i class="fa fa-fw fa-caret-down"></i></a>
-			        <ul class="treeview-menu {% if currentRoute starts with '/dashboard/seo' %}in{% endif %}">
-			            <li  {% if currentRoute == '/dashboard/seo' or currentRoute starts with '/dashboard/seo/edit' %}class="active"{% endif %}>
-					        <a href="{{ path_for('admin-seo')}}"><i class="fa fa-user-circle fa-fw"></i> All Configs</a>
-					    </li>
-					    {% if auth.hasAccess('seo.create') %}
-			            <li  {% if currentRoute starts with '/dashboard/seo/add' %}class="active"{% endif %}>
-			                <a href="{{ path_for('admin-seo-add')}}"><i class="fa fa-plus fa-fw"></i> New SEO Config</a>
-			            </li>
-			            {% endif %}
-			        </ul>
-			    </li>
-		    {% endif %}
-
-		    {% if auth.hasAccess('pages.view') %}
-			    <li class="treeview {% if currentRoute starts with '/dashboard/pages' %}active{% endif %}">
-			        <a href="javascript:;"><i class="fa fa-fw fa-book"></i> Pages <i class="fa fa-fw fa-caret-down"></i></a>
-			        <ul class="treeview-menu {% if currentRoute starts with '/dashboard/pages' %}in{% endif %}">
-			            <li  {% if currentRoute == '/dashboard/pages' or currentRoute starts with '/dashboard/seo/edit' %}class="active"{% endif %}>
-					        <a href="{{ path_for('admin-pages')}}"><i class="fa fa-bookmark fa-fw"></i> All Pages</a>
-					    </li>
-					    {% if auth.hasAccess('pages.create') %}
-			            <li  {% if currentRoute starts with '/dashboard/pages/add' %}class="active"{% endif %}>
-			                <a href="{{ path_for('admin-pages-add')}}"><i class="fa fa-plus fa-fw"></i> New Page</a>
-			            </li>
-			            {% endif %}
-			        </ul>
-			    </li>
-		    {% endif %}
-
-		    {% if auth.hasAccess('menus.view') %}
-			    <li {% if currentRoute starts with '/dashboard/menus' %}class="active"{% endif %}>
-			        <a href="{{ path_for('admin-menus')}}"><i class="fa fa-map fa-fw"></i> Menus</a>
-			    </li>
-		    {% endif %}
-
-		    {% if auth.hasAccess('settings.view') %}
-			    <li {% if currentRoute == '/dashboard/settings/global' %}class="active"{% endif %}>
-			        <a href="{{ path_for('settings-global')}}"><i class="fa fa-cogs fa-fw"></i> Global Settings</a>
-			    </li>
-		    {% endif %}
+			{% set menu = getMenu(config['dashboard-menu']) %}
+            {% for m in menu %}
+                {% if m.children is empty %}
+                    <li class="{% if pageName in m.active %}active{% endif %}{% for class in m.classes %} {{ class }}{% endfor %}" {% if m.html_id is not empty %}id="{{m.html_id}}"{% endif %}>
+                        <a href="{% if m.page is not empty %}{{path_for(m.page)}}{% endif %}">
+                            <span class="fa {{m.icon}}"></span> {{m.text}}
+                        </a>
+                    </li>
+                {% else %}
+                    <li class="treeview{% if pageName in m.active %} active{% endif %}{% for class in m.classes %} {{ class }}{% endfor %}" {% if m.html_id is not empty %}id="{{m.html_id}}"{% endif %}>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                            <span class="fa {{m.icon}}"></span> {{m.text}} <span class="caret"></span>
+                        </a>
+                        <ul class="treeview-menu">
+                            {% for c in m.children %}
+                                <li class="{% if pageName in c.active %}active{% endif %}{% for class in c.classes %} {{ class }}{% endfor %}" {% if c.html_id is not empty %}id="{{c.html_id}}"{% endif %}>
+                                    <a href="{% if c.page is not empty %}{{path_for(c.page)}}{% endif %}">
+                                        <span class="fa {{c.icon}}"></span> {{c.text}}
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                {% endif %}
+            {% endfor %}
 
 		    {% if auth.hasAccess('settings.view') %}
 			    <li class="treeview {% if currentRoute starts with '/dashboard/settings/page-settings/' %}active{% endif %}">
@@ -160,17 +45,6 @@
 			                    <a href="{{ path_for('settings-page', {'page_name': item.page_name})}}"><i class="fa fa-file-o fa-fw"></i> {{item.page_name}}</a>
 			                </li>
 			            {% endfor %}
-			        </ul>
-			    </li>
-		    {% endif %}
-
-		    {% if auth.hasAccess('developer.view') %}
-			    <li class="treeview {% if currentRoute starts with '/dashboard/developer' %}active{% endif %}">
-			        <a href="javascript:;"><i class="fa fa-fw fa-life-ring"></i> Developer Tools <i class="fa fa-fw fa-caret-down"></i></a>
-			        <ul class="treeview-menu {% if currentRoute starts with '/dashboard/developer/settings' %}in{% endif %}">
-			            <li class="{% if currentRoute starts with '/dashboard/developer/logs' %}active{% endif %}">
-			                <a href="{{ path_for('developer-logs')}}"><i class="fa fa-clipboard fa-fw"></i> Logfiles</a>
-			            </li>
 			        </ul>
 			    </li>
 		    {% endif %}

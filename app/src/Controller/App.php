@@ -27,6 +27,16 @@ class App extends Controller
         return FileResponse::getResponse($response, $assetPath);
     }
 
+    public function test(Request $request, Response $response)
+    {
+        $menu = \Dappur\Model\Menus::find(1);
+        $menu = json_decode($menu->json, true);
+        foreach ($menu as $key => $value) {
+            $path = $this->router->pathFor($value['page']);
+            die($path);
+        }
+    }
+
     public function contact(Request $request, Response $response)
     {
         if ($request->isPost()) {

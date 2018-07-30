@@ -215,9 +215,7 @@ class Menus extends Controller
         return \Dappur\Dappurware\FileResponse::getResponse(
             $response,
             $filePath,
-            "menu" .
-            "-" .
-            preg_replace('/[^a-zA-Z0-9]/', "-", $fileDesc) .
+            "menu-dappur" .
             "-" . date("Y-m-d-H-i-s") . ".json"
         );
         fclose($tempFile);

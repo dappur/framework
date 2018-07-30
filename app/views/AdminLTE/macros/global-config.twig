@@ -157,3 +157,20 @@
 		    <span id="{{ id }}-help-block" class="help-block">{{ error(name) }}</span>
 		</div>
 {% endmacro %}
+
+{% macro configMenu(name, description, value, menus) %}
+	    <div class="col-md-6 form-group{% if has_error(name) %} has-error{% endif %}">
+			<label for="{{ name }}">
+				{{ description }} - ({{name}})
+				<span class="config-button" data-default="{{ value }}">
+					<span class="config-edit"><i class="fa fa-edit"></i> Edit</span>
+				</span>
+			</label>
+		    <select name="{{ name }}" id="{{ name }}" class="form-control" required="required" disabled>
+				{% for menu in menus %}
+				    <option value="{{menu.id}}" {% if value == menu.id %}selected{% endif %}>{{menu.name}}</option>
+				{% endfor %}
+		    </select>
+		    <span id="{{ id }}-help-block" class="help-block">{{ error(name) }}</span>
+		</div>
+{% endmacro %}

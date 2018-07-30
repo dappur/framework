@@ -41,9 +41,9 @@
                                         <td data-menu="{{menu.id}}" class="menu-selector{% if loop.first %} success{% endif %}" style="cursor: pointer;">
                                             {{menu.name}}
                                             <div class="pull-right">
-                                                <button type="button" data-menu="{{menu.id}}" class="btn btn-xs btn-info export-menu">
+                                                <a href="/dashboard/menus/export?menu_id={{menu.id}}" class="btn btn-xs btn-info export-menu">
                                                     <span class="fa fa-download"></span>
-                                                </button> 
+                                                </a> 
                                                 <button type="button" data-menu="{{menu.id}}" class="btn btn-xs btn-danger delete-menu">
                                                     <span class="fa fa-close"></span>
                                                 </button>
@@ -54,6 +54,31 @@
                             </tbody>
                         </table>
                     </div>
+                </div>
+            </div>
+            
+            <div class="box box-danger">
+                <div class="box-header" style="cursor: pointer;">
+                    <h3 class="box-title">Import Menu</h3>
+                </div>
+
+                <div class="box-body" id="import-export">
+                    <form action="{{ path_for('admin-menus')}}" method="POST" enctype="multipart/form-data">
+                        <div class="form-group text-center">
+                            <label class="btn btn-success btn-file form-control">
+                                <i class="fa fa-upload"></i> Upload JSON File <input type="file" name="import_file" id="import_file" style="display: none;">
+                            </label>
+                        </div>
+                        {{csrf()}}
+                    </form>
+                </div>
+            </div>
+
+            <div class="box panel-primary">
+                <div class="box-header">
+                    <h3 class="box-title"><span id="output-title">{{menus[0].name}}</span> JSON Output</h3>
+                </div>
+                <div class="box-body">
                     <div class="form-group">
                         <textarea id="out" class="form-control" cols="50" rows="10"></textarea>
                     </div>
@@ -123,7 +148,7 @@
                                 <label for="roles" class="control-label">Limit to Roles</label>
                                 <select name="roles" id="roles" class="form-control item-menu select2" multiple>
                                     {% for role in roles %}
-                                        <option value="{{role.slud}}">{{role.name}}</option>
+                                        <option value="{{role.slug}}">{{role.name}}</option>
                                     {% endfor %}
                                 </select>
                             </div>
@@ -151,9 +176,21 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <div class="col-sm-12">
-                                <label for="title" class="control-label">Tooltip</label>
-                                <input type="text" class="form-control item-menu" id="title" name="title" placeholder="Tooltip">
+                            <div class="col-sm-6">
+                                <label for="tooltip" class="control-label">Tooltip</label>
+                                <input type="text" class="form-control item-menu" id="tooltip" name="tooltip" placeholder="Tooltip">
+                            </div>
+                            <div class="col-sm-6">
+                                <label for="html_id" class="control-label">ID</label>
+                                <input type="text" class="form-control item-menu" id="html_id" name="html_id" placeholder="HTML ID">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-xs-12">
+                                <label for="classes" class="control-label">Classes</label>
+                                <select name="classes" id="classes" class="form-control item-menu" multiple>
+                                    <option></option>
+                                </select>
                             </div>
                         </div>
                     </form>
@@ -234,8 +271,20 @@
         editor.add();
     });
 
-    $('.select2').select2({
+    $('#active, #roles').select2({
         width: '100%'
+    });
+
+    $('#classes').select2({
+        width: '100%',
+        tags: true,
+        createTag: function (params) {
+            return {
+                id: params.term,
+                text: params.term,
+                newOption: true
+            }
+        }
     });
 
     $('#btnNew').click(function(){
@@ -261,17 +310,20 @@
                                 reject(data.message);
                             }else if(data.result == "success"){
                                 console.log(data);
-                                $("#frmBody").append('<tr><td data-menu="'+data.menu.id+'" class="menu-selector" style="cursor: pointer;">'+
-                                    data.menu.name+
-                                    '<div class="pull-right">'+
-                                        '<button type="button" data-menu="'+data.menu.id+'" class="btn btn-xs btn-info export-menu">'+
-                                            '<span class="fa fa-download"></span>'+
-                                        '</button> '+
-                                        '<button type="button" data-menu="'+data.menu.id+'" class="btn btn-xs btn-danger delete-menu">'+
-                                            '<span class="fa fa-close"></span>'+
-                                        '</button>'+
-                                    '</div>'+
-                                '</td></tr>');
+                                $("#frmBody")
+                                    .append('<tr><td data-menu="'+data.menu.id+'" class="menu-selector" style="cursor: pointer;">'+
+                                        data.menu.name+
+                                        '<div class="pull-right">'+
+                                            '<button type="button" data-menu="'+data.menu.id+'" class="btn btn-xs btn-info export-menu">'+
+                                                '<span class="fa fa-download"></span>'+
+                                            '</button> '+
+                                            '<button type="button" data-menu="'+data.menu.id+'" class="btn btn-xs btn-danger delete-menu">'+
+                                                '<span class="fa fa-close"></span>'+
+                                            '</button>'+
+                                        '</div>'+
+                                    '</td></tr>'
+                                    );
+                                    $(".menu-selector[data-menu='"+data.menu.id+"']").trigger('click');
                                 resolve();
                             }else{
                                 reject('An unknown error occured.');
@@ -308,6 +360,7 @@
                 elem.addClass('success');
                 $("#btnSave").hide();
                 activeMenu = data.menu.id;
+                $("#output-title").html(data.menu.name);
             }else{
                 swal("Error", "An error occurred retrieving that menu:<br />"+data.message, "error");
             }
@@ -360,6 +413,8 @@
     $('#myEditor').on("DOMSubtreeModified",function(){
         $("#btnSave").show();
     });
+
+    $("#out").text(editor.getString());
 
     function processCancel(){
         var hasVal = false;

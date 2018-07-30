@@ -110,6 +110,7 @@ $container['view'] = function ($container) {
     $view->addExtension(new \Awurth\SlimValidation\ValidatorExtension($container['validator']));
     $view->addExtension(new \Dappur\TwigExtension\Md5($container['request']));
     $view->addExtension(new \Dappur\TwigExtension\Gravatar($container['request']));
+    $view->addExtension(new \Dappur\TwigExtension\Menus($container));
     if ($container['cloudinary']) {
         $view->addExtension(new \Dappur\TwigExtension\Cloudinary());
         $view->getEnvironment()->addGlobal('hasCloudinary', 1);
@@ -159,6 +160,7 @@ $container['view'] = function ($container) {
     $view->getEnvironment()->addGlobal('config', $container['config']);
     $view->getEnvironment()->addGlobal('displayErrorDetails', $container['settings']['displayErrorDetails']);
     $view->getEnvironment()->addGlobal('currentRoute', $container['request']->getUri()->getPath());
+    $view->getEnvironment()->addGlobal('request', $container['request']);
     $view->getEnvironment()->addGlobal('requestParams', $container['request']->getParams());
     $view->getEnvironment()->addGlobal('projectDir', $container['project_dir']);
     $view->getEnvironment()->addGlobal('publicDir', $container['public_dir']);

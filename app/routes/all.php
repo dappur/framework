@@ -19,6 +19,9 @@ $app->group('', function () use ($app, $container, $settings) {
     // Cron Jobs
     $this->map(['GET'], '/cron', 'Cron:run')
         ->setName('cron');
+
+    $this->map(['GET'], '/test', 'App:test')
+        ->setName('test');
     // Oauth
     $this->map(['GET'], '/oauth/{slug}', 'Oauth2:oauth2')
         ->setName('oauth');
@@ -28,13 +31,15 @@ $app->group('', function () use ($app, $container, $settings) {
 ->add(new Dappur\Middleware\PageConfig($container))
 ->add(new Dappur\Middleware\Seo($container))
 ->add(new Dappur\Middleware\ProfileCheck($container))
-->add(new Dappur\Middleware\TwoFactorAuth($container));
+->add(new Dappur\Middleware\TwoFactorAuth($container))
+->add(new Dappur\Middleware\RouteName($container));
 
 // Maintenance Mode Bypasses All Middleware
 $app->map(['GET'], '/maintenance', 'App:maintenance')
         ->setName('maintenance-mode')
         ->add(new Dappur\Middleware\PageConfig($container))
-        ->add(new Dappur\Middleware\Seo($container));
+        ->add(new Dappur\Middleware\Seo($container))
+        ->add(new Dappur\Middleware\RouteName($container));
 
 // Assets Bypass All Middleware
 $app->map(['GET'], '/asset', 'App:asset')
