@@ -37,7 +37,7 @@ class Menus extends Controller
         $output['result'] = "error";
         $output['message'] = "An unknown error occured";
 
-        if (!$this->auth->hasAccess('menus.view', 'dashboard')) {
+        if (!$this->auth->hasAccess('menus.view')) {
             $output['message'] = "Permission denied";
             return $response->withJson($output);
         }
@@ -65,7 +65,7 @@ class Menus extends Controller
         $output['result'] = "error";
         $output['message'] = "An unknown error occured";
 
-        if (!$this->auth->hasAccess('menus.update', 'dashboard')) {
+        if (!$this->auth->hasAccess('menus.update')) {
             $output['message'] = "Permission denied";
             return $response->withJson($output);
         }
