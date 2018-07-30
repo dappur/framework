@@ -14,19 +14,19 @@
             {% for m in menu %}
                 {% if m.children is empty %}
                     <li class="{% if pageName in m.active %}active{% endif %}{% for class in m.classes %} {{ class }}{% endfor %}" {% if m.html_id is not empty %}id="{{m.html_id}}"{% endif %}>
-                        <a href="{% if m.page is not empty %}{{path_for(m.page)}}{% endif %}">
+                        <a href="{% if m.page is not empty %}{{path_for(m.page)}}{% else %}javascript:;{% endif %}">
                             <span class="fa {{m.icon}}"></span> {{m.text}}
                         </a>
                     </li>
                 {% else %}
                     <li class="treeview{% if pageName in m.active %} active{% endif %}{% for class in m.classes %} {{ class }}{% endfor %}" {% if m.html_id is not empty %}id="{{m.html_id}}"{% endif %}>
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                        <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
                             <span class="fa {{m.icon}}"></span> {{m.text}} <span class="caret"></span>
                         </a>
                         <ul class="treeview-menu">
                             {% for c in m.children %}
                                 <li class="{% if pageName in c.active %}active{% endif %}{% for class in c.classes %} {{ class }}{% endfor %}" {% if c.html_id is not empty %}id="{{c.html_id}}"{% endif %}>
-                                    <a href="{% if c.page is not empty %}{{path_for(c.page)}}{% endif %}">
+                                    <a href="{% if c.page is not empty %}{{path_for(c.page)}}{% else %}javascript:;{% endif %}">
                                         <span class="fa {{c.icon}}"></span> {{c.text}}
                                     </a>
                                 </li>
