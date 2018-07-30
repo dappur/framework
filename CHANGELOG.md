@@ -1,7 +1,8 @@
 # Changelog
 
 ## [Unreleased]
-### No changes yet...
+### Changed
+- Removed composer.lock from the main repo
 
 ## [2.5.0]
 ### Added
