@@ -1,6 +1,23 @@
 # Changelog
 
 ## [Unreleased]
+### Notes
+With this version release, I think I am finally happy with the way everything looks and works.  I will continue patch bugs and make other fixes but that will be the extent of the work on the core framework/template.  My goal when I began over a year and a half ago was to create a framework that contained all of the major features that most clients request and be able to deploy itself from a github branch using ssh.  I feel as though that requirement has been met.  I plan on using the extra time for:
+	- Clean up the Deployment script to work on shared servers and remove all of the die statements (it works for me so I haven't touched it since I started)
+	- Writing proper documentation
+	- Clean up of some of the Dappurware codebase
+	- Finish the initial version of Dapp, a command line too
+	- Unit Testing
+Once those items are complete, focus will be shifted to feature enhancements.  The goal is to create an addon installer within Dapp that will automatically copy necessary routes and migrations, allowing a quick and simple command line install process.
+	- Universal shopping cart system with pre-built support for several payment providers including:
+		- Authorize.net
+		- Paypal
+		- Stripe
+		- If you have any suggestions, send me a DM or open an issue
+	- Notification System with integrated emails that can be triggerd within the controller.
+	- More robust initial admin dashboard with stats and numbers
+
+
 ### Added
 - Cookie consent javascript notification
 
