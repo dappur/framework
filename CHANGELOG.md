@@ -1,6 +1,9 @@
 # Changelog
 
 ## [Unreleased]
+### Added
+- Cookie consent javascript notification
+
 ### Fixed
 - Updated permission redirect to dashboard for all controllers
 
