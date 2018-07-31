@@ -216,9 +216,9 @@
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/js/select2.min.js" type="text/javascript"></script>
 <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
-<script src="{{asset('AdminLTE/js/iconset-fontawesome-4.7.0.js')}}"></script>
-<script src="{{asset('AdminLTE/js/bootstrap-iconpicker.js')}}"></script>
-<script src="{{asset('AdminLTE/js/jquery-menu-editor.js')}}"></script>
+<script src="{{asset('AdminLTE/js/iconset-fontawesome-4.7.0.min.js')}}"></script>
+<script src="{{asset('AdminLTE/js/bootstrap-iconpicker.min.js')}}"></script>
+<script src="{{asset('AdminLTE/js/jquery-menu-editor.min.js')}}"></script>
 <script>
     var strjson = {% if menus[0].json %}{{ menus[0].json|raw }}{% else %}[]{% endif %};
     var iconPickerOptions = {searchText: 'Search...', labelHeader: '{0} of {1} Pages.'};
