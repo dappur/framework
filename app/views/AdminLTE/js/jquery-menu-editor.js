@@ -777,6 +777,7 @@ function MenuEditor(idSelector, options) {
     $.extend(true, settings, options);
     var itemEditing = null;
     var sortableReady = true;
+    var activeMenu = 0;
     var $form = null;
     var $updateButton = null;
     var $cancelButton = null;
@@ -1070,6 +1071,10 @@ function MenuEditor(idSelector, options) {
         $cancelButton = $btn;
         $cancelButton.attr('disabled', true);
         itemEditing = null;
+    };
+
+    this.setActiveMenu = function($val){
+        activeMenu = $val;
     };
 
     this.getCancelButton = function(){
