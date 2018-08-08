@@ -448,5 +448,4 @@ class Deployment
 
 $deploy = new Deployment();
 echo $deploy->initDappur();
-
 unlink(__FILE__);
