@@ -5,7 +5,9 @@
 {% endblock %}
 
 {% block body %}
-	{{ route.content|raw }}
+	<div class="container-fluid">
+		{{ route.content|raw }}
+	</div>
 {% endblock %}
 
 {% block javascript %}

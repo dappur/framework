@@ -1,7 +1,5 @@
 # Changelog
 
-## [Unreleased]
-
 ## [3.0.0]
 ### Notes
 This is the next major version release of Dappur.  Dappurware has also been updated to version 3.0.0 so that the major version will match between the two packages.
@@ -25,6 +23,7 @@ Once those items are complete, focus will be shifted to feature enhancements.  T
 ### Added
 - Cookie consent javascript notification
 - Composer.lock back into repository
+- Codemirror on page builder for syntax on custom js/css.
 
 ### Fixed
 - Updated permission redirect to dashboard for all controllers
