@@ -41,14 +41,9 @@ class Deploy extends Controller
             return $response->withRedirect($this->router->pathFor('home'));
         }
 
-        $deploy = new Deployment(
-            $this->settings['deployment']['repo_url'],
-            $_SERVER['DOCUMENT_ROOT'],
-            $_SERVER['HOME'],
-            $this->settings['deployment']['repo_branch']
-        );
+        $deploy = new Deployment();
 
         echo $deploy->execute();
-        echo $deploy->updateDappur();
+        echo $deploy->migrate();
     }
 }

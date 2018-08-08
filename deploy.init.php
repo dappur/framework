@@ -1,5 +1,4 @@
 <?php
-
 namespace Dappur\Dappurware;
 
 /**
@@ -18,173 +17,153 @@ class Deployment
 {
 
     // Git Repository URL
-    protected $repo_url;
+    protected $repoUrl;
     // Web root directory on server
-    protected $document_root;
+    protected $documentRoot;
     // User Home Directory
-    protected $user_home;
+    protected $userHome;
     // Settings Array
-    protected $settings_array;
-    // Repository Deirector on Server
-    protected $repo_dir;
+    protected $repoDir;
     // Full path to git binary is required if git is not in your PHP user's path. Otherwise just use 'git'.
-    protected $git_bin_path;
+    protected $gitBinPath;
     // Log File
-    protected $log_file;
+    protected $logFile;
     // Deployment Cert File (Full path the the deployment RSA key's *.pub file)
-    protected $cert_folder;
+    protected $certFolder;
     // Deployment Cert File (Full path the the deployment RSA key's *.pub file)
-    protected $cert_file_name;
+    protected $certFileName;
     // Set high timeout limit due to composer and git sometimes taking longer than default.
-    protected $timelimit;
+    protected $timeLimit;
+    // Certificate path with filename
+    protected $certPath;
+    // Framework settings
+    protected $settings;
     
-    /**
-     * { function_description }
-     *
-     * @param      string   $repo_url        The repo url
-     * @param      string   $document_root   The document root
-     * @param      string   $user_home       The user home
-     * @param      array    $settings_array  The settings array
-     * @param      string   $repo_dir        The repo dir
-     * @param      string   $git_bin_path    The git bin path
-     * @param      string   $log_file        The log file
-     * @param      string   $cert_folder     The cert folder
-     * @param      string   $cert_file_name  The cert file name
-     * @param      integer  $timelimit       The timelimit
-     */
+    
     public function __construct(
-        $repo_url = null,
-        $document_root = null,
-        $user_home = null,
-        $repo_branch = null,
-        $settings_array = array(),
-        $repo_dir = null,
-        $git_bin_path = null,
-        $log_file = null,
-        $cert_folder = null,
-        $cert_file_name = null,
-        $timelimit = 300
+        $documentRoot = null,
+        $userHome = null,
+        $gitBinPath = 'git',
+        $certFileName = 'deploy',
+        $timeLimit = 300
     ) {
+        $this->documentRoot = $_SERVER['DOCUMENT_ROOT'];
+        if (!is_null($documentRoot)) {
+            $this->documentRoot = $documentRoot;
+        }
+        $this->userHome = $_SERVER['HOME'];
+        if (!is_null($userHome)) {
+            $this->userHome = $userHome;
+        }
+        $this->gitBinPath = $gitBinPath;
+        $this->logFile = dirname($this->documentRoot) . '/storage/log/deployment/deployment-'.date("YmdGis").'.log';
+        $this->repoDir = dirname($this->documentRoot) . '/repo';
+        $this->certFolder = dirname($this->documentRoot) . '/storage/certs/deployment';
+        $this->certFileName = $certFileName;
+        $this->certPath = realpath($this->certFolder . "/" . $this->certFileName);
+        set_time_limit($timeLimit);
 
-        // Validate and set default values
-        if (is_null($document_root)) {
-            die('DOCUMENT_ROOT is required');
+        // Check for settings.json
+        $settingsFile = json_decode(file_get_contents(realpath($documentRoot) . "/../settings.json"));
+        if (!$settingsFile) {
+            die($this->logEntry("Could not locate a settings.json file in the document root."));
         }
-        if (is_null($user_home)) {
-            die('USER_HOME is required');
+        $this->settings = $settingsFile;
+        
+        // Check Repo Url
+        if (!isset($settingsFile->deployment->repo_url) || $settingsFile->deployment->repo_url == "") {
+            die($this->logEntry("Please ensure that you have a repo URL in the deployment section of settings.json."));
         }
-        if (is_null($repo_dir)) {
-            $repo_dir = dirname($document_root) . '/repo';
-        }
-        if (is_null($repo_url)) {
-            die('Repository URL is required');
-        }
-        if (is_null($repo_branch)) {
-            die('Repository branch is required');
-        }
-        if (is_null($git_bin_path)) {
-            $git_bin_path = 'git';
-        }
-        if (is_null($log_file)) {
-            $log_timestamp = date("YmdGis");
-            $log_file = dirname($document_root) . '/storage/log/deployment/deployment-'.$log_timestamp.'.log';
-        }
+        $this->repoUrl = $settingsFile->deployment->repo_url;
 
-        if (is_null($cert_folder)) {
-            $cert_folder = dirname($document_root) . '/storage/certs/deployment';
+        // Check Repo Branch
+        if (!isset($settingsFile->deployment->repo_branch) || $settingsFile->deployment->repo_branch == "") {
+            die($this->logEntry("Please ensure that you have a repo branch in the deployment section of settings.json."));
         }
+        $this->repoBranch = $settingsFile->deployment->repo_branch;
 
-        if (is_null($cert_path)) {
-            $cert_file_name = 'deploy';
+        // Check Project Name
+        if (!isset($settingsFile->framework) || $settingsFile->framework == "") {
+            die($this->logEntry("Please ensure that you have a valid framework name in settings.json."));
         }
-
-        // Set Class Variables
-        $this->repo_url = $repo_url;
-        $this->repo_branch = $repo_branch;
-        $this->git_bin_path = $git_bin_path;
-        $this->document_root = $document_root;
-        $this->log_file = $log_file;
-        $this->repo_dir = $repo_dir;
-        $this->user_home = $user_home;
-        $this->settings_array = $settings_array;
-        $this->cert_folder = $cert_folder;
-        $this->cert_file_name = $cert_file_name;
-        set_time_limit($timelimit);
     }
 
-    //
-    // Execute
-    //
-    public function execute()
-    {
-        $this->validateDocumentRoot();
-        $this->installUpdateComposer();
-        $this->checkGit();
-        $this->checkInstallRepo();
-    }
-
+    // Initialize Dappur
     public function initDappur()
     {
+        echo $this->logEntry("Initializing Dappur Framework...");
         $this->validateDocumentRoot();
         $this->installUpdateComposer();
         $this->checkGit();
-        $this->checkSettings();
-        $this->updateSettings();
         $this->checkInstallRepo();
         $this->checkPhinx();
         $this->migrateUp();
+        echo $this->logEntry("Framework initialization complete.");
     }
 
-    public function updateDappur()
+    // Execute
+    public function execute()
     {
+        echo $this->logEntry("Checking requirements...");
+        $this->validateDocumentRoot();
+        $this->installUpdateComposer();
+        $this->checkGit();
+        $this->checkInstallRepo();
+        $this->checkConnection();
+        echo $this->logEntry("Requirements validated!");
+    }
+
+    public function migrate()
+    {
+        echo $this->logEntry("Beginning Migration...");
         $this->checkPhinx();
         $this->migrateUp();
     }
 
-    //
     // Make sure PHP user has all appropriate permissions and that server
     // structure is correct
-    //
     private function validateDocumentRoot()
     {
         
         // Check that the DOCUMENT_ROOT is a directory called `public`.
-        if (end(explode('\\', $this->document_root)) != "public" &&
-            end(explode('/', $this->document_root)) != "public") {
+        if (end(explode('\\', $this->documentRoot)) != "public" &&
+            end(explode('/', $this->documentRoot)) != "public") {
             die($this->logEntry("Your servers DOCUMENT_ROOT needs to be a directory called `public`"));
         }
 
         // Check that the DOCUMENT_ROOT parent directory is writable.
-        if (!is_writable(dirname($this->document_root))) {
-            die($this->logEntry("Web server user does not have access to the DOCUMENT_ROOT's parent directory. ".
-                "This is required in order for Dappur to function properly."));
+        if (!is_writable(dirname($this->documentRoot))) {
+            die(
+                $this->logEntry(
+                        "Web server user does not have access to the DOCUMENT_ROOT's parent directory. ".
+                    "This is required in order for Dappur to function properly."
+                )
+            );
         }
     }
 
-    //
     // Check if composer is installed or download phar and use that.
-    //
     private function installUpdateComposer()
     {
-        if (!is_file(dirname($this->document_root) . '/composer.phar')) {
+        if (!is_file(dirname($this->documentRoot) . '/composer.phar')) {
             // Download composer to the DOCUMENT_ROOT's parent directory.
             if (file_put_contents(
-                dirname($this->document_root) . '/composer.phar',
-                fopen("https://getcomposer.org/download/1.4.2/composer.phar", 'r')
+                dirname($this->documentRoot) . '/composer.phar',
+                fopen("https://getcomposer.org/download/1.7.1/composer.phar", 'r')
             )) {
                 echo $this->logEntry("Composer downloaded successfully. Making composer.phar executable...");
                 // CD into DOCUMENT_ROOT parent and make composer.phar executable
-                exec("cd " . dirname($this->document_root) . " && chmod +x composer.phar");
+                exec("cd " . dirname($this->documentRoot) . " && chmod +x composer.phar");
             } else {
                 echo $this->logEntry("Could not get Composer working.  Please check your settings and try again.");
             }
         } else {
             // Check that composer is working
-            $check_composer = shell_exec(dirname($this->document_root) . "/composer.phar" . ' --version 2>&1');
+            $check_composer = shell_exec(dirname($this->documentRoot) . "/composer.phar" . ' --version 2>&1');
             echo $this->logEntry($check_composer);
             if (strpos($check_composer, 'omposer version')) {
                 // Check for Composer updates
-                $update_composer = shell_exec(dirname($this->document_root) . "/composer.phar self-update 2>&1");
+                $update_composer = shell_exec(dirname($this->documentRoot) . "/composer.phar self-update 2>&1");
                 echo $this->logEntry("Checking For Composer Update...");
                 echo $this->logEntry($update_composer);
             }
@@ -194,7 +173,7 @@ class Deployment
     private function checkGit()
     {
         // Check that git is installed
-        $check_git = shell_exec($this->git_bin_path . " --version");
+        $check_git = shell_exec($this->gitBinPath . " --version");
         echo $this->logEntry($check_git);
         if (!strpos($check_git, 'it version ')) {
             die($this->logEntry("<pre>Git is required in order for auto deployment to work. ".
@@ -206,9 +185,9 @@ class Deployment
     {
 
         // Create repository directory if it doesnt exist.
-        if (!is_dir($this->repo_dir)) {
+        if (!is_dir($this->repoDir)) {
             echo $this->logEntry("Repository directory does not exist. Creating it now...");
-            if (!mkdir($this->repo_dir)) {
+            if (!mkdir($this->repoDir)) {
                 die($this->logEntry("There was an error creating the repository directory.  ".
                     "Please check your PHP user's permissions and try again."));
             } else {
@@ -221,7 +200,7 @@ class Deployment
                 $this->updateComposer();
             }
         } else {
-            if (!is_file($this->repo_dir . '/config')) {
+            if (!is_file($this->repoDir . '/config')) {
                 echo $this->logEntry("Repository doesn't exist.  Attempting to create now...");
                 // Initialize and prepare the git repository
                 $this->initializeRepository();
@@ -259,10 +238,12 @@ class Deployment
 
         // Create the Mirror Repository
         $create_repo_mirror = shell_exec(
-            'cd ' . $this->repo_dir . ' && ' . $this->git_bin_path  . ' clone --mirror ' . $this->repo_url . " . 2>&1"
+            'cd ' . $this->repoDir . ' && ' . 'GIT_SSH_COMMAND="ssh -i ' . $this->certPath . ' -F /dev/null" ' . $this->gitBinPath  . ' clone --mirror ' . $this->repoUrl . " . 2>&1"
         );
         echo $this->logEntry($create_repo_mirror);
-        if (strpos($create_repo_mirror, 'ermission denied (publickey)')) {
+        if (strpos($create_repo_mirror, 'ermission denied (publickey)') ||
+            strpos($create_repo_mirror, 'Repository not found.') ||
+            strpos($create_repo_mirror, 'and the repository exists')) {
             echo $this->logEntry("Access denied to repository... Creating deployment key now...");
             die($this->logEntry(
                 "Please add the following public key between the dashes to your ".
@@ -275,12 +256,13 @@ class Deployment
 
         // Do the initial checkout
         $git_checkout = shell_exec(
-            'cd ' . $this->repo_dir . ' && GIT_WORK_TREE=' . dirname($this->document_root) .
-            ' ' . $this->git_bin_path  . ' checkout ' . $this->repo_branch . ' -f 2>&1'
+            'cd ' . $this->repoDir .
+            ' && GIT_WORK_TREE=' . dirname($this->documentRoot) . ' ' .
+                $this->gitBinPath  . ' checkout ' . $this->repoBranch . ' -f 2>&1'
         );
         echo $this->logEntry($git_checkout);
         // Get the deployment commit hash
-        $commit_hash = exec('cd ' . $this->repo_dir . ' && ' . $this->git_bin_path  . ' rev-parse --short HEAD 2>&1');
+        $commit_hash = exec('cd ' . $this->repoDir . ' && ' . $this->gitBinPath  . ' rev-parse --short HEAD 2>&1');
         echo $this->logEntry("Deployed Commit: " . $commit_hash);
     }
 
@@ -288,19 +270,19 @@ class Deployment
     {
 
         // Fetch any new changes
-        $git_fetch = exec('cd ' . $this->repo_dir . ' && ' . $this->git_bin_path  . ' fetch 2>&1');
+        $git_fetch = exec('cd ' . $this->repoDir . ' && ' . 'GIT_SSH_COMMAND="ssh -i ' . $this->certPath . ' -F /dev/null" ' .  $this->gitBinPath  . ' fetch 2>&1');
         if (empty($git_fetch)) {
             echo $this->logEntry("There is nothing new to fetch from this repository.");
         } else {
             echo $this->logEntry($git_fetch);
             // Do the checkout
             shell_exec(
-                'cd ' . $this->repo_dir . ' && GIT_WORK_TREE=' . dirname($this->document_root) . ' ' .
-                $this->git_bin_path  . ' checkout ' . $this->repo_branch . ' -f 2>&1'
+                'cd ' . $this->repoDir . ' && GIT_WORK_TREE=' . dirname($this->documentRoot) . ' ' .
+                $this->gitBinPath  . ' checkout ' . $this->repoBranch . ' -f 2>&1'
             );
             // Get the deployment commit hash
             $commit_hash = exec(
-                'cd ' . $this->repo_dir . ' && ' . $this->git_bin_path  . ' rev-parse --short HEAD 2>&1'
+                'cd ' . $this->repoDir . ' && ' . $this->gitBinPath  . ' rev-parse --short HEAD 2>&1'
             );
             echo $this->logEntry("Deployed Commit: " . $commit_hash);
         }
@@ -308,10 +290,19 @@ class Deployment
 
     private function updateComposer()
     {
-        $update_composer = shell_exec(
-            'cd ' . dirname($this->document_root) . ' && ' .
-            dirname($this->document_root) . '/composer.phar install --no-dev 2>&1'
-        );
+        $checkLockFile = exec('cd ' . $this->repoDir . ' && ' . $this->gitBinPath  . ' ls-files --error-unmatch composer.lock 2>&1');
+        if (strpos($checkLockFile, 'did not match any file')) {
+            $update_composer = shell_exec(
+                'cd ' . dirname($this->documentRoot) . ' && ' .
+                dirname($this->documentRoot) . '/composer.phar update --no-dev 2>&1'
+            );
+        } else {
+            $update_composer = shell_exec(
+                'cd ' . dirname($this->documentRoot) . ' && ' .
+                dirname($this->documentRoot) . '/composer.phar install --no-dev 2>&1'
+            );
+        }
+        
         echo $this->logEntry($update_composer);
         if (!strpos($update_composer, 'Generating autoload files')) {
             echo $this->logEntry("An error might have occured while updating composer.  ".
@@ -324,107 +315,30 @@ class Deployment
     private function getDeployKey()
     {
         // Create certificate folder if it does not exist
-        if (!is_dir($this->cert_folder)) {
-            mkdir($this->cert_folder, 0755, true);
+        if (!is_dir($this->certFolder)) {
+            mkdir($this->certFolder, 0755, true);
         }
 
-        if (file_exists($this->cert_folder . '/' . $this->cert_file_name) &&
-            file_exists($this->cert_folder . '/' . $this->cert_file_name . ".pub")) {
-            return file_get_contents($this->cert_folder . '/' . $this->cert_file_name . ".pub");
-        } elseif (!file_exists($this->cert_folder . '/' . $this->cert_file_name)) {
+        if (file_exists($this->certFolder . '/' . $this->certFileName) &&
+            file_exists($this->certFolder . '/' . $this->certFileName . ".pub")) {
+            return file_get_contents($this->certFolder . '/' . $this->certFileName . ".pub");
+        } elseif (!file_exists($this->certFolder . '/' . $this->certFileName)) {
             // Create the deploy key with ssh-keygen
             $generate_key = exec(
-                "ssh-keygen -q -N '' -t rsa -b 4096 -f " . $this->cert_folder . "/" . $this->cert_file_name
+                "ssh-keygen -q -N '' -t rsa -b 4096 -f " . $this->certFolder . "/" . $this->certFileName
             );
             echo $this->logEntry($generate_key);
             // Get the contents of the public key
-            $public_key = file_get_contents($this->cert_folder . '/' . $this->cert_file_name . '.pub');
+            $public_key = file_get_contents($this->certFolder . '/' . $this->certFileName . '.pub');
             // Install the deploy key if not already done
-            $this->installDeployKey();
 
             // Return the public key
             return $public_key;
         } else {
             // Install the deploy key if not already done
-            $this->installDeployKey();
 
             // Return the public key
-            return file_get_contents($this->cert_folder . '/' . $this->cert_file_name . '.pub');
-        }
-    }
-
-    private function installDeployKey()
-    {
-        // Check that the user home has a .ssh folder. If not, then create it.
-        if (!is_dir($this->user_home . '/.ssh')) {
-            mkdir($this->user_home . '/.ssh', 0700, true);
-        }
-
-        // Check if the ssh config file exists.  If not, then create it
-        if (!file_exists($this->user_home . '/.ssh/config')) {
-            touch($this->user_home . '/.ssh/config');
-        }
-
-        // Check for and add the deploy key to the ssh config file
-        $ssh_config = file_get_contents($this->user_home . '/.ssh/config');
-        if (!strpos($ssh_config, $this->cert_file_name)) {
-            file_put_contents(
-                $this->user_home . '/.ssh/config',
-                "IdentityFile " .
-                $this->cert_folder . '/' . $this->cert_file_name . "\n",
-                FILE_APPEND
-            );
-        }
-    }
-
-    private function checkSettings()
-    {
-
-        // Check that the user home has a settings.json file. If not, then create it.
-        if (!is_file(dirname($this->document_root) . '/settings.json')) {
-            $this->logEntry("Dappur settings.json not found.  Creating now...");
-            //Get current settings.json from github
-            $this->logEntry("Downloading current settings.dist.json file from ".
-                "Github and cloning to app/bootstrap/settings.json");
-            $settings_file = file_get_contents(
-                "https://raw.githubusercontent.com/dappur/framework/master/settings.dist.json"
-            );
-
-            file_put_contents(dirname($this->document_root) . '/settings.json', "$settings_file");
-        } else {
-            $settings = file_get_contents(dirname($this->document_root) . '/settings.json');
-            $settings = json_decode($settings, true);
-            if ($settings['framework'] != 'dappur') {
-                die($this->logEntry("You do not appear to have a valid settings file.  Please check and try again."));
-            } else {
-                echo $this->logEntry("Valid Dappur settings file found.");
-            }
-        }
-    }
-
-    private function updateSettings()
-    {
-        if (!empty($this->settings_array)) {
-            $check_connection = $this->checkConnection();
-
-            if ($check_connection['check_construct'] == true) {
-                // Update the settings file with the array from the input
-                echo $this->logEntry("Updating the settings file with the new database connection.");
-                $settings = file_get_contents(dirname($this->document_root) . '/app/bootstrap/settings.json');
-                $settings = json_decode($settings, true);
-                $settings_new = array_replace_recursive($settings, $this->settings_array);
-                if (file_put_contents(
-                    dirname($this->document_root) . '/settings.json',
-                    json_encode($settings_new, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)
-                )) {
-                    echo $this->logEntry("Settings file successfully updated.");
-                } else {
-                    die($this->logEntry("There was an error updating the settings file."));
-                }
-            } else {
-                die("Database connection parameters defined, but a connection could not be made.  ".
-                    "Please check your settings and run this script again.");
-            }
+            return file_get_contents($this->certFolder . '/' . $this->certFileName . '.pub');
         }
     }
 
@@ -432,44 +346,27 @@ class Deployment
     {
         $output == array();
 
-        $settings = file_get_contents(dirname($this->document_root) . '/settings.json');
-        $settings = json_decode($settings, true);
-        $file_database = $settings['db'][$settings['environment']];
-
-        $construct_database = $this->settings_array['db'][$this->settings_array['environment']];
+        $database = $this->settings->db->{$this->settings->environment};
 
         $output['check_file'] = false;
         $output['check_construct'] = false;
 
 
         // Check the mysql database in the settings file.
-        if ($file_database['host'] != "" &&
-            $file_database['database'] != "" &&
-            $file_database['username'] != "" &&
-            $file_database['password'] != "") {
+        if ($database->host != ""
+            && $database->database != ""
+            && $database->username != ""
+            && $database->password != "") {
             if (!@mysqli_connect(
-                $file_database['host'],
-                $file_database['username'],
-                $file_database['password'],
-                $file_database['database']
+                $database->host,
+                $database->username,
+                $database->password,
+                $database->database
             )) {
                 echo $this->logEntry("MySQL Connection Error: " . mysqli_connect_error());
             } else {
-                echo $this->logEntry("Successfully connected to the settings.json selected database.");
+                echo $this->logEntry("Successfully connected to " . $database->database . ".");
                 $output['check_file'] = true;
-            }
-        }
-        if ($construct_database) {
-            if (!@mysqli_connect(
-                $construct_database['host'],
-                $construct_database['username'],
-                $construct_database['password'],
-                $construct_database['database']
-            )) {
-                echo $this->logEntry("MySQL Connection Error: " . mysqli_connect_error());
-            } else {
-                echo $this->logEntry("Successfully connected to the new selected database.");
-                $output['check_construct'] = true;
             }
         }
 
@@ -485,10 +382,10 @@ class Deployment
     {
 
         // Check if Phinx is installed
-        if (!is_file(dirname($this->document_root) . '/vendor/robmorgan/phinx/bin/phinx')) {
+        if (!is_file(dirname($this->documentRoot) . '/vendor/robmorgan/phinx/bin/phinx')) {
             // Install/Update Phinx globally in composer
             $install_phinx = shell_exec(
-                "cd " . dirname($this->document_root) . " && ./composer.phar require robmorgan/phinx 2>&1"
+                "cd " . dirname($this->documentRoot) . " && ./composer.phar require robmorgan/phinx 2>&1"
             );
             echo $this->logEntry($install_phinx);
             if (!strpos($install_phinx, 'for robmorgan/phinx')) {
@@ -498,7 +395,7 @@ class Deployment
         }
 
         // Check that phinx was installed properly
-        $check_phinx = shell_exec(dirname($this->document_root) . "/vendor/robmorgan/phinx/bin/phinx --version");
+        $check_phinx = shell_exec(dirname($this->documentRoot) . "/vendor/robmorgan/phinx/bin/phinx --version");
         echo $this->logEntry($check_phinx);
         if (!strpos($check_phinx, 'https://phinx.org')) {
             die($this->logEntry("Phinx is required in order for database migration to work.  ".
@@ -506,7 +403,7 @@ class Deployment
         }
 
         // Check for Phinx config file
-        if (!is_file(dirname($this->document_root) . '/phinx.php')) {
+        if (!is_file(dirname($this->documentRoot) . '/phinx.php')) {
             die($this->logEntry("You do not appear to have a valid phinx.php file in your project root directory."));
         } else {
             echo $this->logEntry("Phinx config: phinx.php found.");
@@ -516,7 +413,7 @@ class Deployment
     private function migrateUp()
     {
         $migrate_up = shell_exec(
-            "cd " . dirname($this->document_root) . " && ./vendor/robmorgan/phinx/bin/phinx migrate 2>&1"
+            "cd " . dirname($this->documentRoot) . " && ./vendor/robmorgan/phinx/bin/phinx migrate 2>&1"
         );
         echo $this->logEntry($migrate_up);
         if (!strpos($migrate_up, 'All Done.')) {
@@ -531,17 +428,17 @@ class Deployment
     {
 
         // Create log folder if it does not exist
-        if (!is_dir(dirname($this->log_file))) {
-            mkdir(dirname($this->log_file), 0755, true);
+        if (!is_dir(dirname($this->logFile))) {
+            mkdir(dirname($this->logFile), 0755, true);
         }
 
         // Create Log File if it does not exist
-        if (!file_exists($this->log_file)) {
-            touch($this->log_file);
+        if (!file_exists($this->logFile)) {
+            touch($this->logFile);
         }
 
         // Add Log Entry to file
-        file_put_contents($this->log_file, date('m/d/Y h:i:s a') . " " . $log_text . "\n", FILE_APPEND);
+        file_put_contents($this->logFile, date('m/d/Y h:i:s a') . " " . $log_text . "\n", FILE_APPEND);
 
         if ($return == true) {
             return "<pre>" . date('m/d/Y h:i:s a') . " $log_text" . "</pre>";
@@ -549,16 +446,7 @@ class Deployment
     }
 }
 
-$settings = json_decode(file_get_contents(__DIR__ . '/../settings.json'));
-
-$deploy = new Deployment(
-    $settings->deployment->repo_url,
-    $_SERVER['DOCUMENT_ROOT'],
-    $_SERVER['HOME'],
-    $settings->deployment->repo_branch
-);
-
-echo $deploy->execute();
-echo $deploy->updateDappur();
+$deploy = new Deployment();
+echo $deploy->initDappur();
 
 unlink(__FILE__);
