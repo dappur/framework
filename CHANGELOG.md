@@ -19,7 +19,6 @@ Once those items are complete, focus will be shifted to feature enhancements.  T
 - Notification System with integrated emails that can be triggered within the controller.
 - More robust initial admin dashboard with stats and numbers
 
-
 ### Added
 - Cookie consent javascript notification
 - Composer.lock back into repository
