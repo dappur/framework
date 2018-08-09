@@ -220,12 +220,12 @@ class Settings extends Controller
 
             $this->flash('success', 'Global settings successfully added.');
 
-            if (isset($allPostVars['page_name'])) {
+            if ($configOption->group->page_name) {
                 return $this->redirect(
                     $response,
                     'settings-page',
                     array(
-                        'page_name' => $allPostVars['page_name']
+                        'page_name' => $configOption->group->page_name
                     )
                 );
             }

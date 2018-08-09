@@ -7,6 +7,7 @@
 ### Fixed
 - Image input on settings controls
 - Added group to page settings
+- Redirect when adding a page config item
 
 ## [3.0.0] - 2018-08-08
 ### Notes

@@ -17,11 +17,11 @@ class Config extends Model
 
     public function group()
     {
-        return $this->hasOne('\Dappur\Model\ConfigGroups', 'group_id');
+        return $this->belongsTo('\Dappur\Model\ConfigGroups', 'group_id');
     }
 
     public function type()
     {
-        return $this->hasOne('\Dappur\Model\ConfigTypes', 'type_id');
+        return $this->belongsTo('\Dappur\Model\ConfigTypes', 'type_id');
     }
 }
