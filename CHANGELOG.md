@@ -4,7 +4,11 @@
 ### Added
 - Mailgun api key and api base url to `settings.json`
 
-## [3.0.0]
+### Fixed
+- Image input on settings controls
+- Added group to page settings
+
+## [3.0.0] - 2018-08-08
 ### Notes
 This is the next major version release of Dappur.  Dappurware has also been updated to version 3.0.0 so that the major version will match between the two packages.
 
