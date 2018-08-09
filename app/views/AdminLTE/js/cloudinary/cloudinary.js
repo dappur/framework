@@ -36,7 +36,7 @@ var DappurCloudinary = new function() {
                     case "input":
                         switch (json.message) {
                             case "insert_into_post":
-                                $("#"+id).val(json.src).change();
+                                $("#"+id).val(json.src);
                                 $("#"+id+"-thumbnail").attr("src", json.src);
                                 DappurCloudinary.closeCloudinary();
                                 break;

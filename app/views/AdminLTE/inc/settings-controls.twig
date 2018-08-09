@@ -18,20 +18,22 @@
                                 <input type="text" name="add_description" id="add_description" class="form-control" value="{{ requestParams['add_description'] }}" required="required" placeholder="Description">
                                 <span class="help-block">{{ error('add_description') }}</span>
                             </div>
-                            {% if isPage %}
-                            <input type="hidden" name="add_group" value="{{ settingsGrouped.id }}" />
-                            {% else %}
                             <div class="form-group{% if has_error('add_group') %} has-error{% endif %}">
                                 <label for="type">Group</label>
                                 <select name="add_group" id="add_group" class="form-control" required="required">
                                     <option value="">Select Group</option>
-                                    {% for group in configGroups %}
-                                        <option value="{{ group.id }}" {% if group.id == requestParams['add_group'] %}SELECTED{% endif %}>{{ group.name }}</option>
-                                    {% endfor %}
+                                    {% if isPage %}
+                                        {% for group in settingsGrouped %}
+                                            <option value="{{ group.id }}" {% if group.id == requestParams['add_group'] %}SELECTED{% endif %}>{{ group.name }}</option>
+                                        {% endfor %}
+                                    {% else %}
+                                        {% for group in configGroups %}
+                                            <option value="{{ group.id }}" {% if group.id == requestParams['add_group'] %}SELECTED{% endif %}>{{ group.name }}</option>
+                                        {% endfor %}
+                                    {% endif %}
                                 </select>
                                 <span class="help-block">{{ error('add_group') }}</span>
                             </div>
-                            {% endif %}
                             <div class="form-group{% if has_error('add_type') %} has-error{% endif %}">
                                 <label for="type">Type</label>
                                 <select name="add_type" id="add_type" class="form-control" required="required">
