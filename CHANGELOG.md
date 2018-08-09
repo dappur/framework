@@ -1,5 +1,9 @@
 # Changelog
 
+## [Unreleased]
+### Added
+- Mailgun api key and api base url to `settings.json`
+
 ## [3.0.0]
 ### Notes
 This is the next major version release of Dappur.  Dappurware has also been updated to version 3.0.0 so that the major version will match between the two packages.
