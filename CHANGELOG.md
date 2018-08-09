@@ -8,6 +8,7 @@
 - Image input on settings controls
 - Added group to page settings
 - Redirect when adding a page config item
+- Page config middleware was only pulling the first group when multiple were present.
 
 ## [3.0.0] - 2018-08-08
 ### Notes
