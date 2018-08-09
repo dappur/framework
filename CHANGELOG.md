@@ -39,7 +39,7 @@ Once those items are complete, focus will be shifted to feature enhancements.  T
 ### Changed
 - Removed composer.lock from the main repo
 
-## [2.5.0]
+## [2.5.0] - 2018-07-29
 ### Added
 - New bootstrap menu editor integrated into dashboard using the Jquery Menu Editor package from davicotico
 	- Easiy add and edit the dashboard and frontend menus from the dashboard
