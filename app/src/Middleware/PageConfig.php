@@ -11,13 +11,16 @@ class PageConfig extends Middleware
     {
         $pageName = $request->getAttribute('route')->getName();
         
-        $pageConfig = ConfigGroups::where('page_name', '=', $pageName)->with('config')->first();
+        $pageConfig = ConfigGroups::where('page_name', '=', $pageName)->with('config')->get();
 
         if ($pageConfig) {
             $cfg = array();
-            foreach ($pageConfig->config as $value) {
-                $cfg[$value->name] = $value->value;
+            foreach ($pageConfig as $pc) {
+                foreach ($pc->config as $value) {
+                    $cfg[$value->name] = $value->value;
+                }
             }
+            
             $this->view->getEnvironment()->addGlobal('page_config', $cfg);
             return $next($request, $response);
         }
