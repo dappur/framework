@@ -9,6 +9,7 @@ In an effort to find some remaining bugs, I created a site using v3.  This updat
 - RouteName middleware to custom routes for active menu items
 - Recent blog posts and recent blog comments as global twig variable
 - Import/Export to Custom Pages and Menus
+- Blog Sidebar and page header support to custom pages
 
 ### Fixed
 - Image input on settings controls
