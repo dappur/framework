@@ -1,6 +1,6 @@
 {
     "framework": "dappur",
-    "version": "3.0.0",
+    "version": "3.0.1",
     "displayErrorDetails": false,
     "showInAdmin": false,
     "environment": "development",
