@@ -18,6 +18,7 @@
                                 <input type="text" name="add_description" id="add_description" class="form-control" value="{{ requestParams['add_description'] }}" required="required" placeholder="Description">
                                 <span class="help-block">{{ error('add_description') }}</span>
                             </div>
+                            
                             <div class="form-group{% if has_error('add_group') %} has-error{% endif %}">
                                 <label for="type">Group</label>
                                 <select name="add_group" id="add_group" class="form-control" required="required">
@@ -34,6 +35,7 @@
                                 </select>
                                 <span class="help-block">{{ error('add_group') }}</span>
                             </div>
+                            
                             <div class="form-group{% if has_error('add_type') %} has-error{% endif %}">
                                 <label for="type">Type</label>
                                 <select name="add_type" id="add_type" class="form-control" required="required">

@@ -48,7 +48,7 @@
                                         <span class="help-block">{{ error('pattern') }}</span>
                                     </div>
                                     <div class="row">
-                                        <div class="form-group col-xs-6{% if has_error('permission') %} has-error{% endif %}">
+                                        <div class="form-group col-xs-12{% if has_error('permission') %} has-error{% endif %}">
                                             <label for="permission">Limit to Permission</label>
                                             <input type="text" name="permission" class="form-control" id="permission" placeholder="permission.view" value="{% if requestParams.permission %}{{requestParams.permission}}{% endif %}">
                                             <span class="help-block">{{ error('permission') }}</span>
@@ -57,6 +57,26 @@
                                             <label for="status">Status</label><br />
                                             <input type="checkbox" name="status" id="status" {% if requestParams.status %}checked{% endif %} data-toggle="toggle" data-on="Enabled" data-off="Disabled" data-onstyle="success" data-offstyle="danger" data-width="100%">
                                             <span class="help-block">{{ error('status') }}</span>
+                                        </div>
+                                        <div class="form-group col-xs-6{% if has_error('sidebar') %} has-error{% endif %}">
+                                            <label for="sidebar">Sidebar</label><br />
+                                            <input type="checkbox" name="sidebar" id="sidebar" {% if requestParams.sidebar %}checked{% endif %} data-toggle="toggle" data-on="Enabled" data-off="Disabled" data-onstyle="success" data-offstyle="danger" data-width="100%">
+                                            <span class="help-block">{{ error('sidebar') }}</span>
+                                        </div>
+                                        <div class="form-group col-xs-12{% if has_error('header') %} has-error{% endif %}">
+                                            <label for="header">Header</label><br />
+                                            <input type="checkbox" name="header" id="header" {% if requestParams.header %}checked{% elseif route.header %}checked{% endif %} data-toggle="toggle" data-on="Enabled" data-off="Disabled" data-onstyle="success" data-offstyle="danger" data-width="100%">
+                                            <span class="help-block">{{ error('header') }}</span>
+                                        </div>
+                                        <div class="form-group header-checked col-xs-12{% if has_error('header_text') %} has-error{% endif %}" {% if not requestParams.header and not route.header %}style="display: none;"{% endif %}>
+                                            <label for="header_text">Header Text</label><br />
+                                            <input type="text" name="header_text" class="form-control" id="header_text" placeholder="Header Text" value="{% if requestParams.header_text %}{{requestParams.header_text}}{% else %}{{ route.header_text }}{% endif %}">
+                                            <span class="help-block">{{ error('header_text') }}</span>
+                                        </div>
+                                        <div class="form-group header-checked col-xs-12{% if has_error('header_image') %} has-error{% endif %}" {% if not requestParams.header and not route.header %}style="display: none;"{% endif %}>
+                                            <label for="header_image">Header Image</label><br />
+                                            <div class="input-group dm-input" data-name="header_image" data-value="{% if requestParams.header_image %}{{requestParams.header_image}}{% else %}{{ route.header_image }}{% endif %}"></div>
+                                            <span class="help-block">{{ error('header_image') }}</span>
                                         </div>
                                         <div class="form-group col-xs-12{% if has_error('roles') %} has-error{% endif %}">
                                             <label for="roles">Limit to Roles</label>

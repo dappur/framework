@@ -1,15 +1,23 @@
 # Changelog
 
-## [Unreleased]
+## [3.0.1]
+### Notes
+In an effort to find some remaining bugs, I created a site using v3.  This update contains fixes for issues there were found during the process.  Import and Export has also been added to the custom routes and menus admin. 
+
 ### Added
 - Mailgun api key and api base url to `settings.json`
 - RouteName middleware to custom routes for active menu items
+- Recent blog posts and recent blog comments as global twig variable
+- Import/Export to Custom Pages and Menus
 
 ### Fixed
 - Image input on settings controls
 - Added group to page settings
 - Redirect when adding a page config item
 - Page config middleware was only pulling the first group when multiple were present.
+
+### Removed
+- Test function from controller
 
 ## [3.0.0] - 2018-08-08
 ### Notes
@@ -214,7 +222,8 @@ Once those items are complete, focus will be shifted to feature enhancements.  T
 - Internalized all assets, they are now served from the view folder and not from the public dir.
 
 
-[Unreleased]: https://github.com/dappur/framework/compare/v3.0.0...HEAD
+[Unreleased]: https://github.com/dappur/framework/compare/v3.0.1...HEAD
+[3.0.1]: https://github.com/dappur/framework/compare/v3.0.0...v3.0.1
 [3.0.0]: https://github.com/dappur/framework/compare/v2.5.0...v3.0.0
 [2.5.0]: https://github.com/dappur/framework/compare/v2.4.0...v2.5.0
 [2.4.0]: https://github.com/dappur/framework/compare/v2.3.2...v2.4.0

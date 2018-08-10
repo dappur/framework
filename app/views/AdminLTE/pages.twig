@@ -5,9 +5,7 @@
 {% block stylesheets %}
 <link href="https://cdn.datatables.net/1.10.15/css/dataTables.bootstrap.min.css" rel="stylesheet">
 <link href="https://cdn.datatables.net/responsive/2.1.1/css/responsive.bootstrap.min.css" rel="stylesheet">
-{% if config['oauth2-enabled'] %}
-<link href="{{ asset('dappur/css/bootstrap-social.min.css') }}" rel="stylesheet">
-{% endif %}
+<link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
 {% endblock %}
 
 {% block body %}
@@ -29,7 +27,7 @@
         </div>
 
         <div class="row">
-            <div class="col-lg-12">
+            <div class="col-md-8">
                 <div class="box box-info">
                     <div class="box-header">
                         <div class="pull-left box-title">Custom Pages </div>
@@ -45,11 +43,41 @@
                                     <th>Route</th>
                                     <th>Roles</th>
                                     <th>Permission</th>
+                                    <th>Sidebar</th>
+                                    <th>Header</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody></tbody>
                         </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="box box-danger">
+                    <div class="box-header" style="cursor: pointer;">
+                        <h3 class="box-title">Import / Export</h3>
+                    </div>
+
+                    <div class="box-body" id="import-export">
+                        <form action="{{ path_for('admin-pages-import')}}" method="POST" enctype="multipart/form-data">
+                            <div class="form-group">
+                                <input type="checkbox" name="overwrite" data-toggle="toggle" data-on="Overwrite All Items" data-off="Only Import New Items" data-width="100%">
+                            </div>
+                            <div class="form-group text-center">
+                                <label class="btn btn-success btn-file form-control">
+                                    <i class="fa fa-upload"></i> Upload JSON File <input type="file" name="import_file" id="import_file" style="display: none;">
+                                </label>
+                            </div>
+                            {{csrf()}}
+                        </form>
+
+                        <div class="row">
+                            <div class=" form-group col-md-12">
+                                <a type="button" href="{{ path_for('admin-pages-export') }}?all=true" class="btn btn-warning form-control"><i class="fa fa-download"></i> Export All Pages</a>
+                            </div>
+                        </div>
+                        
                     </div>
                 </div>
             </div>
@@ -62,6 +90,10 @@
 <script src="https://cdn.datatables.net/1.10.15/js/dataTables.bootstrap.min.js"></script>
 <script src="https://cdn.datatables.net/responsive/2.1.1/js/dataTables.responsive.min.js"></script>
 <script src="https://cdn.datatables.net/responsive/2.1.1/js/responsive.bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.9.2/jquery.ui.widget.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/9.22.0/js/jquery.iframe-transport.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/9.22.0/js/jquery.fileupload.min.js"></script>
+<script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
 
 <script>
 $(document).ready(function() {
@@ -113,6 +145,28 @@ $(document).ready(function() {
                     }
                 }
             },
+            {
+                "data": "sidebar",
+                "orderable": false,
+                "render": function ( data, type, full, meta ) {
+                    if (data) {
+                        return '<center><i class="fa fa-check" style="color: green;"></i></center>';
+                    }else{
+                        return '<center><i class="fa fa-close" style="color: red;"></i></center>';
+                    }
+                }
+            },
+            {
+                "data": "header",
+                "orderable": false,
+                "render": function ( data, type, full, meta ) {
+                    if (data) {
+                        return '<center><i class="fa fa-check" style="color: green;"></i></center>';
+                    }else{
+                        return '<center><i class="fa fa-close" style="color: red;"></i></center>';
+                    }
+                }
+            },
             { 
                 "data": "id",
                 "orderable": false,
@@ -124,6 +178,9 @@ $(document).ready(function() {
                     '</a>';
 
                     {% endif %}
+                    {% if auth.hasAccess('pages.export') %}
+                        var result = result + ' <a href="/dashboard/pages/export?page_name='+full.name+'" class="btn btn-info btn-xs"><span class="fa fa-download"> </span> </a>';
+                    {% endif %}
                     {% if auth.hasAccess('pages.delete') %}
                         var result = result + ' <form action="/dashboard/pages/delete" method="post" style="display: inline;" title="Delete Page">'+
                             '<input type="hidden" name="page_id" value="'+data+'" />'+
@@ -133,6 +190,7 @@ $(document).ready(function() {
                             '</button>'+
                         '</form>';
                     {% endif %}
+
                     return result;
                 }
             }
@@ -140,10 +198,18 @@ $(document).ready(function() {
 
     });
 
-    $('#roles_table').DataTable({
-        responsive: true,
-        stateSave: true
-
+    $('#import_file').fileupload({
+        dataType: 'json',
+        done: function (e, data) {
+            if (data.result.status == "success") {
+                window.location.replace(window.location.href);
+            }else{
+                swal({
+                    type: 'error',
+                    title: data.result.message
+                });
+            }
+        }
     });
 });
 </script>

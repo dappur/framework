@@ -21,6 +21,9 @@ $app->group('/dashboard', function () use ($app, $container) {
 
         $app->map(['GET'], '/export', 'AdminMenus:export')
             ->setName('admin-menus-export');
+
+        $app->map(['POST'], '/import', 'AdminMenus:import')
+            ->setName('admin-menus-import');
     });
 })
 ->add(new Dappur\Middleware\Auth($container))

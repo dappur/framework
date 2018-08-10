@@ -13,6 +13,10 @@ class Routes extends Model
         'content',
         'css',
         'js',
+        'sidebar',
+        'header',
+        'header_text',
+        'header_image',
         'permission',
         'status'
     ];

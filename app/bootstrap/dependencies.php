@@ -143,16 +143,36 @@ $container['view'] = function ($container) {
 
         // Get Tags With Count
         $blog_tags = new \Dappur\Model\BlogTags;
-        $blog_tags = $blog_tags->withCount(['posts' => function ($query) {
-            $query->where('blog_posts.status', 1);
-        }])
+        $blog_tags = $blog_tags->withCount([
+            'posts' => function ($query) {
+                $query->where('blog_posts.status', 1);
+            }
+        ])
             ->whereHas('posts', function ($query) {
                 $query->where('blog_posts.status', 1);
             })
             ->get();
 
+        // Get Recent Posts
+        $blogPosts = \Dappur\Model\BlogPosts::orderBy('publish_at', 'DESC')
+            ->where('publish_at', '<=', \Carbon\Carbon::now())
+            ->where('status', 1)
+            ->whereNotNull('featured_image')
+            ->skip(0)
+            ->take(4)
+            ->get();
+
+        // Get Recent Comments
+        $blogComments = \Dappur\Model\BlogPostsComments::orderBy('created_at', 'DESC')
+            ->where('status', 1)
+            ->skip(0)
+            ->take(4)
+            ->get();
+
         $view->getEnvironment()->addGlobal('blogCategories', $blog_categories);
         $view->getEnvironment()->addGlobal('blogTags', $blog_tags);
+        $view->getEnvironment()->addGlobal('blogRecent', $blogPosts);
+        $view->getEnvironment()->addGlobal('blogComments', $blogComments);
     }
     
     $view->getEnvironment()->addGlobal('flash', $container['flash']);

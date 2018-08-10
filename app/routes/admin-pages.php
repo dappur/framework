@@ -16,6 +16,12 @@ $app->group('/dashboard', function () use ($app, $container) {
         $app->map(['POST'], '/delete', 'AdminPages:delete')
             ->setName('admin-pages-delete');
 
+        $app->map(['GET'], '/export', 'AdminPages:export')
+            ->setName('admin-pages-export');
+
+        $app->map(['POST'], '/import', 'AdminPages:import')
+            ->setName('admin-pages-import');
+
         $app->map(['GET'], '/datatables', 'AdminPages:datatables')
             ->setName('admin-pages-datatables');
     });

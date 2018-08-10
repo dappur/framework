@@ -7,7 +7,7 @@ var DappurMedia = new function() {
 
     // Load the Local CMS Window
     this.loadMedia = function (type, target) {
-    	$('#media-modal-body').html('');
+        $('#media-modal-body').html('');
         switch (type) {
             case "menu":
 
@@ -140,9 +140,9 @@ var DappurMedia = new function() {
     this.getFolder = function (folder){
 
         // Turn on loader empty current files/folders
-		$("#loader").show();
-		$("#folder_list").html("");
-		$("#file_list").html("");
+        $("#loader").show();
+        $("#folder_list").html("");
+        $("#file_list").html("");
 
         // Get the current folder contents
         DappurCSRF.csrfAjax( 
@@ -476,13 +476,13 @@ var DappurMedia = new function() {
     });
 
     $(document).on('click', '#media-info-btn-insert', function(){
-
         var filePath = $("#file-info").data("filepath");
 
         var target = DappurMedia.getUrlParameter('target');
         var source = DappurMedia.getUrlParameter('source');
 
         if (source == "input") {
+
             $(parent.document).find("#"+target).val(filePath).change();
             $(parent.document).find("#"+target+"-thumbnail").attr("src", filePath);
             window.parent.$("#media-modal").modal("hide");

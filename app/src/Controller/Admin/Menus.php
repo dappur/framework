@@ -192,7 +192,13 @@ class Menus extends Controller
             return $check;
         }
 
-        $menu = \Dappur\Model\Menus::find($request->getParam('menu_id'));
+        if ($request->getparam("all")) {
+            $menu = \Dappur\Model\Menus::get();
+        }
+
+        if (is_numeric($request->getparam("menu_id"))) {
+            $menu = \Dappur\Model\Menus::where('id', $request->getParam('menu_id'))->get();
+        }
 
         if (!$menu) {
             $this->flash('danger', 'Export unsuccessful.  Menu Not Found.');
@@ -202,11 +208,7 @@ class Menus extends Controller
         $final = array();
         $final['framework'] = $this->settings['framework'];
         $final['version'] = $this->settings['version'];
-        $final['menu']['id'] = $menu->id;
-        $final['menu']['name'] = $menu->name;
-        $final['menu']['json'] = json_decode($menu->json);
-        $final['menu']['updated_at'] = $menu->updated_at;
-        $final['menu']['created_at'] = $menu->created_at;
+        $final['menus'] = $menu;
 
         $tempFile = tmpfile();
         fwrite($tempFile, json_encode($final, JSON_PRETTY_PRINT));
@@ -219,5 +221,106 @@ class Menus extends Controller
             "-" . date("Y-m-d-H-i-s") . ".json"
         );
         fclose($tempFile);
+    }
+
+    /**
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
+    public function import(Request $request, Response $response)
+    {
+        if ($check = $this->sentinel->hasPerm('menus.import', 'admin-menus')) {
+            return $check;
+        }
+
+        $return = new \stdClass();
+        $return->status = "error";
+
+        if (!$request->getUploadedFiles()['import_file']) {
+            $return->message = "No file detected.";
+            return $response->withJSON($return, 200, JSON_UNESCAPED_UNICODE);
+        }
+
+        $file = $request->getUploadedFiles()['import_file'];
+
+        $json = $file->getStream();
+
+        if (!$this->isJson($json)) {
+            $return->message = "error - not a valid json file";
+            return $response->withJSON($return, 200, JSON_UNESCAPED_UNICODE);
+        }
+        $overwrite = false;
+        if ($request->getParam('overwrite')) {
+            $overwrite = true;
+        }
+
+        $import = $this->processImport($json, $overwrite);
+
+        if ($import->status) {
+            $return->status = "success";
+            $this->flash('success', 'Settings imported successfully');
+        }
+
+        if (!$import->status) {
+            $return->message = $import->message;
+        }
+        
+        return $response->withJSON($return, 200, JSON_UNESCAPED_UNICODE);
+    }
+
+    public function processImport($json, $overwrite = 0)
+    {
+        $decoded = json_decode($json);
+
+        // Create Return Object
+        $return = new \stdClass();
+        $return->status = false;
+
+        if (!$decoded->framework || $decoded->framework != $this->settings['framework']) {
+            $return->message = "Framework mismatch.";
+            return $return;
+        }
+
+        if (!$decoded->version || $decoded->version != $this->settings['version']) {
+            $return->message = "Version mismatch.";
+            return $return;
+        }
+
+        foreach ($decoded->menus as $value) {
+            $route = $this->importMenu($value, $overwrite);
+        }
+
+        $return->status = true;
+        return $return;
+    }
+
+    private function importMenu($value, $overwrite = 0)
+    {
+        // Check if Exists
+        $menu = \Dappur\Model\Menus::where('id', $value->id)->first();
+
+        // Update Group if Overwrite
+        if ($overwrite && $menu) {
+            $menu->name = $value->name;
+            $menu->json = $value->json;
+            $menu->save();
+        }
+
+        if (!$menu) {
+            // Create Group
+            $menu = new \Dappur\Model\Menus;
+            if (isset($value->id)) {
+                $menu->id = $value->id;
+            }
+            $menu->name = $value->name;
+            $menu->json = $value->json;
+            $menu->save();
+        }
+        return $menu;
+    }
+
+    private function isJson($string)
+    {
+        json_decode($string);
+        return (json_last_error() == JSON_ERROR_NONE);
     }
 }

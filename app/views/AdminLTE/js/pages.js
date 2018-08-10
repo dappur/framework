@@ -4,6 +4,14 @@ $(document).ready(function() {
     });
 });
 
+$(document).on('change', '#header', function(){
+	if ($(this).prop("checked")) {
+		$(".header-checked").show();
+	}else{
+		$(".header-checked").hide();
+	}
+});
+
 var cssEditor = ace.edit("css", {
     mode: "ace/mode/css",
     selectionStyle: "text"

@@ -85,9 +85,9 @@ $('#btnNew').click(function(){
                                 .append('<tr><td data-menu="'+data.menu.id+'" class="menu-selector" style="cursor: pointer;">'+
                                     data.menu.name+
                                     '<div class="pull-right">'+
-                                        '<button type="button" data-menu="'+data.menu.id+'" class="btn btn-xs btn-info export-menu">'+
+                                        '<a href="/dashboard/menus/export?menu_id='+data.menu.id+'" data-menu="'+data.menu.id+'" class="btn btn-xs btn-info export-menu">'+
                                             '<span class="fa fa-download"></span>'+
-                                        '</button> '+
+                                        '</a> '+
                                         '<button type="button" data-menu="'+data.menu.id+'" class="btn btn-xs btn-danger delete-menu">'+
                                             '<span class="fa fa-close"></span>'+
                                         '</button>'+
@@ -207,3 +207,17 @@ function processCancel(){
         $("#btnCancel").hide();
     }
 }
+
+$('#import_file').fileupload({
+    dataType: 'json',
+    done: function (e, data) {
+        if (data.result.status == "success") {
+            window.location.replace(window.location.href);
+        }else{
+            swal({
+                type: 'error',
+                title: data.result.message
+            });
+        }
+    }
+});
