@@ -1,6 +1,6 @@
 # Changelog
 
-## [3.0.1]
+## [3.0.1] - 2018-08-10
 ### Notes
 In an effort to find some remaining bugs, I created a site using v3.  This update contains fixes for issues there were found during the process.  Import and Export has also been added to the custom routes and menus admin. 
 
@@ -178,6 +178,9 @@ Once those items are complete, focus will be shifted to feature enhancements.  T
 - Sweet Alert 2 has been added to the base.twig for the front end theme
 - Added page config for terms & conditions.
 - Made change password feature more secure/interactive.
+
+### Updated
+- Composer.lock dependencies
 
 ### Changed
 - Moved settings.json to the document root.
