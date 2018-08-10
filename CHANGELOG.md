@@ -3,6 +3,7 @@
 ## [Unreleased]
 ### Added
 - Mailgun api key and api base url to `settings.json`
+- RouteName middleware to custom routes for active menu items
 
 ### Fixed
 - Image input on settings controls

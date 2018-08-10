@@ -39,7 +39,8 @@ if ($customRoutes->count()) {
     ->add(new Dappur\Middleware\PageConfig($container))
     ->add(new Dappur\Middleware\Seo($container))
     ->add(new Dappur\Middleware\ProfileCheck($container))
-    ->add(new Dappur\Middleware\TwoFactorAuth($container));
+    ->add(new Dappur\Middleware\TwoFactorAuth($container))
+    ->add(new Dappur\Middleware\RouteName($container));
 }
 
 // Load Global Middleware
