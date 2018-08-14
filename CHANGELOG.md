@@ -1,5 +1,12 @@
 # Changelog
 
+## [Unreleased]
+### Added
+- Slim Session to global middleware
+
+### Removed
+- Removed `session_start()` and `session_set_cookie_params()` from `public/index.php`
+
 ## [3.0.1] - 2018-08-10
 ### Notes
 In an effort to find some remaining bugs, I created a site using v3.  This update contains fixes for issues there were found during the process.  Import and Export has also been added to the custom routes and menus admin. 
