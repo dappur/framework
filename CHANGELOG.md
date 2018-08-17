@@ -1,6 +1,6 @@
 # Changelog
 
-## [3.0.2]
+## [3.0.2] - 2018-08-16
 ### Added
 - Slim Session to global middleware
 
