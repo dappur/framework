@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased]
+## [3.0.2]
 ### Added
 - Slim Session to global middleware
 
@@ -47,7 +47,7 @@ Once those items are complete, focus will be shifted to feature enhancements.  T
 - More robust initial admin dashboard with stats and numbers
 
 ### Added
-- Cookie consent javascript notification
+- Cookie conse javascript notification
 - Composer.lock back into repository
 - Codemirror on page builder for syntax on custom js/css.
 
@@ -233,7 +233,8 @@ Once those items are complete, focus will be shifted to feature enhancements.  T
 - Internalized all assets, they are now served from the view folder and not from the public dir.
 
 
-[Unreleased]: https://github.com/dappur/framework/compare/v3.0.1...HEAD
+[Unreleased]: https://github.com/dappur/framework/compare/v3.0.2...HEAD
+[3.0.2]: https://github.com/dappur/framework/compare/v3.0.1...v3.0.2
 [3.0.1]: https://github.com/dappur/framework/compare/v3.0.0...v3.0.1
 [3.0.0]: https://github.com/dappur/framework/compare/v2.5.0...v3.0.0
 [2.5.0]: https://github.com/dappur/framework/compare/v2.4.0...v2.5.0
