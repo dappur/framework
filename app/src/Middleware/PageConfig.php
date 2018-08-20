@@ -21,7 +21,7 @@ class PageConfig extends Middleware
                 }
             }
             
-            $this->view->getEnvironment()->addGlobal('page_config', $cfg);
+            $this->view->getEnvironment()->addGlobal('pageConfig', $cfg);
             return $next($request, $response);
         }
         

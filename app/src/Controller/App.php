@@ -18,7 +18,7 @@ class App extends Controller
     public function asset(Request $request, Response $response)
     {
         $assetPath = str_replace("\0", "", $request->getParam('path'));
-        $assetPath = __DIR__ . "/../../views/" . str_replace("../", "", $assetPath);
+        $assetPath = realpath(__DIR__ . "/../../views/" . str_replace("../", "", $assetPath));
 
         if (!is_file($assetPath)) {
             throw new NotFoundException($request, $response);

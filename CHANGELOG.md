@@ -1,5 +1,12 @@
 # Changelog
 
+## [Unreleased]
+### Added
+- `realpath()` to asset path fixes bug on certain server configs
+
+### Changed
+- `page_config` variable to `pageConfig`
+
 ## [3.0.2] - 2018-08-16
 ### Added
 - Slim Session to global middleware

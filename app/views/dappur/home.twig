@@ -2,7 +2,7 @@
 
 {% block body %}
 	<div class="container">
-	    <div class="jumbotron" style="background-color: {{ page_config['home-paragraph-color'] }};">
+	    <div class="jumbotron" style="background-color: {{ pageConfig['home-paragraph-color'] }};">
 	    	<div class="row">
 		    	<div class="col-md-12" style="text-align: right;">
 		    		{% if auth.user() %}
@@ -12,7 +12,7 @@
 		    </div>
 	    	<div class="row">
 		    	<div class="col-md-12">
-		    		{{ page_config['home-paragraph']|raw }}
+		    		{{ pageConfig['home-paragraph']|raw }}
 		    	</div>
 		    </div>
 	    </div>
