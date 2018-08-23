@@ -99,7 +99,10 @@
     {% endif %}
 
     {% if hasCloudinary %}
-    <script type="text/javascript">var cloudinaryApiKey = '{{ cloudinarySignature.api_key|raw }}';</script>
+    <script type="text/javascript">
+        var cloudinaryApiKey = '{{ cloudinarySignature.api_key|raw }}';
+        var cloudinaryCloudName = '{{ cloudinaryCloudName }}';
+    </script>
     {% endif %}
 
     <script type="text/javascript">var hasCloudinary = {% if hasCloudinary and auth.hasAccess('media.cloudinary') %}true{% else %}false{% endif %};</script>

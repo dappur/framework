@@ -8,6 +8,9 @@
 ### Changed
 - `page_config` variable to `pageConfig`
 
+### Fixed
+- Cloudinary cloud name on seo settings and blog settings
+
 ## [3.0.2] - 2018-08-16
 ### Added
 - Slim Session to global middleware

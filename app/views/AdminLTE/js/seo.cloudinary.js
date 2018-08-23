@@ -11,7 +11,7 @@ var generateSignature = function(callback, params_to_sign){
 
 $('.upload-featured-cloudinary').cloudinary_upload_widget(
     { 
-        cloud_name: 'dappur', 
+        cloud_name: cloudinaryCloudName, 
         thumbnails: false,
         upload_signature: generateSignature,
         api_key: cloudinaryApiKey, 

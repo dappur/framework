@@ -124,6 +124,7 @@ $container['view'] = function ($container) {
                 \Dappur\Controller\Admin\Media::getCloudinaryCMS($container, true)
             );
             $view->getEnvironment()->addGLobal('cloudinaryApiKey', $container['settings']['cloudinary']['api_key']);
+            $view->getEnvironment()->addGLobal('cloudinaryCloudName', $container['settings']['cloudinary']['cloud_name']);
         }
     } else {
         $view->addExtension(new \Dappur\TwigExtension\Cloudinary());
