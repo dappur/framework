@@ -17,13 +17,23 @@ class App extends Controller
 {
     public function asset(Request $request, Response $response)
     {
+        $baseThemePath = realpath(__DIR__ . "/../../views/");
         $assetPath = str_replace("\0", "", $request->getParam('path'));
         $assetPath = realpath(__DIR__ . "/../../views/" . str_replace("../", "", $assetPath));
 
+        // If file doesn't exist
         if (!is_file($assetPath)) {
-            throw new NotFoundException($request, $response);
+            throw new \Slim\Exception\NotFoundException($request, $response);
         }
-        
+
+        // If file is in theme root folder
+        $regex = '#'.preg_quote($baseThemePath).'(.*)'.preg_quote(DIRECTORY_SEPARATOR).'(.*)#';
+        preg_match($regex, $assetPath, $goto_url);
+        if (substr_count($goto_url[1], DIRECTORY_SEPARATOR) < 2) {
+            throw new \Slim\Exception\NotFoundException($request, $response);
+        }
+
+        // Return file
         return FileResponse::getResponse($response, $assetPath);
     }
 

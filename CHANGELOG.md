@@ -3,6 +3,7 @@
 ## [Unreleased]
 ### Added
 - `realpath()` to asset path fixes bug on certain server configs
+- Path validation for retriving public view assets
 
 ### Changed
 - `page_config` variable to `pageConfig`
