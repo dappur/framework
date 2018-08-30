@@ -65,7 +65,7 @@ class Oauth2 extends Controller
                         )
                 ),
                 'scopes' => array(
-                    'rules' => V::alnum(',_-'),
+                    'rules' => V::alnum(',_-.'),
                     'messages' => array(
                         'alnum' => 'Does not fit scope pattern.'
                         )
@@ -216,7 +216,7 @@ class Oauth2 extends Controller
                         )
                 ),
                 'scopes' => array(
-                    'rules' => V::alnum(',_-'),
+                    'rules' => V::alnum(',_-.'),
                     'messages' => array(
                         'alnum' => 'Does not fit scope pattern.'
                         )

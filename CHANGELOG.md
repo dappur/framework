@@ -2,6 +2,7 @@
 
 ## [Unreleased]
 ### Added
+- `.` to allowed scope characters in admin
 - `realpath()` to asset path fixes bug on certain server configs
 - Path validation for retriving public view assets
 
