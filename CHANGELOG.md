@@ -7,6 +7,7 @@
 - Path validation for retriving public view assets
 
 ### Changed
+- `token_secret` and `refresh_token` to text()
 - `page_config` variable to `pageConfig`
 
 ### Fixed

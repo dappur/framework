@@ -51,8 +51,8 @@ class AddOauth extends Migration
             $table->integer('provider_id')->unsigned();
             $table->string('uid');
             $table->text('access_token');
-            $table->string('token_secret')->nullable();
-            $table->string('refresh_token')->nullable();
+            $table->text('token_secret')->nullable();
+            $table->text('refresh_token')->nullable();
             $table->timestamp('expires')->nullable();
             $table->timestamps();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
