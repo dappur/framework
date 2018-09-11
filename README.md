@@ -14,7 +14,7 @@ The blog addon has now been integrated into the main repo and template files.  I
 **[Demo](https://demo.dappur.io)**  
 **[Documentation](https://docs.dappur.io)**  
 **[Changelog](https://github.com/dappur/framework/blob/master/CHANGELOG.md)**  
-**[Dapp CLI](https://github.com/dappur/dapp)** 
+**[Dapp CLI](https://github.com/dappur/dapp)**
 
 ----------
 
@@ -30,7 +30,7 @@ The blog addon has now been integrated into the main repo and template files.  I
 * [Slim Validation](https://github.com/awurth/slim-validation) - A validator for Slim micro-framework using [Respect\Validation](https://github.com/Respect/Validation)
 * [Cartalyst Sentinel](https://github.com/cartalyst/sentinel) - PHP 5.4+ Fully-featured Authentication & Authorization System
 * [Illuminate Database](https://github.com/illuminate/database) - The Illuminate Database component is a full database toolkit for PHP, providing an expressive query builder, ActiveRecord style ORM, and schema builder.
-* [Monolog Logging](https://github.com/Seldaek/monolog) - Send logs to files, sockets, inboxes, databases and various web services. 
+* [Monolog Logging](https://github.com/Seldaek/monolog) - Send logs to files, sockets, inboxes, databases and various web services.
 * [Fig Cookies](https://github.com/dflydev/dflydev-fig-cookies) - Cookies for PSR-7 HTTP Message Interface.
 * [Phinx Database Migrations](https://github.com/robmorgan/phinx) - Phinx makes it ridiculously easy to manage the database migrations for your PHP app.
 * [Cloudinary Image CDN](https://github.com/cloudinary/cloudinary_php) - Cloudinary is a cloud service that offers a solution to a web application's entire image management pipeline.
@@ -55,6 +55,19 @@ The blog addon has now been integrated into the main repo and template files.  I
 [Phinx](https://phinx.org/) - Phinx is required in order to utilize the database migrations.  It is recommended that you install Phinx globally via composer by running:
 
     composer global require robmorgan/phinx
+
+----------
+
+### Quick Start Via Git/Vagrant
+You can clone this repo and run `vagrant up` in the project root to provision a box that contains:
+
+    - Ubuntu 18
+    - PHP 7.2
+    - Composer
+    - Phinx
+    - MariaDB 10.3
+
+The script will also fetch dependencies, create a `dev` database, and run the initial migration for you.
 
 ----------
 

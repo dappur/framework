@@ -36,4 +36,4 @@ cp settings.json.dist settings.json
 composer install
 phinx migrate
 
-php -S 0.0.0.0:8888 -t public &
+php -S 0.0.0.0:8181 -t public &
