@@ -83,7 +83,7 @@
         "repo_branch": "master"
     },
     "mail": {
-        "relay": "smtp",
+        "relay": "phpmail",
         "logging": true,
         "log_details": ["html", "plain_text"],
         "log_retention": 30,
