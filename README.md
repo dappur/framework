@@ -58,19 +58,6 @@ The blog addon has now been integrated into the main repo and template files.  I
 
 ----------
 
-### Quick Start Via Git/Vagrant
-You can clone this repo and run `vagrant up` in the project root to provision a box that contains:
-
-    - Ubuntu 18
-    - PHP 7.2
-    - Composer
-    - Phinx
-    - MariaDB 10.3
-
-The script will also fetch dependencies, create a `dev` database, and run the initial migration for you.
-
-----------
-
 ### Install Via Composer
 You can start a new project user the Composer `create-project` command.
 
@@ -81,7 +68,21 @@ This will clone the Dappur Framework into a new project directory called `new_ap
 
 ----------
 
-### Configure Project and Database
+### Quick Start Via Vagrant
+Once installed, run `vagrant up` in the project root to provision a box that contains:
+
+    - Ubuntu 18
+    - PHP 7.2
+    - Composer
+    - Phinx
+    - MariaDB 10.3
+    - Apache 2
+
+The script will also fetch dependencies, create a `dev` database, and run the initial migration for you.
+
+----------
+
+### Manually Configure Project and Database
 Configuring your new project is simple.  Rename `settings.dist.json` to `settings.json` and configure the following options at a minimum:
 ```
 db->development->host

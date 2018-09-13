@@ -2,11 +2,13 @@
 
 ## [Unreleased]
 ### Added
+- Vagrant support for dev environments
 - `.` to allowed scope characters in admin
 - `realpath()` to asset path fixes bug on certain server configs
 - Path validation for retriving public view assets
 
 ### Changed
+- Changed mail settings for more generic smtp settings
 - `token_secret` and `refresh_token` to text()
 - `page_config` variable to `pageConfig`
 
