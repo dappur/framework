@@ -8,15 +8,11 @@ This is a lightweight full featured framework intended for PHP developers who ne
 
 The blog addon has now been integrated into the main repo and template files.  It can be easily enabled/disabled via the settings page in the dashboard.
 
-----------
-
 ## Links
 **[Demo](https://demo.dappur.io)**  
 **[Documentation](https://docs.dappur.io)**  
 **[Changelog](https://github.com/dappur/framework/blob/master/CHANGELOG.md)**  
 **[Dapp CLI](https://github.com/dappur/dapp)**
-
-----------
 
 ## Created Using
 * [Slim](https://github.com/slimphp/Slim) - Slim is a PHP micro framework that helps you quickly write simple yet powerful web applications and APIs
@@ -36,15 +32,10 @@ The blog addon has now been integrated into the main repo and template files.  I
 * [Jobby](https://github.com/jobbyphp/jobby) - Manage all your cron jobs without modifying crontab. Handles locking, logging, error emails, and more.
 * [TwoFactorAuth](https://github.com/RobThree/TwoFactorAuth) - PHP library for Two Factor Authentication (TFA / 2FA)
 
-
-----------
-
 ## //TODO
 * Create Documentation
 * Update Dappur CLI for v3
 * Add Unit Testing
-
-----------
 
 ## Pre-Requisites
 [PHP](https://secure.php.net/) - PHP is a popular general-purpose scripting language that is especially suited to web development
@@ -57,24 +48,17 @@ The blog addon has now been integrated into the main repo and template files.  I
 
     $ composer global require robmorgan/phinx
 
-----------
-
 ## Install with [dApp](https://github.com/dappur/dapp)
 This is simple a shortcut to the Composer `create-project` command.
 
     $ dapp new new_app
-
-----------
 
 ## Install Via Composer
 You can start a new project user the Composer `create-project` command.
 
     $ composer create-project dappur/framework new_app
 
-
 This will clone the Dappur Framework into a new project directory called `new_app`.   It will also automatically install and update all of the required dependencies.
-
-----------
 
 ## Quick Start Via Vagrant
 Once installed, run `vagrant up` in the project root to provision a box that contains:
@@ -87,8 +71,6 @@ Once installed, run `vagrant up` in the project root to provision a box that con
     - Apache 2
 
 The script will also fetch dependencies, create a `dev` database, and run the initial migration for you.
-
-----------
 
 ## Manually Configure
 Configuring your new project is simple.  Rename `settings.dist.json` to `settings.json` and configure the following options at a minimum:
@@ -104,8 +86,6 @@ Once you have the `settings.json` file configured, all you have to do is navigat
 $ phinx migrate
 ```
 
-----------
-
 ## Run & Test Project
 Once you have successfully done the initial migration, you can simply use PHP's built in web server to test your application by running the following from your root project directory:
 ```bash
@@ -114,12 +94,8 @@ $ php -S localhost:8181 -t public
 
 Navigate to [http://localhost:8181](http://localhost:8181) to view your project.
 
-----------
-
 ## Pre-Made Bootstrap Template
 This framework comes with several pre-made Bootstrap pages to help get your project moving. All of these pages and their respective controllers/views provide you an insight into how the framework functions including form validation, CSRF, working with Eloquent ORM and other plugins.  You can expand on the default template or create a completely new template using Twig and the front-end framework of your choosing.
-
-----------
 
 ## Admin Interface
 In addition to the few basic front end templates, this framework also comes pre-built with a basic Bootstrap 3 admin dashboard. This dashboard can be accessed automatically by logging in with the admin user credentials.
