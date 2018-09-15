@@ -2,7 +2,7 @@
 ## [Unreleased]
 ###No Changes
 
-## [3.0.3]
+## [3.0.3] - 2018-09-14
 ### Notes
 This version includes support for Vagrant initially submitted by [dshimkoski](https://github.com/dshimkoski).  By using vagrant, you have instant access to a set up dev environment including:
 - **Web Frontend:** http://localhost:8181
