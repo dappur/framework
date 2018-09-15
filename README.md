@@ -55,18 +55,25 @@ The blog addon has now been integrated into the main repo and template files.  I
 
 [MySQL Server](https://github.com/mysql/mysql-server) - MySQL Server, the world's most popular open source database, and MySQL Cluster, a real-time, open source transactional database.
 
-[Composer](https://getcomposer.org/) - Dependency manager is required in order to use the Dappur PHP Framework.  Installation instructions are [located here](https://getcomposer.org/doc/00-intro.md).
+[Composer](https://getcomposer.org/) - Dependency manager is required in order to use the Dappur PHP Framework.  [Installation Instructions](https://getcomposer.org/doc/00-intro.md)
 
 [Phinx](https://phinx.org/) - Phinx is required in order to utilize the database migrations.  It is recommended that you install Phinx globally via composer by running:
 
-    composer global require robmorgan/phinx
+    $ composer global require robmorgan/phinx
+
+----------
+
+### Install with [dApp](https://github.com/dappur/dapp)
+This is simple a shortcut to the Composer `create-project` command.
+
+    $ dapp new new_app
 
 ----------
 
 ### Install Via Composer
 You can start a new project user the Composer `create-project` command.
 
-    composer create-project dappur/framework new_app
+    $ composer create-project dappur/framework new_app
 
 
 This will clone the Dappur Framework into a new project directory called `new_app`.   It will also automatically install and update all of the required dependencies.
@@ -98,7 +105,7 @@ db->development->password
 ```
 Once you have the `settings.json` file configured, all you have to do is navigate to your root project directory from a terminal and run the first migration:
 ```
-phinx migrate
+$ phinx migrate
 ```
 
 ----------
@@ -106,7 +113,7 @@ phinx migrate
 ### Run & Test Project
 Once you have successfully done the initial migration, you can simply use PHP's built in web server to test your application by running the following from your root project directory:
 ```bash
-php -S localhost:8181 -t public
+$ php -S localhost:8181 -t public
 ```
 
 Navigate to [http://localhost:8181](http://localhost:8181) to view your project.
