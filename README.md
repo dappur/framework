@@ -45,14 +45,16 @@ The blog addon has now been integrated into the main repo and template files.  I
 
 ### //TODO
 * Create Documentation
-* Update Dappur CLI for v2
-* Update Default Theme to an open source Bootstrap 4
-* Update Dashboard theme to an open source Bootstrap 4
+* Update Dappur CLI for v3
 * Add Unit Testing
 
 ----------
 
 ### Pre-Requisites
+[PHP](https://secure.php.net/) - PHP is a popular general-purpose scripting language that is especially suited to web development
+
+[MySQL Server](https://github.com/mysql/mysql-server) - MySQL Server, the world's most popular open source database, and MySQL Cluster, a real-time, open source transactional database.
+
 [Composer](https://getcomposer.org/) - Dependency manager is required in order to use the Dappur PHP Framework.  Installation instructions are [located here](https://getcomposer.org/doc/00-intro.md).
 
 [Phinx](https://phinx.org/) - Phinx is required in order to utilize the database migrations.  It is recommended that you install Phinx globally via composer by running:
@@ -85,7 +87,7 @@ The script will also fetch dependencies, create a `dev` database, and run the in
 
 ----------
 
-### Manually Configure Project and Database
+### Manually Configure
 Configuring your new project is simple.  Rename `settings.dist.json` to `settings.json` and configure the following options at a minimum:
 ```
 db->development->host
