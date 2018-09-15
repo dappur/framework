@@ -12,7 +12,7 @@ The blog addon has now been integrated into the main repo and template files.  I
 **[Demo](https://demo.dappur.io)**  
 **[Documentation](https://docs.dappur.io)**  
 **[Changelog](https://github.com/dappur/framework/blob/master/CHANGELOG.md)**  
-**[Dapp CLI](https://github.com/dappur/dapp)**
+**[dApp CLI](https://github.com/dappur/dapp)**
 
 ## Created Using
 * [Slim](https://github.com/slimphp/Slim) - Slim is a PHP micro framework that helps you quickly write simple yet powerful web applications and APIs
@@ -34,7 +34,7 @@ The blog addon has now been integrated into the main repo and template files.  I
 
 ## //TODO
 * Create Documentation
-* Update Dappur CLI for v3
+* Beef up the dApp CLI
 * Add Unit Testing
 
 ## Pre-Requisites
