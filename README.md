@@ -8,7 +8,7 @@ This is a lightweight full featured framework intended for PHP developers who ne
 
 The blog addon has now been integrated into the main repo and template files.  It can be easily enabled/disabled via the settings page in the dashboard.
 
-## Links
+## Important Links
 **[Demo](https://demo.dappur.io)**  
 **[Documentation](https://docs.dappur.io)**  
 **[Changelog](https://github.com/dappur/framework/blob/master/CHANGELOG.md)**  
