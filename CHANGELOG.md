@@ -1,6 +1,7 @@
 # Changelog
 ## [Unreleased]
-###No Changes
+### Changes
+- Removed redundant `Controller.php` classes
 
 ## [3.0.3] - 2018-09-14
 ### Notes
