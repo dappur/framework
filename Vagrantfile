@@ -1,10 +1,9 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
-
-# Define Globals
-port = 8181
+# Globals
+hostHttpPort = 8181
+hostMysqlPort = 8306
 rootPass = "rootpass"
-pmaPass = "phpmyadminpass"
 
 # Check if settings json file exists or create
 if not File.file?('settings.json')
@@ -20,19 +19,33 @@ dbUser = database['username']
 dbPass = database['password']
 
 Vagrant.configure("2") do |config|
+    # ubuntu 18.04
   	config.vm.box = "bento/ubuntu-18.04"
+    # forward http port
   	config.vm.network "forwarded_port",
-  		guest: port,
-  		host: port
+  		guest: 80,
+  		host: hostHttpPort
+    # forward mysql port
+  	config.vm.network "forwarded_port",
+  		guest: 3306,
+  		host: hostMysqlPort
+    # provision
   	config.vm.provision "shell",
   		path: "storage/vagrant/provision.sh",
   		privileged: false,
   		args: [
-  			port,
+  			hostHttpPort,
   			rootPass,
-  			pmaPass,
   			dbName,
   			dbUser,
   			dbPass,
   		]
+    # migrate push command
+    config.push.define "migrate", strategy: "local-exec" do |push|
+      push.script = "storage/vagrant/push.migrate.sh"
+    end
+    # rollback push command
+    config.push.define "rollback", strategy: "local-exec" do |push|
+      push.script = "storage/vagrant/push.rollback.sh"
+    end
 end
