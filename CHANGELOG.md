@@ -1,13 +1,17 @@
 # Changelog
-
 ## [Unreleased]
-### Added
-- Vagrant support for dev environments
-- `.` to allowed scope characters in admin
-- `realpath()` to asset path fixes bug on certain server configs
-- Path validation for retriving public view assets
+###No Changes
+
+## [3.0.3]
+### Notes
+This version includes support for Vagrant initially submitted by [dshimkoski](https://github.com/dshimkoski).  By using vagrant, you have instant access to a set up dev environment including:
+- **Web Frontend:** http://localhost:8181
+- **PhpmyAdmin:** http://localhost:8181/phpmyadmin
+- **Raw Mysql:** localhost:8306
+I couldn't get the `vagrant push` commands to work on my setup (Windows 10), but the goal of that would be to migrate and rollback the dev environment.  For now, those commands can be passed via `vagrant ssh -c "cd /vagrant && phinx migrate"` and `vagrant ssh -c "cd /vagrant && phinx rollback"`.  I have also changed the Vagrant `provision.sh` file so that you can re-run the provision script to migrate the database up.
 
 ### Changed
+- Recaptcha is not configurable as on or off in the global settings.  Default is off.
 - Changed mail settings for more generic smtp settings
 - `token_secret` and `refresh_token` to text()
 - `page_config` variable to `pageConfig`
@@ -248,7 +252,8 @@ Once those items are complete, focus will be shifted to feature enhancements.  T
 - Internalized all assets, they are now served from the view folder and not from the public dir.
 
 
-[Unreleased]: https://github.com/dappur/framework/compare/v3.0.2...HEAD
+[Unreleased]: https://github.com/dappur/framework/compare/v3.0.3...HEAD
+[3.0.3]: https://github.com/dappur/framework/compare/v3.0.2...v3.0.3
 [3.0.2]: https://github.com/dappur/framework/compare/v3.0.1...v3.0.2
 [3.0.1]: https://github.com/dappur/framework/compare/v3.0.0...v3.0.1
 [3.0.0]: https://github.com/dappur/framework/compare/v2.5.0...v3.0.0
