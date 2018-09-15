@@ -36,6 +36,9 @@ The blog addon has now been integrated into the main repo and template files.  I
 * [Cloudinary Image CDN](https://github.com/cloudinary/cloudinary_php) - Cloudinary is a cloud service that offers a solution to a web application's entire image management pipeline.
 * [PHPMailer](https://github.com/PHPMailer/PHPMailer) - A full-featured email creation and transfer class for PHP.
 * [Paginator](https://github.com/jasongrimes/php-paginator) - A lightweight PHP paginator, for generating pagination controls in the style of Stack Overflow and Flickr.
+* [UUID](https://github.com/ramsey/uuid) - A PHP library for generating RFC 4122 version 1, 3, 4, and 5 universally unique identifiers (UUID).
+* [Jobby](https://github.com/jobbyphp/jobby) - Manage all your cron jobs without modifying crontab. Handles locking, logging, error emails, and more.
+* [TwoFactorAuth](https://github.com/RobThree/TwoFactorAuth) - PHP library for Two Factor Authentication (TFA / 2FA)
 
 
 ----------
