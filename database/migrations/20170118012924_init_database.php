@@ -282,6 +282,7 @@ class InitDatabase extends Migration
             array(1, 'ga', 'Google Analytics UA', 2, ''),
             array(1, 'activation', 'Activation Required', 6, 1),
             array(1, 'maintenance-mode', 'Maintenance Mode', 6, 0),
+            array(1, 'recaptcha-enabled', 'Recaptcha Enabled', 6, 0),
             array(1, 'privacy-service', 'Privacy Service Statement', 2, 'SERVICE'),
             array(1, 'error-email', 'Email Errors To', 2, ''),
             array(3, 'contact-email', 'Contact Email', 2, 'contact@example.com'),

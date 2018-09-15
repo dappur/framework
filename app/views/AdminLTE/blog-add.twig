@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2-bootstrap-theme/0.1.0-beta.10/select2-bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-daterangepicker/2.1.25/daterangepicker.min.css" />
     <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="{{asset('AdminLTE/css/grideditor.min.css')}}" />
 {% endblock %}
 
 {% block body %}
@@ -49,9 +50,10 @@
 
                                 <div class="form-group{% if has_error('post_content') %} has-error{% endif %}">
                                     <label for="post_content">Content</label>
-                                    <textarea name="post_content" class="form-control tinymce" id="post_content" placeholder="Post Content" required="required">
-                                        {% if requestParams.post_content %}{{requestParams.post_content}}{% endif %}
-                                    </textarea>
+                                    <div id="contentRow">{% if requestParams.post_content %}{{requestParams.post_content|raw}}{% else %}{{ post.content|raw }}{% endif %}</div>
+                                        <textarea name="post_content" class="form-control" id="content" style="display: none;">
+                                            {% if requestParams.post_content %}{{requestParams.post_content|raw}}{% else %}{{ post.content|raw }}{% endif %}
+                                        </textarea>
                                     <span class="help-block">{{ error('post_content') }}</span>
                                 </div>
 
@@ -192,15 +194,16 @@
 {% endblock %}
 
 {% block javascript %}
-<!-- Select2 Dropdowns -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/js/select2.min.js" type="text/javascript"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-daterangepicker/2.1.25/moment.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-daterangepicker/2.1.25/daterangepicker.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/4.7.1/tinymce.min.js" type="text/javascript"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/4.7.1/jquery.tinymce.min.js" type="text/javascript"></script>
 <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
-<script src="{{ asset('AdminLTE/js/tinymce-init.min.js') }}" type="text/javascript"></script>
 <script src="{{ asset('AdminLTE/js/video-parser.min.js') }}" type="text/javascript"></script>
 <script src="{{ asset('AdminLTE/js/blog.min.js') }}" type="text/javascript"></script>
+<script src="{{ asset('AdminLTE/js/jquery.grideditor.min.js') }}" type="text/javascript"></script>
+<script src="{{ asset('AdminLTE/js/dappur.grideditor.min.js') }}" type="text/javascript"></script>
 {% if hasCloudinary %}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/cloudinary-jquery-file-upload/2.3.0/cloudinary-jquery-file-upload.min.js"></script>
 <script src="//widget.cloudinary.com/global/all.js" type="text/javascript"></script>
@@ -217,8 +220,11 @@ $(document).ready(function() {
             format: 'MM/DD/YYYY h:mm A'
         }
     });
+
     {% if requestParams.video_id and requestParams.video_provider == "youtube" %}
-    video_id = '{{ requestParams.video_id }}';
+        video_id = '{{ requestParams.video_id }}';
+    {% elseif post.video_id and post.video_provider == "youtube" %}
+        video_id = '{{ post.video_id }}';
     {% endif %}
 });
 </script>

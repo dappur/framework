@@ -1,6 +1,6 @@
 {
     "framework": "dappur",
-    "version": "3.0.2",
+    "version": "3.0.3",
     "displayErrorDetails": false,
     "showInAdmin": false,
     "environment": "development",
@@ -9,8 +9,8 @@
             "driver": "mysql",
             "host": "localhost",
             "port": 3306,
-            "database": "",
-            "username": "",
+            "database": "framework",
+            "username": "dappur",
             "password": "",
             "charset": "utf8",
             "collation": "utf8_general_ci",
@@ -87,11 +87,13 @@
         "logging": true,
         "log_details": ["html", "plain_text"],
         "log_retention": 30,
-        "mailgun": {
+        "smtp": {
+            "host": "smtp.mailgun.org",
+            "port": 587,
+            "smtp_auth": true,
+            "smtp_secure": "tls",
             "username": "",
-            "password": "",
-            "api_key": "",
-            "api_base_url": ""
+            "password": ""
         }
     },
     "recaptcha": {

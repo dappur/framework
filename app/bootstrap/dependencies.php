@@ -253,14 +253,16 @@ $container['mail'] = function ($container) {
         case 'phpmail':
             break;
         
-        case 'mailgun':
-            $mail->isSMTP();                                            // Set mailer to use SMTP
-            $mail->Host = 'smtp.mailgun.org';                           // Specify main and backup server
-            $mail->Port = 587;                                          // Set the SMTP port
-            $mail->SMTPAuth = true;                                     // SMTP Auth
-            $mail->Username = $mail_settings['mailgun']['username'];    // SMTP Username
-            $mail->Password = $mail_settings['mailgun']['password'];    // SMTP Password
-            $mail->SMTPSecure = 'tls';                                  // Enable encryption, 'ssl'
+        case 'smtp':
+            $mail->isSMTP();
+            $mail->Host = $mail_settings['smtp']['host'];
+            $mail->Port = $mail_settings['smtp']['port'];
+            if ($mail_settings['smtp']['smtp_auth']) {
+                $mail->SMTPAuth = true;
+                $mail->Username = $mail_settings['smtp']['username'];
+                $mail->Password = $mail_settings['smtp']['password'];
+            }
+            $mail->SMTPSecure = $mail_settings['smtp']['smtp_secure'];
             break;
         
         default:

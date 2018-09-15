@@ -34,7 +34,9 @@
                             </div>
                         </div>
 
-                        {{ form.custom('recaptcha', recaptcha()) }}
+                        {% if config['recaptcha-enabled'] %}
+                            {{ form.custom('recaptcha', recaptcha()) }}
+                        {% endif %}
                         
                         {{ csrf() }}
                         {% if requestParams.redirect %}
@@ -66,5 +68,5 @@
 {% endblock %}
 
 {% block javascript %}
-    {{ recaptchaJs() }}
+    {% if config['recaptcha-enabled'] %}{{ recaptchaJs() }}{% endif %}
 {% endblock %}

@@ -111,5 +111,5 @@
 {% endblock %}
 
 {% block javascript %}
-    {{ recaptchaJs() }}
+    {% if config['recaptcha-enabled'] %}{{ recaptchaJs() }}{% endif %}
 {% endblock %}

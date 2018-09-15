@@ -37,9 +37,11 @@
 									{{ form.textarea('comment', requestParams.comment, 'comment', 'Comments/Feedback', null, 6, null)}}
 
 									<div class="row">
-										<div class="col-sm-6">
-											{{ form.custom('recaptcha', recaptcha()) }}
-										</div>
+										{% if config['recaptcha-enabled'] %}
+											<div class="col-sm-6">
+												{{ form.custom('recaptcha', recaptcha()) }}
+											</div>
+										{% endif %}
 										<div class="col-sm-6">
 											<div class="form-group text-center">
 												<button type="submit" class="btn btn-default btn-send"><span class="fa fa-send"></span> Send</button>
@@ -114,5 +116,5 @@
 {% endblock %}
 
 {% block javascript %}
-    {{ recaptchaJs() }}
+    {% if config['recaptcha-enabled'] %}{{ recaptchaJs() }}{% endif %}
 {% endblock %}
