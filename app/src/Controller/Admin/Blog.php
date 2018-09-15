@@ -3,6 +3,7 @@
 namespace Dappur\Controller\Admin;
 
 use Carbon\Carbon;
+use Dappur\Controller\Controller as Controller;
 use Dappur\Dappurware\Blog as B;
 use Dappur\Dappurware\VideoParser as VP;
 use Interop\Container\ContainerInterface;

@@ -2,6 +2,7 @@
 
 namespace Dappur\Controller\Admin;
 
+use Dappur\Controller\Controller as Controller;
 use Dappur\Model\RoleUsers;
 use Dappur\Model\Roles as R;
 use Psr\Http\Message\ServerRequestInterface as Request;

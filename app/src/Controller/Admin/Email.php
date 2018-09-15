@@ -2,6 +2,7 @@
 
 namespace Dappur\Controller\Admin;
 
+use Dappur\Controller\Controller as Controller;
 use Dappur\Dappurware\Email as E;
 use Dappur\Dappurware\Sentinel as S;
 use Dappur\Model\Emails;

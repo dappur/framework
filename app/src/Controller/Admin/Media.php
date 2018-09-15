@@ -3,6 +3,7 @@
 namespace Dappur\Controller\Admin;
 
 use Cloudinary;
+use Dappur\Controller\Controller as Controller;
 use Dappur\Dappurware\Sentinel as DS;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;

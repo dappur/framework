@@ -3,6 +3,7 @@
 namespace Dappur\Controller\Admin;
 
 use Carbon\Carbon;
+use Dappur\Controller\Controller as Controller;
 use Dappur\Dappurware\FileResponse;
 use Dappur\Dappurware\Utils;
 use Psr\Http\Message\ServerRequestInterface as Request;

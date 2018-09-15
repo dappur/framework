@@ -3,6 +3,7 @@
 namespace Dappur\Controller\Admin;
 
 use Carbon\Carbon;
+use Dappur\Controller\Controller as Controller;
 use Dappur\Dappurware\VideoParser as VP;
 use Dappur\Model\BlogCategories as BC;
 use Dappur\Model\BlogTags;

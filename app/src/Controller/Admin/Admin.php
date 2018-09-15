@@ -3,6 +3,7 @@
 namespace Dappur\Controller\Admin;
 
 use Carbon\Carbon;
+use Dappur\Controller\Controller as Controller;
 use Dappur\Model\ContactRequests;
 use Dappur\Model\Oauth2Providers;
 use Dappur\Model\Users;

@@ -2,6 +2,7 @@
 
 namespace Dappur\Controller\Admin;
 
+use Dappur\Controller\Controller as Controller;
 use Dappur\Model\ContactRequests;
 use Dappur\Model\Users;
 use Dappur\Model\UsersProfile;

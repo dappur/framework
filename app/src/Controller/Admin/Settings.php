@@ -2,6 +2,7 @@
 
 namespace Dappur\Controller\Admin;
 
+use Dappur\Controller\Controller as Controller;
 use Dappur\Dappurware\FileResponse;
 use Dappur\Dappurware\Settings as S;
 use Dappur\Model\Config;

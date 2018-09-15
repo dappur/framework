@@ -3,6 +3,7 @@
 namespace Dappur\Controller\Admin;
 
 use Dappur\App\FileBrowser;
+use Dappur\Controller\Controller as Controller;
 use Interop\Container\ContainerInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
