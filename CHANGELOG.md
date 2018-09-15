@@ -1,4 +1,5 @@
 # Changelog
+
 ## [Unreleased]
 ### Changes
 - Removed redundant `Controller.php` classes
