@@ -70,12 +70,15 @@ class App extends Controller
             );
             $this->validator->validate($request, $validateData);
 
-            // Validate Recaptcha
-            $recaptcha = new Recaptcha($this->container);
-            $recaptcha = $recaptcha->validate($request->getParam('g-recaptcha-response'));
-            if (!$recaptcha) {
-                $this->validator->addError('recaptcha', 'Recaptcha was invalid.');
+            if ($this->config['recaptcha-enabled']) {
+                // Validate Recaptcha
+                $recaptcha = new Recaptcha($this->container);
+                $recaptcha = $recaptcha->validate($request->getParam('g-recaptcha-response'));
+                if (!$recaptcha) {
+                    $this->validator->addError('recaptcha', 'Recaptcha was invalid.');
+                }
             }
+            
 
             if ($this->validator->isValid()) {
                 $add = new ContactRequests;

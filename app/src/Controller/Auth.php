@@ -62,11 +62,13 @@ class Auth extends Controller
             );
             $this->validator->validate($request, $validateData);
 
-            // Validate Recaptcha
-            $recaptcha = new Recaptcha($this->container);
-            $recaptcha = $recaptcha->validate($request->getParam('g-recaptcha-response'));
-            if (!$recaptcha) {
-                $this->validator->addError('recaptcha', 'Recaptcha was invalid.');
+            if ($this->config['recaptcha-enabled']) {
+                // Validate Recaptcha
+                $recaptcha = new Recaptcha($this->container);
+                $recaptcha = $recaptcha->validate($request->getParam('g-recaptcha-response'));
+                if (!$recaptcha) {
+                    $this->validator->addError('recaptcha', 'Recaptcha was invalid.');
+                }
             }
 
             $credentials = [
@@ -129,11 +131,13 @@ class Auth extends Controller
             
             $remember = $request->getParam('remember') ? true : false;
 
-            // Validate Recaptcha
-            $recaptcha = new Recaptcha($this->container);
-            $recaptcha = $recaptcha->validate($request->getParam('g-recaptcha-response'));
-            if (!$recaptcha) {
-                $this->validator->addError('recaptcha', 'Recaptcha was invalid.');
+            if ($this->config['recaptcha-enabled']) {
+                // Validate Recaptcha
+                $recaptcha = new Recaptcha($this->container);
+                $recaptcha = $recaptcha->validate($request->getParam('g-recaptcha-response'));
+                if (!$recaptcha) {
+                    $this->validator->addError('recaptcha', 'Recaptcha was invalid.');
+                }
             }
 
             if ($this->validator->isValid()) {
@@ -369,11 +373,13 @@ class Auth extends Controller
         );
         $this->validator->validate($this->request, $validateData);
 
-        // Validate Recaptcha
-        $recaptcha = new Recaptcha($this->container);
-        $recaptcha = $recaptcha->validate($this->request->getParam('g-recaptcha-response'));
-        if (!$recaptcha) {
-            $this->validator->addError('recaptcha', 'Recaptcha was invalid.');
+        if ($this->config['recaptcha-enabled']) {
+            // Validate Recaptcha
+            $recaptcha = new Recaptcha($this->container);
+            $recaptcha = $recaptcha->validate($this->request->getParam('g-recaptcha-response'));
+            if (!$recaptcha) {
+                $this->validator->addError('recaptcha', 'Recaptcha was invalid.');
+            }
         }
 
         // Validate Username

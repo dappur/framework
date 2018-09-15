@@ -107,7 +107,7 @@
 {% endblock %}
 
 {% block javascript %}
-    {{ recaptchaJs() }}
+    {% if config['recaptcha-enabled'] %}{{ recaptchaJs() }}{% endif %}
     
     <script src="{{ asset('dappur/js/blog-comments.js') }}"></script>
 
