@@ -2,11 +2,9 @@
 
 A stylish PHP application framework crafted using Slim, Twig, Eloquent and Sentinel designed to get you from clone to production in a matter of minutes.
 
-Built on the Slim PHP Micro Framework, Twig templating engine, Eloquent ORM database interactions, Phinx database migrations, Sentinel user management, Monolog w/ Logentries Support, form validation with CSRF protection, cookie management, database controlled config and Cloudinary CMS integration.
+Built on the Slim PHP Micro Framework, Twig templating engine, Eloquent ORM database interactions, Phinx database migrations, Sentinel user management, Monolog w/ Logentries Support, form validation with CSRF protection, cookie management, database controlled config,Cloudinary CMS integration, blog, SEO, oauth2 login, and two-factor authentication.
 
 This is a lightweight full featured framework intended for PHP developers who need an open source, fast and reliable platform to build your apps from.  Have your new projects up and running in minutes with the provided basic bootstrap pages and basic bootstrap admin.
-
-The blog addon has now been integrated into the main repo and template files.  It can be easily enabled/disabled via the settings page in the dashboard.
 
 ## Important Links
 **[Demo](https://demo.dappur.io)**  
