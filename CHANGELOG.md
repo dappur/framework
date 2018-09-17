@@ -1,7 +1,18 @@
 # Changelog
 
 ## [Unreleased]
-### Changes
+### No Changes
+
+## [3.1.0] - 2018-09-16
+### Notes
+The manual installation process has changed.  Please see the [Installation Instructions](https://github.com/dappur/framework#install-with-dapp) in the README.  It is recommended that you use the [dApp CLI](https://github.com/dappur/dapp) for a simple installation.
+
+### Removed
+- Both frontend and dashboard themes have been removed from the view folder. They have been moved to their own repositories.
+	- [Dappur - Frontend Theme](https://github.com/dappur/theme-dappur)
+	- [AdminLTE - Dashboard Theme](https://github.com/dappur/theme-AdminLTE)
+
+### Changed
 - Removed redundant `Controller.php` classes
 
 ## [3.0.3] - 2018-09-14
@@ -254,7 +265,8 @@ Once those items are complete, focus will be shifted to feature enhancements.  T
 - Internalized all assets, they are now served from the view folder and not from the public dir.
 
 
-[Unreleased]: https://github.com/dappur/framework/compare/v3.0.3...HEAD
+[Unreleased]: https://github.com/dappur/framework/compare/v3.1.0...HEAD
+[3.1.0]: https://github.com/dappur/framework/compare/v3.0.3...v3.1.0
 [3.0.3]: https://github.com/dappur/framework/compare/v3.0.2...v3.0.3
 [3.0.2]: https://github.com/dappur/framework/compare/v3.0.1...v3.0.2
 [3.0.1]: https://github.com/dappur/framework/compare/v3.0.0...v3.0.1

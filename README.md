@@ -45,20 +45,34 @@ The blog addon has now been integrated into the main repo and template files.  I
 [Composer](https://getcomposer.org/) - Dependency manager is required in order to use the Dappur PHP Framework.  [Installation Instructions](https://getcomposer.org/doc/00-intro.md)
 
 [Phinx](https://phinx.org/) - Phinx is required in order to utilize the database migrations.  It is recommended that you install Phinx globally via composer by running:
-
-    $ composer global require robmorgan/phinx
+```bash
+$ composer global require robmorgan/phinx
+```
 
 ## Install with [dApp](https://github.com/dappur/dapp)
-This is simple a shortcut to the Composer `create-project` command.
-
-    $ dapp new new_app
+This is simple a shortcut to the Composer `create-project` command.  This command clones your project, downloads the themes, and prepares your settings.json file.
+```bash
+$ dapp new new_app
+```
 
 ## Install Via Composer
+#### Step 1 (Create the project)
 You can start a new project user the Composer `create-project` command.
+```bash
+$ composer create-project dappur/framework new_app
+```
 
-    $ composer create-project dappur/framework new_app
+#### Step 2 (Install the themes)
+If you install via composer, you will have to install both of the themes manually.  Simply copy the theme folder from the theme repository into you `app/views` folder inside your project.  If you are using a custom theme, you will have to change the initial migration to support that theme before you migrate your database.
+- [Dappur - Frontend Theme](https://github.com/dappur/theme-dappur)
+- [AdminLTE - Dashboard Theme](https://github.com/dappur/theme-AdminLTE)
 
-This will clone the Dappur Framework into a new project directory called `new_app`.   It will also automatically install and update all of the required dependencies.
+#### Step 3 (Prepare settings.json file)
+Inside the root of your project, you will need to copy the `settings.json.dist` to `settings.json`.
+```bash
+$ cp settings.json.dist settings.json
+```
+Once copied, open `settings.json` and change the "framework" name to your project name.  You can also set up any other options as well as your database credentials.
 
 ## Quick Start Via Vagrant
 Once installed, run `vagrant up` in the project root to provision a box that contains:
@@ -70,34 +84,29 @@ Once installed, run `vagrant up` in the project root to provision a box that con
     - MariaDB 10.3
     - Apache 2
 
-The script will also fetch dependencies, create a `dev` database, and run the initial migration for you.
+The script will also fetch dependencies, create a `dev` database, and run the initial migration for you.  Services will be accessible through:
+- **Web Server:** http://localhost:8181
+- **Phpmyadmin:** http://localhost:8181/phpmyadmin
+- **MySQL Direct:** localhost:8306
 
-## Manually Configure
-Configuring your new project is simple.  Rename `settings.dist.json` to `settings.json` and configure the following options at a minimum:
-```
-db->development->host
-db->development->port
-db->development->database
-db->development->username
-db->development->password
-```
-Once you have the `settings.json` file configured, all you have to do is navigate to your root project directory from a terminal and run the first migration:
-```
+## Initial Database Migration
+If you are not using Vagrant, you have one more step to go before you are live.  You will need to ensure that you database credentials are correct in `settings.json` and then run the following command in a terminal from your root project directory:
+```bash
 $ phinx migrate
 ```
 
 ## Run & Test Project
-Once you have successfully done the initial migration, you can simply use PHP's built in web server to test your application by running the following from your root project directory:
+If you've chosen to use vagrant, you can simply visit the configured URL:PORT after completing the `vagrant up` command. Otherwise, once you have successfully done the initial migration, you can simply use PHP's built in web server to test your application by running the following from your root project directory:
 ```bash
 $ php -S localhost:8181 -t public
 ```
 
 Navigate to [http://localhost:8181](http://localhost:8181) to view your project.
 
-## Pre-Made Bootstrap Template
+## [Frontend Theme](https://github.com/dappur/theme-dappur)
 This framework comes with several pre-made Bootstrap pages to help get your project moving. All of these pages and their respective controllers/views provide you an insight into how the framework functions including form validation, CSRF, working with Eloquent ORM and other plugins.  You can expand on the default template or create a completely new template using Twig and the front-end framework of your choosing.
 
-## Admin Interface
+## [Dashboard Theme](https://github.com/dappur/theme-AdminLTE)
 In addition to the few basic front end templates, this framework also comes pre-built with a basic Bootstrap 3 admin dashboard. This dashboard can be accessed automatically by logging in with the admin user credentials.
 
 **Default Admin Username:** `admin`  
