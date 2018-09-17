@@ -48,7 +48,7 @@ $ composer global require robmorgan/phinx
 ```
 
 ## Install with [dApp](https://github.com/dappur/dapp)
-This is simple a shortcut to the Composer `create-project` command.  This command clones your project, downloads the themes, and prepares your settings.json file.
+This command clones your project via the `composer create-project` command and downloads the themes as well as prepare your `settings.json` file.
 ```bash
 $ dapp new new_app
 ```
