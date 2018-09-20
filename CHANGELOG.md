@@ -1,7 +1,11 @@
 # Changelog
 
 ## [Unreleased]
-### No Changes
+### Added
+- Can now toggle in settings error emails by type.
+
+### Changed
+Code cleanup in dependencies
 
 ## [3.1.0] - 2018-09-16
 ### Notes
