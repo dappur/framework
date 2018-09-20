@@ -5,7 +5,8 @@
 - Can now toggle in settings error emails by type.
 
 ### Changed
-Code cleanup in dependencies
+- Code cleanup in dependencies
+- updated `settings.json.dist`
 
 ## [3.1.0] - 2018-09-16
 ### Notes
