@@ -198,7 +198,6 @@ $container['view'] = function ($container) {
             ->get();
         $view->getEnvironment()->addGlobal('userAccess', $container['userAccess']);
         $view->getEnvironment()->addGlobal('pageSettings', $page_settings);
-        $view->getEnvironment()->addGlobal('showInAdmin', $container['settings']['showInAdmin']);
     }
     return $view;
 };
@@ -208,7 +207,7 @@ $container['foundHandler'] = function () {
     return new \Slim\Handlers\Strategies\RequestResponseArgs();
 };
 
-// Bind Monolog Logging System if Enables
+// Bind Monolog Logging System
 $container['logger'] = function ($container) {
 
     // Stream Log output to file
@@ -229,6 +228,7 @@ $container['logger'] = function ($container) {
 
 // Cloudinary PHP API
 $container['cloudinary'] = function ($container) {
+
     if ($container['settings']['cloudinary']['enabled']) {
         \Cloudinary::config(
             array( "cloud_name" => $container['settings']['cloudinary']['cloud_name'],
@@ -245,24 +245,24 @@ $container['cloudinary'] = function ($container) {
 
 // Mail Relay
 $container['mail'] = function ($container) {
-    $mail_settings = $container['settings']['mail'];
+    $mailSettings = $container['settings']['mail'];
 
     $mail = new \PHPMailer\PHPMailer\PHPMailer;
 
-    switch ($mail_settings['relay']) {
+    switch ($mailSettings['relay']) {
         case 'phpmail':
             break;
         
         case 'smtp':
             $mail->isSMTP();
-            $mail->Host = $mail_settings['smtp']['host'];
-            $mail->Port = $mail_settings['smtp']['port'];
-            if ($mail_settings['smtp']['smtp_auth']) {
+            $mail->Host = $mailSettings['smtp']['host'];
+            $mail->Port = $mailSettings['smtp']['port'];
+            if ($mailSettings['smtp']['smtp_auth']) {
                 $mail->SMTPAuth = true;
-                $mail->Username = $mail_settings['smtp']['username'];
-                $mail->Password = $mail_settings['smtp']['password'];
+                $mail->Username = $mailSettings['smtp']['username'];
+                $mail->Password = $mailSettings['smtp']['password'];
             }
-            $mail->SMTPSecure = $mail_settings['smtp']['smtp_secure'];
+            $mail->SMTPSecure = $mailSettings['smtp']['smtp_secure'];
             break;
         
         default:
