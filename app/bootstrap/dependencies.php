@@ -17,17 +17,17 @@ $container['session'] = function () use ($container) {
     return new \SlimSession\Helper;
 };
 
-$container['project_dir'] = function ($container) {
+$container['projectDir'] = function ($container) {
     $directory = __DIR__ . "/../../";
     return realpath($directory);
 };
 
-$container['public_dir'] = function ($container) {
+$container['publicDir'] = function ($container) {
     $directory = __DIR__ . "/../../public/";
     return realpath($directory);
 };
 
-$container['upload_dir'] = function ($container) {
+$container['uploadDir'] = function ($container) {
     $directory = __DIR__ . "/../../public/uploads/";
     return realpath($directory);
 };
@@ -97,6 +97,7 @@ $container['view'] = function ($container) {
         $container['settings']['view']['twig']
     );
 
+    // Add Twig Extensions
     $view->addExtension(new \Slim\Views\TwigExtension(
         $container['router'],
         $container['request']->getUri()
@@ -111,8 +112,11 @@ $container['view'] = function ($container) {
     $view->addExtension(new \Dappur\TwigExtension\Md5($container['request']));
     $view->addExtension(new \Dappur\TwigExtension\Gravatar($container['request']));
     $view->addExtension(new \Dappur\TwigExtension\Menus($container));
+
+    // Cloudinary View Settings
+    $view->addExtension(new \Dappur\TwigExtension\Cloudinary());
+    $view->getEnvironment()->addGlobal('hasCloudinary', 0);
     if ($container['cloudinary']) {
-        $view->addExtension(new \Dappur\TwigExtension\Cloudinary());
         $view->getEnvironment()->addGlobal('hasCloudinary', 1);
         if ($container->auth->check() && $container->auth->hasAccess('media.cloudinary')) {
             $view->getEnvironment()->addGlobal(
@@ -126,11 +130,9 @@ $container['view'] = function ($container) {
             $view->getEnvironment()->addGLobal('cloudinaryApiKey', $container['settings']['cloudinary']['api_key']);
             $view->getEnvironment()->addGLobal('cloudinaryCloudName', $container['settings']['cloudinary']['cloud_name']);
         }
-    } else {
-        $view->addExtension(new \Dappur\TwigExtension\Cloudinary());
-        $view->getEnvironment()->addGlobal('hasCloudinary', 0);
     }
 
+    // Blog View Settings
     if ($container['config']['blog-enabled']) {
         // Get Categories With Count
         $blog_categories = new \Dappur\Model\BlogCategories;
@@ -183,9 +185,6 @@ $container['view'] = function ($container) {
     $view->getEnvironment()->addGlobal('currentRoute', $container['request']->getUri()->getPath());
     $view->getEnvironment()->addGlobal('request', $container['request']);
     $view->getEnvironment()->addGlobal('requestParams', $container['request']->getParams());
-    $view->getEnvironment()->addGlobal('projectDir', $container['project_dir']);
-    $view->getEnvironment()->addGlobal('publicDir', $container['public_dir']);
-    $view->getEnvironment()->addGlobal('uploadDir', $container['upload_dir']);
     
     $page_name = $container['request']->getAttribute('name');
     if (strpos($container['request']->getUri()->getPath(), '/dashboard') !== false) {
