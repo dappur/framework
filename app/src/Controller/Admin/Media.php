@@ -159,13 +159,13 @@ class Media extends Controller
         $directory = $requestParams['current_folder'];
         $file = $requestParams['current_file'];
 
-        $checkDir = substr(realpath($this->upload_dir . "/$directory/$file"), 0, strlen($this->upload_dir));
+        $checkDir = substr(realpath($this->uploadDir . "/$directory/$file"), 0, strlen($this->uploadDir));
 
-        if ($checkDir !== $this->upload_dir) {
+        if ($checkDir !== $this->uploadDir) {
             $this->validator->addError('error', 'You do not have permission to be in this directory.');
         }
 
-        if (!is_file(realpath($this->upload_dir . "/$directory/$file"))) {
+        if (!is_file(realpath($this->uploadDir . "/$directory/$file"))) {
             $this->validator->addError('error', 'The file you are trying to delete does not exist.');
         }
 
@@ -190,7 +190,7 @@ class Media extends Controller
         }
 
         if ($this->validator->isValid()) {
-            if (unlink(realpath($this->upload_dir . "/$directory/$file"))) {
+            if (unlink(realpath($this->uploadDir . "/$directory/$file"))) {
                 $output['result'] = "success";
                 $output['message'] = "File deleted successfully.";
                 return $response->write(json_encode($output), 201);
@@ -213,11 +213,11 @@ class Media extends Controller
 
         $directory = $requestParams['directory'];
 
-        if (substr(realpath($this->upload_dir . "/$directory"), 0, strlen($this->upload_dir)) !== $this->upload_dir) {
+        if (substr(realpath($this->uploadDir . "/$directory"), 0, strlen($this->uploadDir)) !== $this->uploadDir) {
             return $response->write(json_encode(array("status" => "error")), 201);
         }
 
-        $output = $this->getFiles($this->upload_dir . "/$directory");
+        $output = $this->getFiles($this->uploadDir . "/$directory");
 
         return $response->write(json_encode($output), 201);
     }
@@ -236,19 +236,19 @@ class Media extends Controller
         $newFolderName = $requestParams['new_folder_name'];
 
         // Check that the upload folder exists
-        if (!is_dir(realpath($this->upload_dir . "/$currentFolder"))) {
+        if (!is_dir(realpath($this->uploadDir . "/$currentFolder"))) {
             $this->validator->addError('new_folder_name', 'Selected folder does not exist.');
         }
 
         // Check that the folder doesn't exists
-        if (is_dir($this->upload_dir . "/$currentFolder/$newFolderName")) {
+        if (is_dir($this->uploadDir . "/$currentFolder/$newFolderName")) {
             $this->validator->addError('new_folder_name', 'Folder already exists.');
         }
 
-        $checkDir = substr(realpath($this->upload_dir . "/$currentFolder"), 0, strlen($this->upload_dir));
+        $checkDir = substr(realpath($this->uploadDir . "/$currentFolder"), 0, strlen($this->uploadDir));
 
         // Check to make sure that the folder is within the upload dir
-        if ($checkDir !== $this->upload_dir) {
+        if ($checkDir !== $this->uploadDir) {
             $this->validator->addError('new_folder_name', 'Folder already exists.');
         }
 
@@ -267,7 +267,7 @@ class Media extends Controller
         $this->validator->validate($request, $validateData);
 
         if ($this->validator->isValid()) {
-            $newfolderpath = $this->upload_dir . $currentFolder . '/' . $newFolderName;
+            $newfolderpath = $this->uploadDir . $currentFolder . '/' . $newFolderName;
             
             if (mkdir($newfolderpath)) {
                 $output['result'] = "success";
@@ -309,7 +309,7 @@ class Media extends Controller
 
         $directory = $requestParams['current_folder'];
 
-        if (substr(realpath($this->upload_dir . "/$directory"), 0, strlen($this->upload_dir)) !== $this->upload_dir) {
+        if (substr(realpath($this->uploadDir . "/$directory"), 0, strlen($this->uploadDir)) !== $this->uploadDir) {
             return $response->write(json_encode(array("status" => "error")), 201);
         }
 
@@ -324,7 +324,7 @@ class Media extends Controller
 
         move_uploaded_file(
             $newFile->file,
-            realpath($this->upload_dir . "/$directory") . "/" . $newFile->getClientFilename()
+            realpath($this->uploadDir . "/$directory") . "/" . $newFile->getClientFilename()
         );
 
         if ($errors == 0) {
