@@ -113,6 +113,14 @@ $container['view'] = function ($container) {
     $view->addExtension(new \Dappur\TwigExtension\Gravatar($container['request']));
     $view->addExtension(new \Dappur\TwigExtension\Menus($container));
 
+    // Globla Variables
+    $view->getEnvironment()->addGlobal('flash', $container['flash']);
+    $view->getEnvironment()->addGlobal('auth', $container['auth']);
+    $view->getEnvironment()->addGlobal('config', $container['config']);
+    $view->getEnvironment()->addGlobal('displayErrorDetails', $container['settings']['displayErrorDetails']);
+    $view->getEnvironment()->addGlobal('currentRoute', $container['request']->getUri()->getPath());
+    $view->getEnvironment()->addGlobal('requestParams', $container['request']->getParams());
+
     // Cloudinary View Settings
     $view->addExtension(new \Dappur\TwigExtension\Cloudinary());
     $view->getEnvironment()->addGlobal('hasCloudinary', 0);
@@ -178,13 +186,7 @@ $container['view'] = function ($container) {
         $view->getEnvironment()->addGlobal('blogComments', $blogComments);
     }
     
-    $view->getEnvironment()->addGlobal('flash', $container['flash']);
-    $view->getEnvironment()->addGlobal('auth', $container['auth']);
-    $view->getEnvironment()->addGlobal('config', $container['config']);
-    $view->getEnvironment()->addGlobal('displayErrorDetails', $container['settings']['displayErrorDetails']);
-    $view->getEnvironment()->addGlobal('currentRoute', $container['request']->getUri()->getPath());
-    $view->getEnvironment()->addGlobal('request', $container['request']);
-    $view->getEnvironment()->addGlobal('requestParams', $container['request']->getParams());
+    
     
     $page_name = $container['request']->getAttribute('name');
     if (strpos($container['request']->getUri()->getPath(), '/dashboard') !== false) {
