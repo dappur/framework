@@ -8,6 +8,7 @@
 - This updated required a small change was required for the menu display on the templates.
 	- Please see [7dcf1f7](https://github.com/dappur/theme-dappur/commit/7dcf1f776b01415b32378509e352c6b12345e3e8) for changes to `dappur/inc/navbar.twig`
 	- Please see [461d6fe](https://github.com/dappur/theme-AdminLTE/commit/461d6fe2b917a822d8fb7b0bdbfc3de2774b5d31) for changes to `AdminLTE/inc/admin-sidebar.twig`
+	- Please see [2ea8d16](https://github.com/dappur/theme-AdminLTE/commit/2ea8d16c3fe28fc421a5679bcf9d90c8110cbc20) for changes to `AdminLTE/menus.twig`
 
 ### Added
 - Config Boolean option to menu items.  If set, the menu item will only show if the assiciated config boolean is set to `true`.  Please see notes for template changes
