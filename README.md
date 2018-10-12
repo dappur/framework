@@ -12,6 +12,12 @@ This is a lightweight full featured framework intended for PHP developers who ne
 **[Changelog](https://github.com/dappur/framework/blob/master/CHANGELOG.md)**  
 **[dApp CLI](https://github.com/dappur/dapp)**
 
+## [Frontend Theme](https://github.com/dappur/theme-dappur)
+This framework comes with several pre-made Bootstrap pages to help get your project moving. All of these pages and their respective controllers/views provide you an insight into how the framework functions including form validation, CSRF, working with Eloquent ORM and other plugins.  You can expand on the default template or create a completely new template using Twig and the front-end framework of your choosing.
+
+## [Dashboard Theme](https://github.com/dappur/theme-AdminLTE)
+In addition to the few basic front end templates, this framework also comes pre-built with a basic Bootstrap 3 admin dashboard. This dashboard can be accessed automatically by logging in with the admin user credentials.
+
 ## Created Using
 * [Slim](https://github.com/slimphp/Slim) - Slim is a PHP micro framework that helps you quickly write simple yet powerful web applications and APIs
 * [Slim Twig-View](https://github.com/slimphp/Twig-View) - Slim Framework 3 view helper built on top of the Twig 2 templating component
@@ -100,12 +106,6 @@ $ php -S localhost:8181 -t public
 ```
 
 Navigate to [http://localhost:8181](http://localhost:8181) to view your project.
-
-## [Frontend Theme](https://github.com/dappur/theme-dappur)
-This framework comes with several pre-made Bootstrap pages to help get your project moving. All of these pages and their respective controllers/views provide you an insight into how the framework functions including form validation, CSRF, working with Eloquent ORM and other plugins.  You can expand on the default template or create a completely new template using Twig and the front-end framework of your choosing.
-
-## [Dashboard Theme](https://github.com/dappur/theme-AdminLTE)
-In addition to the few basic front end templates, this framework also comes pre-built with a basic Bootstrap 3 admin dashboard. This dashboard can be accessed automatically by logging in with the admin user credentials.
 
 **Default Admin Username:** `admin`  
 **Default Admin Password:** `admin123`
