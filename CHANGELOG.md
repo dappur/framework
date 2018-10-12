@@ -1,10 +1,13 @@
 # Changelog
 
 ## [Unreleased]
+### No Changes
+
+## [3.1.2] - 2018-10-11
 ### Notes
 - This updated required a small change was required for the menu display on the templates.
-	- Please see [461d6fe](https://github.com/dappur/theme-dappur/commit/7dcf1f776b01415b32378509e352c6b12345e3e8) for changes to `dappur/inc/navbar.twig`
-	- Please see [47dcf1f](https://github.com/dappur/theme-AdminLTE/commit/461d6fe2b917a822d8fb7b0bdbfc3de2774b5d31) for changes to `AdminLTE/inc/admin-sidebar.twig`
+	- Please see [7dcf1f7](https://github.com/dappur/theme-dappur/commit/7dcf1f776b01415b32378509e352c6b12345e3e8) for changes to `dappur/inc/navbar.twig`
+	- Please see [461d6fe](https://github.com/dappur/theme-AdminLTE/commit/461d6fe2b917a822d8fb7b0bdbfc3de2774b5d31) for changes to `AdminLTE/inc/admin-sidebar.twig`
 
 ### Added
 - Config Boolean option to menu items.  If set, the menu item will only show if the assiciated config boolean is set to `true`.  Please see notes for template changes
@@ -282,7 +285,8 @@ Once those items are complete, focus will be shifted to feature enhancements.  T
 - Internalized all assets, they are now served from the view folder and not from the public dir.
 
 
-[Unreleased]: https://github.com/dappur/framework/compare/v3.1.1...HEAD
+[Unreleased]: https://github.com/dappur/framework/compare/v3.1.2...HEAD
+[3.1.2]: https://github.com/dappur/framework/compare/v3.1.1...v3.1.2
 [3.1.1]: https://github.com/dappur/framework/compare/v3.1.0...v3.1.1
 [3.1.0]: https://github.com/dappur/framework/compare/v3.0.3...v3.1.0
 [3.0.3]: https://github.com/dappur/framework/compare/v3.0.2...v3.0.3
