@@ -15,6 +15,9 @@ $app->group('/dashboard', function () use ($app, $container) {
         // Delete User
         $app->post('/delete', 'AdminUsers:usersDelete')
             ->setName('admin-users-delete');
+        // Activate User
+        $app->post('/activate', 'AdminUsers:activate')
+            ->setName('admin-users-activate');
         // User Ajax
         $app->get('/datatables', 'AdminUsers:dataTables')
             ->setName('admin-users-datatables');

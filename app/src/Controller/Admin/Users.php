@@ -31,7 +31,7 @@ class Users extends Controller
         $dir = $request->getParam('order')[0]['dir'];
 
         $users = U::select('id', 'first_name', 'last_name', 'email', 'username', '2fa')
-            ->with('roles', 'oauth2', 'oauth2.provider')
+            ->with('roles', 'oauth2', 'oauth2.provider', 'notActivated')
             ->skip($start)
             ->take($limit)
             ->orderBy($order, $dir);
@@ -447,6 +447,27 @@ class Users extends Controller
         }
 
         $this->flash('danger'.'There was an error deleting the user.');
+        return $this->redirect($response, 'admin-users');
+    }
+
+    public function activate(Request $request, Response $response)
+    {
+        if ($check = $this->sentinel->hasPerm('user.activate')) {
+            return $check;
+        }
+
+        $user = $this->auth->findById($request->getParam('user_id'));
+
+        if ($user->notActivated) {
+            $activations = $this->auth->getActivationRepository();
+            $activation = $activations->complete($user, $user->notActivated->code);
+            if ($activation) {
+                $this->flash('success', 'User has been activated successfully.');
+                return $this->redirect($response, 'admin-users');
+            }
+        }
+
+        $this->flash('danger'.'There was an error activating the user.');
         return $this->redirect($response, 'admin-users');
     }
 }

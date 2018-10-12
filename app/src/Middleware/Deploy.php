@@ -65,7 +65,7 @@ class Deploy extends Middleware
             }
 
             return $response->write(
-                'The ' + $this->container->settings['deployment']['repo_branch'] + ' branch was not deployed.'
+                "The " + $this->container->settings['deployment']['repo_branch'] + " branch was not deployed."
             );
         }
 

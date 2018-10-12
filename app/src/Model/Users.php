@@ -33,4 +33,10 @@ class Users extends EloquentUser
     {
         return $this->hasMany('\Dappur\Model\Oauth2Users', 'user_id', 'id');
     }
+
+    public function notActivated()
+    {
+        return $this->hasOne('\Dappur\Model\Activations', 'user_id', 'id')
+            ->where('completed', 0);
+    }
 }
