@@ -1,7 +1,13 @@
 # Changelog
 
 ## [Unreleased]
-### No Changes
+### Notes
+- This updated required a small change was required for the menu display on the templates.
+	- Please see 461d6fe2b917a822d8fb7b0bdbfc3de2774b5d31 for changes to `dappur/inc/navbar.twig`
+	- Please see 47dcf1f776b01415b32378509e352c6b12345e3e8 for changes to `AdminLTE/inc/admin-sidebar.twig`
+
+### Added
+- Config Boolean option to menu items.  If set, the menu item will only show if the assiciated config boolean is set to `true`.  Please see notes for template changes
 
 ## [3.1.1] - 2018-10-11
 ### Added
