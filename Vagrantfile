@@ -1,8 +1,8 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 # Globals
-hostHttpPort = 8181
-hostMysqlPort = 8306
+httpPort = 8181
+mysqlPort = 8306
 rootPass = "rootpass"
 
 # Check if settings json file exists or create
@@ -23,18 +23,18 @@ Vagrant.configure("2") do |config|
   	config.vm.box = "bento/ubuntu-18.04"
     # forward http port
   	config.vm.network "forwarded_port",
-  		guest: 80,
-  		host: hostHttpPort
+  		guest: httpPort,
+  		host: httpPort
     # forward mysql port
   	config.vm.network "forwarded_port",
-  		guest: 3306,
-  		host: hostMysqlPort
+  		guest: mysqlPort,
+  		host: mysqlPort
     # provision
   	config.vm.provision "shell",
   		path: "storage/vagrant/provision.sh",
   		privileged: false,
   		args: [
-  			hostHttpPort,
+  			httpPort,
   			rootPass,
   			dbName,
   			dbUser,
