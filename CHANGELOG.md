@@ -1,8 +1,14 @@
 # Changelog
 
 ## [Unreleased]
+### No Changes
+
+## [3.1.1] - 2018-10-11
 ### Added
 - Can now toggle in settings error emails by type.
+
+### Fixed
+- Vagrant ports now mirror on both host/vm for http and mysql.  If you have multiple projects, you simply only have to change the ports at the top of the Vagrantfile
 
 ### Changed
 - Code cleanup in dependencies
@@ -270,7 +276,8 @@ Once those items are complete, focus will be shifted to feature enhancements.  T
 - Internalized all assets, they are now served from the view folder and not from the public dir.
 
 
-[Unreleased]: https://github.com/dappur/framework/compare/v3.1.0...HEAD
+[Unreleased]: https://github.com/dappur/framework/compare/v3.1.1...HEAD
+[3.1.1]: https://github.com/dappur/framework/compare/v3.1.0...v3.1.1
 [3.1.0]: https://github.com/dappur/framework/compare/v3.0.3...v3.1.0
 [3.0.3]: https://github.com/dappur/framework/compare/v3.0.2...v3.0.3
 [3.0.2]: https://github.com/dappur/framework/compare/v3.0.1...v3.0.2
