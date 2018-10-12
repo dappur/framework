@@ -1,5 +1,7 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
+require 'securerandom'
+
 # Globals
 httpPort = 8181
 mysqlPort = 8306
@@ -14,8 +16,17 @@ end
 settings = JSON.parse(File.read('settings.json'))
 env = settings['environment']
 
-# Update enviromnemt db port
+# Update environment db port
 settings['db'][env]['port'] = mysqlPort
+
+if settings['cron']['token'].empty?
+  settings['cron']['token'] = SecureRandom.uuid.split('-').join
+end
+
+if settings['deployment']['deploy_token'].empty?
+  settings['deployment']['deploy_token'] = SecureRandom.uuid.split('-').join
+end
+
 File.open("settings.json","w") do |f|
   f.write(JSON.pretty_generate settings)
 end
@@ -47,6 +58,7 @@ Vagrant.configure("2") do |config|
   			dbName,
   			dbUser,
   			dbPass,
+        mysqlPort,
   		]
     # migrate push command
     config.push.define "migrate", strategy: "local-exec" do |push|

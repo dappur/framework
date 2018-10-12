@@ -4,6 +4,7 @@ ROOTPASS=$2
 DBNAME=$3
 DBUSER=$4
 DBPASS=$5
+DBPORT=$6
 PMAUSER="phpmyadmin"
 PMAPASS=$(perl -e 'print map{("a".."z","A".."Z",0..9)[int(rand(62))]}(1..32)');
 DEBIANPASS=$(perl -e 'print map{("a".."z","A".."Z",0..9)[int(rand(62))]}(1..16)');
@@ -35,6 +36,7 @@ fi
 if [ ! -f "/etc/mysql/mariadb.conf.d/dev.cnf" ]; then
   printf "[mysqld]\nplugin-load-add = auth_socket.so" | sudo tee -a /etc/mysql/mariadb.conf.d/dev.cnf
   sudo sed -i "s/^bind-address.*/bind-address = 0.0.0.0/" /etc/mysql/my.cnf
+  sudo sed -i "s/^port.*/port = ${DBPORT}/" /etc/mysql/my.cnf
   sudo systemctl restart mariadb.service
 fi
 
@@ -81,6 +83,9 @@ sudo sed -i "s|post_max_size = 8M|post_max_size = 200M|g" /etc/php/7.2/apache2/p
 
 # update apache config
 sudo sed -i "s|DocumentRoot /var/www/html|DocumentRoot /vagrant/public\n\tAlias /phpmyadmin /usr/share/phpmyadmin\n\t<Directory /vagrant/public>\n\t\tOptions Indexes FollowSymLinks Includes ExecCGI\n\t\tAllowOverride All\n\t\tRequire all granted\n\t</Directory>|g" /etc/apache2/sites-enabled/000-default.conf
+sudo sed -i "s|:80|:${PORT}|g" /etc/apache2/sites-enabled/000-default.conf
+sudo sed -i "s|Listen 80|Listen ${PORT}|g" /etc/apache2/ports.conf
+
 sudo a2enmod rewrite
 sudo service apache2 restart
 
