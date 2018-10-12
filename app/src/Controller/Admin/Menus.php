@@ -23,10 +23,13 @@ class Menus extends Controller
             return $check;
         }
 
+
         return $this->view->render(
             $response,
             'pages.twig',
-            ["roles" => \Dappur\Model\Roles::get()]
+            [
+                "roles" => \Dappur\Model\Roles::get()
+            ]
         );
     }
 
@@ -110,7 +113,8 @@ class Menus extends Controller
             [
                 "roles" => \Dappur\Model\Roles::get(),
                 "menus" => \Dappur\Model\Menus::get(),
-                "routes" => $routeNames
+                "routes" => $routeNames,
+                "configOptions" => \Dappur\Model\Config::where('type_id', 6)->get()
             ]
         );
     }
