@@ -3,7 +3,7 @@
 ## [Unreleased]
 ### Notes
 - This updated required a small change was required for the menu display on the templates.
-	- Please see [461d6fe](https://github.com/dappur/theme-dappur/commit/47dcf1f776b01415b32378509e352c6b12345e3e8) for changes to `dappur/inc/navbar.twig`
+	- Please see [461d6fe](https://github.com/dappur/theme-dappur/commit/7dcf1f776b01415b32378509e352c6b12345e3e8) for changes to `dappur/inc/navbar.twig`
 	- Please see [47dcf1f](https://github.com/dappur/theme-AdminLTE/commit/461d6fe2b917a822d8fb7b0bdbfc3de2774b5d31) for changes to `AdminLTE/inc/admin-sidebar.twig`
 
 ### Added
