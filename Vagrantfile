@@ -10,9 +10,17 @@ if not File.file?('settings.json')
 	IO.copy_stream('settings.json.dist', 'settings.json')
 end
 
-# Get Database From settings.json
+# Get Settings & Environment
 settings = JSON.parse(File.read('settings.json'))
 env = settings['environment']
+
+# Update enviromnemt db port
+settings['db'][env]['port'] = mysqlPort
+File.open("settings.json","w") do |f|
+  f.write(JSON.pretty_generate settings)
+end
+
+# Get Database From settings.json
 database = settings['db'][env]
 dbName = database['database']
 dbUser = database['username']
