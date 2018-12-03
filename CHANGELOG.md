@@ -1,6 +1,9 @@
 # Changelog
 
 ## [Unreleased]
+### No Changes
+
+## [3.2.0]
 ## Notes
 - This update requires a couple of changes to the theme files
 	- Please see [53015cd](https://github.com/dappur/theme-dappur/commit/53015cdf33c2a947195f6ecd6068945ccdbd3680) for the required changes
@@ -304,7 +307,8 @@ Once those items are complete, focus will be shifted to feature enhancements.  T
 - Internalized all assets, they are now served from the view folder and not from the public dir.
 
 
-[Unreleased]: https://github.com/dappur/framework/compare/v3.1.2...HEAD
+[Unreleased]: https://github.com/dappur/framework/compare/v3.2.0...HEAD
+[3.2.0]: https://github.com/dappur/framework/compare/v3.1.2...v3.2.0
 [3.1.2]: https://github.com/dappur/framework/compare/v3.1.1...v3.1.2
 [3.1.1]: https://github.com/dappur/framework/compare/v3.1.0...v3.1.1
 [3.1.0]: https://github.com/dappur/framework/compare/v3.0.3...v3.1.0
