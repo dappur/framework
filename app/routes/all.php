@@ -1,29 +1,26 @@
 <?php
 // Non Logged Users
-$app->group('', function () use ($app, $container, $settings) {
+$app->group('/', function () use ($app, $container, $settings) {
     // Home Page
-    $this->map(['GET'], '/', 'App:home')
+    $this->map(['GET'], '', 'App:home')
         ->setName('home');
     // Privacy Policy
-    $this->map(['GET'], '/privacy', 'App:privacy')
+    $this->map(['GET'], 'privacy', 'App:privacy')
         ->setName('privacy');
     // Contact
-    $this->map(['GET', 'POST'], '/contact', 'App:contact')
+    $this->map(['GET', 'POST'], 'contact', 'App:contact')
         ->setName('contact');
     // Terms and Conditions
-    $this->map(['GET'], '/terms', 'App:terms')
+    $this->map(['GET'], 'terms', 'App:terms')
         ->setName('terms');
     // CSRF
-    $this->map(['GET'], '/csrf', 'App:csrf')
+    $this->map(['GET'], 'csrf', 'App:csrf')
         ->setName('csrf');
     // Cron Jobs
-    $this->map(['GET'], '/cron', 'Cron:run')
+    $this->map(['GET'], 'cron', 'Cron:run')
         ->setName('cron');
-
-    $this->map(['GET'], '/test', 'App:test')
-        ->setName('test');
     // Oauth
-    $this->map(['GET'], '/oauth/{slug}', 'Oauth2:oauth2')
+    $this->map(['GET'], 'oauth/{slug}', 'Oauth2:oauth2')
         ->setName('oauth');
 })
 ->add($container->get('csrf'))

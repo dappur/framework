@@ -1,8 +1,8 @@
 <?php
 // Requires Authentication
-$app->group('', function () use ($app) {
+$app->group('/', function () use ($app) {
     // User Profile
-    $app->group('/profile', function () use ($app) {
+    $app->group('profile', function () use ($app) {
         //Profile
         $this->map(['GET', 'POST'], '', 'Profile:profile')
             ->setName('profile');
@@ -39,6 +39,7 @@ $app->map(['GET','POST'], '/profile/incomplete', 'Profile:profileIncomplete')
     ->add(new Dappur\Middleware\TwoFactorAuth($container))
     ->add(new Dappur\Middleware\RouteName($container));
 
+// 2 Factor Authentication
 $app->map(['GET', 'POST'], '/2fa/confirm', 'Profile:twoFactorConfirm')
     ->setName('2fa-confirm')
     ->add($container->get('csrf'))
