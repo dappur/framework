@@ -198,14 +198,6 @@ class App extends Controller
     /**
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function privacy(Request $request, Response $response)
-    {
-        return $this->view->render($response, 'privacy.twig');
-    }
-
-    /**
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     */
     public function terms(Request $request, Response $response)
     {
         return $this->view->render($response, 'terms.twig');

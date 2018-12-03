@@ -5,11 +5,9 @@ $app->group('/dashboard', function () use ($app, $container) {
     // Dashboard Home
     $app->get('', 'Admin:dashboard')
         ->setName('dashboard');
-
     // Contact Requests
     $app->map(['GET'], '/contact', 'Admin:contact')
         ->setName('admin-contact');
-
     // Contact Requests
     $app->map(['GET'], '/contact/datatables', 'Admin:contactDatatables')
         ->setName('admin-contact-datatables');

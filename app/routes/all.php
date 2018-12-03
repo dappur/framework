@@ -1,18 +1,9 @@
 <?php
 // Non Logged Users
 $app->group('/', function () use ($app, $container, $settings) {
-    // Home Page
-    $this->map(['GET'], '', 'App:home')
-        ->setName('home');
-    // Privacy Policy
-    $this->map(['GET'], 'privacy', 'App:privacy')
-        ->setName('privacy');
     // Contact
     $this->map(['GET', 'POST'], 'contact', 'App:contact')
         ->setName('contact');
-    // Terms and Conditions
-    $this->map(['GET'], 'terms', 'App:terms')
-        ->setName('terms');
     // CSRF
     $this->map(['GET'], 'csrf', 'App:csrf')
         ->setName('csrf');
