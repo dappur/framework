@@ -3,7 +3,7 @@
 ## [Unreleased]
 ### No Changes
 
-## [3.2.0]
+## [3.2.0] - 2018-12-03
 ## Notes
 - This update requires a couple of changes to the theme files
 	- Please see [53015cd](https://github.com/dappur/theme-dappur/commit/53015cdf33c2a947195f6ecd6068945ccdbd3680) for the required changes
