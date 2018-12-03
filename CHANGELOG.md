@@ -1,11 +1,29 @@
 # Changelog
 
 ## [Unreleased]
-### No Changes
+## Notes
+- This update requires a couple of changes to the theme files
+	- Please see [53015cd](https://github.com/dappur/theme-dappur/commit/53015cdf33c2a947195f6ecd6068945ccdbd3680) for the required changes
+
+### Added
+- Twig StringLoader extension for custom routes
+
+### Removed
+- Hardcoded home, privacy and terms pages
+- Header and footer from error pages
+
+### Changed
+- Updated dependencies in `composer.lock` file
+- Cleaned up `/app/bootstrap/routes` files
+- Moved the following pages out of the template and into the `Pages` section of the dashboard
+	- `/` => `app\views\dappur\home.twig`
+	- `/privacy` => `app\views\dappur\privacy.twig`
+	- `/terms` => `app\views\dappur\terms.twig`
+- Moved custom routes out of `public\index.php` and into `app\routes\custom.php`
 
 ## [3.1.2] - 2018-10-11
 ### Notes
-- This updated required a small change was required for the menu display on the templates.
+- This updated required a small change for the menu display on the templates.
 	- Please see [7dcf1f7](https://github.com/dappur/theme-dappur/commit/7dcf1f776b01415b32378509e352c6b12345e3e8) for changes to `dappur/inc/navbar.twig`
 	- Please see [461d6fe](https://github.com/dappur/theme-AdminLTE/commit/461d6fe2b917a822d8fb7b0bdbfc3de2774b5d31) for changes to `AdminLTE/inc/admin-sidebar.twig`
 	- Please see [2ea8d16](https://github.com/dappur/theme-AdminLTE/commit/2ea8d16c3fe28fc421a5679bcf9d90c8110cbc20) for changes to `AdminLTE/menus.twig`
