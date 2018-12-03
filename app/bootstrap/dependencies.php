@@ -112,6 +112,7 @@ $container['view'] = function ($container) {
     $view->addExtension(new \Dappur\TwigExtension\Md5($container['request']));
     $view->addExtension(new \Dappur\TwigExtension\Gravatar($container['request']));
     $view->addExtension(new \Dappur\TwigExtension\Menus($container));
+    $view->addExtension(new \Twig_Extension_StringLoader());
 
     // Globla Variables
     $view->getEnvironment()->addGlobal('flash', $container['flash']);
