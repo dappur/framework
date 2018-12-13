@@ -28,8 +28,8 @@ class Migration extends AbstractMigration
           'database'  => $dbconf['database'],
           'username'  => $dbconf['username'],
           'password'  => $dbconf['password'],
-          'charset'   => 'utf8',
-          'collation' => 'utf8_unicode_ci',
+          'charset'   => $dbconf['charset'],
+          'collation' => $dbconf['collation'],
           'timezone' => $dbconf['timezone']
         ]);
 

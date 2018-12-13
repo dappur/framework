@@ -1,6 +1,6 @@
 {
     "framework": "dappur",
-    "version": "3.2.0",
+    "version": "4.0.0",
     "displayErrorDetails": false,
     "environment": "development",
     "db": {
@@ -11,8 +11,8 @@
             "database": "framework",
             "username": "dappur",
             "password": "",
-            "charset": "utf8",
-            "collation": "utf8_general_ci",
+            "charset": "utf8mb4",
+            "collation": "utf8mb4_unicode_520_ci",
             "prefix": "",
             "timezone": "+00:00"
         },
@@ -23,8 +23,8 @@
             "database": "",
             "username": "",
             "password": "",
-            "charset": "utf8",
-            "collation": "utf8_general_ci",
+            "charset": "utf8mb4",
+            "collation": "utf8mb4_unicode_520_ci",
             "prefix": "",
             "timezone": "+00:00"
         },
@@ -35,8 +35,8 @@
             "database": "",
             "username": "",
             "password": "",
-            "charset": "utf8",
-            "collation": "utf8_general_ci",
+            "charset": "utf8mb4",
+            "collation": "utf8mb4_unicode_520_ci",
             "prefix": "",
             "timezone": "+00:00"
         }

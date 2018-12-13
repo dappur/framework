@@ -68,7 +68,7 @@ fi
 if [ ! -d /var/lib/mysql/phpymadmin ]; then
   sudo mysql -uroot -p$ROOTPASS <<SQL
 	  CREATE DATABASE IF NOT EXISTS phpmyadmin
-      DEFAULT CHARACTER SET utf8 COLLATE utf8_bin;
+      DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_520_ci;
     USE phpmyadmin;
     source /usr/share/phpmyadmin/sql/create_tables.sql;
   	CREATE USER IF NOT EXISTS ${PMAUSER}@localhost IDENTIFIED BY "${PMAPASS}";
