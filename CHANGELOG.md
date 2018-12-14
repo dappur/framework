@@ -1,7 +1,23 @@
 # Changelog
 
 ## [Unreleased]
-### No Changes
+## Notes
+- I promise this will be the last major version upgrade for a while (I hope).  This was necessary in order to separate out the heavier dappurwares into their own repository so that they could be developed further.  The dapurwares that were moved into their own repositories are:
+	- Deployment
+	- Email
+	- Oauth2
+	- Video
+- The email system has been revamped.  Plain text is now generated automatically right before sending.  This lightens the load on the email system considerably. 
+
+### Fixed
+- Compensated for null values in the config
+
+### Changed
+- Updated `composer.json` for version 4.0 release that separates dappurware out. 
+- Default database charset to `utf8mb4` and the default collation to `utf8mb4_unicode_520_ci`
+
+### Removed
+- All references to plain text as that is now generated automatically using [soundasleep/html2text](https://github.com/soundasleep/html2text)
 
 ## [3.2.0] - 2018-12-03
 ## Notes
