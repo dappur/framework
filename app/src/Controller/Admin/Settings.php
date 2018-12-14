@@ -125,6 +125,9 @@ class Settings extends Controller
 
             if ($this->validator->isValid()) {
                 foreach ($allPostVars as $key => $value) {
+                    if (isset($value) || is_null($value)) {
+                        $value = "";
+                    }
                     Config::where('name', $key)->update(['value' => $value]);
                 }
 
