@@ -11,6 +11,7 @@
 
 ### Fixed
 - Compensated for null values in the config
+- Missing `templatesDelete()` function in `Admin\Emails` controller.
 
 ### Changed
 - Updated `composer.json` for version 4.0 release that separates dappurware out. 
