@@ -451,6 +451,11 @@ class Pages extends Controller
 
         $page = \Dappur\Model\Routes::find($request->getParam('page_id'));
 
+        if ($page && $page->id == 1) {
+            $this->flash('danger', 'You cannot delete the home page.');
+            return $this->redirect($response, 'admin-pages');
+        }
+
         if ($page->delete()) {
             $this->flash('success', 'Page has been deleted successfully.');
             return $this->redirect($response, 'admin-pages');
