@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1d3903a92a31badc9143ea21876b051f",
+    "content-hash": "c875cc71ae7245535fbe8ce099f9f92f",
     "packages": [
         {
             "name": "abraham/twitteroauth",
@@ -471,17 +471,20 @@
         },
         {
             "name": "dappur/dappurware-email",
-            "version": "4.0.0",
+            "version": "4.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/dappur/dappurware-email.git",
-                "reference": "3552f6f51817dc8cbca6c16fe264b37c61703395"
+                "reference": "3e27eaa8dc981f89648fec0a296e6131f7612a8d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/dappur/dappurware-email/zipball/3552f6f51817dc8cbca6c16fe264b37c61703395",
-                "reference": "3552f6f51817dc8cbca6c16fe264b37c61703395",
+                "url": "https://api.github.com/repos/dappur/dappurware-email/zipball/3e27eaa8dc981f89648fec0a296e6131f7612a8d",
+                "reference": "3e27eaa8dc981f89648fec0a296e6131f7612a8d",
                 "shasum": ""
+            },
+            "require": {
+                "soundasleep/html2text": "^0.5.0"
             },
             "require-dev": {
                 "phpmd/phpmd": "^2.6",
@@ -505,14 +508,14 @@
                 }
             ],
             "description": "Email support package for the Dappur Framework",
-            "homepage": "https://github.com/dappur/dappurware",
+            "homepage": "https://github.com/dappur/dappurware-email",
             "keywords": [
                 "dappur",
                 "dappurware",
                 "email",
                 "framework"
             ],
-            "time": "2018-12-06T07:38:14+00:00"
+            "time": "2018-12-14T00:57:38+00:00"
         },
         {
             "name": "dappur/dappurware-oauth2",
