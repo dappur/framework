@@ -40,7 +40,7 @@ class Email extends Controller
         $order = $request->getParam('columns')[$request->getParam('order')[0]['column']]['data'];
         $dir = $request->getParam('order')[0]['dir'];
 
-        $emails = Emails::select('id', 'send_to', 'subject', 'created_at')
+        $emails = Emails::select('secure_id', 'status', 'id', 'send_to', 'subject', 'created_at')
             ->skip($start)
             ->take($limit)
             ->orderBy($order, $dir);
@@ -150,8 +150,7 @@ class Email extends Controller
         $email = $email->sendEmail(
             array($user->id),
             $request->getParam('subject'),
-            $request->getParam('html'),
-            $request->getParam('plain_text')
+            $request->getParam('html')
         );
 
         return $response->write(json_encode($email), 201);
@@ -169,6 +168,27 @@ class Email extends Controller
         $templates = EmailsTemplates::take(200)->get();
 
         return $this->view->render($response, 'emails-templates.twig', array("templates" => $templates));
+    }
+
+    /**
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
+    public function templatesDelete(Request $request, Response $response)
+    {
+        if ($check = $this->sentinel->hasPerm('email.templates', 'dashboard')) {
+            return $check;
+        }
+
+        $check = \Dappur\Model\EmailsTemplates::find($request->getParam('template_id'));
+
+        if ($check) {
+            $check->delete();
+            $this->flash('success', 'Template has been successfully deleted.');
+            return $this->redirect($response, 'admin-email-template');
+        }
+
+        $this->flash('danger', 'There was an error deleting the template.');
+        return $this->redirect($response, 'admin-email-template');
     }
 
     public function templatesAdd(Request $request, Response $response)
@@ -249,12 +269,6 @@ class Email extends Controller
                         'messages' => array(
                             'notEmpty' => 'Cannot be empty.'
                         )
-                    ),
-                    'plain_text' => array(
-                        'rules' => V::notEmpty(),
-                        'messages' => array(
-                            'notEmpty' => 'Cannot be empty.'
-                        )
                     )
                 )
             );
@@ -263,22 +277,16 @@ class Email extends Controller
             if (empty($request->getParam('send_to'))) {
                 $this->validator->addError('send_to', 'Please enter an email address.');
             }
-            
-            // Check Plain Text for HTML
-            if (strip_tags($requestParams['plain_text']) != $requestParams['plain_text']) {
-                $this->validator->addError('plain_text', 'Plain Text cannot contain HTML.');
-            }
 
             if ($this->validator->isValid()) {
                 $email = new E($this->container);
                 $email = $email->sendEmail(
                     $request->getParam('send_to'),
                     $request->getParam('subject'),
-                    $request->getParam('html'),
-                    $request->getParam('plain_text')
+                    $request->getParam('html')
                 );
 
-                if ($email['results']['success']) {
+                if ($email['status'] == "success") {
                     $this->flash('success', 'Email has been successfully sent.');
                     return $this->redirect($response, 'admin-email');
                 }

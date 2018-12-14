@@ -13,6 +13,7 @@ class Emails extends Model
         'send_to',
         'subject',
         'html',
-        'plain_text'
+        'plain_text',
+        'error'
     ];
 }

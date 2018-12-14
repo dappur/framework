@@ -10,8 +10,7 @@ $container['notFoundHandler'] = function ($container) {
                 array(
                     $container['config']['error-email']),
                 "404 Error on " . $container['config']['site-name'],
-                "<pre>" . $exception . "</pre>",
-                $exception
+                "<pre>" . $exception . "</pre>"
             );
         }
 
@@ -32,8 +31,7 @@ $container['notAllowedHandler'] = function ($container) {
                 array(
                     $container['config']['error-email']),
                 "405 Error on " . $container['config']['site-name'],
-                "<pre>" . $exception . "</pre>",
-                $exception
+                "<pre>" . $exception . "</pre>"
             );
         }
 
@@ -55,8 +53,7 @@ $container['errorHandler'] = function ($container) {
                 array(
                     $container['config']['error-email']),
                 "PHP Error on " . $container['config']['site-name'],
-                "<pre>" . $exception . "</pre>",
-                $exception
+                "<pre>" . $exception . "</pre>"
             );
         }
 
@@ -76,8 +73,7 @@ $container['phpErrorHandler'] = function ($container) {
                 array(
                     $container['config']['error-email']),
                 "Application Error on " . $container['config']['site-name'],
-                "<pre>" . $exception . "</pre>",
-                $exception
+                "<pre>" . $exception . "</pre>"
             );
         }
 

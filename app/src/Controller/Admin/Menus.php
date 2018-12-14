@@ -213,10 +213,10 @@ class Menus extends Controller
         $final = array();
         $final['framework'] = $this->settings['framework'];
         $final['version'] = $this->settings['version'];
-        $final['menus'] = $menu;
+        $final['menus'] = $menu->toArray();
 
         $tempFile = tmpfile();
-        fwrite($tempFile, json_encode($final, JSON_PRETTY_PRINT));
+        fwrite($tempFile, json_encode($final, JSON_UNESCAPED_SLASHES));
         $metaDatas = stream_get_meta_data($tempFile);
         $filePath = $metaDatas['uri'];
         return \Dappur\Dappurware\FileResponse::getResponse(
@@ -262,7 +262,7 @@ class Menus extends Controller
 
         if ($import->status) {
             $return->status = "success";
-            $this->flash('success', 'Settings imported successfully');
+            $this->flash('success', 'Manu imported successfully');
         }
 
         if (!$import->status) {
