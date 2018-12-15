@@ -29,26 +29,72 @@
                     <div class="box-header">
                         <h3 class="box-title">Email Details</h3>
                     </div>
-                    
                     <div class="box-body">
                         <form action="{{ currentRoute }}" method="POST" role="form">
                             <div class="col-md-6">
-                                <h3>Details</h3>
-                                <h4>Status: {{email.status}}</h4>
-                                <h4>Message ID: {{email.secure_id}}</h4>
-                                {% if user %}
-                                    <h4>Name: {{ user.first_name }} {{ user.last_name }}</h4>
-                                    <h4>Username: {{user.username}}</h4>
-                                {% endif %}
-                                <h4>To: {{email.send_to}}</h4>
-                                <h4>Subject: {{email.subject}}</h4>
-                                <h4>Plain Text: </h4>
-                                <div>{{email.plain_text}}</div>
+                                <div class="panel panel-warning">
+                                    <div class="panel-heading">
+                                        <h3 class="panel-title">Details</h3>
+                                    </div>
+                                    <div class="panel-body">
+                                        <h4>Status: {{email.recentStatus.status}} {% if email.recentStatus.details %}({{email.recentStatus.details}}){% endif %}</h4>
+                                        <h4>Message ID: {{email.secure_id}}</h4>
+                                        {% if user %}
+                                            <h4>Name: {{ user.first_name }} {{ user.last_name }}</h4>
+                                            <h4>Username: {{user.username}}</h4>
+                                        {% endif %}
+                                        <h4>To: {{email.send_to}}</h4>
+                                        <h4>Subject: {{email.subject}}</h4>
+                                    </div>
+                                </div>
+
+                                <div class="panel panel-primary">
+                                    <div class="panel-heading">
+                                        <h3 class="panel-title">Status History</h3>
+                                    </div>
+                                    <div class="panel-body">
+                                        <table class="table table-bordered table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>Date</th>
+                                                    <th>Status</th>
+                                                    <th>Details</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for sta in email.status %}
+                                                    <tr>
+                                                        <td>{{ sta.created_at }}</td>
+                                                        <td>{{ sta.status }}</td>
+                                                        <td>{{ sta.details }}</td>
+                                                    </tr>    
+                                                {% endfor %}
+                                                
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
                             </div>
                             
                             <div class="col-md-6">
-                                <h3>HTML View</h3>
-                                {{email.html|raw}}
+                                <div class="panel panel-info">
+                                    <div class="panel-heading">
+                                        <h3 class="panel-title">HTML View</h3>
+                                    </div>
+                                    <div class="panel-body">
+                                        {{email.html|raw}}
+                                    </div>
+                                </div>
+
+                                <div class="panel panel-info">
+                                    <div class="panel-heading">
+                                        <h3 class="panel-title">Plain Text</h3>
+                                    </div>
+                                    <div class="panel-body">
+                                        {{email.plain_text}}
+                                    </div>
+                                </div>
                             </div>
                             {{ csrf() }}
                         </form>
@@ -63,4 +109,3 @@
 <script src="https://cdn.ckeditor.com/4.7.2/standard-all/ckeditor.js"></script>
 <script src="{{ asset('AdminLTE/js/email.min.js') }}"></script>
 {% endblock %}
-
