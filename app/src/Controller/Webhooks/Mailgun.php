@@ -42,7 +42,7 @@ class Mailgun extends Controller
 			if ($email) {
 
                 $addStatus = new \Dappur\Model\EmailsStatus;
-                $adStatus->email_id = $email->id;
+                $addStatus->email_id = $email->id;
                 $addStatus->status = $payload->{'event-data'}->event;
 
                 switch ($payload->{'event-data'}->event) {
