@@ -124,5 +124,10 @@
             "client_id": "",
             "client_secret": ""
         }
+    },
+    "webhooks": {
+        "mailgun": {
+            "api_key": ""
+        }
     }
 }
