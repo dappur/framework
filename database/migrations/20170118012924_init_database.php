@@ -115,7 +115,7 @@ class InitDatabase extends Migration
             $table->integer('type_id')->unsigned()->nullable();
             $table->string('name')->unique();
             $table->string('description')->nullable();
-            $table->text('value')->default("")->nullable();
+            $table->text('value')->default("");
             $table->timestamps();
             $table->foreign('group_id')->references('id')->on('config_groups')->onDelete('set null');
             $table->foreign('type_id')->references('id')->on('config_types')->onDelete('set null');

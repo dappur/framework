@@ -18,3 +18,6 @@ node_modules
 .phpintel
 
 .vagrant
+
+app/views/AdminLTE
+app/views/dappur
