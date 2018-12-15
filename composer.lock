@@ -471,16 +471,16 @@
         },
         {
             "name": "dappur/dappurware-email",
-            "version": "4.0.2",
+            "version": "4.0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/dappur/dappurware-email.git",
-                "reference": "3e27eaa8dc981f89648fec0a296e6131f7612a8d"
+                "reference": "b5c6e03529f576e5dfca31e8daaa838a15ea8a8d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/dappur/dappurware-email/zipball/3e27eaa8dc981f89648fec0a296e6131f7612a8d",
-                "reference": "3e27eaa8dc981f89648fec0a296e6131f7612a8d",
+                "url": "https://api.github.com/repos/dappur/dappurware-email/zipball/b5c6e03529f576e5dfca31e8daaa838a15ea8a8d",
+                "reference": "b5c6e03529f576e5dfca31e8daaa838a15ea8a8d",
                 "shasum": ""
             },
             "require": {
@@ -515,7 +515,7 @@
                 "email",
                 "framework"
             ],
-            "time": "2018-12-14T00:57:38+00:00"
+            "time": "2018-12-15T08:43:30+00:00"
         },
         {
             "name": "dappur/dappurware-oauth2",
