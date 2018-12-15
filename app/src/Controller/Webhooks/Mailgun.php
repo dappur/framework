@@ -40,8 +40,16 @@ class Mailgun extends Controller
 			$email = \Dappur\Model\Emails::where('secure_id', $messageId)->first();
 
 			if ($email) {
-				$email->status = $payload->{'event-data'}->event;
-				$email->save();
+
+                $addStatus = new \Dappur\Model\EmailsStatus;
+                $addStatus->status = $payload->{'event-data'}->event;
+
+                switch ($payload->{'event-data'}->event) {
+                    case 'clicked':
+                        $addStatus->details = $payload->{'event-data'}->url;
+                        break;
+                }
+				$addStatus->save();
 				return $response->withJSON(
 		            json_encode(array('status' => "success")),
 		            200

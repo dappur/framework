@@ -338,6 +338,16 @@ class InitDatabase extends Migration
             $table->foreign('template_id')->references('id')->on('emails_templates')->onDelete('set null');
         });
 
+        // Email Status
+        $this->schema->create('emails_status', function (Blueprint $table) {
+            $table->increments('id');
+            $table->integer('email_id')->unsigned()->nullable();
+            $table->string('status');
+            $table->string('details')->nullable();
+            $table->foreign('email_id')->references('id')->on('emails')->onDelete('set null');
+            $table->timestamps();
+        });
+
         // Email Drafts
         $this->schema->create('emails_drafts', function (Blueprint $table) {
             $table->increments('id');
