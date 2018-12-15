@@ -1,0 +1,72 @@
+{% extends 'base.twig' %}
+
+{% import 'macros/form.twig' as form %}
+
+{% block stylesheets %}
+    <link href="{{ asset('dappur/css/bootstrap-social.min.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block body %}
+
+<div class="container">
+
+    <div class="row text-center">
+        <div class="col-md-4 col-md-offset-4">
+            <img src="{{config['logo']}}" class="img-responsive" alt="{{ config['site-name'] }} Logo">
+        </div>
+    </div>
+
+    <div class="row" style="margin-top: 20px;">
+        <div class="col-md-4 col-md-offset-{% if config['oauth2-enabled'] %}2{% else %}4{% endif %}">
+            <div class="panel panel-default">
+                <div class="panel-heading">Login</div>
+                <div class="panel-body">
+                    <form action="{{ path_for('login') }}" method="POST">
+                        {{ form.text('login', null, 'login', 'Username or Email') }}
+                        {{ form.text('password', null, 'password', 'Password', null, 'password') }}
+
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" name="remember"> Remember me
+                            </label>
+                            <div class="pull-right">
+                                <a href="{{ path_for('forgot-password') }}">Forgot Password?</a>
+                            </div>
+                        </div>
+
+                        {% if config['recaptcha-enabled'] %}
+                            {{ form.custom('recaptcha', recaptcha()) }}
+                        {% endif %}
+                        
+                        {{ csrf() }}
+                        {% if requestParams.redirect %}
+                            <input type="hidden" name="redirect" value="{{ requestParams.redirect }}" class="btn btn-primary">
+                        {% endif %}
+                        <input type="submit" value="Login" class="btn btn-primary">
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% if config['oauth2-enabled'] %}
+        <div class="col-md-4">
+            <div class="panel panel-default">
+                <div class="panel-heading">Login With Social</div>
+                <div class="panel-body">
+                    {% for provider in oauth2_providers %}
+                        <div class="form-group">
+                            <a href="{{ authorize_url(provider.id, client_ids[provider.id], 1) }}" class="btnbtn-block btn-social btn-{{provider.button}} form-control">
+                                <span class="fa fa-{{provider.button}}"></span> Login with {{provider.name}}
+                            </a>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block javascript %}
+    {% if config['recaptcha-enabled'] %}{{ recaptchaJs() }}{% endif %}
+{% endblock %}

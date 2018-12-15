@@ -1,0 +1,77 @@
+{% extends 'base.twig' %}
+
+{% block title %}
+	{{config['site-name']}}
+{% endblock %}
+
+{% block body %}
+	<div class="container">
+	    <div class="jumbotron">
+
+	    	<div class="row text-center">
+		    	<div class="col-md-6 col-md-offset-3">
+		    		<img src="{{config['logo']}}" class="img-responsive" alt="{{ config['site-name'] }} Logo">
+		    	</div>
+		    </div>
+
+	    	<div class="row text-center">
+	    		<div class="col-md-12">
+	    			<h1>Uhh ohh!</h1>
+	    			<h3>500: Application Error</h3>
+	    		</div>
+	    	</div>
+
+	    	<div class="row text-center">
+		    	<div class="col-md-12">
+		    		<p>
+		    			It appears you've uncovered a problem with our system.  Please don't worry, our engineers have been notified and are busy working to fix the problem.  In the meantime, we can offer you a link to somewhere that works:
+		    		</p>
+
+					<p>
+						<a href="{{ path_for('home') }}"><button type="button" class="btn-lg btn-default">Somewhere That Works</button></a>
+					</p>
+		    	</div>
+		    </div>
+
+		    {% if displayErrorDetails %}
+		    <blockquote>
+			    <div class="row text-center">
+			    	<div class="col-md-12">
+			    		<p class="text-left">{{ exception.getFile() }}</p>
+			    	</div>
+			    </div>
+			</blockquote>
+
+			<blockquote>
+			    <div class="row text-center">
+			    	<div class="col-md-12">
+			    		<p class="text-left"><b>Line:</b> {{ exception.getLine() }}</p>
+			    	</div>
+			    </div>
+			</blockquote>
+
+			<blockquote>
+			    <div class="row text-center">
+			    	<div class="col-md-12">
+			    		<p class="text-left"><b>Message:</b> {{ exception.getMessage() }}</p>
+			    	</div>
+			    </div>
+			</blockquote>
+
+
+	    	<div class="row">
+	    		<hr />
+		    	{% for item in exception.getTrace() %}
+		    		<blockquote>
+				    {% for key2,item2 in item %}
+				        <b>{{key2|capitalize}}:</b> {{item2}}<br />
+				    {% endfor %}
+				    </blockquote>
+	    			<hr />
+				{% endfor %}
+			</div>
+			{% endif %}
+	    	
+	    </div>
+	</div>
+{% endblock %}

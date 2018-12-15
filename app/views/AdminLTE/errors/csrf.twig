@@ -1,0 +1,36 @@
+{% extends 'base.twig' %}
+
+{% block title %}
+	{{config['site-name']}}
+{% endblock %}
+
+{% block body %}
+	<div class="container">
+	    <div class="jumbotron">
+
+	    	<div class="row text-center">
+		    	<div class="col-md-6 col-md-offset-3">
+		    		<img src="{{config['logo']}}" class="img-responsive" alt="{{ config['site-name'] }} Logo">
+		    	</div>
+		    </div>
+
+	    	<div class="row text-center">
+	    		<div class="col-md-12">
+	    			<h1>Oopsie!</h1>
+	    			<h3>CSRF Check Failed</h3>
+	    		</div>
+	    	</div>
+
+	    	<div class="row text-center">
+		    	<div class="col-md-12">
+		    		<p>
+		    			This error most likely occurred because you timed out of whatever page you are on.  It's OK, you can click the following link to get on the right track again:
+		    		</p>
+		    		<p>
+						<a href="{{ path_for('home') }}"><button type="button" class="btn-lg btn-default">Somewhere That Works</button></a>
+					</p>
+		    	</div>
+		    </div>
+	    </div>
+	</div>
+{% endblock %}

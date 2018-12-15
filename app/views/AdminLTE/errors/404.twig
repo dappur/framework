@@ -1,0 +1,37 @@
+{% extends 'base.twig' %}
+
+{% block title %}
+	{{config['site-name']}}
+{% endblock %}
+
+{% block body %}
+	<div class="container">
+	    <div class="jumbotron">
+
+	    	<div class="row text-center">
+		    	<div class="col-md-6 col-md-offset-3">
+		    		<img src="{{config['logo']}}" class="img-responsive" alt="{{ config['site-name'] }} Logo">
+		    	</div>
+		    </div>
+
+	    	<div class="row text-center">
+	    		<div class="col-md-12">
+	    			<h1>Uhh ohh!</h1>
+	    			<h3>404: Page Not Found</h3>
+	    		</div>
+	    	</div>
+
+	    	<div class="row text-center">
+		    	<div class="col-md-12">
+		    		<p>
+		    			The page you are looking for could not be found.  Fortunately, your can click the button to go to somewhere that we know works.
+		    		</p>
+
+					<p>
+						<a href="{{ path_for('home') }}"><button type="button" class="btn-lg btn-default">Somewhere That Works</button></a>
+					</p>
+		    	</div>
+		    </div>
+	    </div>
+	</div>
+{% endblock %}

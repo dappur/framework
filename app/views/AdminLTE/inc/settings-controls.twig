@@ -1,0 +1,212 @@
+<div class="col-lg-4">
+                <div class="box box-success">
+                    <div class="box-header" style="cursor: pointer;">
+                        <h3 class="box-title">Add New Setting</h3>
+                        <div class="pull-right box-tools">
+                            <button class="btn btn-primary btn-sm pull-right" data-toggle="collapse" data-target="#add-new-setting"><i class="fa fa-minus"></i></button>
+                        </div>
+                    </div>
+                    <form action="{{ path_for('settings-global-add') }}" class="in" method="post" id="add-new-setting">
+                        <div class="box-body">
+                            <div class="form-group{% if has_error('add_name') %} has-error{% endif %}">
+                                <label for="name">Name</label>
+                                <input type="text" name="add_name" id="add_name" class="form-control" value="{{ requestParams['add_name'] }}" required="required" placeholder="Name">
+                                <span class="help-block">{{ error('add_name') }}</span>
+                            </div>
+                            <div class="form-group{% if has_error('add_description') %} has-error{% endif %}">
+                                <label for="description">Description</label>
+                                <input type="text" name="add_description" id="add_description" class="form-control" value="{{ requestParams['add_description'] }}" required="required" placeholder="Description">
+                                <span class="help-block">{{ error('add_description') }}</span>
+                            </div>
+                            
+                            <div class="form-group{% if has_error('add_group') %} has-error{% endif %}">
+                                <label for="type">Group</label>
+                                <select name="add_group" id="add_group" class="form-control" required="required">
+                                    <option value="">Select Group</option>
+                                    {% if isPage %}
+                                        {% for group in settingsGrouped %}
+                                            <option value="{{ group.id }}" {% if group.id == requestParams['add_group'] %}SELECTED{% endif %}>{{ group.name }}</option>
+                                        {% endfor %}
+                                    {% else %}
+                                        {% for group in configGroups %}
+                                            <option value="{{ group.id }}" {% if group.id == requestParams['add_group'] %}SELECTED{% endif %}>{{ group.name }}</option>
+                                        {% endfor %}
+                                    {% endif %}
+                                </select>
+                                <span class="help-block">{{ error('add_group') }}</span>
+                            </div>
+                            
+                            <div class="form-group{% if has_error('add_type') %} has-error{% endif %}">
+                                <label for="type">Type</label>
+                                <select name="add_type" id="add_type" class="form-control" required="required">
+                                    <option value="">Select Type</option>
+                                    {% for type in configTypes %}
+                                        <option value="{{ type.id }}" {% if type.id == requestParams['add_type'] %}SELECTED{% endif %}>{{ type.name }}</option>
+                                    {% endfor %}
+                                </select>
+                                <span class="help-block">{{ error('add_type') }}</span>
+                            </div>
+                            <div class="form-group{% if has_error('add_value') %} has-error{% endif %}">
+                                <label for="value">Value</label>
+                                
+                                <span id="value_input">
+                                    <input type="text" name="add_value" id="add_value" class="form-control" value="{{ requestParams['add_value'] }}" placeholder="Value">
+                                </span>
+                                <span class="help-block">{{ error('add_value') }}</span>
+                            </div>
+
+                            {{ csrf() }}
+
+                            {% if isPage %}
+                                <input type="hidden" name="page_name" value="{{settingsGrouped.page_name}}">
+                            {% endif %}
+                            
+                        </div>
+                        <div class="box-footer">
+                            <button type="submit" class="btn btn-success form-control">Add New Setting</button>
+                        </div>
+                    </form>
+                </div>
+
+                {% if not isPage %}
+                <div class="box box-warning">
+                    <div class="box-header" style="cursor: pointer;">
+                        <h3 class="box-title">Add New Group</h3>
+                        <div class="pull-right box-tools">
+                            <button class="btn btn-primary btn-sm pull-right" data-toggle="collapse" data-target="#add-new-group"><i class="fa fa-plus"></i></button>
+                        </div>
+                    </div>
+                    <form action="{{ path_for('settings-global-group-add') }}" class="collapse" method="post" id="add-new-group">
+                        <div class="box-body">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group{% if has_error('group_name') %} has-error{% endif %}">
+                                        <label for="name">Name</label>
+                                        <input type="text" name="group_name" id="group_name" class="form-control" value="{{ requestParams['group_name'] }}" required="required" placeholder="Name">
+                                        <span class="help-block">{{ error('group_name') }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group{% if has_error('page') %} has-error{% endif %}">
+                                        <label for="type">Page</label>
+                                        <select name="page" id="page" class="form-control" required="required">
+                                            <option value="0">False</option>
+                                            <option value="1" {% if requestParams['page'] == 1 %}SELECTED{% endif %}>True</option>
+                                        </select>
+                                        <span class="help-block">{{ error('page') }}</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 ispage" style="display: none;">
+                                    <div class="form-group{% if has_error('page_name') %} has-error{% endif %}">
+                                        <label for="page_name">Route Name</label>
+                                        <select name="page_name" id="page_name" class="form-control" novalidate>
+                                            <option value=""></option>
+                                            {% for item in allRoutes %}
+                                                <option value="{{item}}">{{item}}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <span class="help-block">{{ error('page_name') }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12 ispage" style="display: none;">
+                                    <div class="form-group{% if has_error('description') %} has-error{% endif %}">
+                                        <label for="name">Description</label>
+                                        <input type="text" name="description" id="description" class="form-control" value="{{ requestParams['description'] }}" placeholder="Description" novalidate>
+                                        <span class="help-block">{{ error('description') }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            {{ csrf() }}
+                        </div>
+                        <div class="box-footer">
+                            <button type="submit" class="btn btn-warning form-control">Add New Group</button>
+                        </div>
+                    </form>
+                </div>
+
+                
+                <div class="box box-info">
+                    <div class="box-header" style="cursor: pointer;">
+                        <h3 class="box-title">Config Groups</h3>
+                        <div class="pull-right box-tools">
+                            <button class="btn btn-primary btn-sm pull-right" data-toggle="collapse" data-target="#config-groups"><i class="fa fa-plus"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="box-body collapse" id="config-groups">
+                        <table width="100%" class="table table-striped table-bordered table-hover" id="groups_table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Page</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for group in configGroups %}
+                                    <tr>
+                                        <td>{{ group.id }}</td>
+                                        <td>{{ group.name }}</td>
+                                        <td>{{ group.page_name }}</td>
+                                        <td>
+                                            {% if auth.hasAccess('settings.delete') and group.id != 1 and group.id != 2 %}
+                                                <form action="{{ path_for('settings-global-group-delete') }}" method="post" style="display: inline;">
+                                                    <input type="hidden" name="group_id" value="{{ group.id }}" />
+                                                    {{csrf()}}
+                                                    <button class="btn btn-danger btn-xs swal-confirm" data-swtitle="Are you sure?" data-swmessage="This group will be permanently removed from all users and you will not be able to undo it!">
+                                                        <span class="fa fa-fw fa-close"></span>
+                                                    </button>
+                                                </form>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                
+                {% endif %}
+
+                <div class="box box-danger">
+                    <div class="box-header" style="cursor: pointer;">
+                        <h3 class="box-title">Import / Export</h3>
+                        <div class="pull-right box-tools">
+                            <button class="btn btn-primary btn-sm pull-right" data-toggle="collapse" data-target="#import-export"><i class="fa fa-plus"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="box-body collapse" id="import-export">
+                        <form action="{{ path_for('settings-import')}}" method="POST" enctype="multipart/form-data">
+                            <div class="form-group">
+                                <input type="checkbox" name="overwrite" data-toggle="toggle" data-on="Overwrite All Items" data-off="Only Import New Items" data-width="100%">
+                            </div>
+                            <div class="form-group text-center">
+                                <label class="btn btn-success btn-file form-control">
+                                    <i class="fa fa-upload"></i> Upload JSON File <input type="file" name="import_file" id="import_file" style="display: none;">
+                                </label>
+                            </div>
+                            {{csrf()}}
+                        </form>
+
+                        <div class="row">
+                            <div class=" form-group col-md-6">
+                                <a type="button" href="{{ path_for('settings-export') }}?all=true" class="btn btn-warning form-control"><i class="fa fa-download"></i> All Settings</a>
+                            </div>
+                            {% if isPage %}
+                                <div class=" form-group col-md-6">
+                                    <a type="button" href="{{ path_for('settings-export') }}?page_name={{ pageName }}" class="btn btn-info form-control"><i class="fa fa-download"></i> {{ pageName|capitalize }} Settings</a>
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                    </div>
+                </div>
+
+            </div>
