@@ -9,6 +9,9 @@
 	- Video
 - The email system has been revamped.  Plain text is now generated automatically right before sending.  This lightens the load on the email system considerably. 
 
+### Added
+- Webook controller for mailgun api.  This will auto update the email status within the dashboard.
+
 ### Fixed
 - Compensated for null values in the config
 - Missing `templatesDelete()` function in `Admin\Emails` controller.
