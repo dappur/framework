@@ -332,8 +332,6 @@ class InitDatabase extends Migration
             $table->string('subject')->nullable();
             $table->text('html')->nullable();
             $table->text('plain_text')->nullable();
-            $table->text('error')->nullable();
-            $table->string('status')->nullable();
             $table->timestamps();
             $table->foreign('template_id')->references('id')->on('emails_templates')->onDelete('set null');
         });

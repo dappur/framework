@@ -40,7 +40,8 @@ class Email extends Controller
         $order = $request->getParam('columns')[$request->getParam('order')[0]['column']]['data'];
         $dir = $request->getParam('order')[0]['dir'];
 
-        $emails = Emails::select('secure_id', 'status', 'id', 'send_to', 'subject', 'created_at')
+        $emails = Emails::select('secure_id', 'id', 'send_to', 'subject', 'created_at')
+            ->with('recentStatus')
             ->skip($start)
             ->take($limit)
             ->orderBy($order, $dir);
@@ -126,7 +127,7 @@ class Email extends Controller
 
         $routeArgs =  $request->getAttribute('route')->getArguments();
 
-        $email = Emails::find($routeArgs['email']);
+        $email = Emails::with('status')->find($routeArgs['email']);
 
         if (!$email) {
             $this->flash('danger', 'There was a problem finding that email in the database.');
