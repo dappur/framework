@@ -137,6 +137,11 @@ class Oauth2 extends Controller
         $this->auth->login($user);
 
         $this->flash->addMessage('success', "You have been logged in using your {$provider->name} account.");
+
+        if ($this->auth->inRole('admin')) {
+            return $this->oauthRedirect('dashboard');
+        }
+
         return $this->oauthRedirect('home');
     }
 

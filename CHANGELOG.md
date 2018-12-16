@@ -12,6 +12,7 @@
 ### Added
 - Webook controller for mailgun api.  This will auto update the email status within the dashboard.
 - EmailStatus database table to track status changes of emails
+- If admin, redirect to dashboard on oauth login
 
 ### Fixed
 - Compensated for null values in the config
