@@ -1,0 +1,32 @@
+{% extends 'base.twig' %}
+
+{% import 'macros/form.twig' as form %}
+
+{% block body %}
+
+<div class="container">
+    <div class="row text-center">
+        <div class="col-md-4 col-md-offset-4">
+            <img src="{{config['logo']}}" class="img-responsive" alt="{{ config['site-name'] }} Logo">
+        </div>
+    </div>
+
+    <div class="row" style="margin-top: 20px;">
+        <div class="col-md-4 col-md-offset-4">
+            <div class="panel panel-default">
+                <div class="panel-heading">Two Factor Authentication</div>
+                <div class="panel-body">
+                    <form action="{{ currentRoute }}" method="POST">
+                        {{ form.text('code', null, 'code', 'Code', null, 'number') }}
+                        {{ csrf() }}
+                        <div class="form-group">
+                            <input type="submit" value="Confirm" class="btn btn-primary form-control">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

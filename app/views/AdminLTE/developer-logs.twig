@@ -1,0 +1,60 @@
+{% extends 'base.twig' %}
+
+{% block title %}{{config['site-name']}} || Developer Logs{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.3/themes/default/style.min.css" />
+    <link rel="stylesheet" href="{{ asset('AdminLTE/css/developer.logs.min.css') }}" />
+    <style type="text/css">
+    #tree .folder { background:url('{{ asset('AdminLTE/img/file_sprite.png') }}') right bottom no-repeat; }
+    #tree .file { background:url('{{ asset('AdminLTE/img/file_sprite.png') }}') 0 0 no-repeat; }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="container-fluid">
+        <div class="row" id="header-row">
+            <div class="col-lg-12 content-header">
+                <h1 class="page-header">
+                    Logs <small>Overview</small>
+                </h1>
+                <ol class="breadcrumb">
+                    <li>
+                        <i class="fa fa-dashboard"></i> Dashboard
+                    </li>
+                    <li>
+                        <i class="fa fa-life-ring"></i> Developer
+                    </li>
+                    <li class="active">
+                        <i class="fa fa-clipboard"></i> Logs
+                    </li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="box box-info">
+                    <div class="box-header">
+                        <div class="box-title">Log Directory </div>
+                    </div>
+
+                    <div id="jstree" class="box-body" role="main">
+                        <div id="tree"></div>
+                        <div id="data">
+                            <div class="content code" style="display:none;"><textarea id="code" readonly="readonly" style="white-space: pre; overflow-wrap: normal; overflow-x: scroll;"></textarea></div>
+                            <div class="content folder" style="display:none;"></div>
+                            <div class="content image" style="display:none; position:relative;"><img src="" alt="" style="display:block; position:absolute; left:50%; top:50%; padding:0; max-height:90%; max-width:90%;" /></div>
+                            <div class="content default" style="text-align:center;">Select a file from the tree.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascript %}
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jstree/3.3.3/jstree.min.js"></script>
+    <script src="{{ asset('AdminLTE/js/developer.logs.min.js') }}"></script>
+{% endblock %}

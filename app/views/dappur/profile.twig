@@ -1,0 +1,140 @@
+{% extends 'base.twig' %}
+
+{% import 'macros/form.twig' as form %}
+
+{% block stylesheets %}
+    <link href="{{ asset('dappur/css/profile.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('dappur/css/bootstrap-social.min.css') }}" rel="stylesheet">
+    <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+    <style>
+    .btn-social[disabled] {
+    	background-color: #777777;
+    }
+    </style>
+{% endblock %}
+
+{% block body %}
+	<div class="container">
+		<div class="ui-67">
+			<!-- Head Starts -->
+			<div class="ui-head">
+				<!-- Details -->
+				<div class="ui-details">
+					<!-- Name -->
+					<h3 id="name-header">{{user.first_name}} {{ user.last_name}} </h3><!-- Designation -->
+					<h4>
+						{% for item in auth.user.roles %}
+						    {% if loop.last %}{{item.name}}{% else %}{{item.name}}, {% endif %}
+						{% endfor %}
+					</h4>
+				</div><!-- Image -->
+				<div class="ui-image"><!-- User Image -->
+				<img alt="Profile Picture" class="img-responsive" height="100" src="{{gravatar(auth.user.email, 200)}}" width="100"></div>
+			</div><!-- Head Ends -->
+			<!-- Content Starts -->
+			<div class="ui-content">
+				<div class="row">
+					<div class="col-md-6 acc-col">
+						<section>
+							<h3>Profile <i class="fa fa-edit" id="edit-profile" style="font-size: 15px; cursor: pointer;"> Edit</i></h3>
+							<form action="{{currentRoute}}" class="ng-pristine ng-valid" method="post" role="form">
+								<div class="row">
+									<div class="col-md-6">
+		                                {{ form.text('first_name', user.first_name, 'first_name', 'First Name', null, 'text', 1) }}
+		                            </div>
+		                            <div class="col-md-6">
+		                                {{ form.text('last_name', user.last_name, 'last_name', 'Last Name', null, 'text', 1) }}
+		                            </div>
+								</div>
+								<div class="row">
+									<div class="col-md-6">
+		                                {{ form.text('email', user.email, 'email', 'Email', null, 'email', 1) }}
+		                            </div>
+		                            <div class="col-md-6">
+		                                {{ form.text('username', user.username, 'username', 'Username', null, 'text', 1) }}
+		                            </div>
+								</div>
+								<div class="row">
+									<div class="col-md-12">
+										{{ form.textarea('about', user.profile.about, 'about', 'About Me', null, 7, null, 1) }}
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-12">
+										<div class="btn-div pull-right">
+											<button type="submit" id="save-profile" name="save_profile" class="btn btn-primary" style="display: none;">Save Profile</button>
+										</div>
+									</div>
+								</div>
+								{{csrf()}}
+							</form>
+						</section>
+					</div>
+					<div class="col-md-6 acc-col">
+						{% if config['oauth2-enabled'] %}
+						<section>
+							<h3>Connect With Us</h3>
+							<div class="row">
+								{% for provider in providers %}
+									<div class="col-md-6">
+					                        <div class="form-group">
+					                        	{% if provider.id in user_providers %}
+						                            <button class="btnbtn-block btn-social btn-{{provider.button}} form-control" disabled>
+						                                <span class="fa fa-{{provider.button}}"></span> {{provider.name}} <span class="pull-right" style="color: #98FB98;"><i class="fa fa-check"></i> Connected</span>
+						                            </button>
+					                            {% else %}
+						                            <a href="{{ authorize_url(provider.id, client_ids[provider.id], 1) }}" class="btnbtn-block btn-social btn-{{provider.button}} form-control">
+						                                <span class="fa fa-{{provider.button}}"></span> Connect {{provider.name}}
+						                            </a>
+					                            {% endif %}
+					                        </div>
+							        </div>
+						        {% endfor %}
+						    </div>
+						</section>
+						{% endif %}
+						<section>
+							<h3>Change Password</h3>
+                            <button class="btn btn-warning form-control change_password">Change Password</button>
+						</section>
+						{% if config['2fa-enabled'] %}
+						<section>
+							<h3>Two Factor Authentication</h3>
+							<div class="row">
+								<div class="col-md-6" id="2fa-toggle">
+									<input type="checkbox" {% if user['2fa'] %}checked{% endif %} data-toggle="toggle" data-on="Enabled" data-off="Disabled" data-onstyle="success" data-offstyle="danger" height="" id="2fa">
+						        </div>
+						    </div>
+						</section>
+						{% endif %}
+					</div><!-- col-8 -->
+				</div>
+			</div><!-- Content Ends -->
+		</div><!-- UI - X Ends -->
+	</div><!-- /.container -->
+{% endblock %}
+
+{% block javascript %}
+	<script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+    <script src="{{ asset('dappur/js/change-password.min.js') }}"></script>
+    <script src="{{ asset('dappur/js/2fa.min.js') }}"></script>
+    <script type="text/javascript">
+	    {% if requestParams['comment_login'] %}
+	    $(document).ready(function(){
+	    	$('html, body').animate({
+			    scrollTop: ($('#comments').offset().top -175)
+			},500);
+		});
+	    {% endif %}
+
+	    $(document).on('click', '#edit-profile', function(){
+			$(this).hide();
+			$('input:disabled, textarea:disabled').each(function () {
+		       $(this).removeAttr('disabled');
+		    });
+		    $("#save-profile").show();
+		});
+    </script>
+    
+    
+{% endblock %}

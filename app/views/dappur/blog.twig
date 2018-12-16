@@ -1,0 +1,115 @@
+{% extends 'base.twig' %}
+
+{% if categoryPage %}
+    {% set append = " || Category: " ~ category.name %}
+{% elseif tagPage %}
+	{% set append = " || Tag: " ~ tag.name %}
+{% elseif authorPage %}
+	{% set append = " || Author: " ~ author.username %}
+{% else %}
+    {% set append = "" %}
+{% endif %}
+
+{% block seo %}
+	<title>{{ seo.title }}{{ append }}</title>
+	<meta name="page-title" content="{{ seo.title }}{{ append }}" />
+	<meta name="description" content="{{ seo.description }}{{ append }}" />
+	<meta name="author" content="{{ config['site-name'] }}"/>
+
+	{# Open Graph #}
+	<meta property="og:title" content="{{ seo.title }}{{ append }}" />
+	<meta property="og:type" content="{% if seo.video and seo.video != "" %}video.other{% else %}website{% endif %}" />
+	<meta property="og:url" content="https://{{ config['domain'] }}{{ currentRoute }}" />
+	<meta property="og:image" content="{{ seo.image }}" />
+	<meta property="og:description" content="{{ seo.description }}{{ append }}" /> 
+	<meta property="og:site_name" content="{{ config['site-name'] }}" />
+	{% if seo.video and seo.video != "" %}<meta property="og:video" content="{{ seo.video }}" />{% endif %}
+
+	{# Twitter Card #}
+	<meta name="twitter:card" content="{% if seo.video and seo.video != "" %}player{% else %}summary_large_image{% endif %}">
+	<meta name="twitter:title" content="{{ seo.title }}{{ append }}">
+	<meta name="twitter:description" content="{{ seo.description }}{{ append }}">
+	<meta name="twitter:image" content="{{ seo.image }}">
+	{% if seo.video and seo.video != "" %}
+	<meta property="twitter:player" content="{{ seo.video }}" />
+	<meta property="twitter:player:stream" content="{{ seo.video }}" />
+    <meta property="twitter:player:height" content="450" />
+    <meta property="twitter:player:width" content="800" />
+	{% endif %}
+
+	{# Google+ #}
+	<meta itemprop="name" content="{{ seo.title }}{{ append }}">
+	<meta itemprop="description" content="{{ seo.description }}{{ append }}">
+	<meta itemprop="image" content="{{ seo.image }}">
+{% endblock %}
+
+{% block body %}
+	<div class="container">
+		<div class="row">
+			<!-- Blog Entries Column -->
+			<div class="col-md-8">
+				{% if posts|length == 0 %}
+					<div class="text-center">
+						<h1>No Posts Found</h1>
+					</div>
+				{% endif %}
+				{% for post in posts %}
+				    <div class="card mb-4">
+				    	<a href="{{path_for('blog-post', {'year': post.publish_at|date("Y"), 'month': post.publish_at|date("m"), 'day': post.publish_at|date("d"), 'slug': post.slug})}}">
+				    		<h2 class="card-title">{{post.title}}</h2>
+				    	</a>
+
+				    	{% if post.video_id and post.video_provider %}
+                            {% if post.video_provider == "youtube" %}
+                                <div class="video-container">
+                                    <iframe src="https://www.youtube.com/embed/{{post.video_id}}" frameborder="0" allowfullscreen></iframe>
+                                </div>
+                            {% endif %}
+
+                            {% if post.video_provider == "vimeo" %}
+                                <div class="video-container">
+                                    <iframe src="https://player.vimeo.com/video/{{post.video_id}}" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowfullscreen></iframe>
+                                </div>
+                            {% endif %}
+						{% elseif post.featured_image %}
+							<a href="{{path_for('blog-post', {'year': post.publish_at|date("Y"), 'month': post.publish_at|date("m"), 'day': post.publish_at|date("d"), 'slug': post.slug})}}">
+								<img alt="Card image cap" class="card-img-top img-responsive" src="{{post.featured_image}}">
+							</a>
+						{% endif %}
+						<div class="card-footer text-muted">
+							Posted on {{post.publish_at|date('m/d/Y h:i a')}} by <a href="{{path_for('blog-author', {'username': post.author.username})}}">{{post.author.username}}</a><br />
+						</div>
+						<div class="card-body">
+							<div>
+								<b>Tags:</b> 
+								{% for tag in post.tags %}
+								    <a href="{{path_for('blog-tag', {'slug': tag.slug})}}">{{ tag.name }}</a> 
+								{% endfor %}
+							</div>
+							<div>
+								<b>Category:</b> <a href="{{path_for('blog-category', {'slug': post.category.slug})}}">{{ post.category.name }}</a> 
+							</div>
+							<div>
+								<b>Comments:</b> {{ post.comments_count - post.pendingComments_count }}</a> 
+							</div>
+							<p class="card-text"><b>Description:</b> {{post.description}}</p>
+							<p class="card-text">{{post.content|striptags|length > 350 ? post.content|striptags|slice(0, 350) ~ '...' : post.content|striptags}}</p>
+							<div class="text-right"><a class="btn btn-primary" href="{{path_for('blog-post', {'year': post.publish_at|date("Y"), 'month': post.publish_at|date("m"), 'day': post.publish_at|date("d"), 'slug': post.slug})}}">Read More &rarr;</a></div>
+						</div>
+						
+					</div>
+				{% endfor %}
+				<div class="text-center" style="{% if pagination is empty %}height: 20px;{% endif %}">
+					{{pagination|raw}}
+				</div>
+			</div><!-- Sidebar Widgets Column -->
+			<div class="col-md-4">
+		    	{% include 'inc/blog-sidebar.twig' %}
+		    </div>
+		</div><!-- /.row -->
+	</div><!-- /.container -->
+{% endblock %}
+
+{% block javascript %}
+    {% if config['recaptcha-enabled'] %}{{ recaptchaJs() }}{% endif %}
+{% endblock %}
