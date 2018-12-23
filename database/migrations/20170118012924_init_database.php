@@ -5,16 +5,6 @@ use Illuminate\Database\Schema\Blueprint;
 
 class InitDatabase extends Migration
 {
-    /**
-    *
-    * Write your reversible migrations using this method.
-    *
-    * More information on writing eloquent migrations is available here:
-    * https://laravel.com/docs/5.4/migrations
-    *
-    * Remember to use both the up() and down() functions in order to be able to roll back.
-    */
-   
     public function up()
     {
         // Create Users Table
