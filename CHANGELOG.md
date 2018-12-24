@@ -15,8 +15,10 @@
 - If admin, redirect to dashboard on oauth login
 
 ### Fixed
+- notFound and notAllowed handlers were not emailing correct data.
 - Compensated for null values in the config
 - Missing `templatesDelete()` function in `Admin\Emails` controller.
+- Dashboard permission mispelled in menu setting
 
 ### Changed
 - Updated `composer.json` for version 4.0 release that separates dappurware out. 
@@ -24,6 +26,7 @@
 
 ### Removed
 - All references to plain text as that is now generated automatically using [soundasleep/html2text](https://github.com/soundasleep/html2text)
+- Removed comments from database migrations
 
 ## [3.2.0] - 2018-12-03
 ## Notes
