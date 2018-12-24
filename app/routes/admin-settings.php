@@ -34,6 +34,10 @@ $app->group('/dashboard', function () use ($app, $container) {
     // Import Settings
     $app->post('/settings/save', 'AdminSettings:save')
         ->setName('settings-save');
+
+    // Delete Setting
+    $app->post('/settings/delete', 'AdminSettings:delete')
+        ->setName('settings-delete');
 })
 ->add(new Dappur\Middleware\Auth($container))
 ->add(new Dappur\Middleware\Admin($container))

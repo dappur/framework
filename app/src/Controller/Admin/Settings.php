@@ -138,7 +138,7 @@ class Settings extends Controller
 
         return $this->view->render(
             $response,
-            'settings-global.twig',
+            'settings.twig',
             array(
                 "settingsGrouped" => $settingsGrouped,
                 "configTypes" => $types,
@@ -250,7 +250,7 @@ class Settings extends Controller
 
         return $this->view->render(
             $response,
-            'settings-global.twig',
+            'settings.twig',
             array(
                 "settingsGrouped" => $settingsGrouped,
                 "configTypes" => $types,
@@ -338,7 +338,7 @@ class Settings extends Controller
 
         return $this->view->render(
             $response,
-            'settings-global.twig',
+            'settings.twig',
             array(
                 "settingsGrouped" => $settingsGrouped,
                 "themeList" => $themeList,
@@ -379,6 +379,34 @@ class Settings extends Controller
         
         $this->flash('danger', 'There was an error deleting the group.');
         return $this->redirect($response, 'settings-global');
+    }
+
+    public function delete(Request $request, Response $response)
+    {
+        if ($check = $this->sentinel->hasPerm('settings.delete', 'dashboard')) {
+            return $check;
+        }
+
+        $output = new \stdClass;
+        $output->status = "error";
+        $output->message = "An unknown error occurred.";
+
+        $settingName = $request->getParam('config_name');
+
+        $checkConfig = \Dappur\Model\Config::where('name', $settingName)->first();
+
+        if (!$checkConfig) {
+            $output->message = "Setting not found.";
+            return $response->withJson(json_encode($output));
+        }
+
+        if ($checkConfig->delete()) {
+            $output->status = "success";
+            $output->message = null;
+            return $response->withJson(json_encode($output));
+        }
+
+        return $response->withJson(json_encode($output));
     }
 
     public function settingsPage(Request $request, Response $response, $pageName)
