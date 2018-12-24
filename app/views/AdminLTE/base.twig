@@ -7,14 +7,16 @@
 
     <title>{% block title %}{% endblock %}</title>
 
-    {# Facebook #}
-    {% if config['fb-app-id'] and config['fb-app-id'] != "" %}<meta property="fb:app_id" content="{{ config['fb-app-id'] }}" />{% endif %}
-    {% if config['fb-admins'] and config['fb-admins'] != "" %}<meta property="fb:admins" content="{{ config['fb-admins'] }}" />{% endif %}
-    {% if config['fb-page-id'] and config['fb-page-id'] != "" %}<meta property="fb:page_id" content="{{ config['fb-page-id'] }}" />{% endif %}
-
-    {# Twitter Authorship #}
-    {% if config['tw-publisher'] and config['tw-publisher'] != "" %}<meta name="twitter:site" content="{{ config['tw-publisher'] }}">{% endif %}
-    {% if config['tw-author'] and config['tw-author'] != "" %} <meta name="twitter:creator" content="{{ config['tw-author'] }}">{% endif %}
+    {# Favicon #}
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('AdminLTE/favicon/apple-touch-icon.png') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('AdminLTE/favicon/favicon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('AdminLTE/favicon/favicon-16x16.png') }}">
+    <link rel="manifest" href="{{ asset('AdminLTE/favicon/site.webmanifest') }}">
+    <link rel="mask-icon" href="{{ asset('AdminLTE/favicon/safari-pinned-tab.svg') }}" color="#5bbad5">
+    <link rel="shortcut icon" href="{{ asset('AdminLTE/favicon/favicon.ico') }}">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="msapplication-config" content="{{ asset('AdminLTE/favicon/browserconfig.xml') }}">
+    <meta name="theme-color" content="#ffffff">
 
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" crossorigin="anonymous">
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
@@ -62,18 +64,18 @@
 <body class="hold-transition {{ config['adminlte-skin'] }} sidebar-mini">
     <div class="wrapper">
 
-        {% include 'inc/admin-header.twig' %}
+        {% include 'inc/header.twig' %}
 
-        {% include 'inc/admin-sidebar.twig' %}
+        {% include 'inc/sidebar.twig' %}
 
         <div class="content-wrapper">
             {% include 'inc/flash.twig' %}
             {% block body %}{% endblock %}
         </div>
 
-        {% include 'inc/admin-footer.twig' %}
+        {% include 'inc/footer.twig' %}
 
-        {% include 'inc/admin-sidebar-right.twig' %}
+        {% include 'inc/sidebar-right.twig' %}
 
     </div><!-- ./wrapper -->
     <!-- jQuery 3 -->

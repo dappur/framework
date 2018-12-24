@@ -41,7 +41,9 @@
                                 <select name="add_type" id="add_type" class="form-control" required="required">
                                     <option value="">Select Type</option>
                                     {% for type in configTypes %}
-                                        <option value="{{ type.id }}" {% if type.id == requestParams['add_type'] %}SELECTED{% endif %}>{{ type.name }}</option>
+                                        {% if type.id not in [4,9,3,1] %}
+                                            <option value="{{ type.id }}" {% if type.id == requestParams['add_type'] %}SELECTED{% endif %}>{{ type.name }}</option>
+                                        {% endif %}
                                     {% endfor %}
                                 </select>
                                 <span class="help-block">{{ error('add_type') }}</span>

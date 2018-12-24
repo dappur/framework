@@ -170,6 +170,8 @@ $(function () {
             configButton.html(editDisplay);
         }
 
+        configButton.siblings('.config-delete').hide();
+
         if ($(this).parents('label').siblings('select').length) {
             $(this).parents('label').siblings('select').attr('disabled', false);
             configButton.html(editDisplay);
@@ -185,6 +187,7 @@ $(function () {
     $(document).on('click', '.config-cancel', function(){
         var configButton = $(this).parents('.config-button');
         var tempInput = $(this).parents('label').siblings('input');
+
         if (tempInput.length) {
             tempInput.attr('disabled', true);
             tempInput.val(configButton.data('default'));
@@ -215,6 +218,8 @@ $(function () {
             tempMedia.val(configButton.data('default'));
             configButton.html(cancelDisplay);
         }
+
+        configButton.siblings('.config-delete').show();
         
     });
 
@@ -257,10 +262,13 @@ $(function () {
 
                     configButton.children(".config-saved").fadeOut(2000, function() { 
                         $(this).remove();
+                        configButton.siblings('.config-delete').show();
                         if (tempInput.hasClass('jscolor') || tempInput.hasClass('htmlinput')) {
                             configButton.html(cancelDisplay);
+                            configButton.siblings('.config-delete').show();
                         }else{
                             configButton.html(cancelDisplay);
+                            configButton.siblings('.config-delete').show();
                         }
                     });
                     configButton.data('default', tempInput.val());
@@ -271,13 +279,62 @@ $(function () {
                     });
                     if (tempInput.hasClass('jscolor') || tempInput.hasClass('htmlinput')) {
                         configButton.html(cancelDisplay);
+                        configButton.siblings('.config-delete').show();
                     }else{
                         configButton.html(cancelDisplay);
+                        configButton.siblings('.config-delete').show();
                     }
                     tempInput.val(configButton.data('default'));
                 }
+
             }
         );
+    });
+
+    $(document).on('click', '.config-delete', function(){
+
+        var configButton = $(this).parents('.config-button');
+        var formGroup = $(this).closest('.form-group');
+        configButton.html(' <i class="fa fa-refresh fa-spin"></i> Deleting...');
+
+        var formData = {};
+        formData.config_name = $(this).data('name');
+        
+        swal({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!',
+            allowOutsideClick: false,
+            preConfirm: function () {
+                return new Promise(function (resolve, reject) {
+                    DappurCSRF.csrfAjax( 
+                        '/dashboard/settings/delete', 
+                        formData, 
+                        function(result){
+                            result = jQuery.parseJSON(result);
+                            if (result.status == "success"){
+                                resolve();
+                            }else{
+                                reject(result.message);
+                            }
+                        }
+                    );
+                })
+            },
+        }).then(function () {
+            formGroup.remove();
+            swal({
+                text: "Setting has been permenantly deleted.",
+                type: 'success'
+            });
+        });
+        
+
+        
     });
 
     $(document).on('change', '.dm-image', function(){

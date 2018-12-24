@@ -29,7 +29,11 @@ var DappurCSRF = new function() {
                 success: callback,
                 error: function (jqXHR, textStatus, errorThrown)
                 {
-                    //alert(errorThrown);
+                    swal({
+                        type: "error",
+                        title: "Connection Error",
+                        text: errorThrown
+                    });
                 }
             });
 

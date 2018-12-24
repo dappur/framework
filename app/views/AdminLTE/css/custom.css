@@ -16,6 +16,12 @@
 	color: blue;
 }
 
+.config-delete {
+	text-decoration: underline;
+	cursor: pointer;
+	color: red;
+}
+
 .config-save {
 	text-decoration: underline;
 	cursor: pointer;
@@ -29,7 +35,7 @@
 .config-cancel {
 	text-decoration: underline;
 	cursor: pointer;
-	color: red;
+	color: orange;
 }
 
 /* Responsive Video Container
