@@ -10,7 +10,8 @@ $container['notFoundHandler'] = function ($container) {
                 array(
                     $container['config']['error-email']),
                 "404 Error on " . $container['config']['site-name'],
-                "<pre>" . $exception . "</pre>"
+                "<pre><b>Route: </b>" . $request->getUri()->getPath() . "</pre>" . 
+                "<pre><b>Headers: </b>" . json_encode($request->getHeaders(), JSON_PRETTY_PRINT) .  "</pre>"
             );
         }
 
@@ -31,7 +32,8 @@ $container['notAllowedHandler'] = function ($container) {
                 array(
                     $container['config']['error-email']),
                 "405 Error on " . $container['config']['site-name'],
-                "<pre>" . $exception . "</pre>"
+                "<pre><b>Route: </b>" . $request->getUri()->getPath() . "</pre>" . 
+                "<pre><b>Headers: </b>" . json_encode($request->getHeaders(), JSON_PRETTY_PRINT) .  "</pre>"
             );
         }
 

@@ -15,6 +15,7 @@
 - If admin, redirect to dashboard on oauth login
 
 ### Fixed
+- notFound and notAllowed handlers were not emailing correct data.
 - Compensated for null values in the config
 - Missing `templatesDelete()` function in `Admin\Emails` controller.
 - Dashboard permission mispelled in menu setting
