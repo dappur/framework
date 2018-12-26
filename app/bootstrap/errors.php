@@ -15,6 +15,14 @@ $container['notFoundHandler'] = function ($container) {
             );
         }
 
+        $container->logger->addNotice(
+            "404 Error",
+            array(
+                "route" => $request->getUri()->getPath(),
+                "headers" => $request->getHeaders()
+            )
+        );
+
         return $container['view']
             ->render($response, 'errors/404.twig')
             ->withHeader('Content-type', 'text/html')
@@ -36,6 +44,14 @@ $container['notAllowedHandler'] = function ($container) {
                 "<pre><b>Headers: </b>" . json_encode($request->getHeaders(), JSON_PRETTY_PRINT) .  "</pre>"
             );
         }
+
+        $container->logger->addNotice(
+            "405 Error",
+            array(
+                "route" => $request->getUri()->getPath(),
+                "headers" => $request->getHeaders()
+            )
+        );
 
         return $container['view']
             ->render($response, 'errors/405.twig', array("methods" => $methods))
@@ -59,6 +75,14 @@ $container['errorHandler'] = function ($container) {
             );
         }
 
+        $container->logger->addError(
+            "Server Error",
+            array(
+                "exception" => $exception,
+                "headers" => $request->getHeaders()
+            )
+        );
+
         return $container['view']
             ->render($response, 'errors/500.twig', array("exception" => $exception))
             ->withStatus(500)
@@ -78,6 +102,14 @@ $container['phpErrorHandler'] = function ($container) {
                 "<pre>" . $exception . "</pre>"
             );
         }
+
+        $container->logger->addError(
+            "Application Error",
+            array(
+                "exception" => $exception,
+                "headers" => $request->getHeaders()
+            )
+        );
 
         return $container['view']
             ->render($response, 'errors/500-php.twig', array("exception" => $exception))
