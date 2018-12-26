@@ -147,7 +147,8 @@ class App extends Controller
      */
     public function customRoute(Request $request, Response $response)
     {
-        $route = \Dappur\Model\Routes::where('name', $request->getAttribute('route')->getName())
+        $routeName = $request->getAttribute('route')->getName();
+        $route = \Dappur\Model\Routes::where('name', $routeName)
             ->with('roles')
             ->where('status', 1)
             ->first();
