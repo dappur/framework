@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c875cc71ae7245535fbe8ce099f9f92f",
+    "content-hash": "dc717776e219df5b844134908aae7603",
     "packages": [
         {
             "name": "abraham/twitteroauth",
@@ -2462,6 +2462,51 @@
                 "text"
             ],
             "time": "2017-04-19T22:01:50+00:00"
+        },
+        {
+            "name": "steein/robots",
+            "version": "1.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/SteeinRu/php-robots.git",
+                "reference": "2fbd9ed1401d3394bd5b6e3968d89dee3ad4920b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/SteeinRu/php-robots/zipball/2fbd9ed1401d3394bd5b6e3968d89dee3ad4920b",
+                "reference": "2fbd9ed1401d3394bd5b6e3968d89dee3ad4920b",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "6.2.3"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Steein\\Robots\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Shamsudin Serderov",
+                    "email": "steein.shamsudin@gmai.com",
+                    "homepage": "https://www.steein.ru",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Generator robots.txt",
+            "keywords": [
+                "robots.txt",
+                "steein"
+            ],
+            "time": "2017-09-08T19:38:27+00:00"
         },
         {
             "name": "swiftmailer/swiftmailer",
