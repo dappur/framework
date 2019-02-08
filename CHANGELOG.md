@@ -10,7 +10,7 @@
 - The email system has been revamped.  Plain text is now generated automatically right before sending.  This lightens the load on the email system considerably. 
 
 ### Added
-- Robots.txt is now controlled by the db and always available.
+- Default `robots.txt` file to the `/public/` directory.
 - Ability to delete settings individually from the dashboard.
 - Webook controller for mailgun api.  This will auto update the email status within the dashboard.
 - EmailStatus database table to track status changes of emails
