@@ -3,19 +3,9 @@
 namespace Dappur\Controller\Admin;
 
 use Dappur\Controller\Controller as Controller;
-use Dappur\Dappurware\FileResponse;
-use Dappur\Dappurware\Settings as S;
-use Dappur\Model\Config;
-use Dappur\Model\ConfigGroups;
-use Dappur\Model\ConfigTypes;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use Respect\Validation\Validator as V;
 
-/**
- * @SuppressWarnings(PHPMD.StaticAccess)
- * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
- */
 class Settings extends Controller
 {
     /**
@@ -52,7 +42,7 @@ class Settings extends Controller
         $all =  $request->getParam('all');
 
         if ($group) {
-            $export = ConfigGroups::with('config')->where('id', $group)->get();
+            $export = \Dappur\Model\ConfigGroups::with('config')->where('id', $group)->get();
 
             if (!$export) {
                 $this->flash('danger', 'Export unsuccessful.  Group Not Found.');
@@ -62,7 +52,7 @@ class Settings extends Controller
         }
 
         if ($page) {
-            $export = ConfigGroups::with('config')->where("page_name", $page)->get();
+            $export = \Dappur\Model\ConfigGroups::with('config')->where("page_name", $page)->get();
 
             if (!$export) {
                 $this->flash('danger', 'Export unsuccessful.  Page Not Found.');
@@ -72,7 +62,7 @@ class Settings extends Controller
         }
 
         if ($all) {
-            $export = ConfigGroups::with('config')->get();
+            $export = \Dappur\Model\ConfigGroups::with('config')->get();
 
             if (!$export) {
                 $this->flash('danger', 'Export unsuccessful.  Page Not Found.');
@@ -90,7 +80,7 @@ class Settings extends Controller
         fwrite($tempFile, json_encode($final, JSON_PRETTY_PRINT));
         $metaDatas = stream_get_meta_data($tempFile);
         $filePath = $metaDatas['uri'];
-        return FileResponse::getResponse(
+        return \Dappur\Dappurware\FileResponse::getResponse(
             $response,
             $filePath,
             $this->settings['framework'] .
@@ -107,12 +97,12 @@ class Settings extends Controller
             return $check;
         }
 
-        $timezones = S::getTimezones();
-        $themeList = S::getThemeList();
-        $bootswatch = S::getBootswatch();
-        $settingsGrouped = S::getSettingsByGroup();
-        $types = ConfigTypes::orderBy('name')->get();
-        $groups = ConfigGroups::orderBy('name')->get();
+        $timezones = \Dappur\Dappurware\Settings::getTimezones();
+        $themeList = \Dappur\Dappurware\Settings::getThemeList();
+        $bootswatch = \Dappur\Dappurware\Settings::getBootswatch();
+        $settingsGrouped = \Dappur\Dappurware\Settings::getSettingsByGroup();
+        $types = \Dappur\Model\ConfigTypes::orderBy('name')->get();
+        $groups = \Dappur\Model\ConfigGroups::orderBy('name')->get();
 
         $allRoutes = $this->getRouteNames();
 
@@ -128,7 +118,7 @@ class Settings extends Controller
                     if (isset($value) || is_null($value)) {
                         $value = "";
                     }
-                    Config::where('name', $key)->update(['value' => $value]);
+                    \Dappur\Model\Config::where('name', $key)->update(['value' => $value]);
                 }
 
                 $this->flash('success', 'Global settings have been updated successfully.');
@@ -166,7 +156,7 @@ class Settings extends Controller
         $output['message'] = "An unknown error occured.";
 
         foreach ($request->getParams() as $key => $value) {
-            $checkItem = \Dappur\Model\Config::where('name', $key)->first();
+            $checkItem = \Dappur\Model\\Dappur\Model\Config::where('name', $key)->first();
             if ($checkItem) {
                 $checkItem->value = $value;
                 if ($checkItem->save()) {
@@ -192,14 +182,14 @@ class Settings extends Controller
             $request,
             array(
                 'add_name' => array(
-                    'rules' => V::slug()->length(4, 32),
+                    'rules' => \Respect\Validation\Validator::slug()->length(4, 32),
                     'messages' => array(
                         'slug' => 'May only contain lowercase letters, numbers and hyphens.',
                         'length' => 'Must be between 4 and 32 characters.'
                     )
                 ),
                 'add_description' => array(
-                    'rules' => V::alnum()->length(4, 32),
+                    'rules' => \Respect\Validation\Validator::alnum()->length(4, 32),
                     'messages' => array(
                         'alnum' => 'May only contain letters and numbers.',
                         'length' => 'Must be between 4 and 32 characters.'
@@ -208,13 +198,13 @@ class Settings extends Controller
             )
         );
 
-        $checkConfig = Config::where('name', '=', $allPostVars['add_name'])->get()->count();
+        $checkConfig = \Dappur\Model\Config::where('name', '=', $allPostVars['add_name'])->get()->count();
         if ($checkConfig > 0) {
             $this->validator->addError('add_name', 'Name is already in use.');
         }
 
         if ($this->validator->isValid()) {
-            $configOption = new Config;
+            $configOption = new \Dappur\Model\Config;
             $configOption->name = $allPostVars['add_name'];
             $configOption->description = $allPostVars['add_description'];
             $configOption->type_id = $allPostVars['add_type'];
@@ -239,14 +229,14 @@ class Settings extends Controller
 
         $allRoutes = $this->getRouteNames();
 
-        $timezones = S::getTimezones();
-        $themeList = S::getThemeList();
-        $bootswatch = S::getBootswatch();
-        $settingsGrouped = S::getSettingsByGroup();
+        $timezones = \Dappur\Dappurware\Settings::getTimezones();
+        $themeList = \Dappur\Dappurware\Settings::getThemeList();
+        $bootswatch = \Dappur\Dappurware\Settings::getBootswatch();
+        $settingsGrouped = \Dappur\Dappurware\Settings::getSettingsByGroup();
 
-        $types = ConfigTypes::orderBy('name')->get();
+        $types = \Dappur\Model\ConfigTypes::orderBy('name')->get();
 
-        $groups = ConfigGroups::orderBy('name')->get();
+        $groups = \Dappur\Model\ConfigGroups::orderBy('name')->get();
 
         return $this->view->render(
             $response,
@@ -279,7 +269,7 @@ class Settings extends Controller
             $request,
             array(
                 'group_name' => array(
-                    'rules' => V::alnum()->length(4, 32),
+                    'rules' => \Respect\Validation\Validator::alnum()->length(4, 32),
                     'messages' => array(
                         'alnum' => 'May only contain lowercase letters, numbers and hyphens.',
                         'length' => 'Must be between 4 and 32 characters.'
@@ -288,7 +278,7 @@ class Settings extends Controller
             )
         );
 
-        $checkGroup = ConfigGroups::where('name', '=', $allPostVars['group_name'])->get()->count();
+        $checkGroup = \Dappur\Model\ConfigGroups::where('name', '=', $allPostVars['group_name'])->get()->count();
         if ($checkGroup > 0) {
             $this->validator->addError('group_name', 'Name is already in use.');
         }
@@ -298,14 +288,14 @@ class Settings extends Controller
                 $request,
                 array(
                     'page_name' => array(
-                        'rules' => V::slug()->length(2, 32),
+                        'rules' => \Respect\Validation\Validator::slug()->length(2, 32),
                         'messages' => array(
                             'slug' => 'Alphanumeric and can contain hyphens.',
                             'length' => 'Must be between 2 and 32 characters.'
                         )
                     ),
                     'description' => array(
-                        'rules' => V::alnum('\'".')->length(2, 255),
+                        'rules' => \Respect\Validation\Validator::alnum('\'".')->length(2, 255),
                         'messages' => array(
                             'alnum' => 'May only contain letters, numbers and \'".',
                             'length' => 'Must be between 2 and 255 characters.'
@@ -316,7 +306,7 @@ class Settings extends Controller
         }
 
         if ($this->validator->isValid()) {
-            $configOption = new ConfigGroups;
+            $configOption = new \Dappur\Model\ConfigGroups;
             $configOption->name = $allPostVars['group_name'];
             if ($allPostVars['page'] == 1) {
                 $configOption->page_name = $allPostVars['page_name'];
@@ -331,10 +321,10 @@ class Settings extends Controller
             return $this->redirect($response, 'settings-global');
         }
 
-        $timezones = S::getTimezones();
-        $themeList = S::getThemeList();
-        $bootswatch = S::getBootswatch();
-        $settingsGrouped = S::getSettingsByGroup();
+        $timezones = \Dappur\Dappurware\Settings::getTimezones();
+        $themeList = \Dappur\Dappurware\Settings::getThemeList();
+        $bootswatch = \Dappur\Dappurware\Settings::getBootswatch();
+        $settingsGrouped = \Dappur\Dappurware\Settings::getSettingsByGroup();
 
         return $this->view->render(
             $response,
@@ -359,14 +349,14 @@ class Settings extends Controller
 
         $allPostVars = $request->getParsedBody();
 
-        $checkGroup = ConfigGroups::find($allPostVars['group_id']);
+        $checkGroup = \Dappur\Model\ConfigGroups::find($allPostVars['group_id']);
 
         if (!$checkGroup) {
             $this->flash('danger', 'Group does not exist.');
             return $this->redirect($response, 'settings-global');
         }
 
-        $checkConfig = Config::where('group_id', '=', $allPostVars['group_id'])->get()->count();
+        $checkConfig = \Dappur\Model\Config::where('group_id', '=', $allPostVars['group_id'])->get()->count();
         if ($checkConfig > 0) {
             $this->flash('danger', 'You cannot delete a group with config items in it.');
             return $this->redirect($response, 'settings-global');
@@ -393,7 +383,7 @@ class Settings extends Controller
 
         $settingName = $request->getParam('config_name');
 
-        $checkConfig = \Dappur\Model\Config::where('name', $settingName)->first();
+        $checkConfig = \Dappur\Model\\Dappur\Model\Config::where('name', $settingName)->first();
 
         if (!$checkConfig) {
             $output->message = "Setting not found.";
@@ -415,14 +405,14 @@ class Settings extends Controller
             return $check;
         }
 
-        $pageSettings = ConfigGroups::where('page_name', '=', $pageName)->with('config')->get();
+        $pageSettings = \Dappur\Model\ConfigGroups::where('page_name', '=', $pageName)->with('config')->get();
 
-        $timezones = S::getTimezones();
-        $themeList = S::getThemeList();
+        $timezones = \Dappur\Dappurware\Settings::getTimezones();
+        $themeList = \Dappur\Dappurware\Settings::getThemeList();
 
-        $types = ConfigTypes::orderBy('name')->get();
+        $types = \Dappur\Model\ConfigTypes::orderBy('name')->get();
 
-        $groups = ConfigGroups::orderBy('name')->get();
+        $groups = \Dappur\Model\ConfigGroups::orderBy('name')->get();
 
         $allPostVars = $request->getParsedBody();
 
@@ -433,7 +423,7 @@ class Settings extends Controller
 
             if ($this->validator->isValid()) {
                 foreach ($allPostVars as $key => $value) {
-                    Config::where('name', $key)->update(['value' => $value]);
+                    \Dappur\Model\Config::where('name', $key)->update(['value' => $value]);
                 }
 
                 $this->flash('success', 'Page settings have been updated successfully.');
@@ -557,7 +547,7 @@ class Settings extends Controller
         // Process Config Items
         foreach ($config as $cfg) {
             // Check if Item Exists
-            $config = \Dappur\Model\Config::where('name', $cfg->name)->where('group_id', $group->id)->first();
+            $config = \Dappur\Model\\Dappur\Model\Config::where('name', $cfg->name)->where('group_id', $group->id)->first();
 
             // Update Config if Overwrite
             if ($overwrite && $config) {

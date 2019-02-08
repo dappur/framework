@@ -2,16 +2,10 @@
 
 namespace Dappur\Controller\Admin;
 
-use Carbon\Carbon;
 use Dappur\Controller\Controller as Controller;
-use Dappur\Dappurware\Utils;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
-use Respect\Validation\Validator as V;
 
-/**
- * @SuppressWarnings(PHPMD.StaticAccess)
- */
 class Menus extends Controller
 {
     /**

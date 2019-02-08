@@ -2,28 +2,15 @@
 
 namespace Dappur\Controller;
 
-use Carbon\Carbon;
-use Dappur\Model\BlogCategories;
-use Dappur\Model\BlogPosts;
-use Dappur\Model\BlogPostsComments;
-use Dappur\Model\BlogPostsReplies;
-use Dappur\Model\BlogTags;
-use Dappur\Model\Users;
-use JasonGrimes\Paginator;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
-use Respect\Validation\Validator as V;
 
-/**
- * @SuppressWarnings(PHPMD.StaticAccess)
- */
 class Blog extends Controller
 {
 
     // Main Blog Page
     public function blog(Request $request, Response $response)
     {
-
         // Get Page Number
         $page = 1;
         $routeArgs =  $request->getAttribute('route')->getArguments();
@@ -31,13 +18,13 @@ class Blog extends Controller
             $page = $routeArgs['page'];
         }
 
-        $posts = BlogPosts::where('status', 1)
-            ->where('publish_at', '<', Carbon::now())
+        $posts = \Dappur\Model\BlogPosts::where('status', 1)
+            ->where('publish_at', '<', \Carbon\Carbon::now())
             ->with('category', 'tags', 'author')
             ->withCount('comments', 'pendingComments')
             ->orderBy('publish_at', 'DESC');
      
-        $pagination = new Paginator($posts->count(), $this->config['blog-per-page'], $page, "/blog/(:num)");
+        $pagination = new \JasonGrimes\Paginator($posts->count(), $this->config['blog-per-page'], $page, "/blog/(:num)");
         $pagination = $pagination;
 
         $posts = $posts->skip($this->config['blog-per-page']*($page-1))
@@ -55,7 +42,7 @@ class Blog extends Controller
     {
         $routeArgs =  $request->getAttribute('route')->getArguments();
 
-        $checkAuthor = Users::where('username', $routeArgs['username'])->first();
+        $checkAuthor = \Dappur\Model\Users::where('username', $routeArgs['username'])->first();
 
         if (!$checkAuthor) {
             $this->flash('warning', 'Author not found.');
@@ -68,14 +55,14 @@ class Blog extends Controller
             $page = $routeArgs['page'];
         }
 
-        $posts = BlogPosts::where('status', 1)
+        $posts = \Dappur\Model\BlogPosts::where('status', 1)
             ->where('user_id', $checkAuthor->id)
-            ->where('publish_at', '<', Carbon::now())
+            ->where('publish_at', '<', \Carbon\Carbon::now())
             ->with('category', 'tags', 'author')
             ->withCount('comments', 'pendingComments')
             ->orderBy('publish_at', 'DESC');
        
-        $pagination = new Paginator(
+        $pagination = new \JasonGrimes\Paginator(
             $posts->count(),
             $this->config['blog-per-page'],
             $page,
@@ -103,7 +90,7 @@ class Blog extends Controller
     {
         $routeArgs =  $request->getAttribute('route')->getArguments();
 
-        $checkCat = BlogCategories::where('slug', $routeArgs['slug'])->first();
+        $checkCat = \Dappur\Model\BlogCategories::where('slug', $routeArgs['slug'])->first();
 
         if (!$checkCat) {
             $this->flash('warning', 'Tag not found.');
@@ -116,13 +103,13 @@ class Blog extends Controller
             $page = $routeArgs['page'];
         }
 
-        $posts = BlogCategories::withCount(['posts' => function ($query) {
+        $posts = \Dappur\Model\BlogCategories::withCount(['posts' => function ($query) {
             $query->where('status', 1)
-                    ->where('publish_at', '<', Carbon::now());
+                    ->where('publish_at', '<', \Carbon\Carbon::now());
         }])
             ->with(['posts' => function ($query) use ($page) {
                 $query->where('status', 1)
-                    ->where('publish_at', '<', Carbon::now())
+                    ->where('publish_at', '<', \Carbon\Carbon::now())
                     ->with('category', 'tags', 'author')
                     ->withCount('comments', 'pendingComments')
                     ->skip($this->config['blog-per-page']*($page-1))
@@ -132,7 +119,7 @@ class Blog extends Controller
             ->find($checkCat->id);
 
        
-        $pagination = new Paginator(
+        $pagination = new \JasonGrimes\Paginator(
             $posts->posts_count,
             $this->config['blog-per-page'],
             $page,
@@ -157,7 +144,7 @@ class Blog extends Controller
     {
         $args =  $request->getAttribute('route')->getArguments();
 
-        $post = BlogPosts::with(
+        $post = \Dappur\Model\BlogPosts::with(
             'tags',
             'category',
             'author',
@@ -167,7 +154,7 @@ class Blog extends Controller
         )
             ->where('slug', $args['slug'])
             ->where('status', '=', 1)
-            ->where('publish_at', '<', Carbon::now())
+            ->where('publish_at', '<', \Carbon\Carbon::now())
             ->first();
         
         if (!$post) {
@@ -210,7 +197,7 @@ class Blog extends Controller
         // Validate Data
         $validateData = array(
             'reply' => array(
-                'rules' => V::notEmpty()->length(6),
+                'rules' => \Respect\Validation\Validator::notEmpty()->length(6),
                 'messages' => array(
                     'notEmpty' => 'Please enter a comment.',
                     'length' => 'Comment must contain at least 6 characters'
@@ -220,14 +207,14 @@ class Blog extends Controller
         $this->validator->validate($this->request, $validateData);
 
         // Validate Comment
-        $comment = BlogPostsComments::find($this->request->getParam('comment_id'));
+        $comment = \Dappur\Model\BlogPostsComments::find($this->request->getParam('comment_id'));
 
         if (!$comment) {
             return false;
         }
 
         if ($this->validator->isValid()) {
-            $addReply = new BlogPostsReplies;
+            $addReply = new \Dappur\Model\BlogPostsReplies;
             $addReply->user_id = $this->auth->check()->id;
             $addReply->comment_id = $comment->id;
             $addReply->reply = strip_tags($this->request->getParam('reply'));
@@ -257,7 +244,7 @@ class Blog extends Controller
         $this->validator->validate($this->request, $validateData);
 
         if ($this->validator->isValid()) {
-            $addComment = new BlogPostsComments;
+            $addComment = new \Dappur\Model\BlogPostsComments;
             $addComment->user_id = $this->auth->check()->id;
             $addComment->post_id = $post->id;
             $addComment->comment = strip_tags($this->request->getParam('comment'));
@@ -278,7 +265,7 @@ class Blog extends Controller
     {
         $routeArgs =  $request->getAttribute('route')->getArguments();
 
-        $checkTag = BlogTags::where('slug', $routeArgs['slug'])->first();
+        $checkTag = \Dappur\Model\BlogTags::where('slug', $routeArgs['slug'])->first();
 
         if (!$checkTag) {
             $this->flash('warning', 'Tag not found.');
@@ -296,13 +283,13 @@ class Blog extends Controller
             return $this->redirect($response, 'blog');
         }
 
-        $posts = BlogTags::withCount(['posts' => function ($query) {
+        $posts = \Dappur\Model\BlogTags::withCount(['posts' => function ($query) {
             $query->where('status', 1)
-                    ->where('publish_at', '<', Carbon::now());
+                    ->where('publish_at', '<', \Carbon\Carbon::now());
         }])
             ->with(['posts' => function ($query) use ($page) {
                 $query->where('status', 1)
-                    ->where('publish_at', '<', Carbon::now())
+                    ->where('publish_at', '<', \Carbon\Carbon::now())
                     ->with('category', 'tags', 'author')
                     ->withCount('comments', 'pendingComments')
                     ->skip($this->config['blog-per-page']*($page-1))
@@ -312,7 +299,7 @@ class Blog extends Controller
             ->find($checkTag->id);
 
        
-        $pagination = new Paginator(
+        $pagination = new \JasonGrimes\Paginator(
             $posts->posts_count,
             $this->config['blog-per-page'],
             $page,

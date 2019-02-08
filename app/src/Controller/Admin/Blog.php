@@ -2,24 +2,12 @@
 
 namespace Dappur\Controller\Admin;
 
-use Carbon\Carbon;
 use Dappur\Controller\Controller as Controller;
-use Dappur\Dappurware\Blog as B;
-use Dappur\Dappurware\VideoParser as VP;
 use Interop\Container\ContainerInterface;
-use Dappur\Model\BlogCategories;
-use Dappur\Model\BlogTags;
-use Dappur\Model\BlogPosts;
-use Dappur\Model\BlogPostsComments;
-use Dappur\Model\BlogPostsReplies;
-use Dappur\Model\BlogPostsTags;
-use Dappur\Dappurware\Utils;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
-use Respect\Validation\Validator as V;
 
 /**
- * @SuppressWarnings(PHPMD.StaticAccess)
  * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
  */
 class Blog extends Controller
@@ -28,7 +16,7 @@ class Blog extends Controller
     public function __construct(ContainerInterface $container)
     {
         parent::__construct($container);
-        $blogUtils = new B($this->container);
+        $blogUtils = new \Dappur\Dappurware\Blog($this->container);
         $this->blogUtils = $blogUtils;
     }
 
@@ -39,7 +27,7 @@ class Blog extends Controller
             return $check;
         }
 
-        $posts = BlogPosts::with('category')->withCount('comments', 'replies');
+        $posts = \Dappur\Model\BlogPosts::with('category')->withCount('comments', 'replies');
 
         if (!$this->auth->check()->inRole('manager') && !$this->auth->check()->inRole('admin')) {
             $posts = $posts->where('user_id', $this->auth->check()->id);
@@ -49,8 +37,8 @@ class Blog extends Controller
             $response,
             'blog.twig',
             array(
-                "categories" => BlogCategories::get(),
-                "tags" => BlogTags::get(),
+                "categories" => \Dappur\Model\BlogCategories::get(),
+                "tags" => \Dappur\Model\BlogTags::get(),
                 "posts" => $posts->get()
             )
         );
@@ -68,7 +56,7 @@ class Blog extends Controller
             $isUser = true;
         }
   
-        $totalData = BlogPosts::count();
+        $totalData = \Dappur\Model\BlogPosts::count();
             
         $totalFiltered = $totalData;
 
@@ -77,7 +65,7 @@ class Blog extends Controller
         $order = $request->getParam('columns')[$request->getParam('order')[0]['column']]['data'];
         $dir = $request->getParam('order')[0]['dir'];
 
-        $posts = BlogPosts::select(
+        $posts = \Dappur\Model\BlogPosts::select(
             'blog_posts.id',
             'blog_posts.title',
             'blog_posts.slug',
@@ -105,7 +93,7 @@ class Blog extends Controller
                     ->orWhere('blog_posts.slug', 'LIKE', "%{$search}%")
                     ->orWhere('blog_categories.name', 'LIKE', "%{$search}%");
 
-            $totalFiltered = BlogPosts::select(
+            $totalFiltered = \Dappur\Model\BlogPosts::select(
                 'blog_posts.id',
                 'blog_posts.title',
                 'blog_posts.slug',
@@ -157,8 +145,8 @@ class Blog extends Controller
             $response,
             'blog-add.twig',
             array(
-                "categories" => BlogCategories::get(),
-                "tags" => BlogTags::get()
+                "categories" => \Dappur\Model\BlogCategories::get(),
+                "tags" => \Dappur\Model\BlogTags::get()
             )
         );
     }
@@ -172,7 +160,7 @@ class Blog extends Controller
             return $check;
         }
 
-        $post = BlogPosts::where('id', $postId)->with('category')->with('tags')->first();
+        $post = \Dappur\Model\BlogPosts::where('id', $postId)->with('category')->with('tags')->first();
 
         if (!$post) {
             $this->flash('danger', 'That post does not exist.');
@@ -199,8 +187,8 @@ class Blog extends Controller
             'blog-edit.twig',
             array(
                 "post" => $post->toArray(),
-                "categories" => BlogCategories::get(),
-                "tags" => BlogTags::get(),
+                "categories" => \Dappur\Model\BlogCategories::get(),
+                "tags" => \Dappur\Model\BlogTags::get(),
                 "currentTags" => $currentTags
             )
         );
@@ -213,7 +201,7 @@ class Blog extends Controller
             return $check;
         }
 
-        $post = BlogPosts::find($request->getParam('post_id'));
+        $post = \Dappur\Model\BlogPosts::find($request->getParam('post_id'));
 
         if (!$post) {
             $this->flash('danger', 'That post does not exist.');
@@ -243,7 +231,7 @@ class Blog extends Controller
             return $check;
         }
 
-        $post = BlogPosts::find($request->getParam('post_id'));
+        $post = \Dappur\Model\BlogPosts::find($request->getParam('post_id'));
 
         if (!$post) {
             $this->flash('danger', 'That post does not exist.');
@@ -273,7 +261,7 @@ class Blog extends Controller
             return $check;
         }
 
-        $post = BlogPosts::find($request->getParam('post_id'));
+        $post = \Dappur\Model\BlogPosts::find($request->getParam('post_id'));
 
         if (!$post) {
             $this->flash('danger', 'That post does not exist.');
@@ -303,7 +291,7 @@ class Blog extends Controller
             return $check;
         }
 
-        $post = BlogPosts::where('slug', '=', $slug)->first();
+        $post = \Dappur\Model\BlogPosts::where('slug', '=', $slug)->first();
 
         if (!$this->auth->check()->inRole('manager') &&
             !$this->auth->check()->inRole('admin') &&
@@ -312,9 +300,9 @@ class Blog extends Controller
             return $this->redirect($response, 'admin-blog');
         }
 
-        $categories = BlogCategories::where('status', 1)->get();
+        $categories = \Dappur\Model\BlogCategories::where('status', 1)->get();
 
-        $tags = BlogTags::where('status', 1)->get();
+        $tags = \Dappur\Model\BlogTags::where('status', 1)->get();
 
         if ($post) {
             $this->flash('danger', 'That blog post does not exist.');

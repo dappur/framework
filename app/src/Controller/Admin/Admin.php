@@ -2,19 +2,11 @@
 
 namespace Dappur\Controller\Admin;
 
-use Carbon\Carbon;
 use Dappur\Controller\Controller as Controller;
 use Dappur\Model\ContactRequests;
-use Dappur\Model\Oauth2Providers;
-use Dappur\Model\Users;
-use Dappur\Model\UsersProfile;
-use Illuminate\Database\Capsule\Manager as DB;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
-use Respect\Validation\Validator as V;
-use Slim\Views\PhpRenderer;
 
-/** @SuppressWarnings(PHPMD.StaticAccess) */
 class Admin extends Controller
 {
     /**

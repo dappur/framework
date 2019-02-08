@@ -2,15 +2,10 @@
 
 namespace Dappur\Controller\Admin;
 
-use Dappur\App\FileBrowser;
 use Dappur\Controller\Controller as Controller;
-use Interop\Container\ContainerInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 
-/**
- * @SuppressWarnings(PHPMD.StaticAccess)
- */
 class Developer extends Controller
 {
     /**
@@ -26,7 +21,7 @@ class Developer extends Controller
         }
         
         if ($request->getParam('operation')) {
-            $fileSystem = new FileBrowser(realpath(dirname(__FILE__) . '/../../../../storage/log'));
+            $fileSystem = new \Dappur\App\FileBrowser(realpath(dirname(__FILE__) . '/../../../../storage/log'));
             $rslt = null;
             switch ($request->getParam('operation')) {
                 case 'get_node':

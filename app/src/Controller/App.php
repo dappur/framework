@@ -2,17 +2,9 @@
 
 namespace Dappur\Controller;
 
-use Dappur\Dappurware\Email as E;
-use Dappur\Dappurware\FileResponse;
-use Dappur\Dappurware\Recaptcha;
-use Dappur\Model\ContactRequests;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
-use Respect\Validation\Validator as V;
 
-/**
- * @SuppressWarnings(PHPMD.StaticAccess)
- */
 class App extends Controller
 {
     public function asset(Request $request, Response $response)
@@ -34,7 +26,7 @@ class App extends Controller
         }
 
         // Return file
-        return FileResponse::getResponse($response, $assetPath);
+        return \Dappur\Dappurware\FileResponse::getResponse($response, $assetPath);
     }
 
     public function contact(Request $request, Response $response)
@@ -43,26 +35,26 @@ class App extends Controller
             // Validate Form Data
             $validateData = array(
                 'name' => array(
-                    'rules' => V::length(2, 64)->alnum('\''),
+                    'rules' => \Respect\Validation\Validator::length(2, 64)->alnum('\''),
                     'messages' => array(
                         'length' => 'Must be between 2 and 64 characters.',
                         'alnum' => 'Alphanumeric and can contain \''
                         )
                 ),
                 'email' => array(
-                    'rules' => V::email(),
+                    'rules' => \Respect\Validation\Validator::email(),
                     'messages' => array(
                         'email' => 'Enter a valid email.',
                         )
                 ),
                 'phone' => array(
-                    'rules' => V::phone(),
+                    'rules' => \Respect\Validation\Validator::phone(),
                     'messages' => array(
                         'phone' => 'Enter a valid phone number.'
                         )
                 ),
                 'comment' => array(
-                    'rules' => V::alnum('\'!@#$%^&:",.?/'),
+                    'rules' => \Respect\Validation\Validator::alnum('\'!@#$%^&:",.?/'),
                     'messages' => array(
                         'alnum' => 'Text and punctuation only.',
                         )
@@ -72,7 +64,7 @@ class App extends Controller
 
             if ($this->config['recaptcha-enabled']) {
                 // Validate Recaptcha
-                $recaptcha = new Recaptcha($this->container);
+                $recaptcha = new \Dappur\Dappurware\Recaptcha($this->container);
                 $recaptcha = $recaptcha->validate($request->getParam('g-recaptcha-response'));
                 if (!$recaptcha) {
                     $this->validator->addError('recaptcha', 'Recaptcha was invalid.');
@@ -81,7 +73,7 @@ class App extends Controller
             
 
             if ($this->validator->isValid()) {
-                $add = new ContactRequests;
+                $add = new \Dappur\Model\ContactRequests;
                 $add->name = $request->getParam("name");
                 $add->email = $request->getParam("email");
                 $add->phone = $request->getParam("phone");
@@ -89,7 +81,7 @@ class App extends Controller
 
                 if ($add->save()) {
                     if ($this->config['contact-send-email']) {
-                        $sendEmail = new E($this->container);
+                        $sendEmail = new \Dappur\Dappurware\Email($this->container);
                         $sendEmail = $sendEmail->sendTemplate(
                             array(
                                 $request->getParam("email")

@@ -2,23 +2,11 @@
 
 namespace Dappur\Controller\Admin;
 
-use Carbon\Carbon;
 use Dappur\Controller\Controller as Controller;
-use Dappur\Dappurware\VideoParser as VP;
-use Dappur\Model\BlogCategories as BC;
-use Dappur\Model\BlogTags;
-use Dappur\Model\BlogPosts;
-use Dappur\Model\BlogPostsComments;
-use Dappur\Model\BlogPostsReplies;
-use Dappur\Model\BlogPostsTags;
-use Dappur\Dappurware\Utils;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
-use Respect\Validation\Validator as V;
 
-/**
- * @SuppressWarnings(PHPMD.StaticAccess)
- */
+
 class BlogCategories extends Controller
 {
     // Add New Blog Category
@@ -30,18 +18,18 @@ class BlogCategories extends Controller
 
         if ($request->isPost()) {
             $this->validator->validate($request, [
-                'category_name' => V::length(2, 25)->alpha('\''),
-                'category_slug' => V::slug()
+                'category_name' => \Respect\Validation\Validator::length(2, 25)->alpha('\''),
+                'category_slug' => \Respect\Validation\Validator::slug()
             ]);
 
-            $checkSlug = BC::where('slug', '=', $request->getParam('category_slug'))->get()->count();
+            $checkSlug = \Dappur\Model\BlogCategories::where('slug', '=', $request->getParam('category_slug'))->get()->count();
 
             if ($checkSlug > 0) {
                 $this->validator->addError('category_slug', 'Slug already in use.');
             }
 
             if ($this->validator->isValid()) {
-                $addCategory = new BC;
+                $addCategory = new \Dappur\Model\BlogCategories;
                 $addCategory->name = $request->getParam('category_name');
                 $addCategory->slug = $request->getParam('category_slug');
 
@@ -63,7 +51,7 @@ class BlogCategories extends Controller
             return $check;
         }
 
-        $category = BC::find($request->getParam('category_id'));
+        $category = \Dappur\Model\BlogCategories::find($request->getParam('category_id'));
 
         if (!$category) {
             $this->flash('danger', 'Category doesn\'t exist.');
@@ -86,7 +74,7 @@ class BlogCategories extends Controller
             return $check;
         }
 
-        $category = BC::find($categoryId);
+        $category = \Dappur\Model\BlogCategories::find($categoryId);
 
         if (!$category) {
             $this->flash('danger', 'Sorry, that category was not found.');
@@ -101,14 +89,14 @@ class BlogCategories extends Controller
             // Validate Data
             $validateData = array(
                 'category_name' => array(
-                    'rules' => V::length(2, 25)->alpha('\''),
+                    'rules' => \Respect\Validation\Validator::length(2, 25)->alpha('\''),
                     'messages' => array(
                         'length' => 'Must be between 2 and 25 characters.',
                         'alpha' => 'Letters only and can contain \''
                         )
                 ),
                 'category_slug' => array(
-                    'rules' => V::slug(),
+                    'rules' => \Respect\Validation\Validator::slug(),
                     'messages' => array(
                         'slug' => 'May only contain lowercase letters, numbers and hyphens.'
                         )

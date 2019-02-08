@@ -23,6 +23,7 @@
 - Dashboard permission mispelled in menu setting
 
 ### Changed
+- Cleaned up source code, removed unused functions and code
 - All site errors are now reported to monolog
 - Renamed theme files in the controller
 - Moved the `/csrf` route out of middleware
@@ -30,6 +31,7 @@
 - Default database charset to `utf8mb4` and the default collation to `utf8mb4_unicode_520_ci`
 
 ### Removed
+- Removed static use from all src in core framework.
 - All references to plain text as that is now generated automatically using [soundasleep/html2text](https://github.com/soundasleep/html2text)
 - Removed comments from database migrations
 

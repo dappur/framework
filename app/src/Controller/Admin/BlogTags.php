@@ -2,23 +2,10 @@
 
 namespace Dappur\Controller\Admin;
 
-use Carbon\Carbon;
 use Dappur\Controller\Controller as Controller;
-use Dappur\Dappurware\VideoParser as VP;
-use Dappur\Model\BlogCategories;
-use Dappur\Model\BlogTags as BT;
-use Dappur\Model\BlogPosts;
-use Dappur\Model\BlogPostsComments;
-use Dappur\Model\BlogPostsReplies;
-use Dappur\Model\BlogPostsTags;
-use Dappur\Dappurware\Utils;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
-use Respect\Validation\Validator as V;
 
-/**
- * @SuppressWarnings(PHPMD.StaticAccess)
- */
 class BlogTags extends Controller
 {
     // Add New Blog Tag
@@ -33,18 +20,18 @@ class BlogTags extends Controller
             $tagSlug = $request->getParam('tag_slug');
 
             $this->validator->validate($request, [
-                'tag_name' => V::length(2, 25)->alpha('\''),
-                'tag_slug' => V::slug()
+                'tag_name' => \Respect\Validation\Validator::length(2, 25)->alpha('\''),
+                'tag_slug' => \Respect\Validation\Validator::slug()
             ]);
 
-            $checkSlug = BT::where('slug', '=', $request->getParam('tag_slug'))->get()->count();
+            $checkSlug = \Dappur\Model\BlogTags::where('slug', '=', $request->getParam('tag_slug'))->get()->count();
 
             if ($checkSlug > 0) {
                 $this->validator->addError('tag_slug', 'Slug already in use.');
             }
 
             if ($this->validator->isValid()) {
-                $addTag = new BT;
+                $addTag = new \Dappur\Model\BlogTags;
                 $addTag->name = $tagName;
                 $addTag->slug = $tagSlug;
 
@@ -66,7 +53,7 @@ class BlogTags extends Controller
             return $check;
         }
 
-        $tag = BT::find($request->getParam('tag_id'));
+        $tag = \Dappur\Model\BlogTags::find($request->getParam('tag_id'));
 
         
         if (!$tag) {
@@ -90,7 +77,7 @@ class BlogTags extends Controller
             return $check;
         }
 
-        $tag = BT::find($tagId);
+        $tag = \Dappur\Model\BlogTags::find($tagId);
 
         if (!$tag) {
             $this->flash('danger', 'Tag doesn\'t exist.');
@@ -105,14 +92,14 @@ class BlogTags extends Controller
             // Validate Data
             $validateData = array(
                 'tag_name' => array(
-                    'rules' => V::length(2, 25)->alpha('\''),
+                    'rules' => \Respect\Validation\Validator::length(2, 25)->alpha('\''),
                     'messages' => array(
                         'length' => 'Must be between 2 and 25 characters.',
                         'alpha' => 'Letters only and can contain \''
                         )
                 ),
                 'tag_slug' => array(
-                    'rules' => V::slug(),
+                    'rules' => \Respect\Validation\Validator::slug(),
                     'messages' => array(
                         'slug' => 'May only contain lowercase letters, numbers and hyphens.'
                         )

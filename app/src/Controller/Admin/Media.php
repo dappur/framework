@@ -2,16 +2,10 @@
 
 namespace Dappur\Controller\Admin;
 
-use Cloudinary;
 use Dappur\Controller\Controller as Controller;
-use Dappur\Dappurware\Sentinel as DS;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
-use Respect\Validation\Validator as V;
 
-/**
- * @SuppressWarnings(PHPMD.StaticAccess)
- */
 class Media extends Controller
 {
     /**
@@ -45,8 +39,7 @@ class Media extends Controller
 
     public function getCloudinaryCMS($container, $signatureOnly = null)
     {
-        $sentinel = new DS($container);
-        if ($check = $sentinel->hasPerm('media.cloudinary', 'dashboard')) {
+        if ($check = $this->sentinel->hasPerm('media.cloudinary', 'dashboard')) {
             return $check;
         }
 
@@ -255,7 +248,7 @@ class Media extends Controller
         // Validate Data
         $validateData = array(
             'new_folder_name' => array(
-                'rules' => V::length(2, 25)->alnum('-_')->noWhitespace(),
+                'rules' => \Respect\Validation\Validator::length(2, 25)->alnum('-_')->noWhitespace(),
                 'messages' => array(
                     'length' => 'Must be between 2 and 25 characters.',
                     'alnum' => 'Name must be alphanumeric with - and _',

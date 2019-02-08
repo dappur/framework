@@ -2,18 +2,10 @@
 
 namespace Dappur\Controller\Admin;
 
-use Dappur\Controller\Controller as Controller;
-use Dappur\Model\ContactRequests;
-use Dappur\Model\Users;
-use Dappur\Model\UsersProfile;
-use Dappur\Model\Seo as S;
+use Dappur\Controller\Controller as Controller;\
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
-use Respect\Validation\Validator as V;
 
-/**
- * @SuppressWarnings(PHPMD.StaticAccess)
- */
 class Seo extends Controller
 {
     /**
@@ -25,7 +17,7 @@ class Seo extends Controller
             return $check;
         }
 
-        return $this->view->render($response, 'seo.twig', array("seo" => S::get()));
+        return $this->view->render($response, 'seo.twig', array("seo" => \Dappur\Model\Seo::get()));
     }
 
     /**
@@ -43,21 +35,21 @@ class Seo extends Controller
             // Validate Form Data
             $validateData = array(
                 'title' => array(
-                    'rules' => V::notEmpty()->length(10, 60),
+                    'rules' => \Respect\Validation\Validator::notEmpty()->length(10, 60),
                     'messages' => array(
                         'notEmpty' => 'Title is required.',
                         'length' => 'SEO titles need to be between 10-60 characters.'
                         )
                 ),
                 'description' => array(
-                    'rules' => V::notEmpty()->length(50, 300),
+                    'rules' => \Respect\Validation\Validator::notEmpty()->length(50, 300),
                     'messages' => array(
                         'notEmpty' => 'Title is required.',
                         'length' => 'SEO descriptions need to be between 50-300 characters.'
                         )
                 ),
                 'featured_image' => array(
-                    'rules' => V::notEmpty(),
+                    'rules' => \Respect\Validation\Validator::notEmpty(),
                     'messages' => array(
                         'notEmpty' => 'Featured image is required.'
                         )
@@ -79,7 +71,7 @@ class Seo extends Controller
             }
 
             if ($this->validator->isValid()) {
-                $add = new S;
+                $add = new \Dappur\Model\Seo;
                 $add->page = $request->getParam('page');
                 $add->title = $request->getParam('title');
                 $add->description = $request->getParam('description');
@@ -109,7 +101,7 @@ class Seo extends Controller
             return $check;
         }
 
-        $seo = S::find($request->getParam('seo_id'));
+        $seo = \Dappur\Model\Seo::find($request->getParam('seo_id'));
 
         if (!$seo) {
             $this->flash('danger', 'Could not find SEO record.');
@@ -136,7 +128,7 @@ class Seo extends Controller
             return $check;
         }
 
-        $seo = S::find($request->getParam('seo_id'));
+        $seo = \Dappur\Model\Seo::find($request->getParam('seo_id'));
 
         if (!$seo) {
             $this->flash('danger', 'Could not find SEO record.');
@@ -149,7 +141,7 @@ class Seo extends Controller
         }
 
 
-        S::where('default', 1)->update(['default' => 0]);
+        \Dappur\Model\Seo::where('default', 1)->update(['default' => 0]);
         $seo->default = 1;
         if ($seo->save()) {
             $this->flash('success', 'New default SEO configruation was set.');
@@ -166,7 +158,7 @@ class Seo extends Controller
             return $check;
         }
 
-        $seo = S::find($request->getAttribute('route')->getArgument('seo_id'));
+        $seo = \Dappur\Model\Seo::find($request->getAttribute('route')->getArgument('seo_id'));
 
         if (!$seo) {
             $this->flash('danger', 'Could not find SEO record.');
@@ -185,21 +177,21 @@ class Seo extends Controller
             // Validate Form Data
             $validateData = array(
                 'title' => array(
-                    'rules' => V::notEmpty()->length(10, 60),
+                    'rules' => \Respect\Validation\Validator::notEmpty()->length(10, 60),
                     'messages' => array(
                         'notEmpty' => 'Title is required.',
                         'length' => 'SEO titles need to be between 10-60 characters.'
                         )
                 ),
                 'description' => array(
-                    'rules' => V::notEmpty()->length(50, 300),
+                    'rules' => \Respect\Validation\Validator::notEmpty()->length(50, 300),
                     'messages' => array(
                         'notEmpty' => 'Title is required.',
                         'length' => 'SEO descriptions need to be between 50-300 characters.'
                         )
                 ),
                 'featured_image' => array(
-                    'rules' => V::notEmpty(),
+                    'rules' => \Respect\Validation\Validator::notEmpty(),
                     'messages' => array(
                         'notEmpty' => 'Featured image is required.'
                         )
@@ -236,7 +228,7 @@ class Seo extends Controller
 
         $existing = [];
         if ($available) {
-            $existing = S::select('page')->get()->pluck('page')->toArray();
+            $existing = \Dappur\Model\Seo::select('page')->get()->pluck('page')->toArray();
         }
 
         $excludePages = array("blog-post","deploy","asset","csrf","logout","oauth","profile","profile-incomplete");

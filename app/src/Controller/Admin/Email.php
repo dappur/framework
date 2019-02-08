@@ -3,25 +3,16 @@
 namespace Dappur\Controller\Admin;
 
 use Dappur\Controller\Controller as Controller;
-use Dappur\Dappurware\Email as E;
-use Dappur\Dappurware\Sentinel as S;
-use Dappur\Model\Emails;
-use Dappur\Model\EmailsTemplates;
-use Dappur\Model\Users;
 use Interop\Container\ContainerInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
-use Respect\Validation\Validator as V;
 
-/**
- * @SuppressWarnings(PHPMD.StaticAccess)
- */
 class Email extends Controller
 {
     public function __construct(ContainerInterface $container)
     {
         parent::__construct($container);
-        $email = new E($this->container);
+        $email = new \Dappur\Dappurware\Email($this->container);
         $this->email = $email;
     }
 
@@ -31,7 +22,7 @@ class Email extends Controller
             return $check;
         }
   
-        $totalData = Emails::count();
+        $totalData = \Dappur\Model\Emails::count();
             
         $totalFiltered = $totalData;
 
@@ -40,7 +31,7 @@ class Email extends Controller
         $order = $request->getParam('columns')[$request->getParam('order')[0]['column']]['data'];
         $dir = $request->getParam('order')[0]['dir'];
 
-        $emails = Emails::select('secure_id', 'id', 'send_to', 'subject', 'created_at')
+        $emails = \Dappur\Model\Emails::select('secure_id', 'id', 'send_to', 'subject', 'created_at')
             ->with('recentStatus')
             ->skip($start)
             ->take($limit)
@@ -52,7 +43,7 @@ class Email extends Controller
             $emails =  $emails->where('send_to', 'LIKE', "%{$search}%")
                     ->orWhere('subject', 'LIKE', "%{$search}%");
 
-            $totalFiltered = Emails::where('send_to', 'LIKE', "%{$search}%")
+            $totalFiltered = \Dappur\Model\Emails::where('send_to', 'LIKE', "%{$search}%")
                     ->orWhere('subject', 'LIKE', "%{$search}%")
                     ->count();
         }
@@ -79,7 +70,7 @@ class Email extends Controller
             return $check;
         }
 
-        $emails = Emails::take(200)->get();
+        $emails = \Dappur\Model\Emails::take(200)->get();
 
         return $this->view->render($response, 'emails.twig', array("emails" => $emails));
     }
@@ -127,14 +118,14 @@ class Email extends Controller
 
         $routeArgs =  $request->getAttribute('route')->getArguments();
 
-        $email = Emails::with('status')->find($routeArgs['email']);
+        $email = \Dappur\Model\Emails::with('status')->find($routeArgs['email']);
 
         if (!$email) {
             $this->flash('danger', 'There was a problem finding that email in the database.');
             return $this->redirect($response, 'admin-email');
         }
 
-        $user = Users::where('email', $email->send_to)->first();
+        $user = \Dappur\Model\Users::where('email', $email->send_to)->first();
 
         return $this->view->render($response, 'emails-details.twig', array("email" => $email, "user" => $user));
     }
@@ -147,7 +138,7 @@ class Email extends Controller
 
         $user = $this->auth->check();
 
-        $email = new E($this->container);
+        $email = new \Dappur\Dappurware\Email($this->container);
         $email = $email->sendEmail(
             array($user->id),
             $request->getParam('subject'),
@@ -166,7 +157,7 @@ class Email extends Controller
             return $check;
         }
 
-        $templates = EmailsTemplates::take(200)->get();
+        $templates = \Dappur\Model\EmailsTemplates::take(200)->get();
 
         return $this->view->render($response, 'emails-templates.twig', array("templates" => $templates));
     }
@@ -180,7 +171,7 @@ class Email extends Controller
             return $check;
         }
 
-        $check = \Dappur\Model\EmailsTemplates::find($request->getParam('template_id'));
+        $check = \Dappur\Model\\Dappur\Model\EmailsTemplates::find($request->getParam('template_id'));
 
         if ($check) {
             $check->delete();
@@ -219,7 +210,7 @@ class Email extends Controller
 
         $placeholders = $this->email->getPlaceholders();
 
-        $template = EmailsTemplates::find($templateId);
+        $template = \Dappur\Model\EmailsTemplates::find($templateId);
 
         if (!$template) {
             $this->flash('danger', 'Template not found.');
@@ -260,13 +251,13 @@ class Email extends Controller
                 $request,
                 array(
                     'subject' => array(
-                        'rules' => V::notEmpty(),
+                        'rules' => \Respect\Validation\Validator::notEmpty(),
                         'messages' => array(
                             'notEmpty' => 'Cannot be empty.'
                         )
                     ),
                     'html' => array(
-                        'rules' => V::notEmpty(),
+                        'rules' => \Respect\Validation\Validator::notEmpty(),
                         'messages' => array(
                             'notEmpty' => 'Cannot be empty.'
                         )
@@ -280,7 +271,7 @@ class Email extends Controller
             }
 
             if ($this->validator->isValid()) {
-                $email = new E($this->container);
+                $email = new \Dappur\Dappurware\Email($this->container);
                 $email = $email->sendEmail(
                     $request->getParam('send_to'),
                     $request->getParam('subject'),

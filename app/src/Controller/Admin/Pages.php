@@ -2,17 +2,10 @@
 
 namespace Dappur\Controller\Admin;
 
-use Carbon\Carbon;
 use Dappur\Controller\Controller as Controller;
-use Dappur\Dappurware\FileResponse;
-use Dappur\Dappurware\Utils;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
-use Respect\Validation\Validator as V;
 
-/**
- * @SuppressWarnings(PHPMD.StaticAccess)
- */
 class Pages extends Controller
 {
     public function datatables(Request $request, Response $response)
@@ -290,7 +283,7 @@ class Pages extends Controller
         fwrite($tempFile, json_encode($final, JSON_PRETTY_PRINT));
         $metaDatas = stream_get_meta_data($tempFile);
         $filePath = $metaDatas['uri'];
-        return FileResponse::getResponse(
+        return \Dappur\Dappurware\FileResponse::getResponse(
             $response,
             $filePath,
             $this->settings['framework'] .
