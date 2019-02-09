@@ -23,6 +23,7 @@
 - Dashboard permission mispelled in menu setting
 
 ### Changed
+- Phinx `create-template.php` no contains the samples as part of the template code as I was constantly copying and pasting anyways.
 - Cleaned up source code, removed unused functions and code
 - All site errors are now reported to monolog
 - Renamed theme files in the controller
