@@ -2,7 +2,7 @@
 
 namespace Dappur\Controller\Admin;
 
-use Dappur\Controller\Controller as Controller;\
+use Dappur\Controller\Controller as Controller;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 
@@ -16,8 +16,8 @@ class Seo extends Controller
         if ($check = $this->sentinel->hasPerm('seo.view', 'dashboard')) {
             return $check;
         }
-
-        return $this->view->render($response, 'seo.twig', array("seo" => \Dappur\Model\Seo::get()));
+        $seo = new \Dappur\Model\Seo;
+        return $this->view->render($response, 'seo.twig', array("seo" => $seo->get()));
     }
 
     /**
@@ -33,23 +33,24 @@ class Seo extends Controller
 
         if ($request->isPost()) {
             // Validate Form Data
+            $validator = new \Respect\Validation\Validator;
             $validateData = array(
                 'title' => array(
-                    'rules' => \Respect\Validation\Validator::notEmpty()->length(10, 60),
+                    'rules' => $validator->notEmpty()->length(10, 60),
                     'messages' => array(
                         'notEmpty' => 'Title is required.',
                         'length' => 'SEO titles need to be between 10-60 characters.'
                         )
                 ),
                 'description' => array(
-                    'rules' => \Respect\Validation\Validator::notEmpty()->length(50, 300),
+                    'rules' => $validator->notEmpty()->length(50, 300),
                     'messages' => array(
                         'notEmpty' => 'Title is required.',
                         'length' => 'SEO descriptions need to be between 50-300 characters.'
                         )
                 ),
                 'featured_image' => array(
-                    'rules' => \Respect\Validation\Validator::notEmpty(),
+                    'rules' => $validator->notEmpty(),
                     'messages' => array(
                         'notEmpty' => 'Featured image is required.'
                         )
@@ -100,8 +101,8 @@ class Seo extends Controller
         if ($check = $this->sentinel->hasPerm('seo.delete', 'dashboard')) {
             return $check;
         }
-
-        $seo = \Dappur\Model\Seo::find($request->getParam('seo_id'));
+        $seo = new \Dappur\Model\Seo;
+        $seo = $seo->find($request->getParam('seo_id'));
 
         if (!$seo) {
             $this->flash('danger', 'Could not find SEO record.');
@@ -127,8 +128,8 @@ class Seo extends Controller
         if ($check = $this->sentinel->hasPerm('seo.default')) {
             return $check;
         }
-
-        $seo = \Dappur\Model\Seo::find($request->getParam('seo_id'));
+        $seo = new \Dappur\Model\Seo;
+        $seo = $seo->find($request->getParam('seo_id'));
 
         if (!$seo) {
             $this->flash('danger', 'Could not find SEO record.');
@@ -157,8 +158,8 @@ class Seo extends Controller
         if ($check = $this->sentinel->hasPerm('seo.update', 'dashboard')) {
             return $check;
         }
-
-        $seo = \Dappur\Model\Seo::find($request->getAttribute('route')->getArgument('seo_id'));
+        $seo = new \Dappur\Model\Seo;
+        $seo = $seo->find($request->getAttribute('route')->getArgument('seo_id'));
 
         if (!$seo) {
             $this->flash('danger', 'Could not find SEO record.');
@@ -175,6 +176,7 @@ class Seo extends Controller
 
         if ($request->isPost()) {
             // Validate Form Data
+            $validator = new \Respect\Validation\Validator;
             $validateData = array(
                 'title' => array(
                     'rules' => \Respect\Validation\Validator::notEmpty()->length(10, 60),
@@ -191,7 +193,7 @@ class Seo extends Controller
                         )
                 ),
                 'featured_image' => array(
-                    'rules' => \Respect\Validation\Validator::notEmpty(),
+                    'rules' => $validator->notEmpty(),
                     'messages' => array(
                         'notEmpty' => 'Featured image is required.'
                         )

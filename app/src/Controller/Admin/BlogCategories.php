@@ -6,7 +6,6 @@ use Dappur\Controller\Controller as Controller;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 
-
 class BlogCategories extends Controller
 {
     // Add New Blog Category
@@ -17,14 +16,17 @@ class BlogCategories extends Controller
         }
 
         if ($request->isPost()) {
+            $validator = new \Respect\Validation\Validator;
+
             $this->validator->validate($request, [
-                'category_name' => \Respect\Validation\Validator::length(2, 25)->alpha('\''),
-                'category_slug' => \Respect\Validation\Validator::slug()
+                'category_name' => $validator->length(2, 25)->alpha('\''),
+                'category_slug' => $validator->slug()
             ]);
 
-            $checkSlug = \Dappur\Model\BlogCategories::where('slug', '=', $request->getParam('category_slug'))->get()->count();
+            $checkSlug = \Dappur\Model\BlogCategories::where('slug', '=', $request->getParam('category_slug'))
+                ->first();
 
-            if ($checkSlug > 0) {
+            if ($checkSlug) {
                 $this->validator->addError('category_slug', 'Slug already in use.');
             }
 
@@ -50,8 +52,8 @@ class BlogCategories extends Controller
         if ($check = $this->sentinel->hasPerm('blog_categories.delete', 'dashboard', $this->config['blog-enabled'])) {
             return $check;
         }
-
-        $category = \Dappur\Model\BlogCategories::find($request->getParam('category_id'));
+        $blogCategories = new \Dappur\Model\BlogCategories;
+        $category = $blogCategories->find($request->getParam('category_id'));
 
         if (!$category) {
             $this->flash('danger', 'Category doesn\'t exist.');
@@ -74,7 +76,8 @@ class BlogCategories extends Controller
             return $check;
         }
 
-        $category = \Dappur\Model\BlogCategories::find($categoryId);
+        $blogCategories = new \Dappur\Model\BlogCategories;
+        $category = $blogCategories->find($categoryId);
 
         if (!$category) {
             $this->flash('danger', 'Sorry, that category was not found.');
@@ -86,17 +89,19 @@ class BlogCategories extends Controller
             $categoryName = $request->getParam('category_name');
             $categorySlug = $request->getParam('category_slug');
 
+            $validator = new \Respect\Validation\Validator;
+
             // Validate Data
             $validateData = array(
                 'category_name' => array(
-                    'rules' => \Respect\Validation\Validator::length(2, 25)->alpha('\''),
+                    'rules' => $validator->length(2, 25)->alpha('\''),
                     'messages' => array(
                         'length' => 'Must be between 2 and 25 characters.',
                         'alpha' => 'Letters only and can contain \''
                         )
                 ),
                 'category_slug' => array(
-                    'rules' => \Respect\Validation\Validator::slug(),
+                    'rules' => $validator->slug(),
                     'messages' => array(
                         'slug' => 'May only contain lowercase letters, numbers and hyphens.'
                         )

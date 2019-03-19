@@ -52,8 +52,8 @@ class BlogComments extends Controller
         if (!$this->auth->check()->inRole('manager') && !$this->auth->check()->inRole('admin')) {
             $isUser = true;
         }
-  
-        $totalData = \Dappur\Model\BlogPostsComments::count();
+        $blogPostsComments = new \Dappur\Model\BlogPostsComments;
+        $totalData = $blogPostsComments->count();
             
         $totalFiltered = $totalData;
 
@@ -130,15 +130,21 @@ class BlogComments extends Controller
             ->find($request->getAttribute('route')->getArgument('comment_id'));
         if (!$this->auth->check()->inRole('manager') && !$this->auth->check()->inRole('admin')) {
             $userId = $this->auth->check()->id;
-
-            $comment = \Dappur\Model\BlogPostsComments::with('replies', 'post', 'post.tags', 'post.category', 'post.author')
-                ->where('id', $request->getAttribute('route')->getArgument('comment_id'))
-                ->whereHas(
-                    'post',
-                    function ($query) use ($userId) {
-                        $query->where('user_id', '=', $userId);
-                    }
-                );
+            $blogPostsComments = new \Dappur\Model\BlogPostsComments;
+            $comment = $blogPostsComments->with(
+                'replies',
+                'post',
+                'post.tags',
+                'post.category',
+                'post.author'
+            )
+            ->where('id', $request->getAttribute('route')->getArgument('comment_id'))
+            ->whereHas(
+                'post',
+                function ($query) use ($userId) {
+                    $query->where('user_id', '=', $userId);
+                }
+            );
         }
 
         $comment = $comment->first();
@@ -249,8 +255,8 @@ class BlogComments extends Controller
         if ($check = $this->sentinel->hasPerm('blog.view', 'dashboard', $this->config['blog-enabled'])) {
             return $check;
         }
-
-        $reply = \Dappur\Model\BlogPostsReplies::find($request->getParam('reply'));
+        $blogPostsReplies = new \Dappur\Model\BlogPostsReplies;
+        $reply = $blogPostsReplies->find($request->getParam('reply'));
         if (!$this->auth->check()->inRole('manager') && !$this->auth->check()->inRole('admin')) {
             $userId = $this->auth->check()->id;
             $reply = \Dappur\Model\BlogPostsReplies::where('id', $request->getParam('reply'))
@@ -289,8 +295,8 @@ class BlogComments extends Controller
         }
 
         $replyId = $request->getParam('reply');
-
-        $reply = \Dappur\Model\BlogPostsReplies::find($replyId);
+        $blogPostsReplies = new \Dappur\Model\BlogPostsReplies;
+        $reply = $blogPostsReplies->find($replyId);
 
         if (!$this->auth->check()->inRole('manager') && !$this->auth->check()->inRole('admin')) {
             $userId = $this->auth->check()->id;
@@ -331,7 +337,8 @@ class BlogComments extends Controller
         }
 
         $replyId = $request->getParam('reply');
-        $reply = \Dappur\Model\BlogPostsReplies::find($replyId);
+        $blogPostsReplies = new \Dappur\Model\BlogPostsReplies;
+        $reply = $blogPostsReplies->find($replyId);
         if (!$this->auth->check()->inRole('manager') && !$this->auth->check()->inRole('admin')) {
             $userId = $this->auth->check()->id;
 

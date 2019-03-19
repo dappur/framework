@@ -57,9 +57,9 @@ class Media extends Controller
         $options = array("cloud_name" => $container->settings['cloudinary']['cloud_name'],
             "api_key" => $container->settings['cloudinary']['api_key'],
             "api_secret" => $container->settings['cloudinary']['api_secret']);
-
+        $cloudinary = new \Cloudinary;
         // Sign Request With Cloudinary
-        $output = \Cloudinary::sign_request($params, $options);
+        $output = $cloudinary->sign_request($params, $options);
 
         if ($output) {
             // Build the http query
@@ -68,7 +68,7 @@ class Media extends Controller
             // Complete the Cloudinary URL
             $cloudinaryCmsUrl = "https://cloudinary.com/console/media_library/cms?$apiParamsCl";
             if ($signatureOnly) {
-                $output['signature'] = \Cloudinary:: api_sign_request(
+                $output['signature'] = $cloudinary-> api_sign_request(
                     array(
                         "timestamp" => $timestamp
                     ),

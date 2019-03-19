@@ -20,41 +20,43 @@ class App extends Controller
 
         // If file is in theme root folder
         $regex = '#'.preg_quote($baseThemePath).'(.*)'.preg_quote(DIRECTORY_SEPARATOR).'(.*)#';
-        preg_match($regex, $assetPath, $goto_url);
-        if (substr_count($goto_url[1], DIRECTORY_SEPARATOR) < 2) {
+        preg_match($regex, $assetPath, $gotoUrl);
+        if (substr_count($gotoUrl[1], DIRECTORY_SEPARATOR) < 2) {
             throw new \Slim\Exception\NotFoundException($request, $response);
         }
 
         // Return file
-        return \Dappur\Dappurware\FileResponse::getResponse($response, $assetPath);
+        $fileResponse = new \Dappur\Dappurware\FileResponse;
+        return $fileResponse->getResponse($response, $assetPath);
     }
 
     public function contact(Request $request, Response $response)
     {
         if ($request->isPost()) {
             // Validate Form Data
+            $validator = new \Respect\Validation\Validator;
             $validateData = array(
                 'name' => array(
-                    'rules' => \Respect\Validation\Validator::length(2, 64)->alnum('\''),
+                    'rules' => $validator->length(2, 64)->alnum('\''),
                     'messages' => array(
                         'length' => 'Must be between 2 and 64 characters.',
                         'alnum' => 'Alphanumeric and can contain \''
                         )
                 ),
                 'email' => array(
-                    'rules' => \Respect\Validation\Validator::email(),
+                    'rules' => $validator->email(),
                     'messages' => array(
                         'email' => 'Enter a valid email.',
                         )
                 ),
                 'phone' => array(
-                    'rules' => \Respect\Validation\Validator::phone(),
+                    'rules' => $validator->phone(),
                     'messages' => array(
                         'phone' => 'Enter a valid phone number.'
                         )
                 ),
                 'comment' => array(
-                    'rules' => \Respect\Validation\Validator::alnum('\'!@#$%^&:",.?/'),
+                    'rules' => $validator->alnum('\'!@#$%^&:",.?/'),
                     'messages' => array(
                         'alnum' => 'Text and punctuation only.',
                         )
@@ -153,7 +155,6 @@ class App extends Controller
         if ((($route->permission || $route->roles->count() > 0) && !$this->auth->check())) {
             $this->flash('warning', 'You must be logged in to access this page.');
             return $response->withRedirect($this->router->pathFor('login', array(), array('redirect' => $route->name)));
-
         }
 
         // Check For permission if logged in and set

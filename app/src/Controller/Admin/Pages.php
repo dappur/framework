@@ -6,6 +6,9 @@ use Dappur\Controller\Controller as Controller;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 
+/**
+ * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
+ */
 class Pages extends Controller
 {
     public function datatables(Request $request, Response $response)
@@ -13,8 +16,8 @@ class Pages extends Controller
         if ($check = $this->sentinel->hasPerm('pages.view', 'dashboard')) {
             return $check;
         }
-  
-        $totalData = \Dappur\Model\Routes::count();
+        $routes = new \Dappur\Model\Routes;
+        $totalData = $routes->count();
             
         $totalFiltered = $totalData;
 
@@ -77,16 +80,17 @@ class Pages extends Controller
         if ($check = $this->sentinel->hasPerm('pages.view', 'dashboard')) {
             return $check;
         }
-
+        $roles = new \Dappur\Model\Roles;
         return $this->view->render(
             $response,
             'pages.twig',
-            ["roles" => \Dappur\Model\Roles::get()]
+            ["roles" => $roles->get()]
         );
     }
 
     /**
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+     * @SuppressWarnings(PHPMD.NPathComplexity)
      */
     public function add(Request $request, Response $response)
     {
@@ -149,16 +153,17 @@ class Pages extends Controller
             $this->flash('success', $insPage->name . " has been successfully created.");
             return $this->redirect($response, 'admin-pages');
         }
-
+        $roles = new \Dappur\Model\Roles;
         return $this->view->render(
             $response,
             'pages-add.twig',
-            ["roles" => \Dappur\Model\Roles::get()]
+            ["roles" => $roles->get()]
         );
     }
 
     /**
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+     * @SuppressWarnings(PHPMD.NPathComplexity)
      */
     public function edit(Request $request, Response $response, $routeId)
     {
@@ -185,8 +190,9 @@ class Pages extends Controller
                 $this->validator->addError('name', 'Name already exists');
             }
 
-            if (in_array("/" . $request->getParam('pattern'), $routePatterns) && $routeCheck->pattern != $request->getParam('pattern')) {
-                $this->validator->addError('pattern', 'Pattern already exists.');
+            if (in_array("/" . $request->getParam('pattern'), $routePatterns)
+                && $routeCheck->pattern != $request->getParam('pattern')) {
+                    $this->validator->addError('pattern', 'Pattern already exists.');
             }
             
             $routeCheck->name = $request->getParam('name');
@@ -234,11 +240,11 @@ class Pages extends Controller
             $this->flash('success', $routeCheck->name . " has been successfully updated.");
             return $this->redirect($response, 'admin-pages');
         }
-
+        $roles = new \Dappur\Model\Roles;
         return $this->view->render(
             $response,
             'pages-edit.twig',
-            ["roles" => \Dappur\Model\Roles::get(), "route" => $routeCheck]
+            ["roles" => $roles->get(), "route" => $routeCheck]
         );
     }
 
@@ -283,7 +289,8 @@ class Pages extends Controller
         fwrite($tempFile, json_encode($final, JSON_PRETTY_PRINT));
         $metaDatas = stream_get_meta_data($tempFile);
         $filePath = $metaDatas['uri'];
-        return \Dappur\Dappurware\FileResponse::getResponse(
+        $fileResponse = new \Dappur\Dappurware\FileResponse;
+        return $fileResponse->getResponse(
             $response,
             $filePath,
             $this->settings['framework'] .
@@ -415,7 +422,7 @@ class Pages extends Controller
         // Process Config Items
         foreach ($roles as $role) {
             if ($overwrite) {
-                $deleteRoles = \Dappur\Model\RoleRoutes::where('route_id', $route->id)
+                \Dappur\Model\RoleRoutes::where('route_id', $route->id)
                     ->get()
                     ->delete();
             }
@@ -441,8 +448,8 @@ class Pages extends Controller
         if ($check = $this->sentinel->hasPerm('pages.delete', 'dashboard')) {
             return $check;
         }
-
-        $page = \Dappur\Model\Routes::find($request->getParam('page_id'));
+        $routes = new \Dappur\Model\Routes;
+        $page = $routes->find($request->getParam('page_id'));
 
         if ($page && $page->id == 1) {
             $this->flash('danger', 'You cannot delete the home page.');

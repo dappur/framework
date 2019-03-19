@@ -50,7 +50,6 @@ class Roles extends Controller
         $role = \Dappur\Model\Roles::find($request->getParam('role_id'));
 
         if ($role && $role->id != 1) {
-
             \Dappur\Model\RoleUsers::where('role_id', '=', $request->getParam('role_id'))->delete();
             
             $removeRole = \Dappur\Model\Roles::find($request->getParam('role_id'));

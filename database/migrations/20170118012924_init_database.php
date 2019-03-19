@@ -257,7 +257,7 @@ class InitDatabase extends Migration
         }
 
         //Initial Config Table Options
-        $init_config = array(
+        $initConfig = array(
             array(1, 'timezone', 'Site Timezone', 1, 'America/Los_Angeles'),
             array(1, 'site-name', 'Site Name', 2, 'Dappur'),
             array(1, 'domain', 'Site Domain', 2, 'example.com'),
@@ -291,7 +291,7 @@ class InitDatabase extends Migration
         );
 
         // Seed Config Table
-        foreach ($init_config as $key => $value) {
+        foreach ($initConfig as $key => $value) {
             $config = new Dappur\Model\Config;
             $config->group_id = $value[0];
             $config->name = $value[1];
@@ -549,7 +549,7 @@ class InitDatabase extends Migration
             )
         );
 
-        foreach ($blog_posts as $bkey => $bvalue) {
+        foreach ($blog_posts as $bvalue) {
             $add_post = new \Dappur\Model\BlogPosts;
             $add_post->id = $bvalue['id'];
             $add_post->user_id = $bvalue['user_id'];
@@ -583,7 +583,7 @@ class InitDatabase extends Migration
             )
         );
 
-        foreach ($blog_posts_tags as $bptkey => $bptvalue) {
+        foreach ($blog_posts_tags as $bptvalue) {
             $add_bpt = new \Dappur\Model\BlogPostsTags;
             $add_bpt->post_id = $bptvalue['post_id'];
             $add_bpt->tag_id = $bptvalue['tag_id'];
@@ -607,29 +607,29 @@ class InitDatabase extends Migration
             )
         );
 
-        foreach ($post_comments as $ckey => $cvalue) {
-            $add_comment = new \Dappur\Model\BlogPostsComments;
-            $add_comment->id = $cvalue['id'];
-            $add_comment->user_id = $cvalue['user_id'];
-            $add_comment->post_id = $cvalue['post_id'];
-            $add_comment->comment = $cvalue['comment'];
-            $add_comment->status = $cvalue['status'];
-            $add_comment->save();
+        foreach ($post_comments as $cvalue) {
+            $addComment = new \Dappur\Model\BlogPostsComments;
+            $addComment->id = $cvalue['id'];
+            $addComment->user_id = $cvalue['user_id'];
+            $addComment->post_id = $cvalue['post_id'];
+            $addComment->comment = $cvalue['comment'];
+            $addComment->status = $cvalue['status'];
+            $addComment->save();
         }
 
-        $add_reply = new \Dappur\Model\BlogPostsReplies;
-        $add_reply->user_id = 1;
-        $add_reply->comment_id = 1;
-        $add_reply->reply = 'This is a sample reply.';
-        $add_reply->status = 1;
-        $add_reply->save();
+        $addReply = new \Dappur\Model\BlogPostsReplies;
+        $addReply->user_id = 1;
+        $addReply->comment_id = 1;
+        $addReply->reply = 'This is a sample reply.';
+        $addReply->status = 1;
+        $addReply->save();
 
-        $add_reply = new \Dappur\Model\BlogPostsReplies;
-        $add_reply->user_id = 1;
-        $add_reply->comment_id = 1;
-        $add_reply->reply = 'This is a sample pending reply.';
-        $add_reply->status = 0;
-        $add_reply->save();
+        $addReply = new \Dappur\Model\BlogPostsReplies;
+        $addReply->user_id = 1;
+        $addReply->comment_id = 1;
+        $addReply->reply = 'This is a sample pending reply.';
+        $addReply->status = 0;
+        $addReply->save();
 
         $config = new Dappur\Model\ConfigGroups;
         $config->name = "Blog";
@@ -638,20 +638,38 @@ class InitDatabase extends Migration
         $config->save();
 
         //Initial Config Table Options
-        $init_config = array(
-            array('group_id' => $config->id, 'name' => 'blog-enabled', 'description' => 'Enable Blog', 'type_id' => 6, 'value' => 1),
-            array('group_id' => $config->id, 'name' => 'blog-per-page', 'description' => 'Blog Posts Per Page', 'type_id' => 2, 'value' => 2),
-            array('group_id' => $config->id, 'name' => 'blog-approve-comments', 'description' => 'Approve Comments', 'type_id' => 6, 'value' => 1),
+        $initConfig = array(
+            array(
+                'group_id' => $config->id,
+                'name' => 'blog-enabled',
+                'description' => 'Enable Blog',
+                'type_id' => 6,
+                'value' => 1
+            ),
+            array(
+                'group_id' => $config->id,
+                'name' => 'blog-per-page',
+                'description' => 'Blog Posts Per Page',
+                'type_id' => 2,
+                'value' => 2
+            ),
+            array(
+                'group_id' => $config->id,
+                'name' => 'blog-approve-comments',
+                'description' => 'Approve Comments',
+                'type_id' => 6,
+                'value' => 1
+            )
         );
 
-        foreach ($init_config as $ikey => $ivalue) {
-            $ins_config = new \Dappur\Model\Config;
-            $ins_config->group_id = $ivalue['group_id'];
-            $ins_config->type_id = $ivalue['type_id'];
-            $ins_config->name = $ivalue['name'];
-            $ins_config->description = $ivalue['description'];
-            $ins_config->value = $ivalue['value'];
-            $ins_config->save();
+        foreach ($initConfig as $ivalue) {
+            $insConfig = new \Dappur\Model\Config;
+            $insConfig->group_id = $ivalue['group_id'];
+            $insConfig->type_id = $ivalue['type_id'];
+            $insConfig->name = $ivalue['name'];
+            $insConfig->description = $ivalue['description'];
+            $insConfig->value = $ivalue['value'];
+            $insConfig->save();
         }
     }
 

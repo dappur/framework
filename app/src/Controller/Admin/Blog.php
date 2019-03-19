@@ -33,12 +33,15 @@ class Blog extends Controller
             $posts = $posts->where('user_id', $this->auth->check()->id);
         }
 
+        $blogCategories = new \Dappur\Model\BlogCategories;
+        $blogTags = new \Dappur\Model\BlogTags;
+        
         return $this->view->render(
             $response,
             'blog.twig',
             array(
-                "categories" => \Dappur\Model\BlogCategories::get(),
-                "tags" => \Dappur\Model\BlogTags::get(),
+                "categories" => $blogCategories->get(),
+                "tags" => $blogTags->get(),
                 "posts" => $posts->get()
             )
         );
@@ -55,8 +58,10 @@ class Blog extends Controller
         if (!$this->auth->check()->inRole('manager') && !$this->auth->check()->inRole('admin')) {
             $isUser = true;
         }
+
+        $blogPosts = new \Dappur\Model\BlogPosts;
   
-        $totalData = \Dappur\Model\BlogPosts::count();
+        $totalData = $blogPosts->count();
             
         $totalFiltered = $totalData;
 
@@ -141,12 +146,15 @@ class Blog extends Controller
             }
         }
 
+        $blogCategories = new \Dappur\Model\BlogCategories;
+        $blogTags = new \Dappur\Model\BlogTags;
+
         return $this->view->render(
             $response,
             'blog-add.twig',
             array(
-                "categories" => \Dappur\Model\BlogCategories::get(),
-                "tags" => \Dappur\Model\BlogTags::get()
+                "categories" => $blogCategories->get(),
+                "tags" => $blogTags->get()
             )
         );
     }
@@ -182,13 +190,16 @@ class Blog extends Controller
 
         $currentTags = $post->tags->pluck('id');
 
+        $blogCategories = new \Dappur\Model\BlogCategories;
+        $blogTags = new \Dappur\Model\BlogTags;
+
         return $this->view->render(
             $response,
             'blog-edit.twig',
             array(
                 "post" => $post->toArray(),
-                "categories" => \Dappur\Model\BlogCategories::get(),
-                "tags" => \Dappur\Model\BlogTags::get(),
+                "categories" => $blogCategories->get(),
+                "tags" => $blogTags->get(),
                 "currentTags" => $currentTags
             )
         );
@@ -200,8 +211,8 @@ class Blog extends Controller
         if ($check = $this->sentinel->hasPerm('blog.update', 'dashboard', $this->config['blog-enabled'])) {
             return $check;
         }
-
-        $post = \Dappur\Model\BlogPosts::find($request->getParam('post_id'));
+        $blogPosts = new \Dappur\Model\BlogPosts;
+        $post = $blogPosts->find($request->getParam('post_id'));
 
         if (!$post) {
             $this->flash('danger', 'That post does not exist.');
@@ -231,7 +242,8 @@ class Blog extends Controller
             return $check;
         }
 
-        $post = \Dappur\Model\BlogPosts::find($request->getParam('post_id'));
+        $blogPosts = new \Dappur\Model\BlogPosts;
+        $post = $blogPosts->find($request->getParam('post_id'));
 
         if (!$post) {
             $this->flash('danger', 'That post does not exist.');
@@ -260,8 +272,8 @@ class Blog extends Controller
         if ($check = $this->sentinel->hasPerm('blog.delete', 'dashboard', $this->config['blog-enabled'])) {
             return $check;
         }
-
-        $post = \Dappur\Model\BlogPosts::find($request->getParam('post_id'));
+        $blogPosts = new \Dappur\Model\BlogPosts;
+        $post = $blogPosts->find($request->getParam('post_id'));
 
         if (!$post) {
             $this->flash('danger', 'That post does not exist.');

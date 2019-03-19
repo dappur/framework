@@ -14,7 +14,6 @@ class BlogCheck extends Middleware
             }
             
             return $response->withRedirect($this->router->pathFor('home'));
-
         }
 
         return $next($request, $response);

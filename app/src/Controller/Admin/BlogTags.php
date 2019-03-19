@@ -19,9 +19,10 @@ class BlogTags extends Controller
             $tagName = $request->getParam('tag_name');
             $tagSlug = $request->getParam('tag_slug');
 
+            $validator = new \Respect\Validation\Validator;
             $this->validator->validate($request, [
-                'tag_name' => \Respect\Validation\Validator::length(2, 25)->alpha('\''),
-                'tag_slug' => \Respect\Validation\Validator::slug()
+                'tag_name' => $validator->length(2, 25)->alpha('\''),
+                'tag_slug' => $validator->slug()
             ]);
 
             $checkSlug = \Dappur\Model\BlogTags::where('slug', '=', $request->getParam('tag_slug'))->get()->count();
@@ -52,8 +53,8 @@ class BlogTags extends Controller
         if ($check = $this->sentinel->hasPerm('blog_tags.delete', 'dashboard', $this->config['blog-enabled'])) {
             return $check;
         }
-
-        $tag = \Dappur\Model\BlogTags::find($request->getParam('tag_id'));
+        $blogTags = new \Dappur\Model\BlogTags;
+        $tag = $blogTags->find($request->getParam('tag_id'));
 
         
         if (!$tag) {
@@ -76,8 +77,8 @@ class BlogTags extends Controller
         if ($check = $this->sentinel->hasPerm('blog_tags.update', 'dashboard', $this->config['blog-enabled'])) {
             return $check;
         }
-
-        $tag = \Dappur\Model\BlogTags::find($tagId);
+        $blogTags = new \Dappur\Model\BlogTags;
+        $tag = $blogTags->find($tagId);
 
         if (!$tag) {
             $this->flash('danger', 'Tag doesn\'t exist.');
@@ -88,7 +89,7 @@ class BlogTags extends Controller
             // Get Vars
             $tagName = $request->getParam('tag_name');
             $tagSlug = $request->getParam('tag_slug');
-
+            $validator = new \Respect\Validation\Validator;
             // Validate Data
             $validateData = array(
                 'tag_name' => array(
@@ -99,7 +100,7 @@ class BlogTags extends Controller
                         )
                 ),
                 'tag_slug' => array(
-                    'rules' => \Respect\Validation\Validator::slug(),
+                    'rules' => $validator->slug(),
                     'messages' => array(
                         'slug' => 'May only contain lowercase letters, numbers and hyphens.'
                         )

@@ -6,6 +6,9 @@ use Dappur\Controller\Controller as Controller;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
+/**
+ * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
+ */
 class Settings extends Controller
 {
     /**
@@ -80,7 +83,8 @@ class Settings extends Controller
         fwrite($tempFile, json_encode($final, JSON_PRETTY_PRINT));
         $metaDatas = stream_get_meta_data($tempFile);
         $filePath = $metaDatas['uri'];
-        return \Dappur\Dappurware\FileResponse::getResponse(
+        $fileResponse = new \Dappur\Dappurware\FileResponse;
+        return $fileResponse->getResponse(
             $response,
             $filePath,
             $this->settings['framework'] .
@@ -96,11 +100,12 @@ class Settings extends Controller
         if ($check = $this->sentinel->hasPerm('settings.view', 'dashboard')) {
             return $check;
         }
+        $settings = new \Dappur\Dappurware\Settings;
 
-        $timezones = \Dappur\Dappurware\Settings::getTimezones();
-        $themeList = \Dappur\Dappurware\Settings::getThemeList();
-        $bootswatch = \Dappur\Dappurware\Settings::getBootswatch();
-        $settingsGrouped = \Dappur\Dappurware\Settings::getSettingsByGroup();
+        $timezones = $settings->getTimezones();
+        $themeList = $settings->getThemeList();
+        $bootswatch = $settings->getBootswatch();
+        $settingsGrouped = $settings->getSettingsByGroup();
         $types = \Dappur\Model\ConfigTypes::orderBy('name')->get();
         $groups = \Dappur\Model\ConfigGroups::orderBy('name')->get();
 
@@ -126,6 +131,8 @@ class Settings extends Controller
             }
         }
 
+        $menus = new \Dappur\Model\Menus;
+
         return $this->view->render(
             $response,
             'settings.twig',
@@ -137,7 +144,7 @@ class Settings extends Controller
                 "timezones" => $timezones,
                 "bsThemes" => $bootswatch,
                 "allRoutes" => $allRoutes,
-                "menus" => \Dappur\Model\Menus::get()
+                "menus" => $menus->get()
             )
         );
     }
@@ -156,7 +163,7 @@ class Settings extends Controller
         $output['message'] = "An unknown error occured.";
 
         foreach ($request->getParams() as $key => $value) {
-            $checkItem = \Dappur\Model\\Dappur\Model\Config::where('name', $key)->first();
+            $checkItem = \Dappur\Model\Config::where('name', $key)->first();
             if ($checkItem) {
                 $checkItem->value = $value;
                 if ($checkItem->save()) {
@@ -229,14 +236,18 @@ class Settings extends Controller
 
         $allRoutes = $this->getRouteNames();
 
-        $timezones = \Dappur\Dappurware\Settings::getTimezones();
-        $themeList = \Dappur\Dappurware\Settings::getThemeList();
-        $bootswatch = \Dappur\Dappurware\Settings::getBootswatch();
-        $settingsGrouped = \Dappur\Dappurware\Settings::getSettingsByGroup();
+        $settings = new \Dappur\Dappurware\Settings;
+
+        $timezones = $settings->getTimezones();
+        $themeList = $settings->getThemeList();
+        $bootswatch = $settings->getBootswatch();
+        $settingsGrouped = $settings->getSettingsByGroup();
 
         $types = \Dappur\Model\ConfigTypes::orderBy('name')->get();
 
         $groups = \Dappur\Model\ConfigGroups::orderBy('name')->get();
+
+        $menus = new \Dappur\Model\Menus;
 
         return $this->view->render(
             $response,
@@ -250,7 +261,7 @@ class Settings extends Controller
                 "bsThemes" => $bootswatch,
                 "requestParams" => $allPostVars,
                 "allRoutes" => $allRoutes,
-                "menus" => \Dappur\Model\Menus::get()
+                "menus" => $menus->get()
             )
         );
     }
@@ -321,10 +332,14 @@ class Settings extends Controller
             return $this->redirect($response, 'settings-global');
         }
 
-        $timezones = \Dappur\Dappurware\Settings::getTimezones();
-        $themeList = \Dappur\Dappurware\Settings::getThemeList();
-        $bootswatch = \Dappur\Dappurware\Settings::getBootswatch();
-        $settingsGrouped = \Dappur\Dappurware\Settings::getSettingsByGroup();
+        $settings = new \Dappur\Dappurware\Settings;
+
+        $timezones = $settings->getTimezones();
+        $themeList = $settings->getThemeList();
+        $bootswatch = $settings->getBootswatch();
+        $settingsGrouped = $settings->getSettingsByGroup();
+
+        $menus = new \Dappur\Model\Menus;
 
         return $this->view->render(
             $response,
@@ -336,7 +351,7 @@ class Settings extends Controller
                 "bsThemes" => $bootswatch,
                 "allRoutes" => $allRoutes,
                 "requestParams" => $allPostVars,
-                "menus" => \Dappur\Model\Menus::get()
+                "menus" => $menus->get()
             )
         );
     }
@@ -348,8 +363,8 @@ class Settings extends Controller
         }
 
         $allPostVars = $request->getParsedBody();
-
-        $checkGroup = \Dappur\Model\ConfigGroups::find($allPostVars['group_id']);
+        $configGroups = new \Dappur\Model\ConfigGroups;
+        $checkGroup = $configGroups->find($allPostVars['group_id']);
 
         if (!$checkGroup) {
             $this->flash('danger', 'Group does not exist.');
@@ -383,7 +398,7 @@ class Settings extends Controller
 
         $settingName = $request->getParam('config_name');
 
-        $checkConfig = \Dappur\Model\\Dappur\Model\Config::where('name', $settingName)->first();
+        $checkConfig = \Dappur\Model\Config::where('name', $settingName)->first();
 
         if (!$checkConfig) {
             $output->message = "Setting not found.";
@@ -407,8 +422,9 @@ class Settings extends Controller
 
         $pageSettings = \Dappur\Model\ConfigGroups::where('page_name', '=', $pageName)->with('config')->get();
 
-        $timezones = \Dappur\Dappurware\Settings::getTimezones();
-        $themeList = \Dappur\Dappurware\Settings::getThemeList();
+        $settings = new \Dappur\Dappurware\Settings;
+        $timezones = $settings->getTimezones();
+        $themeList = $settings->getThemeList();
 
         $types = \Dappur\Model\ConfigTypes::orderBy('name')->get();
 
@@ -431,6 +447,8 @@ class Settings extends Controller
             }
         }
 
+        $menus = new \Dappur\Model\Menus;
+
         return $this->view->render(
             $response,
             'settings-page.twig',
@@ -442,7 +460,7 @@ class Settings extends Controller
                 "timezones" => $timezones,
                 "requestParams" => $allPostVars,
                 "pageName" => $pageName,
-                "menus" => \Dappur\Model\Menus::get()
+                "menus" => $menus->get()
             )
         );
     }
@@ -521,7 +539,8 @@ class Settings extends Controller
     private function importGroup($value, $overwrite = 0)
     {
         // Check if Exists
-        $group = \Dappur\Model\ConfigGroups::find($value->id);
+        $configGroups = new \Dappur\Model\ConfigGroups;
+        $group = $configGroups->find($value->id);
 
         // Update Group if Overwrite
         if ($overwrite && $group) {
@@ -547,7 +566,7 @@ class Settings extends Controller
         // Process Config Items
         foreach ($config as $cfg) {
             // Check if Item Exists
-            $config = \Dappur\Model\\Dappur\Model\Config::where('name', $cfg->name)->where('group_id', $group->id)->first();
+            $config = \Dappur\Model\Config::where('name', $cfg->name)->where('group_id', $group->id)->first();
 
             // Update Config if Overwrite
             if ($overwrite && $config) {

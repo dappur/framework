@@ -4,7 +4,7 @@ namespace Dappur\Controller;
 
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
-    
+
 class Auth extends Controller
 {
     public function activate(Request $request, Response $response)
@@ -42,9 +42,10 @@ class Auth extends Controller
     {
         if ($request->isPost()) {
             // Validate Data
+            $validator = new \Respect\Validation\Validator;
             $validateData = array(
                 'email' => array(
-                    'rules' => \Respect\Validation\Validator::email(),
+                    'rules' => $validator->email(),
                     'messages' => array(
                         'email' => 'Must be a valid email address.'
                         )
@@ -274,15 +275,16 @@ class Auth extends Controller
 
             if ($user) {
                 // Validate Data
+                $validator = new \Respect\Validation\Validator;
                 $validateData = array(
                     'password' => array(
-                        'rules' => \Respect\Validation\Validator::length(6, 64),
+                        'rules' => $validator->length(6, 64),
                         'messages' => array(
                             'length' => "Must be between 6 and 64 characters."
                             )
                     ),
                     'password_confirm' => array(
-                        'rules' => \Respect\Validation\Validator::equals($request->getParam('password')),
+                        'rules' => $validator->equals($request->getParam('password')),
                         'messages' => array(
                             'equals' => 'Passwords must match.'
                             )
@@ -317,30 +319,31 @@ class Auth extends Controller
 
     private function validateNewUser()
     {
+        $validator = new \Respect\Validation\Validator;
         $validateData = array(
             'first_name' => array(
-                'rules' => \Respect\Validation\Validator::alnum('\'-')->length(2, 25),
+                'rules' => $validator->alnum('\'-')->length(2, 25),
                 'messages' => array(
                     'alnum' => 'May contain letters, numbers, \' and hyphens.',
                     'length' => "Must be between 2 and 25 characters."
                     )
             ),
             'last_name' => array(
-                'rules' => \Respect\Validation\Validator::alnum('\'-')->length(2, 25),
+                'rules' => $validator->alnum('\'-')->length(2, 25),
                 'messages' => array(
                     'alnum' => 'May contain letters, numbers, \' and hyphens.',
                     'length' => "Must be between 2 and 25 characters."
                     )
             ),
             'email' => array(
-                'rules' => \Respect\Validation\Validator::noWhitespace()->email(),
+                'rules' => $validator->noWhitespace()->email(),
                 'messages' => array(
                     'noWhitespace' => 'Must not contain spaces.',
                     'email' => 'Must be a valid email address.'
                     )
             ),
             'username' => array(
-                'rules' => \Respect\Validation\Validator::noWhitespace()->alnum()->length(2, 25),
+                'rules' => $validator->noWhitespace()->alnum()->length(2, 25),
                 'messages' => array(
                     'noWhitespace' => 'Must not contain spaces.',
                     'alnum' => 'Must be letters and numbers only.',
@@ -348,14 +351,14 @@ class Auth extends Controller
                     )
             ),
             'password' => array(
-                'rules' => \Respect\Validation\Validator::length(6, 64),
+                'rules' => $validator->length(6, 64),
                 'messages' => array(
                     'noWhitespace' => 'Must not contain spaces.',
                     'length' => "Must be between 6 and 64 characters."
                     )
             ),
             'password-confirm' => array(
-                'rules' => \Respect\Validation\Validator::equals($this->request->getParam('password')),
+                'rules' => $validator->equals($this->request->getParam('password')),
                 'messages' => array(
                     'equals' => 'Passwords must match.'
                     )

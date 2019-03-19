@@ -18,13 +18,20 @@ class Blog extends Controller
             $page = $routeArgs['page'];
         }
 
+        $carbon = new \Carbon\Carbon;
+
         $posts = \Dappur\Model\BlogPosts::where('status', 1)
-            ->where('publish_at', '<', \Carbon\Carbon::now())
+            ->where('publish_at', '<', $carbon->now())
             ->with('category', 'tags', 'author')
             ->withCount('comments', 'pendingComments')
             ->orderBy('publish_at', 'DESC');
      
-        $pagination = new \JasonGrimes\Paginator($posts->count(), $this->config['blog-per-page'], $page, "/blog/(:num)");
+        $pagination = new \JasonGrimes\Paginator(
+            $posts->count()
+            $this->config['blog-per-page'],
+            $page,
+            "/blog/(:num)"
+        );
         $pagination = $pagination;
 
         $posts = $posts->skip($this->config['blog-per-page']*($page-1))
@@ -55,9 +62,11 @@ class Blog extends Controller
             $page = $routeArgs['page'];
         }
 
+        $carbon = new \Carbon\Carbon;
+
         $posts = \Dappur\Model\BlogPosts::where('status', 1)
             ->where('user_id', $checkAuthor->id)
-            ->where('publish_at', '<', \Carbon\Carbon::now())
+            ->where('publish_at', '<', $carbon->now())
             ->with('category', 'tags', 'author')
             ->withCount('comments', 'pendingComments')
             ->orderBy('publish_at', 'DESC');
@@ -103,13 +112,15 @@ class Blog extends Controller
             $page = $routeArgs['page'];
         }
 
+        $carbon = new \Carbon\Carbon;
+
         $posts = \Dappur\Model\BlogCategories::withCount(['posts' => function ($query) {
             $query->where('status', 1)
-                    ->where('publish_at', '<', \Carbon\Carbon::now());
+                    ->where('publish_at', '<', $carbon->now());
         }])
             ->with(['posts' => function ($query) use ($page) {
                 $query->where('status', 1)
-                    ->where('publish_at', '<', \Carbon\Carbon::now())
+                    ->where('publish_at', '<', $carbon->now())
                     ->with('category', 'tags', 'author')
                     ->withCount('comments', 'pendingComments')
                     ->skip($this->config['blog-per-page']*($page-1))
@@ -144,6 +155,8 @@ class Blog extends Controller
     {
         $args =  $request->getAttribute('route')->getArguments();
 
+        $carbon = new \Carbon\Carbon;
+
         $post = \Dappur\Model\BlogPosts::with(
             'tags',
             'category',
@@ -154,7 +167,7 @@ class Blog extends Controller
         )
             ->where('slug', $args['slug'])
             ->where('status', '=', 1)
-            ->where('publish_at', '<', \Carbon\Carbon::now())
+            ->where('publish_at', '<', $carbon->now())
             ->first();
         
         if (!$post) {
@@ -207,7 +220,8 @@ class Blog extends Controller
         $this->validator->validate($this->request, $validateData);
 
         // Validate Comment
-        $comment = \Dappur\Model\BlogPostsComments::find($this->request->getParam('comment_id'));
+        $blogPostsComments = new \Dappur\Model\BlogPostsComments;
+        $comment = $blogPostsComments->find($this->request->getParam('comment_id'));
 
         if (!$comment) {
             return false;
@@ -283,13 +297,15 @@ class Blog extends Controller
             return $this->redirect($response, 'blog');
         }
 
+        $carbon = new \Carbon\Carbon;
+
         $posts = \Dappur\Model\BlogTags::withCount(['posts' => function ($query) {
             $query->where('status', 1)
-                    ->where('publish_at', '<', \Carbon\Carbon::now());
+                    ->where('publish_at', '<', $carbon->now());
         }])
             ->with(['posts' => function ($query) use ($page) {
                 $query->where('status', 1)
-                    ->where('publish_at', '<', \Carbon\Carbon::now())
+                    ->where('publish_at', '<', $carbon->now())
                     ->with('category', 'tags', 'author')
                     ->withCount('comments', 'pendingComments')
                     ->skip($this->config['blog-per-page']*($page-1))

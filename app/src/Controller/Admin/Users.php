@@ -7,6 +7,9 @@ use Dappur\Model\Users as U;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 
+/**
+ * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
+ */
 class Users extends Controller
 {
     public function dataTables(Request $request, Response $response)
@@ -14,8 +17,8 @@ class Users extends Controller
         if ($check = $this->sentinel->hasPerm('user.view', 'dashboard')) {
             return $check;
         }
-  
-        $totalData = \Dappur\Model\Users::count();
+        $usersTable = new \Dappur\Model\Users;
+        $totalData = $usersTable->count();
             
         $totalFiltered = $totalData;
 
@@ -50,7 +53,7 @@ class Users extends Controller
                         }
                     );
 
-            $totalFiltered = \Dappur\Model\Users::where('first_name', 'LIKE', "%{$search}%")
+            $totalFiltered = $usersTable->where('first_name', 'LIKE', "%{$search}%")
                     ->orWhere('last_name', 'LIKE', "%{$search}%")
                     ->orWhere('email', 'LIKE', "%{$search}%")
                     ->orWhere('username', 'LIKE', "%{$search}%")
@@ -91,10 +94,12 @@ class Users extends Controller
             return $check;
         }
 
+        $roles = new \Dappur\Model\Roles;
+
         return $this->view->render(
             $response,
             'users.twig',
-            ["roles" => \Dappur\Model\Roles::get()]
+            ["roles" => $roles->get()]
         );
     }
     
@@ -103,6 +108,8 @@ class Users extends Controller
         if ($check = $this->sentinel->hasPerm('user.create', 'dashboard')) {
             return $check;
         }
+
+        $roles = new \Dappur\Model\Roles;
 
         if ($request->isPost()) {
             $this->validateUserData();
@@ -115,7 +122,7 @@ class Users extends Controller
             }
         }
 
-        return $this->view->render($response, 'users-add.twig', ['roles' => \Dappur\Model\Roles::get()]);
+        return $this->view->render($response, 'users-add.twig', ['roles' => $roles->get()]);
     }
 
     private function addUser()
@@ -141,8 +148,9 @@ class Users extends Controller
         $userPerms = $user;
         $userPerms->permissions = $permissionsArray;
         $userPerms->save();
+        $roles = new \Dappur\Model\Roles;
 
-        foreach (\Dappur\Model\Roles::get() as $rolevalue) {
+        foreach ($roles->get() as $rolevalue) {
             if (!in_array($rolevalue['slug'], $rolesArray)) {
                 if ($rolevalue['slug'] == 'admin' && $this->auth->check()->id == 1) {
                     continue;
@@ -195,28 +203,29 @@ class Users extends Controller
     private function validateUserData($user = null)
     {
         // Validate Form Data
+        $validator = new \Respect\Validation\Validator;
         $validateData = array(
             'first_name' => array(
-                'rules' => \Respect\Validation\Validator::length(2, 25),
+                'rules' => $validator->length(2, 25),
                 'messages' => array(
                     'length' => 'Must be between 2 and 25 characters.'
                 )
             ),
             'last_name' => array(
-                'rules' => \Respect\Validation\Validator::length(2, 25),
+                'rules' => $validator->length(2, 25),
                 'messages' => array(
                     'length' => 'Must be between 2 and 25 characters.'
                 )
             ),
             'email' => array(
-                'rules' => \Respect\Validation\Validator::noWhitespace()->email(),
+                'rules' => $validator->noWhitespace()->email(),
                 'messages' => array(
                     'email' => 'Enter a valid email address.',
                     'noWhitespace' => 'Must not contain any spaces.'
                 )
             ),
             'username' => array(
-                'rules' => \Respect\Validation\Validator::noWhitespace()->alnum(),
+                'rules' => $validator->noWhitespace()->alnum(),
                 'messages' => array(
                     'slug' => 'Must be alpha numeric with no spaces.',
                     'noWhitespace' => 'Must not contain any spaces.'
@@ -226,7 +235,7 @@ class Users extends Controller
 
         if (!$user) {
             $validateData['password'] = array(
-                'rules' => \Respect\Validation\Validator::noWhitespace()->length(6, 25),
+                'rules' => $validator->noWhitespace()->length(6, 25),
                 'messages' => array(
                     'noWhitespace' => 'Must not contain spaces.',
                     'length' => 'Must be between 6 and 25 characters.'
@@ -234,7 +243,7 @@ class Users extends Controller
             );
 
             $validateData['password_confirm'] = array(
-                'rules' => \Respect\Validation\Validator::equals($this->request->getParam('password')),
+                'rules' => $validator->equals($this->request->getParam('password')),
                 'messages' => array(
                     'equals' => 'Passwords do not match.'
                 )
@@ -276,15 +285,17 @@ class Users extends Controller
             return $check;
         }
 
+        $validator = new \Respect\Validation\Validator;
+
         $validateData['password'] = array(
-            'rules' => \Respect\Validation\Validator::noWhitespace()->length(6, 25),
+            'rules' => $validator->noWhitespace()->length(6, 25),
             'messages' => array(
                 'length' => 'Must be between 6 and 25 characters.'
             )
         );
 
         $validateData['confirm'] = array(
-            'rules' => \Respect\Validation\Validator::equals($this->request->getParam('password')),
+            'rules' => $validator->equals($this->request->getParam('password')),
             'messages' => array(
                 'equals' => 'Passwords do not match.'
             )
@@ -329,8 +340,10 @@ class Users extends Controller
             return $check;
         }
 
+        $users = new \Dappur\Model\Users;
+
         // Check User Id
-        $user = \Dappur\Model\Users::find($request->getParam('user_id'));
+        $user = $users->find($request->getParam('user_id'));
 
         if (!$user) {
             $output['status'] = "error";
@@ -372,7 +385,9 @@ class Users extends Controller
         $user->permissions = $permissionsArray;
         $user->save();
 
-        foreach (\Dappur\Model\Roles::get() as $rolevalue) {
+        $roles = new \Dappur\Model\Roles;
+
+        foreach ($roles->get() as $rolevalue) {
             echo $rolevalue['slug'] . "<br>";
             
             if (!in_array($rolevalue['slug'], $rolesArray)) {
@@ -403,7 +418,9 @@ class Users extends Controller
             return $check;
         }
 
-        $user = \Dappur\Model\Users::find($userid);
+        $users = new \Dappur\Model\Users;
+
+        $user = $users->find($userid);
 
         if (!$user) {
             $this->flash('danger', 'Sorry, that user was not found.');
@@ -424,7 +441,9 @@ class Users extends Controller
             return $this->redirect($response, 'admin-users');
         }
 
-        return $this->view->render($response, 'users-edit.twig', ['user' => $user, 'roles' => \Dappur\Model\Roles::get()]);
+        $roles = new \Dappur\Model\Roles;
+
+        return $this->view->render($response, 'users-edit.twig', ['user' => $user, 'roles' => $roles->get()]);
     }
 
     public function usersDelete(Request $request, Response $response)
