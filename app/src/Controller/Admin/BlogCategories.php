@@ -16,11 +16,9 @@ class BlogCategories extends Controller
         }
 
         if ($request->isPost()) {
-            $validator = new \Respect\Validation\Validator;
-
             $this->validator->validate($request, [
-                'category_name' => $validator->length(2, 25)->alpha('\''),
-                'category_slug' => $validator->slug()
+                'category_name' => \Respect\Validation\Validator::length(2, 25)->alpha('\''),
+                'category_slug' => \Respect\Validation\Validator::slug()
             ]);
 
             $checkSlug = \Dappur\Model\BlogCategories::where('slug', '=', $request->getParam('category_slug'))
@@ -89,19 +87,17 @@ class BlogCategories extends Controller
             $categoryName = $request->getParam('category_name');
             $categorySlug = $request->getParam('category_slug');
 
-            $validator = new \Respect\Validation\Validator;
-
             // Validate Data
             $validateData = array(
                 'category_name' => array(
-                    'rules' => $validator->length(2, 25)->alpha('\''),
+                    'rules' => \Respect\Validation\Validator::length(2, 25)->alpha('\''),
                     'messages' => array(
                         'length' => 'Must be between 2 and 25 characters.',
                         'alpha' => 'Letters only and can contain \''
                         )
                 ),
                 'category_slug' => array(
-                    'rules' => $validator->slug(),
+                    'rules' => \Respect\Validation\Validator::slug(),
                     'messages' => array(
                         'slug' => 'May only contain lowercase letters, numbers and hyphens.'
                         )

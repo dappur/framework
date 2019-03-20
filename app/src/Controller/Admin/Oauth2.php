@@ -43,40 +43,39 @@ class Oauth2 extends Controller
 
         if ($request->isPost()) {
             // Validate Data
-            $validator = new \Respect\Validation\Validator;
             $validateData = array(
                 'name' => array(
-                    'rules' => $validator->alnum(''),
+                    'rules' => \Respect\Validation\Validator::alnum(''),
                     'messages' => array(
                         'alnum' => 'Must be alphanumeric.'
                         )
                 ),
                 'slug' => array(
-                    'rules' => $validator->slug(),
+                    'rules' => \Respect\Validation\Validator::slug(),
                     'messages' => array(
                         'slug' => 'Must be slug format.'
                         )
                 ),
                 'scopes' => array(
-                    'rules' => $validator->alnum(',_-.'),
+                    'rules' => \Respect\Validation\Validator::alnum(',_-.'),
                     'messages' => array(
                         'alnum' => 'Does not fit scope pattern.'
                         )
                 ),
                 'authorize_url' => array(
-                    'rules' => $validator->url(),
+                    'rules' => \Respect\Validation\Validator::url(),
                     'messages' => array(
                         'url' => 'Enter a valid URL.'
                         )
                 ),
                 'token_url' => array(
-                    'rules' => $validator->url(),
+                    'rules' => \Respect\Validation\Validator::url(),
                     'messages' => array(
                         'url' => 'Enter a valid URL.'
                         )
                 ),
                 'resource_url' => array(
-                    'rules' => $validator->url(),
+                    'rules' => \Respect\Validation\Validator::url(),
                     'messages' => array(
                         'url' => 'Enter a valid URL.'
                         )
@@ -194,40 +193,39 @@ class Oauth2 extends Controller
 
         if ($request->isPost()) {
             // Validate Data
-            $validator = new \Respect\Validation\Validator;
             $validateData = array(
                 'name' => array(
-                    'rules' => $validator->alnum(''),
+                    'rules' => \Respect\Validation\Validator::alnum(''),
                     'messages' => array(
                         'alnum' => 'Must be alphanumeric.'
                         )
                 ),
                 'slug' => array(
-                    'rules' => $validator->slug(),
+                    'rules' => \Respect\Validation\Validator::slug(),
                     'messages' => array(
                         'slug' => 'Must be slug format.'
                         )
                 ),
                 'scopes' => array(
-                    'rules' => $validator->alnum(',_-.'),
+                    'rules' => \Respect\Validation\Validator::alnum(',_-.'),
                     'messages' => array(
                         'alnum' => 'Does not fit scope pattern.'
                         )
                 ),
                 'authorize_url' => array(
-                    'rules' => $validator->url(),
+                    'rules' => \Respect\Validation\Validator::url(),
                     'messages' => array(
                         'url' => 'Enter a valid URL.'
                         )
                 ),
                 'token_url' => array(
-                    'rules' => $validator->url(),
+                    'rules' => \Respect\Validation\Validator::url(),
                     'messages' => array(
                         'url' => 'Enter a valid URL.'
                         )
                 ),
                 'resource_url' => array(
-                    'rules' => $validator->url(),
+                    'rules' => \Respect\Validation\Validator::url(),
                     'messages' => array(
                         'url' => 'Enter a valid URL.'
                         )

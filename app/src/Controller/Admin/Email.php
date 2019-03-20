@@ -171,7 +171,7 @@ class Email extends Controller
             return $check;
         }
 
-        $check = \Dappur\Model\\Dappur\Model\EmailsTemplates::find($request->getParam('template_id'));
+        $check = \Dappur\Model\EmailsTemplates::find($request->getParam('template_id'));
 
         if ($check) {
             $check->delete();

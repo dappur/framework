@@ -34,29 +34,28 @@ class App extends Controller
     {
         if ($request->isPost()) {
             // Validate Form Data
-            $validator = new \Respect\Validation\Validator;
             $validateData = array(
                 'name' => array(
-                    'rules' => $validator->length(2, 64)->alnum('\''),
+                    'rules' => \Respect\Validation\Validator::length(2, 64)->alnum('\''),
                     'messages' => array(
                         'length' => 'Must be between 2 and 64 characters.',
                         'alnum' => 'Alphanumeric and can contain \''
                         )
                 ),
                 'email' => array(
-                    'rules' => $validator->email(),
+                    'rules' => \Respect\Validation\Validator::email(),
                     'messages' => array(
                         'email' => 'Enter a valid email.',
                         )
                 ),
                 'phone' => array(
-                    'rules' => $validator->phone(),
+                    'rules' => \Respect\Validation\Validator::phone(),
                     'messages' => array(
                         'phone' => 'Enter a valid phone number.'
                         )
                 ),
                 'comment' => array(
-                    'rules' => $validator->alnum('\'!@#$%^&:",.?/'),
+                    'rules' => \Respect\Validation\Validator::alnum('\'!@#$%^&:",.?/'),
                     'messages' => array(
                         'alnum' => 'Text and punctuation only.',
                         )
@@ -100,13 +99,16 @@ class App extends Controller
                     $this->flash('success', 'Your contact request has been submitted successfully.');
                     return $this->redirect($response, 'contact');
                 }
+
+
             }
-            $this->flash(
+
+            //die(var_dump($this->validator->getErrors()));
+            $this->flashNow(
                 'danger',
                 'An unknown error occured.  Please try again or email us at: ' .
                 $this->config['contact-email']
             );
-            return $this->redirect($response, 'contact');
         }
 
         return $this->view->render($response, 'contact.twig', array("requestParams" => $request->getParams()));

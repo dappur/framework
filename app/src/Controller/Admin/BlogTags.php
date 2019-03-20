@@ -19,10 +19,9 @@ class BlogTags extends Controller
             $tagName = $request->getParam('tag_name');
             $tagSlug = $request->getParam('tag_slug');
 
-            $validator = new \Respect\Validation\Validator;
             $this->validator->validate($request, [
-                'tag_name' => $validator->length(2, 25)->alpha('\''),
-                'tag_slug' => $validator->slug()
+                'tag_name' => \Respect\Validation\Validator::length(2, 25)->alpha('\''),
+                'tag_slug' => \Respect\Validation\Validator::slug()
             ]);
 
             $checkSlug = \Dappur\Model\BlogTags::where('slug', '=', $request->getParam('tag_slug'))->get()->count();
@@ -89,7 +88,6 @@ class BlogTags extends Controller
             // Get Vars
             $tagName = $request->getParam('tag_name');
             $tagSlug = $request->getParam('tag_slug');
-            $validator = new \Respect\Validation\Validator;
             // Validate Data
             $validateData = array(
                 'tag_name' => array(
@@ -100,7 +98,7 @@ class BlogTags extends Controller
                         )
                 ),
                 'tag_slug' => array(
-                    'rules' => $validator->slug(),
+                    'rules' => \Respect\Validation\Validator::slug(),
                     'messages' => array(
                         'slug' => 'May only contain lowercase letters, numbers and hyphens.'
                         )

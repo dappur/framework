@@ -203,29 +203,28 @@ class Users extends Controller
     private function validateUserData($user = null)
     {
         // Validate Form Data
-        $validator = new \Respect\Validation\Validator;
         $validateData = array(
             'first_name' => array(
-                'rules' => $validator->length(2, 25),
+                'rules' => \Respect\Validation\Validator::length(2, 25),
                 'messages' => array(
                     'length' => 'Must be between 2 and 25 characters.'
                 )
             ),
             'last_name' => array(
-                'rules' => $validator->length(2, 25),
+                'rules' => \Respect\Validation\Validator::length(2, 25),
                 'messages' => array(
                     'length' => 'Must be between 2 and 25 characters.'
                 )
             ),
             'email' => array(
-                'rules' => $validator->noWhitespace()->email(),
+                'rules' => \Respect\Validation\Validator::noWhitespace()->email(),
                 'messages' => array(
                     'email' => 'Enter a valid email address.',
                     'noWhitespace' => 'Must not contain any spaces.'
                 )
             ),
             'username' => array(
-                'rules' => $validator->noWhitespace()->alnum(),
+                'rules' => \Respect\Validation\Validator::noWhitespace()->alnum(),
                 'messages' => array(
                     'slug' => 'Must be alpha numeric with no spaces.',
                     'noWhitespace' => 'Must not contain any spaces.'
@@ -235,7 +234,7 @@ class Users extends Controller
 
         if (!$user) {
             $validateData['password'] = array(
-                'rules' => $validator->noWhitespace()->length(6, 25),
+                'rules' => \Respect\Validation\Validator::noWhitespace()->length(6, 25),
                 'messages' => array(
                     'noWhitespace' => 'Must not contain spaces.',
                     'length' => 'Must be between 6 and 25 characters.'
@@ -243,7 +242,7 @@ class Users extends Controller
             );
 
             $validateData['password_confirm'] = array(
-                'rules' => $validator->equals($this->request->getParam('password')),
+                'rules' => \Respect\Validation\Validator::equals($this->request->getParam('password')),
                 'messages' => array(
                     'equals' => 'Passwords do not match.'
                 )
@@ -285,17 +284,15 @@ class Users extends Controller
             return $check;
         }
 
-        $validator = new \Respect\Validation\Validator;
-
         $validateData['password'] = array(
-            'rules' => $validator->noWhitespace()->length(6, 25),
+            'rules' => \Respect\Validation\Validator::noWhitespace()->length(6, 25),
             'messages' => array(
                 'length' => 'Must be between 6 and 25 characters.'
             )
         );
 
         $validateData['confirm'] = array(
-            'rules' => $validator->equals($this->request->getParam('password')),
+            'rules' => \Respect\Validation\Validator::equals($this->request->getParam('password')),
             'messages' => array(
                 'equals' => 'Passwords do not match.'
             )

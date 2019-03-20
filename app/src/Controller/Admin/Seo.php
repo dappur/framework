@@ -33,24 +33,23 @@ class Seo extends Controller
 
         if ($request->isPost()) {
             // Validate Form Data
-            $validator = new \Respect\Validation\Validator;
             $validateData = array(
                 'title' => array(
-                    'rules' => $validator->notEmpty()->length(10, 60),
+                    'rules' => \Respect\Validation\Validator::notEmpty()->length(10, 60),
                     'messages' => array(
                         'notEmpty' => 'Title is required.',
                         'length' => 'SEO titles need to be between 10-60 characters.'
                         )
                 ),
                 'description' => array(
-                    'rules' => $validator->notEmpty()->length(50, 300),
+                    'rules' => \Respect\Validation\Validator::notEmpty()->length(50, 300),
                     'messages' => array(
                         'notEmpty' => 'Title is required.',
                         'length' => 'SEO descriptions need to be between 50-300 characters.'
                         )
                 ),
                 'featured_image' => array(
-                    'rules' => $validator->notEmpty(),
+                    'rules' => \Respect\Validation\Validator::notEmpty(),
                     'messages' => array(
                         'notEmpty' => 'Featured image is required.'
                         )
@@ -176,7 +175,6 @@ class Seo extends Controller
 
         if ($request->isPost()) {
             // Validate Form Data
-            $validator = new \Respect\Validation\Validator;
             $validateData = array(
                 'title' => array(
                     'rules' => \Respect\Validation\Validator::notEmpty()->length(10, 60),
@@ -193,7 +191,7 @@ class Seo extends Controller
                         )
                 ),
                 'featured_image' => array(
-                    'rules' => $validator->notEmpty(),
+                    'rules' => \Respect\Validation\Validator::notEmpty(),
                     'messages' => array(
                         'notEmpty' => 'Featured image is required.'
                         )
