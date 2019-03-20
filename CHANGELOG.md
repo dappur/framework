@@ -8,6 +8,7 @@
 	- Oauth2
 	- Video
 - The email system has been revamped.  Plain text is now generated automatically right before sending.  This lightens the load on the email system considerably. 
+- src has been fixed to pass all PHPMD and PHPCS-PSR2 checks.
 
 ### Added
 - Default `robots.txt` file to the `/public/` directory.
@@ -21,6 +22,7 @@
 - Compensated for null values in the config
 - Missing `templatesDelete()` function in `Admin\Emails` controller.
 - Dashboard permission mispelled in menu setting
+- Redirect on login
 
 ### Changed
 - Phinx `create-template.php` no contains the samples as part of the template code as I was constantly copying and pasting anyways.
