@@ -27,7 +27,7 @@ class Blog extends Controller
             ->orderBy('publish_at', 'DESC');
      
         $pagination = new \JasonGrimes\Paginator(
-            $posts->count()
+            $posts->count(),
             $this->config['blog-per-page'],
             $page,
             "/blog/(:num)"
@@ -248,7 +248,7 @@ class Blog extends Controller
         // Validate Data
         $validateData = array(
             'comment' => array(
-                'rules' => V::notEmpty()->length(6),
+                'rules' => \Respect\Validation\Validator::notEmpty()->length(6),
                 'messages' => array(
                     'notEmpty' => 'Please enter a comment.',
                     'length' => 'Comment must contain at least 6 characters'
