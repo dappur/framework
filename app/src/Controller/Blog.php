@@ -112,13 +112,13 @@ class Blog extends Controller
             $page = $routeArgs['page'];
         }
 
-        $carbon = new \Carbon\Carbon;
-
         $posts = \Dappur\Model\BlogCategories::withCount(['posts' => function ($query) {
+            $carbon = new \Carbon\Carbon;
             $query->where('status', 1)
                     ->where('publish_at', '<', $carbon->now());
         }])
             ->with(['posts' => function ($query) use ($page) {
+                $carbon = new \Carbon\Carbon;
                 $query->where('status', 1)
                     ->where('publish_at', '<', $carbon->now())
                     ->with('category', 'tags', 'author')
@@ -297,13 +297,15 @@ class Blog extends Controller
             return $this->redirect($response, 'blog');
         }
 
-        $carbon = new \Carbon\Carbon;
+        
 
-        $posts = \Dappur\Model\BlogTags::withCount(['posts' => function ($query) {
+        $posts = \Dappur\Model\BlogTags::withCount(['posts' => function ($query) use ($carbon) {
+            $carbon = new \Carbon\Carbon;
             $query->where('status', 1)
                     ->where('publish_at', '<', $carbon->now());
         }])
             ->with(['posts' => function ($query) use ($page) {
+                $carbon = new \Carbon\Carbon;
                 $query->where('status', 1)
                     ->where('publish_at', '<', $carbon->now())
                     ->with('category', 'tags', 'author')
