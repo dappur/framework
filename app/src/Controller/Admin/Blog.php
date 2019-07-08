@@ -162,8 +162,6 @@ class Blog extends Controller
     // Edit Blog Post
     public function blogEdit(Request $request, Response $response, $postId)
     {
-
-        //die(var_dump($request->getAttribute('route')));
         if ($check = $this->sentinel->hasPerm('blog.update', 'dashboard', $this->config['blog-enabled'])) {
             return $check;
         }

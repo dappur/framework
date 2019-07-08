@@ -103,7 +103,6 @@ class App extends Controller
 
             }
 
-            //die(var_dump($this->validator->getErrors()));
             $this->flashNow(
                 'danger',
                 'An unknown error occured.  Please try again or email us at: ' .
