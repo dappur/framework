@@ -39,7 +39,8 @@ class Media extends Controller
 
     public function getCloudinaryCMS($container, $signatureOnly = null)
     {
-        if ($check = $this->sentinel->hasPerm('media.cloudinary', 'dashboard')) {
+        $sentinel = new \Dappur\Dappurware\Sentinel($container);
+        if ($check = $sentinel->hasPerm('media.cloudinary', 'dashboard')) {
             return $check;
         }
 
