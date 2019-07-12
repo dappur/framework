@@ -9,12 +9,14 @@ use Psr\Http\Message\ResponseInterface as Response;
 class BlogCategories extends Controller
 {
     // Add New Blog Category
+    /** @SuppressWarnings(PHPMD.StaticAccess)  */
     public function categoriesAdd(Request $request, Response $response)
     {
         if ($check = $this->sentinel->hasPerm('blog_categories.create', 'dashboard', $this->config['blog-enabled'])) {
             return $check;
         }
 
+        
         if ($request->isPost()) {
             $this->validator->validate($request, [
                 'category_name' => \Respect\Validation\Validator::length(2, 25)->alpha('\''),
@@ -68,6 +70,7 @@ class BlogCategories extends Controller
     }
 
     // Edit Blog Category
+    /** @SuppressWarnings(PHPMD.StaticAccess)  */
     public function categoriesEdit(Request $request, Response $response, $categoryId)
     {
         if ($check = $this->sentinel->hasPerm('blog_categories.update', 'dashboard', $this->config['blog-enabled'])) {

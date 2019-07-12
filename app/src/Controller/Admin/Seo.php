@@ -22,6 +22,7 @@ class Seo extends Controller
 
     /**
      * @SuppressWarnings(PHPMD.CyclomaticComplexity) At threshold
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public function seoAdd(Request $request, Response $response)
     {
@@ -152,6 +153,7 @@ class Seo extends Controller
         return $this->redirect($response, 'admin-seo');
     }
 
+    /** @SuppressWarnings(PHPMD.StaticAccess) */
     public function seoEdit(Request $request, Response $response)
     {
         if ($check = $this->sentinel->hasPerm('seo.update', 'dashboard')) {

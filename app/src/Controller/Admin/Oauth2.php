@@ -35,6 +35,7 @@ class Oauth2 extends Controller
         return $this->view->render($response, 'oauth2-providers.twig', array("providers" => $providers->get()));
     }
 
+    /** @SuppressWarnings(PHPMD.StaticAccess)  */
     public function oauth2Add(Request $request, Response $response)
     {
         if ($check = $this->sentinel->hasPerm('oauth2.create', 'dashboard', $this->config['oauth2-enabled'])) {
@@ -178,6 +179,7 @@ class Oauth2 extends Controller
     /**
      * @SuppressWarnings(PHPMD.CyclomaticComplexity) At threshold
      * @SuppressWarnings(PHPMD.ExcessiveMethodLength) 9 Lines Over
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public function oauth2Edit(Request $request, Response $response)
     {

@@ -7,6 +7,9 @@ use Interop\Container\ContainerInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 
+/**
+ * @SuppressWarnings(PHPMD.TooManyPublicMethods)
+ */
 class Email extends Controller
 {
     public function __construct(ContainerInterface $container)
@@ -21,8 +24,10 @@ class Email extends Controller
         if ($check = $this->sentinel->hasPerm('email.view', 'dashboard')) {
             return $check;
         }
+
   
-        $totalData = \Dappur\Model\Emails::count();
+        $totalData = new \Dappur\Model\Emails;
+        $totalData = $totalData->count();
             
         $totalFiltered = $totalData;
 
@@ -92,7 +97,8 @@ class Email extends Controller
             return $response->withJSON($return, 200, JSON_UNESCAPED_UNICODE);
         }
 
-        $users = \Dappur\Model\Users::where(function ($query) use ($request) {
+        $users = new \Dappur\Model\Users;
+        $users = $users->where(function ($query) use ($request) {
                 $query->where('first_name', 'LIKE', "%{$request->getParam('search')}%")
                     ->orWhere('last_name', 'LIKE', "%{$request->getParam('search')}%")
                     ->orWhere('username', 'LIKE', "%{$request->getParam('search')}%")
@@ -171,7 +177,8 @@ class Email extends Controller
             return $check;
         }
 
-        $check = \Dappur\Model\EmailsTemplates::find($request->getParam('template_id'));
+        $check = new \Dappur\Model\EmailsTemplates;
+        $check = $check->find($request->getParam('template_id'));
 
         if ($check) {
             $check->delete();
@@ -210,7 +217,8 @@ class Email extends Controller
 
         $placeholders = $this->email->getPlaceholders();
 
-        $template = \Dappur\Model\EmailsTemplates::find($templateId);
+        $template = new \Dappur\Model\EmailsTemplates;
+        $template = $template->find($templateId);
 
         if (!$template) {
             $this->flash('danger', 'Template not found.');
@@ -235,6 +243,7 @@ class Email extends Controller
         );
     }
 
+    /** @SuppressWarnings(PHPMD.StaticAccess)  */
     public function emailNew(Request $request, Response $response)
     {
         if ($check = $this->sentinel->hasPerm('email.create', 'dashboard')) {
@@ -242,8 +251,6 @@ class Email extends Controller
         }
 
         $placeholders = $this->email->getPlaceholders();
-
-        $requestParams = $request->getParams();
 
         if ($request->isPost()) {
             // Validate Text Fields

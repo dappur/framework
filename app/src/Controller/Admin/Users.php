@@ -200,6 +200,7 @@ class Users extends Controller
         return $rolesArray;
     }
 
+    /** @SuppressWarnings(PHPMD.StaticAccess) */
     private function validateUserData($user = null)
     {
         // Validate Form Data
@@ -277,6 +278,7 @@ class Users extends Controller
 
     /**
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public function changePassword(Request $request, Response $response)
     {

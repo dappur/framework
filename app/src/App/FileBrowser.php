@@ -27,6 +27,7 @@ class FileBrowser
         }
         return $temp;
     }
+
     protected function path($pathId)
     {
         $pathId = str_replace('/', DIRECTORY_SEPARATOR, $pathId);
@@ -34,6 +35,7 @@ class FileBrowser
         $pathId = $this->real($this->base . DIRECTORY_SEPARATOR . $pathId);
         return $pathId;
     }
+
     protected function pathId($path)
     {
         $path = $this->real($path);
@@ -147,6 +149,7 @@ class FileBrowser
         }
         throw new Exception('Not a valid selection: ' . $dir);
     }
+
     public function create($pathId, $name, $mkdir = 0)
     {
         $dir = $this->path($pathId);
@@ -161,6 +164,7 @@ class FileBrowser
         }
         return array('id' => $this->pathId($dir . DIRECTORY_SEPARATOR . $name));
     }
+
     public function rename($pathId, $name)
     {
         $dir = $this->path($pathId);
@@ -182,6 +186,7 @@ class FileBrowser
         }
         return array('id' => $this->pathId($new));
     }
+
     public function remove($pathId)
     {
         $dir = $this->path($pathId);
@@ -199,6 +204,7 @@ class FileBrowser
         }
         return array('status' => 'OK');
     }
+
     public function move($pathId, $par)
     {
         $dir = $this->path($pathId);
@@ -209,6 +215,7 @@ class FileBrowser
         rename($dir, $new);
         return array('id' => $this->pathId($new));
     }
+    
     public function copy($pathId, $par)
     {
         $dir = $this->path($pathId);

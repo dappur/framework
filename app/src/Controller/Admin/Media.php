@@ -8,9 +8,7 @@ use Psr\Http\Message\ResponseInterface as Response;
 
 class Media extends Controller
 {
-    /**
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     */
+    /** @SuppressWarnings(PHPMD.UnusedFormalParameter)  */
     public function cloudinarySign(Request $request, Response $response)
     {
         if ($check = $this->sentinel->hasPerm('media.cloudinary', 'dashboard')) {

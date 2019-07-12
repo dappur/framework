@@ -9,6 +9,7 @@ use Psr\Http\Message\ResponseInterface as Response;
 class BlogTags extends Controller
 {
     // Add New Blog Tag
+    /** @SuppressWarnings(PHPMD.StaticAccess)  */
     public function tagsAdd(Request $request, Response $response)
     {
         if ($check = $this->sentinel->hasPerm('blog_tags.create', 'dashboard', $this->config['blog-enabled'])) {
@@ -71,6 +72,7 @@ class BlogTags extends Controller
     }
 
     // Edit Blog Tag
+    /** @SuppressWarnings(PHPMD.StaticAccess)  */
     public function tagsEdit(Request $request, Response $response, $tagId)
     {
         if ($check = $this->sentinel->hasPerm('blog_tags.update', 'dashboard', $this->config['blog-enabled'])) {
