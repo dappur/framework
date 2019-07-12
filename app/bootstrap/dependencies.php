@@ -142,8 +142,14 @@ $container['view'] = function ($container) {
                 'cloudinarySignature',
                 \Dappur\Controller\Admin\Media::getCloudinaryCMS($container, true)
             );
-            $view->getEnvironment()->addGLobal('cloudinaryApiKey', $container['settings']['cloudinary']['api_key']);
-            $view->getEnvironment()->addGLobal('cloudinaryCloudName', $container['settings']['cloudinary']['cloud_name']);
+            $view->getEnvironment()->addGLobal(
+                'cloudinaryApiKey',
+                $container['settings']['cloudinary']['api_key']
+            );
+            $view->getEnvironment()->addGLobal(
+                'cloudinaryCloudName',
+                $container['settings']['cloudinary']['cloud_name']
+            );
         }
     }
 
