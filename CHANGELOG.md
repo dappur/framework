@@ -18,11 +18,13 @@
 - If admin, redirect to dashboard on oauth login
 
 ### Fixed
+- General code formatting cleanup
 - notFound and notAllowed handlers were not emailing correct data.
 - Compensated for null values in the config
 - Missing `templatesDelete()` function in `Admin\Emails` controller.
 - Dashboard permission mispelled in menu setting
 - Redirect on login
+- PHPCS Fixes
 
 ### Changed
 - Phinx `create-template.php` no contains the samples as part of the template code as I was constantly copying and pasting anyways.

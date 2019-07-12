@@ -38,6 +38,7 @@ class Auth extends Controller
         return $this->redirect($response, 'home');
     }
 
+    /** @SuppressWarnings(PHPMD.StaticAccess) */
     public function forgotPassword(Request $request, Response $response)
     {
         if ($request->isPost()) {
@@ -261,6 +262,7 @@ class Auth extends Controller
         );
     }
 
+    /** @SuppressWarnings(PHPMD.StaticAccess) */
     public function resetPassword(Request $request, Response $response)
     {
         if ($request->isPost()) {
@@ -315,6 +317,7 @@ class Auth extends Controller
         return $this->view->render($response, 'reset-password.twig');
     }
 
+    /** @SuppressWarnings(PHPMD.StaticAccess) */
     private function validateNewUser()
     {
         $validateData = array(

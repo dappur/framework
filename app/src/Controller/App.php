@@ -30,6 +30,7 @@ class App extends Controller
         return $fileResponse->getResponse($response, $assetPath);
     }
 
+    /** @SuppressWarnings(PHPMD.StaticAccess) */
     public function contact(Request $request, Response $response)
     {
         if ($request->isPost()) {
@@ -99,8 +100,6 @@ class App extends Controller
                     $this->flash('success', 'Your contact request has been submitted successfully.');
                     return $this->redirect($response, 'contact');
                 }
-
-
             }
 
             $this->flashNow(
