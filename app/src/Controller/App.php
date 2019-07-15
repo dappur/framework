@@ -72,6 +72,7 @@ class App extends Controller
                     $this->validator->addError('recaptcha', 'Recaptcha was invalid.');
                 }
             }
+
             
 
             if ($this->validator->isValid()) {
@@ -82,9 +83,9 @@ class App extends Controller
                 $add->comment = $request->getParam("comment");
 
                 if ($add->save()) {
-                    if ($request->container->pageConfig['contact-send-email']) {
+                    if ($this->container->pageConfig['contact-send-email']) {
                         $sendTo = array($request->getParam('email'));
-                        $confirmEmail = $request->container->pageConfig['contact-confirmation'];
+                        $confirmEmail = $this->container->pageConfig['contact-confirmation'];
 
                         if (filter_var($confirmEmail, FILTER_VALIDATE_EMAIL)) {
                             $sendTo[] = $confirmEmail;
