@@ -6,6 +6,8 @@ storage/log/monolog/*
 !storage/log/monolog/.gitkeep
 storage/log/cron/*
 !storage/log/cron/.gitkeep
+storage/certs/*
+!storage/certs/google/.gitkeep
 
 public/uploads/*
 !public/uploads/index.php

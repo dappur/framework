@@ -61,7 +61,7 @@ class AddOauth extends Migration
             array(
                 "name" => "Twitter",
                 "slug" => "twitter",
-                "scopes" => null,
+                "scopes" => "",
                 "authorize_url" => "https://api.twitter.com/oauth/authorize",
                 "token_url" => "https://api.twitter.com/oauth2/token",
                 "resource_url" => "account/verify_credentials",
@@ -72,10 +72,10 @@ class AddOauth extends Migration
             array(
                 "name" => "LinkedIn",
                 "slug" => "linkedin",
-                "scopes" => null,
+                "scopes" => "r_liteprofile,r_emailaddress",
                 "authorize_url" => "https://www.linkedin.com/oauth/v2/authorization",
                 "token_url" => "https://www.linkedin.com/oauth/v2/accessToken",
-                "resource_url" => "https://api.linkedin.com/v1/people/~:(id,email-address,first-name,last-name)?format=json",
+                "resource_url" => "https://api.linkedin.com/v2/me",
                 "button" => "linkedin",
                 "login" => 0,
                 "status" => 0

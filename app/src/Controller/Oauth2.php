@@ -62,6 +62,7 @@ class Oauth2 extends Controller
 
     private function processOauthUser($userInfo, $provider)
     {
+
         $oauthUser = \Dappur\Model\Oauth2Users::where('uid', $userInfo['uid'])
              ->where('provider_id', $provider->id)
              ->first();
@@ -83,10 +84,13 @@ class Oauth2 extends Controller
             $emailCheck = \Dappur\Model\Users::where('email', $userInfo['email'])->first();
         }
 
+
         // Create account if email doesnt exist
         if (!$emailCheck) {
             return $this->createUser($userInfo, $provider);
         }
+
+
 
         // Create Oauth2 entry for existing user
         return $this->createOauth2User($emailCheck, $userInfo, $provider);
@@ -173,6 +177,8 @@ class Oauth2 extends Controller
 
         // Add user permissions
         $userDetails['permissions'] = ['user.delete' => 0];
+
+
 
         // Create user account
         $user = $this->auth->registerAndActivate($userDetails);
