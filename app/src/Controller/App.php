@@ -72,7 +72,6 @@ class App extends Controller
                     $this->validator->addError('recaptcha', 'Recaptcha was invalid.');
                 }
             }
-            
 
             if ($this->validator->isValid()) {
                 $add = new \Dappur\Model\ContactRequests;
@@ -82,9 +81,9 @@ class App extends Controller
                 $add->comment = $request->getParam("comment");
 
                 if ($add->save()) {
-                    if ($request->container->pageConfig['contact-send-email']) {
+                    if ($this->container->pageConfig['contact-send-email']) {
                         $sendTo = array($request->getParam('email'));
-                        $confirmEmail = $request->container->pageConfig['contact-confirmation'];
+                        $confirmEmail = $this->container->pageConfig['contact-confirmation'];
 
                         if (filter_var($confirmEmail, FILTER_VALIDATE_EMAIL)) {
                             $sendTo[] = $confirmEmail;
@@ -92,9 +91,7 @@ class App extends Controller
                         
                         $sendEmail = new \Dappur\Dappurware\Email($this->container);
                         $sendEmail = $sendEmail->sendTemplate(
-                            array(
-                                $request->getParam("email")
-                            ),
+                            $sendTo,
                             'contact-confirmation',
                             array(
                                 'name' => $request->getParam('name'),
