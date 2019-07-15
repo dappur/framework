@@ -1,7 +1,8 @@
 # Changelog
 
 ## [Unreleased]
-### No Changes
+### Fixed
+- Bug with pageConfig injection.
 
 ## [4.0.0-RC1] - 2019-07-14
 ## Notes
