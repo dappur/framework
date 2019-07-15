@@ -2,6 +2,7 @@
 
 ## [Unreleased]
 ### Changed
+- Default on scopes field in `oauth2_providers`
 - Added `storage/certs/google` to `.gitignore`
 
 ### Fixed
