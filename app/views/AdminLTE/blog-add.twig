@@ -1,0 +1,232 @@
+{% extends 'base.twig' %}
+
+{% block title %}{{config['site-name']}} || Add New Blog Post{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/css/select2.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2-bootstrap-theme/0.1.0-beta.10/select2-bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-daterangepicker/2.1.25/daterangepicker.min.css" />
+    <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="{{asset('AdminLTE/css/grideditor.min.css')}}" />
+{% endblock %}
+
+{% block body %}
+        <div class="col-lg-12 content-header">
+            <h1 class="page-header">Add New Blog Post</h1>
+            <ol class="breadcrumb">
+                <li>
+                    <i class="fa fa-dashboard"></i> Dashboard
+                </li>
+                <li>
+                    <i class="fa fa-newspaper-o"></i> Blog
+                </li>
+                <li class="active">
+                    <i class="fa fa-plus"></i> Add New Post
+                </li>
+            </ol>
+        </div>
+
+        <div class="col-lg-12">
+            <div class="box box-primary">
+                <div class="box-header">
+                    <h3 class="box-title">Add Blog Post</h3>
+                </div>
+
+                <form action="{{ currentRoute }}" method="POST" role="form">
+                    <div class="box-body">
+                        
+                            <div class="col-md-8">
+                                <div class="form-group{% if has_error('title') %} has-error{% endif %}">
+                                    <label for="title">Title</label>
+                                    <input type="text" name="title" class="form-control" id="title" placeholder="Title" value="{% if requestParams.title %}{{requestParams.title}}{% endif %}" required="required">
+                                    <span class="help-block">{{ error('title') }}</span>
+                                </div>
+
+                                <div class="form-group{% if has_error('description') %} has-error{% endif %}">
+                                    <label for="description">Description</label>
+                                    <input type="text" name="description" class="form-control" id="description" placeholder="Description" value="{% if requestParams.description %}{{requestParams.description}}{% endif %}" required="required">
+                                    <span class="help-block">{{ error('description') }}</span>
+                                </div>
+
+                                <div class="form-group{% if has_error('post_content') %} has-error{% endif %}">
+                                    <label for="post_content">Content</label>
+                                    <div id="contentRow">{% if requestParams.post_content %}{{requestParams.post_content|raw}}{% else %}{{ post.content|raw }}{% endif %}</div>
+                                        <textarea name="post_content" class="form-control" id="content" style="display: none;">
+                                            {% if requestParams.post_content %}{{requestParams.post_content|raw}}{% else %}{{ post.content|raw }}{% endif %}
+                                        </textarea>
+                                    <span class="help-block">{{ error('post_content') }}</span>
+                                </div>
+
+                            </div>
+                            
+                            <div class="col-md-4">
+
+                                <div class="form-group{% if has_error('category') %} has-error{% endif %}">
+                                    <label for="category">Category</label>
+                                    <select name="category" id="category" class="form-control" required="required">
+                                        <option value="">Select Category</option>
+                                        {% for category in categories %}
+                                            <option value="{{ category.id }}" {% if requestParams.category == category.id %}SELECTED{% endif %}>{{ category.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <span class="help-block">{{ error('category') }}</span>
+                                </div>
+
+                                <div class="form-group{% if has_error('tags') %} has-error{% endif %}">
+                                    <label for="tags">Tags</label>
+                                    <select data-placeholder="Choose some Tags..." name="tags[]" id="tags" class="form-control" multiple="" tabindex="3">
+                                        <option value=""></option>
+                                        {% for tag in tags %}
+                                            <option value="{{ tag.id }}">{{ tag.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <span class="help-block">{{ error('tags') }}</span>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group{% if has_error('publish_at') %} has-error{% endif %}">
+                                            <label for="publish_at">Publish At <span style="font-weight: normal;">({{config['timezone']}})</span></label>
+                                            <input type="text" name="publish_at" class="form-control" id="publish_at" placeholder="Publish At" value="{% if requestParams.publish_at %}{{requestParams.publish_at}}{% endif %}" required="required">
+                                            <span class="help-block">{{ error('publish_at') }}</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group{% if has_error('status') %} has-error{% endif %}">
+                                            <label for="status">Status </label>
+                                            <br /><input type="checkbox" name="status" class="form-control" id="status" {% if requestParams.status %}checked{% endif %}>
+                                            <span class="help-block">{{ error('status') }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group{% if has_error('featured_image') %} has-error{% endif %}">
+                                    <label for="cl_upload">Featured Image (Recommended 1200px by 630px)</label>
+                                    <span class="help-block">{{ error('featured_image') }}</span>
+                                    <div class="row">
+                                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                                            <div class="form-group">
+                                                <a class="btn btn-block upload-featured-local">
+                                                    <span class="fa fa-upload"></span> Local CMS
+                                                </a>
+                                            </div>
+                                        </div>
+                                        {% if hasCloudinary %}
+                                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                                            <div class="form-group">
+                                                <a class="btn btn-block upload-featured-cloudinary">
+                                                    <span class="fa fa-upload"></span> Cloudinary
+                                                </a>
+                                            </div>
+                                        </div>
+                                        {% endif %}
+                                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                                            <div class="form-group">
+                                                <a class="btn btn-danger btn-block youtube-image" style="display: none;">
+                                                    <span class="fa fa-upload"></span> YouTube
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-xs-12">
+                                            <div class="form-group" id="featured_thumbnail" delete-token="">
+                                                    {% if requestParams.featured_image != ""  %}
+                                                        <img src="{{ requestParams.featured_image}}" class="img-responsive" alt="Image" style="width: 100%;">
+                                                    {% else %}
+                                                        <img src="https://placehold.it/400x210?text=No+Featured+Photo" class="img-responsive" alt="Image" style="width: 100%;">
+                                                    {% endif %}
+                                            </div>
+                                            <input type="hidden" name="featured_image" id="featured_image" value="{% if requestParams.featured_image != "" %}{{ requestParams.featured_image }}{% endif %}">
+                                        </div>
+                                    </div> 
+
+                                </div>
+                                <div class="form-group{% if has_error('video_id') or has_error('video_provider') %} has-error{% endif %}" id="fv_group">
+                                    <label for="video_id">Featured Video <button type="button" class="btn btn-sm btn-danger blog-del-video" style="display: none;"><i class="fa fa-close"></i> Delete</button></label>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" id="video_url" name="video_url" placeholder="Youtube/Vimeo URL" value="{{requestParams.video_url}}">
+                                        <input type="hidden" name="video_provider" id="video_provider" value="{{requestParams.video_provider}}" />
+                                        <input type="hidden" name="video_id" id="video_id" value="{{requestParams.video_id}}" />
+                                        
+                                        <span class="input-group-btn">
+                                            <button class="btn btn-default" id="fvButton">
+                                                <i class="fa fa-arrow-right"></i>
+                                            </button>
+                                        </span>
+                                    </div>
+                                    <span class="help-block">{{ error('video_id') }}</span>
+                                    <span class="help-block">{{ error('video_provider') }}</span>
+
+                                    <div id="video_preview">
+                                        {% if requestParams.video_id and requestParams.video_provider %}
+                                            {% if requestParams.video_provider == "youtube" %}
+                                                <div class="video-container">
+                                                    <iframe src="https://www.youtube.com/embed/{{requestParams.video_id}}" frameborder="0" allowfullscreen></iframe>
+                                                </div>
+                                            {% endif %}
+
+                                            {% if requestParams.video_provider == "vimeo" %}
+                                                <div class="video-container">
+                                                    <iframe src="https://player.vimeo.com/video/{{requestParams.video_id}}" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowfullscreen></iframe>
+                                                </div>
+                                            {% endif %}
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+
+                            {{ csrf() }}
+                    </div>
+
+                    <div class="box-footer">
+                        <div class="col-md-4 col-md-offset-4">
+                            <button type="submit" class="btn btn-success form-control">Save New Blog Post</button>
+                        </div>
+                    </div>
+
+                </form>
+                <div style="clear: both:"></div>
+
+            </div>
+        </div>
+
+{% endblock %}
+
+{% block javascript %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/js/select2.min.js" type="text/javascript"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-daterangepicker/2.1.25/moment.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-daterangepicker/2.1.25/daterangepicker.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/4.7.1/tinymce.min.js" type="text/javascript"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/4.7.1/jquery.tinymce.min.js" type="text/javascript"></script>
+<script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+<script src="{{ asset('AdminLTE/js/video-parser.min.js') }}" type="text/javascript"></script>
+<script src="{{ asset('AdminLTE/js/blog.min.js') }}" type="text/javascript"></script>
+<script src="{{ asset('AdminLTE/js/jquery.grideditor.min.js') }}" type="text/javascript"></script>
+<script src="{{ asset('AdminLTE/js/dappur.grideditor.min.js') }}" type="text/javascript"></script>
+{% if hasCloudinary %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cloudinary-jquery-file-upload/2.3.0/cloudinary-jquery-file-upload.min.js"></script>
+<script src="//widget.cloudinary.com/global/all.js" type="text/javascript"></script>
+<script src="{{ asset('AdminLTE/js/blog.cloudinary.min.js') }}" type="text/javascript"></script>
+{% endif %}
+<script type="text/javascript">
+$(document).ready(function() {
+    $('#publish_at').daterangepicker({
+        startDate: '{% if requestParams.publish_at %}{{ requestParams.publish_at }}{% else %}{{ "now"|date("m/d/Y h:i A") }}{% endif %}',
+        singleDatePicker: true,
+        timePicker: true,
+        timePickerIncrement: 1,
+        locale: {
+            format: 'MM/DD/YYYY h:mm A'
+        }
+    });
+
+    {% if requestParams.video_id and requestParams.video_provider == "youtube" %}
+        video_id = '{{ requestParams.video_id }}';
+    {% elseif post.video_id and post.video_provider == "youtube" %}
+        video_id = '{{ post.video_id }}';
+    {% endif %}
+});
+</script>
+{% endblock %}
+

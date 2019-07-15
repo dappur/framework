@@ -1,0 +1,45 @@
+{% if showSidebar %}
+<!-- Categories -->
+<div class="row">
+	<div class="col-xs-12">
+    	<h2>Author</h2>
+    	<p>{{ post.author.username }}</p>
+    	<p>{{ post.author.profile.about }}</p>
+	</div>
+</div>
+{% endif %}
+
+{% if blogCategories|length > 0 %}
+<!-- Categories -->
+<div class="row">
+	<div class="col-xs-12">
+    	<h2>Categories</h2>
+    	<ul class="list-group">
+    		{% for category in blogCategories %}
+    		    <a href="{{path_for('blog-category', {'slug': category.slug})}}">
+	    		    <li class="list-group-item">
+				    	<span class="badge">{{category.posts_count}}</span>
+				    	{{category.name}}
+				  	</li>
+			  	</a>
+    		{% endfor %}
+		</ul>
+	</div>
+</div>
+{% endif %}
+<!-- Tags -->
+{% if blogTags|length > 0 %}
+<div class="row">
+	<div class="col-xs-12">
+    	<h2>Tags</h2>
+		{% for tag in blogTags %}
+		  	<a href="{{path_for('blog-tag', {'slug': tag.slug})}}" style="text-decoration: none; cursor: pointer;">
+			  	<span class="label" style="font-size: 12px; height: 16px; line-height: 12px; color: #000;">
+			  		{{tag.name}} 
+			  		<span class="badge">{{tag.posts_count}}</span>
+			  	</span>
+			</a>
+		{% endfor %}
+	</div>
+</div>
+{% endif %}

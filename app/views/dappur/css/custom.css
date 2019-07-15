@@ -1,0 +1,161 @@
+/* Responsive Video Container
+-------------------------------------------------- */
+.video-container {
+	position: relative;
+	padding-bottom: 56.25%;
+	height: 0; 
+	overflow: hidden;
+}
+ 
+.video-container iframe,
+.video-container object,
+.video-container embed {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+}
+
+/* Hidden Element
+-------------------------------------------------- */
+.hidden{display:none;}
+
+/* Recaptcha
+-------------------------------------------------- */
+#recaptcha {
+    width: 304px;
+    margin: 0 auto;
+}
+
+/* Sticky footer styles
+-------------------------------------------------- */
+html {
+  position: relative;
+  min-height: 100%;
+}
+body {
+  /* Margin bottom by footer height */
+  margin-bottom: 100px;
+}
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  /* Set the fixed height of the footer here */
+  height: 100px;
+}
+
+.box > .icon {
+    text-align: center;
+    position: relative;
+}
+.box > .icon > .image {
+    position: relative;
+    z-index: 2;
+    margin: auto;
+    width: 88px;
+    height: 88px;
+    border: 8px solid white;
+    line-height: 88px;
+    border-radius: 50%;
+    vertical-align: middle;
+}
+.box > .icon:hover > .image {
+    background: #333;
+}
+.box > .icon > .image > i {
+    font-size: 36px !important;
+    color: #fff !important;
+}
+.box > .icon:hover > .image > i {
+    color: white !important;
+}
+.box > .icon > .info {
+    margin-top: -24px;
+    background: rgba(0, 0, 0, 0.04);
+    border: 1px solid #e0e0e0;
+    padding: 15px 0 10px 0;
+    min-height: 163px;
+}
+.box > .icon:hover > .info {
+    background: rgba(0, 0, 0, 0.04);
+    border-color: #e0e0e0;
+    color: white;
+}
+.box > .icon > .info > h3.title {
+    font-size: 16px;
+    color: #222;
+    font-weight: 700;
+}
+.box > .icon > .info > p {
+    font-size: 13px;
+    color: #666;
+    line-height: 1.5em;
+    margin: 20px;
+}
+.box > .icon:hover > .info > h3.title,
+.box > .icon:hover > .info > p,
+.box > .icon:hover > .info > .more > a {
+    color: #222;
+}
+.box > .icon > .info > .more a {
+    font-size: 12px;
+    color: #222;
+    line-height: 12px;
+    text-transform: uppercase;
+    text-decoration: none;
+}
+.box > .icon:hover > .info > .more > a {
+    color: #fff;
+    padding: 6px 8px;
+    background-color: #63B76C;
+}
+.box .space {
+    height: 30px;
+}
+
+/* Floating Labels
+/* https://github.com/fauxparse/bootstrap-floating-labels
+-------------------------------------------------- */
+.floating-label-form-group input,
+.floating-label-form-group textarea {
+  border: none;
+  border-bottom: 3px solid;
+  box-shadow: none;
+  -webkit-box-shadow: none;
+  background-color: transparent;
+}
+
+.floating-label-form-group input:focus,
+.floating-label-form-group textarea:focus {
+  box-shadow: none;
+  -webkit-box-shadow: none;
+  background-color: transparent;
+}
+  
+.floating-label-form-group label {
+  position: relative;
+  top: 2em;
+  opacity: 0;
+  z-index: 0;
+  margin: 0;
+  -webkit-transition: top 0.5s ease, opacity 0.5s ease;
+     -moz-transition: top 0.5s ease, opacity 0.5s ease;
+      -ms-transition: top 0.5s ease, opacity 0.5s ease;
+          transition: top 0.5s ease, opacity 0.5s ease;
+}
+
+.floating-label-form-group-with-value label {
+  top: 0;
+  opacity: 1;
+}
+
+form .row:first-child .floating-label-form-group {
+}
+
+input[type=number]::-webkit-inner-spin-button, 
+  input[type=number]::-webkit-outer-spin-button { 
+    -webkit-appearance: none; 
+    margin: 0; 
+  }
