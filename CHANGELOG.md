@@ -5,7 +5,7 @@
 - Added `storage/certs/google` to `.gitignore`
 
 ### Fixed
-- Contact request cound on dashboard main page
+- Contact request count on dashboard main page
 - Contact Confirmation email
 - Bug with pageConfig injection.
 
