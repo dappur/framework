@@ -2,19 +2,10 @@
 
 namespace Dappur\Controller\Admin;
 
-use Carbon\Carbon;
 use Dappur\Controller\Controller as Controller;
-use Dappur\Model\ContactRequests;
-use Dappur\Model\Oauth2Providers;
-use Dappur\Model\Users;
-use Dappur\Model\UsersProfile;
-use Illuminate\Database\Capsule\Manager as DB;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
-use Respect\Validation\Validator as V;
-use Slim\Views\PhpRenderer;
 
-/** @SuppressWarnings(PHPMD.StaticAccess) */
 class Admin extends Controller
 {
     /**
@@ -29,7 +20,7 @@ class Admin extends Controller
         return $this->view->render(
             $response,
             'contact.twig',
-            array("contactRequests" => ContactRequests::orderBy('created_at', 'desc')->get())
+            array("contactRequests" => \Dappur\Model\ContactRequests::orderBy('created_at', 'desc')->get())
         );
     }
 
@@ -38,8 +29,10 @@ class Admin extends Controller
         if ($check = $this->sentinel->hasPerm('contact.view', 'dashboard')) {
             return $check;
         }
-  
-        $totalData = ContactRequests::count();
+        
+        $contactRequests = new \Dappur\Model\ContactRequests;
+
+        $totalData = $contactRequests->count();
             
         $totalFiltered = $totalData;
 
@@ -48,7 +41,7 @@ class Admin extends Controller
         $order = $request->getParam('columns')[$request->getParam('order')[0]['column']]['data'];
         $dir = $request->getParam('order')[0]['dir'];
 
-        $contact = ContactRequests::select('id', 'name', 'email', 'phone', 'comment', 'created_at')
+        $contact = $contactRequests->select('id', 'name', 'email', 'phone', 'comment', 'created_at')
             ->skip($start)
             ->take($limit)
             ->orderBy($order, $dir);
@@ -61,7 +54,7 @@ class Admin extends Controller
                     ->orWhere('phone', 'LIKE', "%{$search}%")
                     ->orWhere('comment', 'LIKE', "%{$search}%");
 
-            $totalFiltered = ContactRequests::where('name', 'LIKE', "%{$search}%")
+            $totalFiltered = $contactRequests->where('name', 'LIKE', "%{$search}%")
                     ->orWhere('email', 'LIKE', "%{$search}%")
                     ->orWhere('phone', 'LIKE', "%{$search}%")
                     ->orWhere('comment', 'LIKE', "%{$search}%")

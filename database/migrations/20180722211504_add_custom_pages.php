@@ -11,7 +11,7 @@ class AddCustomPages extends Migration
             $table->increments('id');
             $table->string('name')->unique();
             $table->string('pattern')->unique();
-            $table->text('content')->nullable();
+            $table->longText('content')->nullable();
             $table->text('css')->nullable();
             $table->text('js')->nullable();
             $table->string('permission')->nullable();

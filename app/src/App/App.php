@@ -4,13 +4,6 @@ namespace Dappur\App;
 
 use Interop\Container\ContainerInterface;
 
-/**
- * @property Twig view
- * @property Router router
- * @property Messages flash
- * @property Validator validator
- * @property Sentinel auth
- */
 class App
 {
     /**

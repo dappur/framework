@@ -90,7 +90,3 @@ $container['Profile'] = function ($container) {
 $container['WebhooksMailgun'] = function ($container) {
     return new \Dappur\Controller\Webhooks\Mailgun($container);
 };
-
-$container['Robots'] = function ($container) {
-    return new \Dappur\Controller\Robots($container);
-};

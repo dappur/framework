@@ -2,19 +2,9 @@
 
 namespace Dappur\Controller;
 
-use Dappur\Dappurware\Email as E;
-use Dappur\Dappurware\Recaptcha;
-use Dappur\Model\Oauth2Providers;
-use Cartalyst\Sentinel\Checkpoints\ThrottlingException;
-use Cartalyst\Sentinel\Checkpoints\NotActivatedException;
-use Cartalyst\Sentinel\Reminders\Reminder;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
-use Respect\Validation\Validator as V;
 
-/**
- * @SuppressWarnings(PHPMD.StaticAccess)
- */
 class Auth extends Controller
 {
     public function activate(Request $request, Response $response)
@@ -33,7 +23,7 @@ class Auth extends Controller
             if ($activation) {
                 $this->auth->login($user);
 
-                $sendEmail = new E($this->container);
+                $sendEmail = new \Dappur\Dappurware\Email($this->container);
                 $sendEmail = $sendEmail->sendTemplate(array($user->id), 'registration');
 
                 $this->flash('success', 'Your account was successfully activated and you have been logged in.');
@@ -48,13 +38,14 @@ class Auth extends Controller
         return $this->redirect($response, 'home');
     }
 
+    /** @SuppressWarnings(PHPMD.StaticAccess) */
     public function forgotPassword(Request $request, Response $response)
     {
         if ($request->isPost()) {
             // Validate Data
             $validateData = array(
                 'email' => array(
-                    'rules' => V::email(),
+                    'rules' => \Respect\Validation\Validator::email(),
                     'messages' => array(
                         'email' => 'Must be a valid email address.'
                         )
@@ -64,7 +55,7 @@ class Auth extends Controller
 
             if ($this->config['recaptcha-enabled']) {
                 // Validate Recaptcha
-                $recaptcha = new Recaptcha($this->container);
+                $recaptcha = new \Dappur\Dappurware\Recaptcha($this->container);
                 $recaptcha = $recaptcha->validate($request->getParam('g-recaptcha-response'));
                 if (!$recaptcha) {
                     $this->validator->addError('recaptcha', 'Recaptcha was invalid.');
@@ -90,7 +81,7 @@ class Auth extends Controller
                 $resetUrl = "https://" . $this->config['domain'] .
                     "/reset-password?reminder=" . $reminder . "&email=" . $request->getParam('email');
 
-                $sendEmail = new E($this->container);
+                $sendEmail = new \Dappur\Dappurware\Email($this->container);
                 $sendEmail = $sendEmail->sendTemplate(
                     array($user->id),
                     'password-reset',
@@ -133,7 +124,7 @@ class Auth extends Controller
 
             if ($this->config['recaptcha-enabled']) {
                 // Validate Recaptcha
-                $recaptcha = new Recaptcha($this->container);
+                $recaptcha = new \Dappur\Dappurware\Recaptcha($this->container);
                 $recaptcha = $recaptcha->validate($request->getParam('g-recaptcha-response'));
                 if (!$recaptcha) {
                     $this->validator->addError('recaptcha', 'Recaptcha was invalid.');
@@ -144,7 +135,7 @@ class Auth extends Controller
                 if ($this->processLogin($credentials, $remember)) {
                     $this->flashNow('success', 'You have been logged in.');
                     if ($request->getParam('redirect')) {
-                        return $this->redirect($response, $request->getParam('redirect'));
+                        return $response->withRedirect($request->getParam('redirect'));
                     }
                     if ($this->auth->inRole("admin")) {
                         return $this->redirect($response, 'dashboard');
@@ -155,7 +146,7 @@ class Auth extends Controller
         }
 
         // Prepare Oauth2 Providers
-        $oauth2Providers = Oauth2Providers::where('status', 1)->where('login', 1)->get();
+        $oauth2Providers = \Dappur\Model\Oauth2Providers::where('status', 1)->where('login', 1)->get();
         $clientIds = array();
         foreach ($oauth2Providers as $ovalue) {
             $clientIds[$ovalue->id] = $this->settings['oauth2'][$ovalue->slug]['client_id'];
@@ -215,7 +206,7 @@ class Auth extends Controller
                     $confirmUrl = "https://" . $this->config['domain'] . "/activate?code=" .
                         $code . "&email=" . $user->email;
 
-                    $sendEmail = new E($this->container);
+                    $sendEmail = new \Dappur\Dappurware\Email($this->container);
                     $sendEmail = $sendEmail->sendTemplate(
                         array($user->id),
                         'activation',
@@ -241,7 +232,7 @@ class Auth extends Controller
                 $user = $this->auth->registerAndActivate($userDetails);
                 $role->users()->attach($user);
 
-                $sendEmail = new E($this->container);
+                $sendEmail = new \Dappur\Dappurware\Email($this->container);
                 $sendEmail = $sendEmail->sendTemplate(array($user->id), 'registration');
 
                 $this->flash('success', 'Your account has been created.');
@@ -255,7 +246,7 @@ class Auth extends Controller
         }
 
         // Prepare Oauth2 Providers
-        $oauth2Providers = Oauth2Providers::where('status', 1)->where('login', 1)->get();
+        $oauth2Providers = \Dappur\Model\Oauth2Providers::where('status', 1)->where('login', 1)->get();
         $clientIds = array();
         foreach ($oauth2Providers as $ovalue) {
             $clientIds[$ovalue->id] = $this->settings['oauth2'][$ovalue->slug]['client_id'];
@@ -271,6 +262,7 @@ class Auth extends Controller
         );
     }
 
+    /** @SuppressWarnings(PHPMD.StaticAccess) */
     public function resetPassword(Request $request, Response $response)
     {
         if ($request->isPost()) {
@@ -286,13 +278,13 @@ class Auth extends Controller
                 // Validate Data
                 $validateData = array(
                     'password' => array(
-                        'rules' => V::length(6, 64),
+                        'rules' => \Respect\Validation\Validator::length(6, 64),
                         'messages' => array(
                             'length' => "Must be between 6 and 64 characters."
                             )
                     ),
                     'password_confirm' => array(
-                        'rules' => V::equals($request->getParam('password')),
+                        'rules' => \Respect\Validation\Validator::equals($request->getParam('password')),
                         'messages' => array(
                             'equals' => 'Passwords must match.'
                             )
@@ -325,32 +317,33 @@ class Auth extends Controller
         return $this->view->render($response, 'reset-password.twig');
     }
 
+    /** @SuppressWarnings(PHPMD.StaticAccess) */
     private function validateNewUser()
     {
         $validateData = array(
             'first_name' => array(
-                'rules' => V::alnum('\'-')->length(2, 25),
+                'rules' => \Respect\Validation\Validator::alnum('\'-')->length(2, 25),
                 'messages' => array(
                     'alnum' => 'May contain letters, numbers, \' and hyphens.',
                     'length' => "Must be between 2 and 25 characters."
                     )
             ),
             'last_name' => array(
-                'rules' => V::alnum('\'-')->length(2, 25),
+                'rules' => \Respect\Validation\Validator::alnum('\'-')->length(2, 25),
                 'messages' => array(
                     'alnum' => 'May contain letters, numbers, \' and hyphens.',
                     'length' => "Must be between 2 and 25 characters."
                     )
             ),
             'email' => array(
-                'rules' => V::noWhitespace()->email(),
+                'rules' => \Respect\Validation\Validator::noWhitespace()->email(),
                 'messages' => array(
                     'noWhitespace' => 'Must not contain spaces.',
                     'email' => 'Must be a valid email address.'
                     )
             ),
             'username' => array(
-                'rules' => V::noWhitespace()->alnum()->length(2, 25),
+                'rules' => \Respect\Validation\Validator::noWhitespace()->alnum()->length(2, 25),
                 'messages' => array(
                     'noWhitespace' => 'Must not contain spaces.',
                     'alnum' => 'Must be letters and numbers only.',
@@ -358,14 +351,14 @@ class Auth extends Controller
                     )
             ),
             'password' => array(
-                'rules' => V::length(6, 64),
+                'rules' => \Respect\Validation\Validator::length(6, 64),
                 'messages' => array(
                     'noWhitespace' => 'Must not contain spaces.',
                     'length' => "Must be between 6 and 64 characters."
                     )
             ),
             'password-confirm' => array(
-                'rules' => V::equals($this->request->getParam('password')),
+                'rules' => \Respect\Validation\Validator::equals($this->request->getParam('password')),
                 'messages' => array(
                     'equals' => 'Passwords must match.'
                     )
@@ -375,7 +368,7 @@ class Auth extends Controller
 
         if ($this->config['recaptcha-enabled']) {
             // Validate Recaptcha
-            $recaptcha = new Recaptcha($this->container);
+            $recaptcha = new \Dappur\Dappurware\Recaptcha($this->container);
             $recaptcha = $recaptcha->validate($this->request->getParam('g-recaptcha-response'));
             if (!$recaptcha) {
                 $this->validator->addError('recaptcha', 'Recaptcha was invalid.');
@@ -401,13 +394,13 @@ class Auth extends Controller
             }
             
             $this->flashNow('danger', 'Invalid username or password.');
-        } catch (ThrottlingException $e) {
+        } catch (\Cartalyst\Sentinel\Checkpoints\ThrottlingException $e) {
             $this->flashNow(
                 'danger',
                 'Too many invalid attempts on your ' . $e->getType() . '!  '.
                     'Please wait ' . $e->getDelay() . ' seconds before trying again.'
             );
-        } catch (NotActivatedException $e) {
+        } catch (\Cartalyst\Sentinel\Checkpoints\NotActivatedException $e) {
             $this->flashNow('danger', 'Please check your email for instructions on activating your account.');
         }
 

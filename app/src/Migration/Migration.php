@@ -2,11 +2,7 @@
 
 namespace Dappur\Migration;
 
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Database\Capsule\Manager as Capsule;
 use Phinx\Migration\AbstractMigration;
-use Cartalyst\Sentinel\Native\Facades\Sentinel;
-use Cartalyst\Sentinel\Native\SentinelBootstrapper;
 
 class Migration extends AbstractMigration
 {
@@ -20,7 +16,7 @@ class Migration extends AbstractMigration
         $settings = json_decode($settings, true);
         $dbconf = $settings['db'][$settings['environment']];
 
-        $this->capsule = new Capsule;
+        $this->capsule = new \Illuminate\Database\Capsule\Manager;
         $this->capsule->addConnection([
           'driver'    => 'mysql',
           'host'      => $dbconf['host'],
@@ -38,8 +34,8 @@ class Migration extends AbstractMigration
         $this->schema = $this->capsule->schema();
 
         $this->sentinel = (
-            new Sentinel(
-                new SentinelBootstrapper(__DIR__ . '/../../bootstrap/sentinel.php')
+            new \Cartalyst\Sentinel\Native\Facades\Sentinel(
+                new \Cartalyst\Sentinel\Native\SentinelBootstrapper(__DIR__ . '/../../bootstrap/sentinel.php')
             )
         )->getSentinel();
     }

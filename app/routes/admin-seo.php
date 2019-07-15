@@ -6,7 +6,6 @@ $app->group('/dashboard', function () use ($app, $container) {
     $app->group('/seo', function () use ($app) {
         $app->map(['GET'], '', 'AdminSeo:seo')
             ->setName('admin-seo');
-
         $app->map(['GET','POST'], '/add', 'AdminSeo:seoAdd')
             ->setName('admin-seo-add');
 

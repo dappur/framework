@@ -43,7 +43,9 @@ $container['config'] = function () use ($container) {
 // Bind Sentinel Authorization plugin
 $container['auth'] = function () {
     $sentinel = new \Cartalyst\Sentinel\Native\Facades\Sentinel(
-        new \Cartalyst\Sentinel\Native\SentinelBootstrapper(__DIR__ . '/sentinel.php')
+        new \Cartalyst\Sentinel\Native\SentinelBootstrapper(
+            __DIR__ . '/sentinel.php'
+        )
     );
 
     return $sentinel->getSentinel();
@@ -75,12 +77,14 @@ $container['csrf'] = function ($container) {
         $container->settings['csrf']['persist_tokens']
     );
 
-    $guard->setFailureCallable(function ($request, $response, $next) use ($container) {
-        return $container['view']
-            ->render($response, 'errors/csrf.twig')
-            ->withHeader('Content-type', 'text/html')
-            ->withStatus(401);
-    });
+    $guard->setFailureCallable(
+        function ($request, $response, $next) use ($container) {
+            return $container['view']
+                ->render($response, 'errors/csrf.twig')
+                ->withHeader('Content-type', 'text/html')
+                ->withStatus(401);
+        }
+    );
 
     return $guard;
 };
@@ -98,10 +102,12 @@ $container['view'] = function ($container) {
     );
 
     // Add Twig Extensions
-    $view->addExtension(new \Slim\Views\TwigExtension(
-        $container['router'],
-        $container['request']->getUri()
-    ));
+    $view->addExtension(
+        new \Slim\Views\TwigExtension(
+            $container['router'],
+            $container['request']->getUri()
+        )
+    );
     $view->addExtension(new \Twig_Extension_Debug());
     $view->addExtension(new \Dappur\TwigExtension\Asset($container['request']));
     $view->addExtension(new \Dappur\TwigExtension\JsonDecode($container['request']));
@@ -136,8 +142,14 @@ $container['view'] = function ($container) {
                 'cloudinarySignature',
                 \Dappur\Controller\Admin\Media::getCloudinaryCMS($container, true)
             );
-            $view->getEnvironment()->addGLobal('cloudinaryApiKey', $container['settings']['cloudinary']['api_key']);
-            $view->getEnvironment()->addGLobal('cloudinaryCloudName', $container['settings']['cloudinary']['cloud_name']);
+            $view->getEnvironment()->addGLobal(
+                'cloudinaryApiKey',
+                $container['settings']['cloudinary']['api_key']
+            );
+            $view->getEnvironment()->addGLobal(
+                'cloudinaryCloudName',
+                $container['settings']['cloudinary']['cloud_name']
+            );
         }
     }
 
@@ -145,13 +157,18 @@ $container['view'] = function ($container) {
     if ($container['config']['blog-enabled']) {
         // Get Categories With Count
         $blog_categories = new \Dappur\Model\BlogCategories;
-        $blog_categories = $blog_categories->withCount(['posts' => function ($query) {
-            $query->where('blog_posts.status', 1);
-        }])
-            ->whereHas('posts', function ($query) {
+        $blog_categories = $blog_categories->withCount(
+            ['posts' => function ($query) {
                 $query->where('blog_posts.status', 1);
-            })
-            ->get();
+            }]
+        )
+        ->whereHas(
+            'posts',
+            function ($query) {
+                $query->where('blog_posts.status', 1);
+            }
+        )
+        ->get();
 
         // Get Tags With Count
         $blog_tags = new \Dappur\Model\BlogTags;
@@ -230,7 +247,6 @@ $container['logger'] = function ($container) {
 
 // Cloudinary PHP API
 $container['cloudinary'] = function ($container) {
-
     if ($container['settings']['cloudinary']['enabled']) {
         \Cloudinary::config(
             array( "cloud_name" => $container['settings']['cloudinary']['cloud_name'],
