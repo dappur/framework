@@ -19,7 +19,9 @@ class PageConfig extends Middleware
             }
             
             $this->view->getEnvironment()->addGlobal('pageConfig', $cfg);
-            $request->container->pageConfig = $cfg;
+            if (!empty($cfg)) {
+                $request->container->pageConfig = $cfg;
+            }
             return $next($request, $response);
         }
         
