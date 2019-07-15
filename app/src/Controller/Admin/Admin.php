@@ -112,7 +112,7 @@ class Admin extends Controller
         $blogCount = $blogCount->count();
 
         $contactCount = new \Dappur\Model\ContactRequests;
-        $contactCount = $contactCount->count();
+        $contactCount = $contactCount->where('created_at', '>=', \Carbon\Carbon::now()->subDays(30))->count();
 
         // Generate Analytics Access Token
         $credentialsFilePath = __DIR__ . '/../../../../storage/certs/google/analytics-service-account.json';
