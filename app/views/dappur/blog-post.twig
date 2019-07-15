@@ -90,7 +90,7 @@
 						<div>
 							<b>Category:</b> <a href="{{path_for('blog-category', {'slug': post.category.slug})}}">{{ post.category.name }}</a> 
 						</div>
-						<p class="card-text"><b>Description:</b> {{post.description}}{{ _self.getTemplateName().__toString }}</p>
+						<p class="card-text"><b>Description:</b> {{post.description}}</p>
 						<p class="card-text">{{post.content|raw}}</p>
 					</div>
 					
