@@ -1,0 +1,116 @@
+{% import 'macros/form.twig' as form %}
+
+<section class="content-item" id="comments" style="margin: 25px 0 20px 0;">
+	<div class="row">
+		<div class="col-xs-12">
+			{% if auth.check() %}
+            <form action="{{ currentRoute }}" method="post">
+            	<h3 class="pull-left">New Comment</h3>
+                <fieldset>
+                    <div class="row">
+                        <div class="col-sm-3 col-lg-2 hidden-xs">
+                        	<img class="img-responsive" src="https://www.gravatar.com/avatar/{{ auth.user.email|md5 }}?d=identicon" alt="">
+                        </div>
+                        <div class="form-group col-xs-12 col-sm-9 col-lg-10{% if has_error('comment') %} has-error{% endif %}">
+                            <textarea class="form-control" name="comment" id="comment" placeholder="Your comment..." required>{{ requestParams['comment'] }}</textarea>
+                            <span class="help-block">{{ error('comment') }}</span>
+                        </div>
+                    </div>  	
+                </fieldset>
+                {{csrf()}}
+                <input type="submit" name="add_comment" value="Submit Comment" class="btn btn-normal pull-right" />
+            </form>
+            {% else %}
+                <h3>Please Login to Comment</h3>
+            	<form action="{{ path_for('login') }}" method="post">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            {{ form.text('login', null, 'login', 'Username or Email') }}
+
+                            {{ form.text('password', null, 'password', 'Password', null, 'password') }}
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="checkbox pull-left">
+                                        <label>
+                                            <input type="checkbox" name="remember"> Remember me
+                                        </label>
+                                    </div>
+                                    <div class="pull-right" style="padding-top: 10px;">
+                                        <a class="pull-right" href="{{ path_for('forgot-password') }}">Forgot Password?</a>
+                                    </div>
+                                    <div style="clear: both;"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <div class="form-group" style="padding-top: 13px;">
+                                <input type="submit" class="form-control btn btn-primary" name="login_submit" value="Login">
+                            </div>
+
+                            <div class="form-group" style="padding-top: 13px;">
+                                <a href="{{ path_for('register') }}" class="form-control btn btn-success">Register</a>
+                            </div>
+                        </div>
+                        <input type="hidden" name="redirect" value="{{currentRoute}}?comment_login=1" />
+                        {{ csrf() }}
+                    </div>
+                    
+                </form>
+                <div style="clear: both;"></div>
+            {% endif %}
+            <h3>{{ post.approvedComments|length }} Comments</h3>
+            {% for comment in post.approvedComments %}
+
+                <div class="media">
+                    <a class="pull-left" href="#"><img class="media-object" src="https://www.gravatar.com/avatar/{{ comment.user.email|md5 }}?d=identicon" alt=""></a>
+                    <div class="media-body">
+                        <h4 class="media-heading">{{comment.user.username}}</h4>
+                        <p>{{comment.comment}}</p>
+                        <p>
+		                    <ul class="list-unstyled list-inline media-detail pull-left">
+		                        <li><i class="fa fa-calendar"></i>{{comment.created_at|date('m/d/Y g:i a')}}</li>
+		                    </ul>
+		                    <ul class="list-unstyled list-inline media-detail pull-right">
+	                            <li class=""><a class="reply-btn" data-commentid="{{comment.id}}" style="cursor: pointer;">Reply</a></li>
+	                        </ul>
+                    	</p>
+                    	<div style="clear: both;"></div>
+                        <p>
+                        <form action="{{ currentRoute }}" method="post" {% if comment.id != requestParams['comment_id'] %}style="display: none;"{% endif %} class="reply{{comment.id}}">
+                            <fieldset>
+                                <div class="row">
+                                    <div class="form-group col-xs-12{% if comment.id == requestParams['comment_id'] and has_error('reply') %} has-error{% endif %}">
+                                        <textarea class="form-control" name="reply" placeholder="Your comment..." required>{% if comment.id == requestParams['comment_id'] %}{{ requestParams['reply'] }}{% endif %}</textarea>
+                                        <span class="help-block">{% if comment.id == requestParams['comment_id'] and has_error('reply') %}{{ error('reply') }}{% endif %}</span>
+                                    </div>
+                                </div>      
+                            </fieldset>
+                            <input type="hidden" name="comment_id" class="form-control" value="{{comment.id}}">
+                            {{csrf()}}
+                            <input type="submit" name="add_reply" value="Submit Reply" class="btn btn-normal pull-right" />
+                            <div style="clear: both;"></div>
+                        </form>
+                        </p>
+                    	<p>
+                    		{% for reply in comment.approvedReplies %}
+                    		<div class="media">
+			                    <a class="pull-left" href="#"><img class="media-object" src="https://www.gravatar.com/avatar/{{ reply.user.email|md5 }}?d=identicon" alt=""></a>
+			                    <div class="media-body">
+			                        <h4 class="media-heading">{{reply.user.username}}</h4>
+			                        <p>{{reply.reply}}</p>
+			                        <ul class="list-unstyled list-inline media-detail pull-left">
+			                            <li><i class="fa fa-calendar"></i>{{reply.created_at|date('m/d/Y g:i a')}}</li>
+			                        </ul>
+			                    </div>
+			                </div>
+			                {% endfor %}
+                    	</p>
+                        
+
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>

@@ -1,0 +1,135 @@
+{% extends 'base.twig' %}
+
+{% block title %}{{config['site-name']}} || Comment Details{% endblock %}
+
+{% block stylesheets %}
+<link href="https://cdn.datatables.net/1.10.15/css/dataTables.bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.datatables.net/responsive/2.1.1/css/responsive.bootstrap.min.css" rel="stylesheet">
+{% endblock %}
+
+{% block body %}
+        <div class="col-lg-12 content-header">
+            <h1 class="page-header">Comment Details</h1>
+            <ol class="breadcrumb">
+                <li>
+                    <i class="fa fa-dashboard"></i> Dashboard
+                </li>
+                <li>
+                    <i class="fa fa-comment"></i> Comments
+                </li>
+                <li class="active">
+                    <i class="fa fa-comments"></i> Details
+                </li>
+            </ol>
+        </div>
+
+        <div class="col-lg-12">
+            <div class="box box-info">
+                <div class="box-header">
+                    <div class="box-title">Comment</div>
+                </div>
+
+                <div class="box-body">
+                    <p>
+                        {{ comment.created_at }} - {{ comment.comment }}
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-12">
+            <div class="box box-info">
+                <div class="box-header">
+                    <div class="box-title">Replies </div>
+                </div>
+
+                <div class="box-body">
+                    <table width="100%" class="table table-striped table-bordered table-hover" id="replies-table">
+                        <thead>
+                            <tr>
+                                <th>Created At</th>
+                                <th>Reply</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for reply in comment.replies %}
+                                <tr class="{% if reply.status %}success{% else %}warning{% endif %}">
+                                    <td>{{ reply.created_at }}</td>
+                                    <td>{{ reply.reply }}</td>
+                                    <td>
+                                        {% if reply.status == 1 %}
+                                            <form action="{{ path_for('admin-blog-reply-unpublish') }}" method="post" style="display: inline;">
+                                                <input type="hidden" name="reply" value="{{ reply.id }}" />
+                                                {{csrf()}}
+                                                <button class="btn btn-warning btn-xs swal-confirm" data-swtitle="Are you sure?" data-swmessage="This reply will not be publicly viewable.">
+                                                    <span class="fa fa-fw fa-close"></span>
+                                                </button>
+                                            </form>
+                                        {% else %}
+                                            <form action="{{ path_for('admin-blog-reply-publish') }}" method="post" style="display: inline;">
+                                                <input type="hidden" name="reply" value="{{ reply.id }}" />
+                                                {{csrf()}}
+                                                <button class="btn btn-success btn-xs swal-confirm" data-swtitle="Are you sure?" data-swmessage="This reply will be published.">
+                                                    <span class="fa fa-fw fa-check"></span>
+                                                </button>
+                                            </form>
+                                            <form action="{{ path_for('admin-blog-reply-delete') }}" method="post" style="display: inline;">
+                                                <input type="hidden" name="reply" value="{{ reply.id }}" />
+                                                {{csrf()}}
+                                                <button class="btn btn-danger btn-xs swal-confirm" data-swtitle="Are you sure?" data-swmessage="This reply will be permanently deleted and you will not be able to recover it.">
+                                                    <span class="fa fa-fw fa-trash"></span>
+                                                </button>
+                                            </form>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-12">
+            <div class="box panel-info">
+                <div class="box-header">
+                    <div class="box-title">Post</div>
+                </div>
+
+                <div class="box-body">
+                    <h3>{{ comment.post.title }}</h3>
+                    <p>
+                        <div><b>Publish At:</b> {{ comment.post.publish_at }}</div>
+                        <div><b>Author:</b> {{ comment.post.author.username }}</div>
+                        <div><b>Description:</b> {{ comment.post.description }}</div>
+                        <div><b>Category:</b> {{ comment.post.category.name }}</div>
+                        <div>
+                            <b>Tags:</b> 
+                            {% for tag in comment.post.tags %}
+                                {% if not loop.last %}{{ tag.name }}, {% else %}{{ tag.name }}{% endif %}
+                            {% endfor %}
+                        </div>
+                    </p>
+                    {{ comment.post.content|raw }}
+                </div>
+            </div>
+        </div>
+        <div style="clear: both;"></div>
+    
+{% endblock %}
+
+{% block javascript %}
+    <script src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.15/js/dataTables.bootstrap.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.1.1/js/dataTables.responsive.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.1.1/js/responsive.bootstrap.min.js"></script>
+    <script>
+    $(document).ready(function() {
+        $('#replies-table').DataTable({
+            responsive: true,
+            stateSave: true
+        });
+    });
+    </script>
+{% endblock %}
