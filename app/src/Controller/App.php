@@ -82,7 +82,14 @@ class App extends Controller
                 $add->comment = $request->getParam("comment");
 
                 if ($add->save()) {
-                    if ($this->config['contact-send-email']) {
+                    if ($request->container->pageConfig['contact-send-email']) {
+                        $sendTo = array($request->getParam('email'));
+                        $confirmEmail = $request->container->pageConfig['contact-confirmation'];
+
+                        if (filter_var($confirmEmail, FILTER_VALIDATE_EMAIL)) {
+                            $sendTo[] = $confirmEmail;
+                        }
+                        
                         $sendEmail = new \Dappur\Dappurware\Email($this->container);
                         $sendEmail = $sendEmail->sendTemplate(
                             array(
