@@ -2,13 +2,9 @@
 
 namespace Dappur\Controller;
 
-use Dappur\Dappurware\Deployment;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
-/**
- * @SuppressWarnings(PHPMD.StaticAccess)
- */
 class Deploy extends Controller
 {
     /**
@@ -41,7 +37,7 @@ class Deploy extends Controller
             return $response->withRedirect($this->router->pathFor('home'));
         }
 
-        $deploy = new Deployment();
+        $deploy = new \Dappur\Dappurware\Deployment();
 
         echo $deploy->execute();
         echo $deploy->migrate();

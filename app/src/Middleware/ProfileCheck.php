@@ -2,8 +2,6 @@
 
 namespace Dappur\Middleware;
 
-use Dappur\Model\Users;
-
 class ProfileCheck extends Middleware
 {
     public function __invoke($request, $response, $next)

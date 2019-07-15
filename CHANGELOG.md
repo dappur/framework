@@ -8,21 +8,27 @@
 	- Oauth2
 	- Video
 - The email system has been revamped.  Plain text is now generated automatically right before sending.  This lightens the load on the email system considerably. 
+- src has been fixed to pass all PHPMD and PHPCS-PSR2 checks.
 
 ### Added
-- Robots.txt is now controlled by the db and always available.
+- Default `robots.txt` file to the `/public/` directory.
 - Ability to delete settings individually from the dashboard.
 - Webook controller for mailgun api.  This will auto update the email status within the dashboard.
 - EmailStatus database table to track status changes of emails
 - If admin, redirect to dashboard on oauth login
 
 ### Fixed
+- General code formatting cleanup
 - notFound and notAllowed handlers were not emailing correct data.
 - Compensated for null values in the config
 - Missing `templatesDelete()` function in `Admin\Emails` controller.
 - Dashboard permission mispelled in menu setting
+- Redirect on login
+- PHPCS Fixes
 
 ### Changed
+- Phinx `create-template.php` no contains the samples as part of the template code as I was constantly copying and pasting anyways.
+- Cleaned up source code, removed unused functions and code
 - All site errors are now reported to monolog
 - Renamed theme files in the controller
 - Moved the `/csrf` route out of middleware
@@ -30,6 +36,7 @@
 - Default database charset to `utf8mb4` and the default collation to `utf8mb4_unicode_520_ci`
 
 ### Removed
+- Removed static use from all src in core framework.
 - All references to plain text as that is now generated automatically using [soundasleep/html2text](https://github.com/soundasleep/html2text)
 - Removed comments from database migrations
 

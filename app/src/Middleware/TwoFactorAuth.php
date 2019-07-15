@@ -2,8 +2,6 @@
 
 namespace Dappur\Middleware;
 
-use Dappur\Model\Seo as SeoModel;
-
 class TwoFactorAuth extends Middleware
 {
     public function __invoke($request, $response, $next)

@@ -2,21 +2,13 @@
 
 namespace Dappur\Controller\Admin;
 
-use Cloudinary;
 use Dappur\Controller\Controller as Controller;
-use Dappur\Dappurware\Sentinel as DS;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
-use Respect\Validation\Validator as V;
 
-/**
- * @SuppressWarnings(PHPMD.StaticAccess)
- */
 class Media extends Controller
 {
-    /**
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     */
+    /** @SuppressWarnings(PHPMD.UnusedFormalParameter)  */
     public function cloudinarySign(Request $request, Response $response)
     {
         if ($check = $this->sentinel->hasPerm('media.cloudinary', 'dashboard')) {
@@ -45,7 +37,7 @@ class Media extends Controller
 
     public function getCloudinaryCMS($container, $signatureOnly = null)
     {
-        $sentinel = new DS($container);
+        $sentinel = new \Dappur\Dappurware\Sentinel($container);
         if ($check = $sentinel->hasPerm('media.cloudinary', 'dashboard')) {
             return $check;
         }
@@ -64,9 +56,9 @@ class Media extends Controller
         $options = array("cloud_name" => $container->settings['cloudinary']['cloud_name'],
             "api_key" => $container->settings['cloudinary']['api_key'],
             "api_secret" => $container->settings['cloudinary']['api_secret']);
-
+        $cloudinary = new \Cloudinary;
         // Sign Request With Cloudinary
-        $output = \Cloudinary::sign_request($params, $options);
+        $output = $cloudinary->sign_request($params, $options);
 
         if ($output) {
             // Build the http query
@@ -75,7 +67,7 @@ class Media extends Controller
             // Complete the Cloudinary URL
             $cloudinaryCmsUrl = "https://cloudinary.com/console/media_library/cms?$apiParamsCl";
             if ($signatureOnly) {
-                $output['signature'] = \Cloudinary:: api_sign_request(
+                $output['signature'] = $cloudinary-> api_sign_request(
                     array(
                         "timestamp" => $timestamp
                     ),
@@ -255,7 +247,7 @@ class Media extends Controller
         // Validate Data
         $validateData = array(
             'new_folder_name' => array(
-                'rules' => V::length(2, 25)->alnum('-_')->noWhitespace(),
+                'rules' => \Respect\Validation\Validator::length(2, 25)->alnum('-_')->noWhitespace(),
                 'messages' => array(
                     'length' => 'Must be between 2 and 25 characters.',
                     'alnum' => 'Name must be alphanumeric with - and _',
