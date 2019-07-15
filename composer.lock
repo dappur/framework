@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "66a150b1fb1e0175cc74b24df0ae7ef3",
+    "content-hash": "fe61fe7fb3bc4b20a117a5dbd041d0ff",
     "packages": [
         {
             "name": "abraham/twitteroauth",
@@ -722,16 +722,16 @@
         },
         {
             "name": "dappur/dappurware",
-            "version": "4.0.1",
+            "version": "4.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/dappur/dappurware.git",
-                "reference": "12109e4187303152c2cc5741962142dfec16b716"
+                "reference": "5c863974896b5381c1c118b12c09b35ced390561"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/dappur/dappurware/zipball/12109e4187303152c2cc5741962142dfec16b716",
-                "reference": "12109e4187303152c2cc5741962142dfec16b716",
+                "url": "https://api.github.com/repos/dappur/dappurware/zipball/5c863974896b5381c1c118b12c09b35ced390561",
+                "reference": "5c863974896b5381c1c118b12c09b35ced390561",
                 "shasum": ""
             },
             "require-dev": {
@@ -762,7 +762,7 @@
                 "dappurware",
                 "framework"
             ],
-            "time": "2019-07-13T04:06:48+00:00"
+            "time": "2019-07-15T06:30:49+00:00"
         },
         {
             "name": "dappur/dappurware-deployment",
@@ -811,16 +811,16 @@
         },
         {
             "name": "dappur/dappurware-email",
-            "version": "4.0.4",
+            "version": "4.0.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/dappur/dappurware-email.git",
-                "reference": "ed5dd5b0a1179779031f9f0ae8925b5025e3ba00"
+                "reference": "3f19db95048026bf4e53d17329c628732191be2c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/dappur/dappurware-email/zipball/ed5dd5b0a1179779031f9f0ae8925b5025e3ba00",
-                "reference": "ed5dd5b0a1179779031f9f0ae8925b5025e3ba00",
+                "url": "https://api.github.com/repos/dappur/dappurware-email/zipball/3f19db95048026bf4e53d17329c628732191be2c",
+                "reference": "3f19db95048026bf4e53d17329c628732191be2c",
                 "shasum": ""
             },
             "require": {
@@ -855,7 +855,7 @@
                 "email",
                 "framework"
             ],
-            "time": "2019-07-13T03:59:18+00:00"
+            "time": "2019-07-15T06:28:24+00:00"
         },
         {
             "name": "dappur/dappurware-oauth2",
@@ -2424,16 +2424,16 @@
         },
         {
             "name": "phpseclib/phpseclib",
-            "version": "2.0.20",
+            "version": "2.0.21",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpseclib/phpseclib.git",
-                "reference": "d6819a55b05e123db1e881d8b230d57f912126be"
+                "reference": "9f1287e68b3f283339a9f98f67515dd619e5bf9d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpseclib/phpseclib/zipball/d6819a55b05e123db1e881d8b230d57f912126be",
-                "reference": "d6819a55b05e123db1e881d8b230d57f912126be",
+                "url": "https://api.github.com/repos/phpseclib/phpseclib/zipball/9f1287e68b3f283339a9f98f67515dd619e5bf9d",
+                "reference": "9f1287e68b3f283339a9f98f67515dd619e5bf9d",
                 "shasum": ""
             },
             "require": {
@@ -2512,7 +2512,7 @@
                 "x.509",
                 "x509"
             ],
-            "time": "2019-06-23T16:33:11+00:00"
+            "time": "2019-07-12T12:53:49+00:00"
         },
         {
             "name": "pimple/pimple",
@@ -4812,6 +4812,8 @@
     "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
-    "platform": [],
+    "platform": {
+        "php": ">=7.2.0"
+    },
     "platform-dev": []
 }
