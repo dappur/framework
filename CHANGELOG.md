@@ -5,6 +5,7 @@
 - Added `storage/certs/google` to `.gitignore`
 
 ### Fixed
+- Updated and fixed linkedin for their v2 oauth api
 - Contact request count on dashboard main page
 - Contact Confirmation email
 - Bug with pageConfig injection.
