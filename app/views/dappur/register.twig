@@ -1,0 +1,84 @@
+{% extends 'base.twig' %}
+
+{% import 'macros/form.twig' as form %}
+
+{% block stylesheets %}
+    <link href="{{ asset('dappur/css/bootstrap-social.min.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block body %}
+
+<div class="container">
+    <div class="row text-center">
+        <div class="col-md-4 col-md-offset-4">
+            <img src="{{config['logo']}}" class="img-responsive" alt="{{ config['site-name'] }} Logo">
+        </div>
+    </div>
+
+    <div class="row" style="margin-top: 20px;">
+        <div class="col-md-8{% if not config['oauth2-enabled'] %} col-md-offset-2{% endif %}">
+            <div class="panel panel-default">
+                <div class="panel-heading">Register</div>
+                <div class="panel-body">
+                    <form action="{{ path_for('register') }}" method="POST">
+                        <div class="row">
+                            <div class="col-md-6">
+                                {{ form.text('first_name', requestParams['first_name'], 'first_name', 'First Name') }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form.text('last_name', requestParams['last_name'], 'last_name', 'Last Name') }}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                {{ form.text('email', requestParams['email'], 'email', 'Email', null, 'email') }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form.text('username', requestParams['username'], 'username', 'Username', null, 'username') }}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                {{ form.text('password', null, 'password', 'Password', null, 'password') }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form.text('password-confirm', null, 'password-confirm', 'Confirm password', null, 'password') }}
+                            </div>
+                        </div>
+                        
+                        {% if config['recaptcha-enabled'] %}
+                            {{ form.custom('recaptcha', recaptcha()) }}
+                        {% endif %}
+                        
+                        {{ csrf() }}
+                        <div class="form-group">
+                            <button type="submit" class="form-control btn btn-primary">Register</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% if config['oauth2-enabled'] %}
+        <div class="col-md-4">
+            <div class="panel panel-default">
+                <div class="panel-heading">Register With Social</div>
+                <div class="panel-body">
+                    {% for provider in oauth2_providers %}
+                        <div class="form-group">
+                            <a href="{{ authorize_url(provider.id, client_ids[provider.id], 1) }}" class="btnbtn-block btn-social btn-{{provider.button}} form-control">
+                                <span class="fa fa-{{provider.button}}"></span> Register with {{provider.name}}
+                            </a>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}
+
+{% block javascript %}
+    {% if config['recaptcha-enabled'] %}{{ recaptchaJs() }}{% endif %}
+{% endblock %}

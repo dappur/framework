@@ -1,0 +1,122 @@
+{% extends 'base.twig' %}
+
+{% block title %}{{config['site-name']}} || SEO Settings{% endblock %}
+
+{% block stylesheets %}
+<link href="https://cdn.datatables.net/1.10.15/css/dataTables.bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.datatables.net/responsive/2.1.1/css/responsive.bootstrap.min.css" rel="stylesheet">
+{% endblock %}
+
+{% block body %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12 content-header">
+                <h1 class="page-header">
+                    SEO Settings
+                </h1>
+                <ol class="breadcrumb">
+                    <li>
+                        <i class="fa fa-dashboard"></i> Dashboard
+                    </li>
+                    <li class="active">
+                        <i class="fa fa-sitemap"></i> SEO Settings
+                    </li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="box box-info">
+                    <div class="box-header">
+                        <div class="pull-left box-title">SEO Settings </div>
+                        <div class="pull-right"><a href="{{ path_for('admin-seo-add') }}" class="btn btn-xs btn-success"><span class="fa fa-fw fa-plus"></span> New SEO Config</a></div>
+                        <div style="clear: both;"></div>
+                    </div>
+
+                    <div class="box-body">
+                        <table width="100%" class="table table-striped table-bordered table-hover" id="seo_table">
+                            <thead>
+                                <tr>
+                                    <th>Page</th>
+                                    <th>Title</th>
+                                    <th>Description</th>
+                                    <th>Image</th>
+                                    <th>Video</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for s in seo %}
+                                    <tr {% if s.default %}class="warning"{% endif %}>
+                                        <td>{{ s.page }}</td>
+                                        <td>{{ s.title }}</td>
+                                        <td>{{ s.description }}</td>
+                                        <td class="text-center">
+                                            {% if s.image and s.image != "" %}
+                                                <a href="{{ s.image }}" target="_blank" class="btn-sm btn-default" data-lity data-lity-target="{{ s.image }}">Preview</a>
+                                            {% else %}
+                                                No
+                                            {% endif %}
+                                        </td>
+                                        <td class="text-center">
+                                            {% if s.video and s.video != "" %}
+                                                <a href="{{ s.video }}" target="_blank" class="btn-sm btn-default" data-lity data-lity-target="{{ s.video }}">Preview</a>
+                                            {% else %}
+                                                No
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if auth.hasAccess('seo.edit') %}
+                                            <a href="{{ path_for('admin-seo-edit', {'seo_id': s.id}) }}" class="btn btn-primary btn-xs">
+                                                <span class="fa fa-fw fa-pencil"></span>
+                                            </a>
+                                            {% endif %}
+                                            {% if not s.default and auth.hasAccess('seo.delete') %}
+                                                <form action="{{ path_for('admin-seo-delete') }}" method="post" style="display: inline;">
+                                                    <input type="hidden" name="seo_id" value="{{ s.id }}" />
+                                                    {{csrf()}}
+                                                    <button class="btn btn-danger btn-xs swal-confirm" data-swtitle="Are you sure?" data-swmessage="This account will be permanently deleted and you will not be able to recover it.">
+                                                        <span class="fa fa-fw fa-close"></span>
+                                                    </button>
+                                                </form>
+                                            {% endif %}
+                                            {% if not s.default and auth.hasAccess('seo.edit') %}
+                                                <form action="{{ path_for('admin-seo-default') }}" method="post" style="display: inline;">
+                                                    <input type="hidden" name="seo_id" value="{{ s.id }}" />
+                                                    {{csrf()}}
+                                                    <button class="btn btn-warning btn-xs swal-confirm" data-swtitle="Are you sure?" data-swmessage="This will be used as the SEO settings for all pages without individual settings defined.">
+                                                        <span class="fa fa-fw fa-star"></span>
+                                                    </button>
+                                                </form>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascript %}
+<script src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.15/js/dataTables.bootstrap.min.js"></script>
+<script src="https://cdn.datatables.net/responsive/2.1.1/js/dataTables.responsive.min.js"></script>
+<script src="https://cdn.datatables.net/responsive/2.1.1/js/responsive.bootstrap.min.js"></script>
+
+<!-- Page-Level Demo Scripts - Tables - Use for reference -->
+<script>
+$(document).ready(function() {
+    
+    $('#seo_table').DataTable({
+        responsive: true,
+        stateSave: true
+
+    });
+});
+</script>
+{% endblock %}

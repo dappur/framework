@@ -1,0 +1,17 @@
+<footer class="footer">
+  <div class="container-fluid">
+    	<div class="jumbotron" style="padding-top: 25px;">
+			<div class="col-md-4 h4 text-left" style="margin-top: 0px;">
+				&copy; {{ "now"|date("Y") }} {{ config['site-name'] }}
+			</div>
+			<div class="col-md-4">
+				
+			</div>
+			<div class="col-md-4 text-right">
+				<a href="{{ path_for('terms') }}">Terms &amp; Conditions</a>
+				&nbsp;&nbsp;|&nbsp;&nbsp; 
+				<a href="{{ path_for('privacy') }}">Privacy Policy</a>
+			</div>
+		</div>
+  </div>
+</footer>
