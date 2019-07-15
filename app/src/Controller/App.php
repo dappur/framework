@@ -73,8 +73,6 @@ class App extends Controller
                 }
             }
 
-            
-
             if ($this->validator->isValid()) {
                 $add = new \Dappur\Model\ContactRequests;
                 $add->name = $request->getParam("name");
@@ -93,9 +91,7 @@ class App extends Controller
                         
                         $sendEmail = new \Dappur\Dappurware\Email($this->container);
                         $sendEmail = $sendEmail->sendTemplate(
-                            array(
-                                $request->getParam("email")
-                            ),
+                            $sendTo,
                             'contact-confirmation',
                             array(
                                 'name' => $request->getParam('name'),
