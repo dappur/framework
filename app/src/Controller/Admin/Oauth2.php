@@ -284,6 +284,8 @@ class Oauth2 extends Controller
             'google', 'instagram', 'linkedin', 'microsoft', 'odnoklassniki', 'openid',
             'pinterest', 'reddit', 'soundcloud', 'tumblr', 'twitter', 'vimeo', 'vk', 'yahoo');
 
+
+
         return $this->view->render(
             $response,
             'oauth2-edit.twig',
