@@ -1,6 +1,9 @@
 # Changelog
 
 ## [Unreleased]
+### No Changes
+
+## [4.0.0-RC1] - 2019-07-14
 ## Notes
 - I promise this will be the last major version upgrade for a while (I hope).  This was necessary in order to separate out the heavier dappurwares into their own repository so that they could be developed further.  The dapurwares that were moved into their own repositories are:
 	- Deployment
@@ -11,6 +14,9 @@
 - src has been fixed to pass all PHPMD and PHPCS-PSR2 checks.
 
 ### Added
+- Google Analytics is now part of the admin dashboard using the Analytics Embed API and Javascript.  Setup instructions are on the dashboard page for all Admin roled users.
+- Injected `pageSettings` into `$request->container->pageSettings` from middleware.
+- Contact confirmation email to the page config for contact.
 - Default `robots.txt` file to the `/public/` directory.
 - Ability to delete settings individually from the dashboard.
 - Webook controller for mailgun api.  This will auto update the email status within the dashboard.
@@ -34,6 +40,7 @@
 - Moved the `/csrf` route out of middleware
 - Updated `composer.json` for version 4.0 release that separates dappurware out. 
 - Default database charset to `utf8mb4` and the default collation to `utf8mb4_unicode_520_ci`
+- Plain text emails are now generated automatically from the HTML email.
 
 ### Removed
 - Removed static use from all src in core framework.
@@ -344,7 +351,8 @@ Once those items are complete, focus will be shifted to feature enhancements.  T
 - Internalized all assets, they are now served from the view folder and not from the public dir.
 
 
-[Unreleased]: https://github.com/dappur/framework/compare/v3.2.0...HEAD
+[Unreleased]: https://github.com/dappur/framework/compare/v4.0.0-RC1...HEAD
+[4.0.0-RC1]: https://github.com/dappur/framework/compare/v3.2.0...v4.0.0-RC1
 [3.2.0]: https://github.com/dappur/framework/compare/v3.1.2...v3.2.0
 [3.1.2]: https://github.com/dappur/framework/compare/v3.1.1...v3.1.2
 [3.1.1]: https://github.com/dappur/framework/compare/v3.1.0...v3.1.1

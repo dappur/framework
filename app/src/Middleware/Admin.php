@@ -1,6 +1,5 @@
 <?php
 namespace Dappur\Middleware;
-
 class Admin extends Middleware
 {
     public function __invoke($request, $response, $next)

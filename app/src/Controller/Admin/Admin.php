@@ -83,9 +83,60 @@ class Admin extends Controller
             return $check;
         }
 
+        if ($request->isPost() && $this->auth->inRole('admin')) {
+            $files = $request->getUploadedFiles();
+
+            if (empty($files['sa_cert'])) {
+                throw new \Exception('Expected a newfile');
+            }
+
+            $newFile = $files['sa_cert'];
+
+            move_uploaded_file(
+                $newFile->file,
+                __DIR__ . '/../../../../storage/certs/google/analytics-service-account.json'
+            );
+        }
+
+        // Get basic stats
+        $userCount = new \Dappur\Model\Users;
+        $userCount = $userCount->count();
+
+        $commentCount = new \Dappur\Model\BlogPostsComments;
+        $commentCount = $commentCount->where('status', 0)->count();
+
+        $replyCount = new \Dappur\Model\BlogPostsReplies;
+        $replyCount = $replyCount->where('status', 0)->count();
+
+        $blogCount = new \Dappur\Model\BlogPosts;
+        $blogCount = $blogCount->count();
+
+        $contactCount = new \Dappur\Model\ContactRequests;
+        $contactCount = $contactCount->count();
+
+        // Generate Analytics Access Token
+        $credentialsFilePath = __DIR__ . '/../../../../storage/certs/google/analytics-service-account.json';
+        $accessToken = null;
+        if (file_exists($credentialsFilePath)) {
+            $client = new \Google_Client();
+            $client->setAuthConfig($credentialsFilePath);
+            $client->addScope('https://www.googleapis.com/auth/analytics.readonly');
+            $client->setApplicationName("GoogleAnalytics");
+            $client->refreshTokenWithAssertion();
+            $token = $client->getAccessToken();
+            $accessToken = $token['access_token'];
+        }
+
         return $this->view->render(
             $response,
-            'dashboard.twig'
+            'dashboard.twig',
+            array(
+                'userCount' => $userCount,
+                'pendingComments' => $replyCount + $commentCount,
+                'blogCount' => $blogCount,
+                'contactCount' => $contactCount,
+                'accessToken' => $accessToken
+            )
         );
     }
 }

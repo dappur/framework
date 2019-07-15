@@ -126,7 +126,8 @@ class InitDatabase extends Migration
                 'blog_tags.*' => true,
                 'blog_categories.*' => true,
                 'dashboard.*' => true,
-                'contact.*' => true
+                'contact.*' => true,
+                'analytics.*' => true
             )
         ));
 
@@ -159,7 +160,8 @@ class InitDatabase extends Migration
                 'blog_tags.delete' => false,
                 'blog_categories.*' => true,
                 'blog_categories.delete' => false,
-                'dashboard.*' => true
+                'dashboard.*' => true,
+                'analytics.view' => true
             )
         ));
 
@@ -199,7 +201,8 @@ class InitDatabase extends Migration
                 'permission.view' => true,
                 'blog.view' => true,
                 'dashboard.view' => true,
-                'contact.view' => true
+                'contact.view' => true,
+                'analytics.view' => true
             )
         ));
 
@@ -269,6 +272,7 @@ class InitDatabase extends Migration
             array(1, 'header-logo', 'Header Logo', 5, 'https://res.cloudinary.com/dappur/image/upload/c_scale,h_75/v1479072913/site-images/logo-horizontal.png'),
             array(2, 'dashboard-theme', 'Dashboard Theme', 3, 'AdminLTE'),
             array(2, 'dashboard-logo', 'Dashboard Logo', 5, 'https://res.cloudinary.com/dappur/image/upload/c_scale,h_75/v1479072913/site-images/logo-horizontal.png'),
+            array(2, 'analytics-view-id', 'Google Analytics View ID', 2, ''),
             array(1, 'ga', 'Google Analytics UA', 2, ''),
             array(1, 'activation', 'Activation Required', 6, 1),
             array(1, 'maintenance-mode', 'Maintenance Mode', 6, 0),
@@ -287,7 +291,8 @@ class InitDatabase extends Migration
             array(4, 'contact-country', 'Contact Country', 2, 'USA'),
             array(3, 'contact-map-url', 'Map Iframe Url', 2, 'https://goo.gl/oDcRix'),
             array(3, 'contact-map-show', 'Show Map', 6, 1),
-            array(3, 'contact-send-email', 'Send Confirmation Email', 6, 1)
+            array(3, 'contact-confirmation', 'Confirmation Email', 2, ""),
+            array(3, 'contact-send-email', 'Send Confirmation to User', 6, 1)
         );
 
         // Seed Config Table
