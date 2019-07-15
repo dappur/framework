@@ -1,6 +1,9 @@
 # Changelog
 
 ## [Unreleased]
+### Changed
+- Added `storage/certs/google` to `.gitignore`
+
 ### Fixed
 - Contact Confirmation email
 - Bug with pageConfig injection.
