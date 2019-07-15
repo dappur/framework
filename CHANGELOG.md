@@ -21,7 +21,7 @@
 
 ### Added
 - Google Analytics is now part of the admin dashboard using the Analytics Embed API and Javascript.  Setup instructions are on the dashboard page for all Admin roled users.
-- Injected `pageSettings` into `$request->container->pageSettings` from middleware.
+- Injected `pageSettings` into `$this->container->pageSettings` from middleware.
 - Contact confirmation email to the page config for contact.
 - Default `robots.txt` file to the `/public/` directory.
 - Ability to delete settings individually from the dashboard.
