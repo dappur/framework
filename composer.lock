@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "fe61fe7fb3bc4b20a117a5dbd041d0ff",
+    "content-hash": "dfa5e2536bb99a5702dee75baa3a7478",
     "packages": [
         {
             "name": "abraham/twitteroauth",
@@ -766,16 +766,16 @@
         },
         {
             "name": "dappur/dappurware-deployment",
-            "version": "4.0.2",
+            "version": "4.0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/dappur/dappurware-deployment.git",
-                "reference": "729db5a0e6fe9807dbdd198e8aac78a9d52349de"
+                "reference": "2bc25b931a2d0d076cc2f6fb5a63168a0c95922b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/dappur/dappurware-deployment/zipball/729db5a0e6fe9807dbdd198e8aac78a9d52349de",
-                "reference": "729db5a0e6fe9807dbdd198e8aac78a9d52349de",
+                "url": "https://api.github.com/repos/dappur/dappurware-deployment/zipball/2bc25b931a2d0d076cc2f6fb5a63168a0c95922b",
+                "reference": "2bc25b931a2d0d076cc2f6fb5a63168a0c95922b",
                 "shasum": ""
             },
             "require-dev": {
@@ -807,7 +807,7 @@
                 "deploy",
                 "framework"
             ],
-            "time": "2019-07-13T03:58:52+00:00"
+            "time": "2019-07-15T08:01:36+00:00"
         },
         {
             "name": "dappur/dappurware-email",
