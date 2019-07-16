@@ -722,16 +722,16 @@
         },
         {
             "name": "dappur/dappurware",
-            "version": "4.0.2",
+            "version": "4.0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/dappur/dappurware.git",
-                "reference": "5c863974896b5381c1c118b12c09b35ced390561"
+                "reference": "d840c4cfe63eece8247a04bb16e2d01a8aba1889"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/dappur/dappurware/zipball/5c863974896b5381c1c118b12c09b35ced390561",
-                "reference": "5c863974896b5381c1c118b12c09b35ced390561",
+                "url": "https://api.github.com/repos/dappur/dappurware/zipball/d840c4cfe63eece8247a04bb16e2d01a8aba1889",
+                "reference": "d840c4cfe63eece8247a04bb16e2d01a8aba1889",
                 "shasum": ""
             },
             "require-dev": {
@@ -762,7 +762,7 @@
                 "dappurware",
                 "framework"
             ],
-            "time": "2019-07-15T06:30:49+00:00"
+            "time": "2019-07-16T06:16:32+00:00"
         },
         {
             "name": "dappur/dappurware-deployment",
