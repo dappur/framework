@@ -1,7 +1,11 @@
 # Changelog
 
 ## [Unreleased]
+### Added
+- Microsoft Live to Oauth2 Providers
+
 ### Changed
+- Separated Oauth2 Providers into their own classes to allow for the easy addition of more providers.
 - Default on scopes field in `oauth2_providers`
 - Added `storage/certs/google` to `.gitignore`
 
