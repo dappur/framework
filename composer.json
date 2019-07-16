@@ -2,7 +2,7 @@
     "name": "dappur/framework",
     "description": "A stylish PHP application framework crafted using Slim, Twig, Eloquent and Sentinel designed to get you from clone to production in a matter of minutes.",
     "keywords": ["slim", "eloquent", "twig", "sentinel", "monolog", "logentries", "validation", "config", "framework", "phinx", "cloudinary", "phpmailer", "email", "deployment", "github", "recaptcha", "seo", "2fa", "cron"],
-    "version": "4.0.0-RC1",
+    "version": "4.0.0-RC2",
     "homepage": "https://github.com/dappur/framework",
     "license": "MIT",
     "authors": [

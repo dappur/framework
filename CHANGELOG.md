@@ -1,6 +1,9 @@
 # Changelog
 
 ## [Unreleased]
+### No Changes
+
+## [4.0.0-RC2] - 2019-07-16
 ### Added
 - Microsoft Live to Oauth2 Providers
 
