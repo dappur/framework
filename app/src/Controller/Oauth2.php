@@ -11,7 +11,7 @@ class Oauth2 extends Controller
     public function __construct(ContainerInterface $container)
     {
         parent::__construct($container);
-        $this->oauthUtils = new \Dappur\Dappurware\Oauth2Utils($container);
+        $this->oauthUtils = new \Dappur\Dappurware\Oauth2($container);
     }
 
     /**
@@ -25,6 +25,10 @@ class Oauth2 extends Controller
 
         if (!$provider) {
             $this->flash->addMessage('danger', 'Oauth2 provider not found.');
+            return $this->oauthRedirect();
+        }
+        if ($request->getParam('error')) {
+            $this->flash->addMessage('danger', 'Oauth2 Error: ' . $request->getParam('error_description'));
             return $this->oauthRedirect();
         }
 

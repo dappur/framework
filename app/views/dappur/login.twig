@@ -53,11 +53,19 @@
                 <div class="panel-heading">Login With Social</div>
                 <div class="panel-body">
                     {% for provider in oauth2_providers %}
-                        <div class="form-group">
-                            <a href="{{ authorize_url(provider.id, client_ids[provider.id], 1) }}" class="btnbtn-block btn-social btn-{{provider.button}} form-control">
-                                <span class="fa fa-{{provider.button}}"></span> Login with {{provider.name}}
-                            </a>
-                        </div>
+                        {% if provider.slug == "microsoft" %}
+                            <div class="form-group">
+                                <a href="{{ authorize_url(provider.id, client_ids[provider.id], 1) }}" class="btnbtn-block btn-social btn-{{provider.button}} form-control">
+                                    <span class="fa fa-windows"></span> Login with {{provider.name}}
+                                </a>
+                            </div>
+                        {% else %}
+                            <div class="form-group">
+                                <a href="{{ authorize_url(provider.id, client_ids[provider.id], 1) }}" class="btnbtn-block btn-social btn-{{provider.button}} form-control">
+                                    <span class="fa fa-{{provider.button}}"></span> Login with {{provider.name}}
+                                </a>
+                            </div>
+                        {% endif %}
                     {% endfor %}
                 </div>
             </div>

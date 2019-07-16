@@ -101,6 +101,17 @@ class AddOauth extends Migration
                 "button" => "github",
                 "login" => 0,
                 "status" => 0
+            ),
+            array(
+                "name" => "Microsoft Live",
+                "slug" => "microsoft",
+                "scopes" => "wl.basic,wl.emails,wl.signin",
+                "authorize_url" => "https://login.live.com/oauth20_authorize.srf",
+                "token_url" => "https://login.live.com/oauth20_token.srf",
+                "resource_url" => "https://apis.live.net/v5.0/me",
+                "button" => "microsoft",
+                "login" => 0,
+                "status" => 0
             )
         );
 

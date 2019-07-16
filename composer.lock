@@ -859,16 +859,16 @@
         },
         {
             "name": "dappur/dappurware-oauth2",
-            "version": "4.0.1",
+            "version": "4.0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/dappur/dappurware-oauth2.git",
-                "reference": "23cb7235363057313bcc102d0ff2fde833ee743f"
+                "reference": "9dde814c5f8f215d1fe0ff7447134197fff5c3fb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/dappur/dappurware-oauth2/zipball/23cb7235363057313bcc102d0ff2fde833ee743f",
-                "reference": "23cb7235363057313bcc102d0ff2fde833ee743f",
+                "url": "https://api.github.com/repos/dappur/dappurware-oauth2/zipball/9dde814c5f8f215d1fe0ff7447134197fff5c3fb",
+                "reference": "9dde814c5f8f215d1fe0ff7447134197fff5c3fb",
                 "shasum": ""
             },
             "require-dev": {
@@ -900,7 +900,7 @@
                 "framework",
                 "oauth2"
             ],
-            "time": "2019-07-13T03:59:36+00:00"
+            "time": "2019-07-16T06:05:25+00:00"
         },
         {
             "name": "dappur/dappurware-video",
