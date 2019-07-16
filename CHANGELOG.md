@@ -366,7 +366,8 @@ Once those items are complete, focus will be shifted to feature enhancements.  T
 - Internalized all assets, they are now served from the view folder and not from the public dir.
 
 
-[Unreleased]: https://github.com/dappur/framework/compare/v4.0.0-RC1...HEAD
+[Unreleased]: https://github.com/dappur/framework/compare/v4.0.0-RC2...HEAD
+[4.0.0-RC2]: https://github.com/dappur/framework/compare/v4.0.0-RC1...v4.0.0-RC2
 [4.0.0-RC1]: https://github.com/dappur/framework/compare/v3.2.0...v4.0.0-RC1
 [3.2.0]: https://github.com/dappur/framework/compare/v3.1.2...v3.2.0
 [3.1.2]: https://github.com/dappur/framework/compare/v3.1.1...v3.1.2
