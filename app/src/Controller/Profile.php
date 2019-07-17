@@ -238,14 +238,14 @@ class Profile extends Controller
 
         $validateData = array(
             'first_name' => array(
-                'rules' => \Respect\Validation\Validator::length(2, 25)->alnum('\'?!@#,."'),
+                'rules' => \Respect\Validation\Validator::length(2, 25),
                 'messages' => array(
                     'length' => 'Must be between 2 and 25 characters.',
                     'alpha' => 'Contains an invalid character.'
                     )
             ),
             'last_name' => array(
-                'rules' => \Respect\Validation\Validator::length(2, 25)->alnum('\'?!@#,."'),
+                'rules' => \Respect\Validation\Validator::length(2, 25),
                 'messages' => array(
                     'length' => 'Must be between 2 and 25 characters.',
                     'alpha' => 'Contains an invalid character.'
