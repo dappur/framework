@@ -23,7 +23,6 @@ class Cron extends Controller
         }
 
         $jobby = new \Jobby\Jobby();
-
         // Sample Job
         $jobby->add('SampleCron', [
             /* 'command' => 'ls', //Run a shell command */
