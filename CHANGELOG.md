@@ -1,6 +1,8 @@
 # Changelog
 
-## [Unreleased]
+## [4.0.0] - 2020-09-25
+### Notes
+- This is a long time coming, but this is the version 4 release for the Dappur Framework. Version 5 is already in the works using slim 4.
 
 ## [4.0.0-RC3] - 2020-09-24
 ### Notes
@@ -381,7 +383,8 @@ Once those items are complete, focus will be shifted to feature enhancements.  T
 - Internalized all assets, they are now served from the view folder and not from the public dir.
 
 
-[Unreleased]: https://github.com/dappur/framework/compare/v4.0.0-RC3...HEAD
+[Unreleased]: https://github.com/dappur/framework/compare/v4.0.0...HEAD
+[4.0.0]: https://github.com/dappur/framework/compare/v4.0.0-RC3...v4.0.0
 [4.0.0-RC3]: https://github.com/dappur/framework/compare/v4.0.0-RC2...v4.0.0-RC3
 [4.0.0-RC2]: https://github.com/dappur/framework/compare/v4.0.0-RC1...v4.0.0-RC2
 [4.0.0-RC1]: https://github.com/dappur/framework/compare/v3.2.0...v4.0.0-RC1
