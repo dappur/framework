@@ -3,7 +3,7 @@
 namespace Dappur\Controller\Admin;
 
 use Dappur\Controller\Controller as Controller;
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface as Container;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 
@@ -13,7 +13,7 @@ use Psr\Http\Message\ResponseInterface as Response;
 class Blog extends Controller
 {
 
-    public function __construct(ContainerInterface $container)
+    public function __construct(Container $container)
     {
         parent::__construct($container);
         $blogUtils = new \Dappur\Dappurware\Blog($this->container);

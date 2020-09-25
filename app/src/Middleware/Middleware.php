@@ -2,13 +2,13 @@
 
 namespace Dappur\Middleware;
 
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface as Container;
 
 class Middleware
 {
     protected $container;
 
-    public function __construct(ContainerInterface $container)
+    public function __construct(Container $container)
     {
         $this->container = $container;
     }

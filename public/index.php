@@ -2,8 +2,8 @@
 require __DIR__ . '/../vendor/autoload.php';
 
 // Load Settings
-$settings_file = file_get_contents(__DIR__ . '/../settings.json');
-$settings = json_decode($settings_file, true);
+$settingsFile = file_get_contents(__DIR__ . '/../settings.json');
+$settings = json_decode($settingsFile, true);
 
 // Check for installed themes
 if (empty(glob(__DIR__ . '/../app/views/*', GLOB_ONLYDIR))) {
@@ -23,7 +23,7 @@ $app = new Slim\App(array('settings' => $settings));
 require __DIR__ . '/../app/bootstrap/dependencies.php';
 
 // Set PHP Timezone
-date_default_timezone_set($container['config']['timezone']);
+date_default_timezone_set($container->get('config')['timezone']);
 
 // Load Controllers
 require __DIR__ . '/../app/bootstrap/controllers.php';

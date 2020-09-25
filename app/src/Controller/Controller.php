@@ -2,7 +2,7 @@
 
 namespace Dappur\Controller;
 
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface as Container;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 
@@ -11,7 +11,7 @@ class Controller
     protected $container;
     protected $sentinel;
 
-    public function __construct(ContainerInterface $container)
+    public function __construct(Container $container)
     {
         $this->container = $container;
         $this->sentinel = new \Dappur\Dappurware\Sentinel($this->container);
