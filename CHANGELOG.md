@@ -3,6 +3,9 @@
 ## [Unreleased]
 
 ## [4.0.0-RC3] - 2020-09-24
+### Notes
+- Instagram oauth2 integration is broken for the moment.  Should be fixed soon.
+
 ### Changed
 - username and user validation
 - use PSR container interface instead of Slim container
@@ -378,7 +381,8 @@ Once those items are complete, focus will be shifted to feature enhancements.  T
 - Internalized all assets, they are now served from the view folder and not from the public dir.
 
 
-[Unreleased]: https://github.com/dappur/framework/compare/v4.0.0-RC2...HEAD
+[Unreleased]: https://github.com/dappur/framework/compare/v4.0.0-RC3...HEAD
+[4.0.0-RC3]: https://github.com/dappur/framework/compare/v4.0.0-RC2...v4.0.0-RC3
 [4.0.0-RC2]: https://github.com/dappur/framework/compare/v4.0.0-RC1...v4.0.0-RC2
 [4.0.0-RC1]: https://github.com/dappur/framework/compare/v3.2.0...v4.0.0-RC1
 [3.2.0]: https://github.com/dappur/framework/compare/v3.1.2...v3.2.0
