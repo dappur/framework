@@ -4,8 +4,9 @@
 ### Notes
 - I ended up going on hiatus, I am now back.  This is a long time coming and I apologize for the delay, but this is the version 4 release for the Dappur Framework.
 - Version 5 is already in the works to incorporate Slim 4.  Release is TBD.
-- I have removed the deployment completely in this version as there are plenty of better alternatives to choose from now.  It is recommended to use a service like Runcloud and have them auto deploy from github. 
+- Removed the deployment completely in this version as there are plenty of better alternatives to choose from now.  It is recommended to use a service like Runcloud and have them auto deploy from github. 
 - Please review the notes below to see other changes.
+- Promise to get the documentation done in the near future.
 
 ## [4.0.0-RC3] - 2020-09-24
 ### Notes
