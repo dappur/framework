@@ -1,0 +1,46 @@
+<nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="{{ path_for('home') }}" style="margin: 0px; padding: 5px 10px;">
+                <img src="{{config['header-logo']}}" class="img-responsive" alt="{{config['site-name']}}" style="height: 100%;">
+            </a>
+        </div>
+        <div class="collapse navbar-collapse" id="navbar-collapse">
+            <ul class="nav navbar-nav navbar-right">
+                {% set menu = getMenu(config['site-menu']) %}
+                {% for m in menu %}
+                    {% if m.config_boolean is empty or (m.config_boolean is not empty and config[m.config_boolean]) %}
+                        {% if m.children is empty %}
+                            <li class="{% if pageName in m.active %}active{% endif %}{% for class in m.classes %} {{ class }}{% endfor %}" {% if m.html_id is not empty %}id="{{m.html_id}}"{% endif %}>
+                                <a href="{% if m.page is not empty %}{{path_for(m.page)}}{% else %}javascript:;{% endif %}">
+                                    <span class="fa {{m.icon}}"></span> {{m.text}}
+                                </a>
+                            </li>
+                        {% else %}
+                            <li class="dropdown{% if pageName in m.active %} active{% endif %}{% for class in m.classes %} {{ class }}{% endfor %}" {% if m.html_id is not empty %}id="{{m.html_id}}"{% endif %}>
+                                <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                                    <span class="fa {{m.icon}}"></span> {{m.text}} <span class="caret"></span>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    {% for c in m.children %}
+                                        <li class="{% if pageName in c.active %}active{% endif %}{% for class in c.classes %} {{ class }}{% endfor %}" {% if c.html_id is not empty %}id="{{c.html_id}}"{% endif %}>
+                                            <a href="{% if c.page is not empty %}{{path_for(c.page)}}{% else %}javascript:;{% endif %}">
+                                                <span class="fa {{c.icon}}"></span> {{c.text}}
+                                            </a>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </li>
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</nav>

@@ -1,0 +1,56 @@
+{% extends 'base.twig' %}
+
+{% block title %}{{config['site-name']}} || Edit Tag - {{tag.name}}{% endblock %}
+
+{% block body %}
+    <div class="col-lg-12 content-header">
+        <h1 class="page-header">Edit Tag</h1>
+        <ol class="breadcrumb">
+            <li>
+                <i class="fa fa-dashboard"></i> Dashboard
+            </li>
+            <li>
+                <i class="fa fa-newspaper-o"></i> Blog
+            </li>
+            <li class="active">
+                <i class="fa fa-edit"></i> Edit Tag
+            </li>
+        </ol>
+    </div>
+
+    <div class="col-lg-12">
+        <div class="box box-primary">
+            <div class="box-header">
+                Edit Tag - {{tag.name}}
+            </div>
+
+            <form action="{{ currentRoute }}" method="POST" role="form">
+                <div class="box-body">
+                    <div class="col-md-6 col-md-offset-3">
+                        <div class="form-group{% if has_error('tag_name') %} has-error{% endif %}">
+                            <label for="tag_name">Tag Name</label>
+                            <input type="text" name="tag_name" class="form-control" id="tag_name" placeholder="Tag Name" value="{{tag.name}}" required="required">
+                            <span class="help-block">{{ error('tag_name') }}</span>
+                        </div>
+
+                        <div class="form-group{% if has_error('tag_slug') %} has-error{% endif %}">
+                            <label for="tag_slug">Tag Slug</label>
+                            <input type="text" name="tag_slug" class="form-control" id="tag_slug" placeholder="Tag Slug" value="{{tag.slug}}" required="required">
+                            <span class="help-block">{{ error('tag_slug') }}</span>
+                        </div>
+                    </div>
+                    {{ csrf() }}
+                </div>
+                <div class="box-footer">
+                    <div class="col-md-4 col-md-offset-4">
+                        <button type="submit" class="btn btn-primary form-control">Edit Tag</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascript %}
+{% endblock %}
+

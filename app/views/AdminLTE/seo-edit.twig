@@ -1,0 +1,168 @@
+{% extends 'base.twig' %}
+
+{% block title %}{{config['site-name']}} || Edit SEO Configuration{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/css/select2.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2-bootstrap-theme/0.1.0-beta.10/select2-bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-daterangepicker/2.1.25/daterangepicker.min.css" />
+    <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+{% endblock %}
+
+{% block body %}
+        <div class="col-lg-12 content-header">
+            <h1 class="page-header">Edit SEO Configuration</h1>
+            <ol class="breadcrumb">
+                <li>
+                    <i class="fa fa-dashboard"></i> Dashboard
+                </li>
+                <li>
+                    <i class="fa fa-sitemap"></i> SEO
+                </li>
+                <li class="active">
+                    <i class="fa fa-edit"></i> Edit Config
+                </li>
+            </ol>
+        </div>
+
+        <div class="col-lg-12">
+            <div class="box box-primary">
+                <div class="box-header">
+                    <h3 class="box-title"><b>Page Name:</b> {{ route_info.name }} - <b>Pattern:</b> {{ route_info.pattern }}</h3>
+                </div>
+                <form action="{{ currentRoute }}" method="POST" role="form">
+                    <div class="box-body">
+                        
+                        <div class="col-md-12">
+                            <div class="row">
+                                <h4 style="font-weight: bold;">Details</h4>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group{% if has_error('title') %} has-error{% endif %}">
+                                        <label for="title">Title</label>
+                                        <input type="text" name="title" class="form-control" id="title" placeholder="Title" value="{% if requestParams.title %}{{requestParams.title}}{% else %}{{ seo.title }}{% endif %}" required="required">
+                                        <span class="help-block">{{ error('title') }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <div class="form-group{% if has_error('description') %} has-error{% endif %}">
+                                        <label for="description">Description</label>
+                                        <textarea name="description" class="form-control" id="description" placeholder="Description" required="required" rows="2">{% if requestParams.description %}{{requestParams.description}}{% else %}{{ seo.description }}{% endif %}</textarea>
+                                        <span class="help-block">{{ error('description') }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <h4 style="font-weight: bold;">Media</h4>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group{% if has_error('featured_image') %} has-error{% endif %}">
+                                        <label for="cl_upload">Image (Recommended 1200px by 630px)</label>
+                                        <span class="help-block">{{ error('featured_image') }}</span>
+                                        <div class="row">
+                                            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-4">
+                                                <div class="form-group">
+                                                    <a class="btn btn-block upload-featured-local">
+                                                        <span class="fa fa-upload"></span> Local CMS
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            {% if hasCloudinary %}
+                                            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-4">
+                                                <div class="form-group">
+                                                    <a class="btn btn-block upload-featured-cloudinary">
+                                                        <span class="fa fa-upload"></span> Cloudinary
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            {% endif %}
+                                            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-4">
+                                                <div class="form-group">
+                                                    <a class="btn btn-danger btn-block">
+                                                        <span class="fa fa-upload youtube-image" style="display: none;"></span> YouTube
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-xs-12">
+                                                <div class="form-group" id="featured_thumbnail" delete-token="">
+                                                    {% if requestParams.featured_image and requestParams.featured_image !="" %}
+                                                        <img src="{{requestParams.featured_image}}" class="img-responsive" alt="Image" style="width: 100%;">
+                                                    {% elseif seo.image and seo.image != "" %}
+                                                        <img src="{{seo.image}}" class="img-responsive" alt="Image" style="width: 100%;">
+                                                    {% else %}
+                                                        <img src="https://placehold.it/400x210?text=No+Featured+Photo" class="img-responsive" alt="Image" style="width: 100%;">
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div> 
+                                        <input type="hidden" name="featured_image" id="featured_image" value="{% if requestParams.featured_image %}{{ requestParams.featured_image }}{% else %}{{ seo.image }}{% endif %}" />
+
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group{% if has_error('video') %} has-error{% endif %}" id="fv_group">
+                                        <label for="video">Video <button type="button" class="btn btn-sm btn-danger seo-del-video" style="display: none;"><i class="fa fa-close"></i> Delete</button></label>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" id="video_url" name="video_url" placeholder="Youtube/Vimeo URL" value="{{requestParams.video}}">
+
+                                            <input type="hidden" name="video" id="video" value="{% if requestParams.video %}{{ requestParams.video }}{% else %}{{ seo.video }}{% endif %}" />
+                                            
+                                            <span class="input-group-btn">
+                                                <button class="btn btn-default" id="fvButton">
+                                                    <i class="fa fa-arrow-right"></i>
+                                                </button>
+                                            </span>
+                                        </div>
+                                        <span class="help-block">{{ error('video') }}</span>
+
+                                        <div id="video_preview">
+                                            {% if requestParams.video and requestParams.video !="" %}
+                                                <div class="video-container">
+                                                    <iframe src="{{requestParams.video}}" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowfullscreen></iframe>
+                                                </div>
+                                            {% elseif seo.video and seo.video != "" %}
+                                                <div class="video-container">
+                                                    <iframe src="{{seo.video}}" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowfullscreen></iframe>
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {{ csrf() }}
+                    </div>
+                    <div class="box-footer">
+                        <div class="col-md-4 col-md-offset-4">
+                            <button type="submit" class="btn btn-success form-control">Save SEO Config</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+{% endblock %}
+
+{% block javascript %}
+<!-- Select2 Dropdowns -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/js/select2.min.js" type="text/javascript"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-daterangepicker/2.1.25/moment.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-daterangepicker/2.1.25/daterangepicker.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/4.7.1/tinymce.min.js" type="text/javascript"></script>
+<script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+<script src="{{ asset('AdminLTE/js/video-parser.min.js') }}" type="text/javascript"></script>
+<script src="{{ asset('AdminLTE/js/seo.min.js') }}" type="text/javascript"></script>
+{% if hasCloudinary %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cloudinary-jquery-file-upload/2.3.0/cloudinary-jquery-file-upload.min.js"></script>
+<script src="//widget.cloudinary.com/global/all.js" type="text/javascript"></script>
+<script src="{{ asset('AdminLTE/js/seo.cloudinary.min.js') }}" type="text/javascript"></script>
+{% endif %}
+{% endblock %}
+

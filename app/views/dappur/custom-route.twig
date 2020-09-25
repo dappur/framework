@@ -1,0 +1,15 @@
+{% extends 'base.twig' %}
+
+{% block stylesheets %}
+    {{ route.css|raw }}
+{% endblock %}
+
+{% block body %}
+	<div class="container-fluid">
+		{{ include(template_from_string(route.content)) }}
+	</div>
+{% endblock %}
+
+{% block javascript %}
+    {{ route.js|raw }}
+{% endblock %}
