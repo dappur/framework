@@ -10,7 +10,7 @@
             "port": 3306,
             "database": "framework",
             "username": "dappur",
-            "password": "",
+            "password": "dappur",
             "charset": "utf8mb4",
             "collation": "utf8mb4_unicode_520_ci",
             "prefix": "",
@@ -73,14 +73,6 @@
         "api_key": "",
         "api_secret": ""
     },
-    "deployment": {
-        "enabled": false,
-        "manual": false,
-        "deploy_url": "deploy",
-        "deploy_token": "",
-        "repo_url": "",
-        "repo_branch": "master"
-    },
     "mail": {
         "relay": "phpmail",
         "logging": true,
@@ -113,6 +105,8 @@
         "twitter": {
             "client_id": "",
             "client_secret": "",
+            "api_key": "",
+            "api_secret": "",
             "class": "\\Dappur\\Dappurware\\Oauth2\\Providers\\Twitter"
         },
         "linkedin": {

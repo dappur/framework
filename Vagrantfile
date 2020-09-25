@@ -4,7 +4,7 @@ require 'securerandom'
 
 # Globals
 httpPort = 8181
-mysqlPort = 8306
+mysqlPort = 8381
 rootPass = "rootpass"
 
 # Check if settings json file exists or create
@@ -23,12 +23,8 @@ if settings['cron']['token'].empty?
   settings['cron']['token'] = SecureRandom.uuid.split('-').join
 end
 
-if settings['deployment']['deploy_token'].empty?
-  settings['deployment']['deploy_token'] = SecureRandom.uuid.split('-').join
-end
-
 File.open("settings.json","w") do |f|
-  f.write(JSON.pretty_generate settings)
+  f.write(JSON.pretty_generate(settings, :indent => "\t"))
 end
 
 # Get Database From settings.json
@@ -40,6 +36,7 @@ dbPass = database['password']
 Vagrant.configure("2") do |config|
     # ubuntu 18.04
   	config.vm.box = "bento/ubuntu-18.04"
+    config.vm.box_version = "201912.03.0"
     # forward http port
   	config.vm.network "forwarded_port",
   		guest: httpPort,
