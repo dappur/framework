@@ -206,15 +206,15 @@ class Users extends Controller
         // Validate Form Data
         $validateData = array(
             'first_name' => array(
-                'rules' => \Respect\Validation\Validator::length(2, 25),
+                'rules' => \Respect\Validation\Validator::length(2, 35),
                 'messages' => array(
-                    'length' => 'Must be between 2 and 25 characters.'
+                    'length' => 'Must be between 2 and 35 characters.'
                 )
             ),
             'last_name' => array(
-                'rules' => \Respect\Validation\Validator::length(2, 25),
+                'rules' => \Respect\Validation\Validator::length(2, 35),
                 'messages' => array(
-                    'length' => 'Must be between 2 and 25 characters.'
+                    'length' => 'Must be between 2 and 35 characters.'
                 )
             ),
             'email' => array(
@@ -225,9 +225,8 @@ class Users extends Controller
                 )
             ),
             'username' => array(
-                'rules' => \Respect\Validation\Validator::noWhitespace()->alnum(),
+                'rules' => \Respect\Validation\Validator::noWhitespace(),
                 'messages' => array(
-                    'slug' => 'Must be alpha numeric with no spaces.',
                     'noWhitespace' => 'Must not contain any spaces.'
                 )
             )
@@ -235,10 +234,9 @@ class Users extends Controller
 
         if (!$user) {
             $validateData['password'] = array(
-                'rules' => \Respect\Validation\Validator::noWhitespace()->length(6, 25),
+                'rules' => \Respect\Validation\Validator::length(6, 35),
                 'messages' => array(
-                    'noWhitespace' => 'Must not contain spaces.',
-                    'length' => 'Must be between 6 and 25 characters.'
+                    'length' => 'Must be between 6 and 35 characters.'
                 )
             );
 

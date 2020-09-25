@@ -322,17 +322,15 @@ class Auth extends Controller
     {
         $validateData = array(
             'first_name' => array(
-                'rules' => \Respect\Validation\Validator::alnum('\'-')->length(2, 25),
+                'rules' => \Respect\Validation\Validator::length(2, 35),
                 'messages' => array(
-                    'alnum' => 'May contain letters, numbers, \' and hyphens.',
-                    'length' => "Must be between 2 and 25 characters."
+                    'length' => "Must be between 2 and 35 characters."
                     )
             ),
             'last_name' => array(
-                'rules' => \Respect\Validation\Validator::alnum('\'-')->length(2, 25),
+                'rules' => \Respect\Validation\Validator::length(2, 35),
                 'messages' => array(
-                    'alnum' => 'May contain letters, numbers, \' and hyphens.',
-                    'length' => "Must be between 2 and 25 characters."
+                    'length' => "Must be between 2 and 35 characters."
                     )
             ),
             'email' => array(
@@ -343,17 +341,15 @@ class Auth extends Controller
                     )
             ),
             'username' => array(
-                'rules' => \Respect\Validation\Validator::noWhitespace()->alnum()->length(2, 25),
+                'rules' => \Respect\Validation\Validator::noWhitespace()->length(2, 35),
                 'messages' => array(
                     'noWhitespace' => 'Must not contain spaces.',
-                    'alnum' => 'Must be letters and numbers only.',
-                    'length' => "Must be between 2 and 25 characters."
+                    'length' => "Must be between 2 and 35 characters."
                     )
             ),
             'password' => array(
                 'rules' => \Respect\Validation\Validator::length(6, 64),
                 'messages' => array(
-                    'noWhitespace' => 'Must not contain spaces.',
                     'length' => "Must be between 6 and 64 characters."
                     )
             ),

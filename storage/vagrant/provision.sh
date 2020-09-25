@@ -16,66 +16,56 @@ sudo debconf-set-selections <<< "mariadb-server mysql-server/root_password_again
 
 # install php
 sudo apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0xF1656F24C74CD1D8
-sudo add-apt-repository 'deb [arch=amd64] http://mirror.zol.co.zw/mariadb/repo/10.3/ubuntu bionic main'
+sudo add-apt-repository 'deb [arch=amd64] http://mirror.zol.co.zw/mariadb/repo/10.5/ubuntu bionic main'
 sudo apt-get update
 sudo apt-get upgrade
-sudo apt-get install -y php php-pear php-fpm php-dev php-zip php-curl php-xmlrpc php-gd php-mysql php-mbstring php-xml libapache2-mod-php mariadb-server mariadb-client apache2 php-gettext
-
-if [ ! -f "/usr/local/bin/composer" ]; then
-  # install composer
-  wget https://raw.githubusercontent.com/composer/getcomposer.org/1b137f8bf6db3e79a38a5bc45324414a6b1f9df2/web/installer -O - -q | php -- --quiet
-  sudo mv composer.phar /usr/local/bin/composer
-  echo "PATH=\"/home/vagrant/.config/composer/vendor/bin:\$PATH\"" >> /home/vagrant/.profile
-  source /home/vagrant/.profile
-  
-  # install phinx
-  composer global require robmorgan/phinx
-fi
+sudo apt-get install -y php composer php-pear php-fpm php-dev php-zip php-curl php-xmlrpc php-gd php-mysql php-mbstring php-xml libapache2-mod-php mariadb-server mariadb-client apache2 php-gettext
 
 # configure mariadb
 if [ ! -f "/etc/mysql/mariadb.conf.d/dev.cnf" ]; then
   printf "[mysqld]\nplugin-load-add = auth_socket.so" | sudo tee -a /etc/mysql/mariadb.conf.d/dev.cnf
-  sudo sed -i "s/^bind-address.*/bind-address = 0.0.0.0/" /etc/mysql/my.cnf
-  sudo sed -i "s/^port.*/port = ${DBPORT}/" /etc/mysql/my.cnf
+  sudo sed -i "s/^bind-address.*/bind-address = 0.0.0.0\nport = ${DBPORT}/" /etc/mysql/mariadb.conf.d/50-server.cnf
+  # sudo sed -i "s/^# port.*/port = ${DBPORT}/" /etc/mysql/my.cnf
   sudo systemctl restart mariadb.service
 fi
 
-# fix debian-sys-maint user
-sudo sed -i "s/^password =.*$/password = $DEBIANPASS/g" /etc/mysql/debian.cnf
-sudo mysql -uroot -p$ROOTPASS <<SQL
-  	UPDATE mysql.user SET Password=PASSWORD('${DEBIANPASS}') WHERE User='debian-sys-maint';
-  	GRANT ALL PRIVILEGES ON *.* TO 'debian-sys-maint'@'localhost';
-  	FLUSH PRIVILEGES;
-SQL
+sudo debconf-set-selections <<< "phpmyadmin phpmyadmin/internal/skip-preseed boolean true"
+sudo debconf-set-selections <<< "phpmyadmin phpmyadmin/reconfigure-webserver multiselect apache2"
+sudo debconf-set-selections <<< "phpmyadmin phpmyadmin/dbconfig-install boolean false"
+sudo debconf-set-selections <<< "phpmyadmin phpmyadmin/app-password-confirm password ${PMAPASS}"
+sudo debconf-set-selections <<< "phpmyadmin phpmyadmin/mysql/admin-pass password ${ROOTPASS}"
+sudo debconf-set-selections <<< "phpmyadmin phpmyadmin/mysql/app-pass password ${PMAPASS}"
 
-if [ ! -d "/usr/share/phpmyadmin" ]; then
-  # install phpmyadmin
-  cd /usr/share
-  sudo wget https://files.phpmyadmin.net/phpMyAdmin/4.7.4/phpMyAdmin-4.7.4-all-languages.zip
-  sudo apt-get install unzip
-  sudo unzip phpMyAdmin-4.7.4-all-languages.zip
-  sudo rm phpMyAdmin-4.7.4-all-languages.zip
-  sudo mv phpMyAdmin-4.7.4-all-languages phpmyadmin
-  cd phpmyadmin
-  sudo cp config.sample.inc.php config.inc.php
+sudo apt-get install -y phpmyadmin
+
+#if [ ! -d "/usr/share/phpmyadmin" ]; then
+#  # install phpmyadmin
+#  cd /usr/share
+#  sudo wget https://files.phpmyadmin.net/phpMyAdmin/4.7.4/phpMyAdmin-4.7.4-all-languages.zip
+#  sudo apt-get install unzip
+#  sudo unzip phpMyAdmin-4.7.4-all-languages.zip
+#  sudo rm phpMyAdmin-4.7.4-all-languages.zip
+#  sudo mv phpMyAdmin-4.7.4-all-languages phpmyadmin
+#  cd phpmyadmin
+#  sudo cp config.sample.inc.php config.inc.php
 
   # update phpmyadmin config
-  sudo sed -i "s|blowfish_secret'] = ''|blowfish_secret'] = '$BLOWFISH'|g" /usr/share/phpmyadmin/config.inc.php
-  sudo sed -i "s|AllowNoPassword'] = false;|AllowNoPassword'] = true;|g" /usr/share/phpmyadmin/config.inc.php
-fi
+#  sudo sed -i "s|blowfish_secret'] = ''|blowfish_secret'] = '$BLOWFISH'|g" /usr/share/phpmyadmin/config.inc.php
+#  sudo sed -i "s|AllowNoPassword'] = false;|AllowNoPassword'] = true;|g" /usr/share/phpmyadmin/config.inc.php
+#fi
 
 # create phpmyadmin user and tables
-if [ ! -d /var/lib/mysql/phpymadmin ]; then
-  sudo mysql -uroot -p$ROOTPASS <<SQL
-	  CREATE DATABASE IF NOT EXISTS phpmyadmin
-      DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_520_ci;
-    USE phpmyadmin;
-    source /usr/share/phpmyadmin/sql/create_tables.sql;
-  	CREATE USER IF NOT EXISTS ${PMAUSER}@localhost IDENTIFIED BY "${PMAPASS}";
-  	GRANT SELECT ON phpmyadmin.* TO ${PMAUSER}@'localhost';
-  	FLUSH PRIVILEGES;
-SQL
-fi
+#if [ ! -d /var/lib/mysql/phpymadmin ]; then
+#  sudo mysql -uroot -p$ROOTPASS <<SQL
+#	  CREATE DATABASE IF NOT EXISTS phpmyadmin
+#      DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_520_ci;
+#    USE phpmyadmin;
+#    source /usr/share/phpmyadmin/sql/create_tables.sql;
+#  	CREATE USER IF NOT EXISTS ${PMAUSER}@localhost IDENTIFIED BY "${PMAPASS}";
+#  	GRANT SELECT ON phpmyadmin.* TO ${PMAUSER}@'localhost';
+#  	FLUSH PRIVILEGES;
+#SQL
+#fi
 
 # update php max size
 sudo sed -i "s|upload_max_filesize = 2M|upload_max_filesize = 200M|g" /etc/php/7.2/apache2/php.ini
@@ -101,4 +91,4 @@ SQL
 # update composer and install
 cd /vagrant
 composer install
-phinx migrate
+./vendor/bin/phinx migrate

@@ -5,7 +5,7 @@ $container = $app->getContainer();
 // Configure Database
 $db = $container['settings']['db'][$container['settings']['environment']];
 $capsule = new \Illuminate\Database\Capsule\Manager();
-$capsule->addConnection($db);
+$capsule->addConnection((array)$db);
 $capsule->setAsGlobal();
 $capsule->bootEloquent();
 
@@ -33,15 +33,17 @@ $container['uploadDir'] = function ($container) {
 };
 
 // Bind config table from database
-$container['config'] = function () use ($container) {
+$container['config'] = function ($container) {
     $config = new \Dappur\Dappurware\SiteConfig;
     $config = $config->getGlobalConfig();
 
     return $config;
 };
 
+
+
 // Bind Sentinel Authorization plugin
-$container['auth'] = function () {
+$container['auth'] = function ($container) {
     $sentinel = new \Cartalyst\Sentinel\Native\Facades\Sentinel(
         new \Cartalyst\Sentinel\Native\SentinelBootstrapper(
             __DIR__ . '/sentinel.php'
@@ -57,13 +59,17 @@ $container['userAccess'] = function ($container) {
 };
 
 // Bind Flash Messages
-$container['flash'] = function () {
+$container['flash'] = function ($container) {
     return new \Slim\Flash\Messages();
 };
 
 // Bind Respect Validation
-$container['validator'] = function () {
+$container['validator'] = function ($container) {
     return new \Awurth\SlimValidation\Validator();
+};
+
+$container['cookies'] = function ($container) {
+    return new \Dappur\Dappurware\Cookies;
 };
 
 // CSRF
@@ -222,7 +228,7 @@ $container['view'] = function ($container) {
 };
 
 // Bind Found Handler
-$container['foundHandler'] = function () {
+$container['foundHandler'] = function ($container) {
     return new \Slim\Handlers\Strategies\RequestResponseArgs();
 };
 

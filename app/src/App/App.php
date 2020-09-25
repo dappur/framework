@@ -2,7 +2,7 @@
 
 namespace Dappur\App;
 
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface as Container;
 
 class App
 {
@@ -14,7 +14,7 @@ class App
     protected $container;
     protected $sentinel;
 
-    public function __construct(ContainerInterface $container)
+    public function __construct(Container $container)
     {
         $this->container = $container;
     }

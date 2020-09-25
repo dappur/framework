@@ -35,11 +35,6 @@ $app->map(['GET'], '/csrf', 'App:csrf')
     ->setName('csrf')
     ->add($container->get('csrf'));
 
-//Deployment
-$app->map(['GET', 'POST'], '/' . $settings['deployment']['deploy_url'], 'Deploy:deploy')
-    ->setName('deploy')
-    ->add(new Dappur\Middleware\Deploy($container));
-
 // Robots.txt
 $app->map(['GET'], '/robots.txt', 'Robots:view')
         ->setName('robots');

@@ -1,7 +1,19 @@
 # Changelog
 
 ## [Unreleased]
-### No Changes
+
+## [4.0.0-RC3] - 2020-09-24
+### Changed
+- username and user validation
+- use PSR container interface instead of Slim container
+
+### Updated
+- Vagrant config updated for mariadb 10.5
+- Composer packages updated
+
+### Removed
+- Character validations from first and last name to allow for non-US characters.
+- References to deployment scripts
 
 ## [4.0.0-RC2] - 2019-07-16
 ### Added
