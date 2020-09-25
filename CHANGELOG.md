@@ -12,6 +12,9 @@
 ### Notes
 - Instagram oauth2 integration is broken for the moment.  Should be fixed soon.
 
+### Added
+- Github composer workflow
+
 ### Changed
 - username and user validation
 - use PSR container interface instead of Slim container
