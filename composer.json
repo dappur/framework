@@ -39,7 +39,7 @@
         "cloudinary/cloudinary_php": "^1.14",
         "robmorgan/phinx": "^0.10.8",
         "phpmailer/phpmailer": "^6.1.6",
-        "JasonGrimes/Paginator": "^1.0",
+        "jasongrimes/paginator": "^1.0",
         "abraham/twitteroauth": "^1.0",
         "ramsey/uuid": "^3.8",
         "bryanjhv/slim-session": "^3.0",
