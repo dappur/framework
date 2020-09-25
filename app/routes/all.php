@@ -4,9 +4,6 @@ $app->group('/', function () use ($app, $container, $settings) {
     // Contact
     $this->map(['GET', 'POST'], 'contact', 'App:contact')
         ->setName('contact');
-    // CSRF
-    $this->map(['GET'], 'csrf', 'App:csrf')
-        ->setName('csrf');
     // Cron Jobs
     $this->map(['GET'], 'cron', 'Cron:run')
         ->setName('cron');
@@ -33,7 +30,16 @@ $app->map(['GET'], '/maintenance', 'App:maintenance')
 $app->map(['GET'], '/asset', 'App:asset')
         ->setName('asset');
 
+// CSRF Bypasses Middleware
+$app->map(['GET'], '/csrf', 'App:csrf')
+    ->setName('csrf')
+    ->add($container->get('csrf'));
+
 //Deployment
 $app->map(['GET', 'POST'], '/' . $settings['deployment']['deploy_url'], 'Deploy:deploy')
     ->setName('deploy')
     ->add(new Dappur\Middleware\Deploy($container));
+
+// Robots.txt
+$app->map(['GET'], '/robots.txt', 'Robots:view')
+        ->setName('robots');

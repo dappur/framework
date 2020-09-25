@@ -2,17 +2,9 @@
 
 namespace Dappur\Controller;
 
-use Dappur\Dappurware\Email as E;
-use Dappur\Dappurware\FileResponse;
-use Dappur\Dappurware\Recaptcha;
-use Dappur\Model\ContactRequests;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
-use Respect\Validation\Validator as V;
 
-/**
- * @SuppressWarnings(PHPMD.StaticAccess)
- */
 class App extends Controller
 {
     public function asset(Request $request, Response $response)
@@ -28,41 +20,43 @@ class App extends Controller
 
         // If file is in theme root folder
         $regex = '#'.preg_quote($baseThemePath).'(.*)'.preg_quote(DIRECTORY_SEPARATOR).'(.*)#';
-        preg_match($regex, $assetPath, $goto_url);
-        if (substr_count($goto_url[1], DIRECTORY_SEPARATOR) < 2) {
+        preg_match($regex, $assetPath, $gotoUrl);
+        if (substr_count($gotoUrl[1], DIRECTORY_SEPARATOR) < 2) {
             throw new \Slim\Exception\NotFoundException($request, $response);
         }
 
         // Return file
-        return FileResponse::getResponse($response, $assetPath);
+        $fileResponse = new \Dappur\Dappurware\FileResponse;
+        return $fileResponse->getResponse($response, $assetPath);
     }
 
+    /** @SuppressWarnings(PHPMD.StaticAccess) */
     public function contact(Request $request, Response $response)
     {
         if ($request->isPost()) {
             // Validate Form Data
             $validateData = array(
                 'name' => array(
-                    'rules' => V::length(2, 64)->alnum('\''),
+                    'rules' => \Respect\Validation\Validator::length(2, 64)->alnum('\''),
                     'messages' => array(
                         'length' => 'Must be between 2 and 64 characters.',
                         'alnum' => 'Alphanumeric and can contain \''
                         )
                 ),
                 'email' => array(
-                    'rules' => V::email(),
+                    'rules' => \Respect\Validation\Validator::email(),
                     'messages' => array(
                         'email' => 'Enter a valid email.',
                         )
                 ),
                 'phone' => array(
-                    'rules' => V::phone(),
+                    'rules' => \Respect\Validation\Validator::phone(),
                     'messages' => array(
                         'phone' => 'Enter a valid phone number.'
                         )
                 ),
                 'comment' => array(
-                    'rules' => V::alnum('\'!@#$%^&:",.?/'),
+                    'rules' => \Respect\Validation\Validator::alnum('\'!@#$%^&:",.?/'),
                     'messages' => array(
                         'alnum' => 'Text and punctuation only.',
                         )
@@ -72,28 +66,32 @@ class App extends Controller
 
             if ($this->config['recaptcha-enabled']) {
                 // Validate Recaptcha
-                $recaptcha = new Recaptcha($this->container);
+                $recaptcha = new \Dappur\Dappurware\Recaptcha($this->container);
                 $recaptcha = $recaptcha->validate($request->getParam('g-recaptcha-response'));
                 if (!$recaptcha) {
                     $this->validator->addError('recaptcha', 'Recaptcha was invalid.');
                 }
             }
-            
 
             if ($this->validator->isValid()) {
-                $add = new ContactRequests;
+                $add = new \Dappur\Model\ContactRequests;
                 $add->name = $request->getParam("name");
                 $add->email = $request->getParam("email");
                 $add->phone = $request->getParam("phone");
                 $add->comment = $request->getParam("comment");
 
                 if ($add->save()) {
-                    if ($this->config['contact-send-email']) {
-                        $sendEmail = new E($this->container);
+                    if ($this->container->pageConfig['contact-send-email']) {
+                        $sendTo = array($request->getParam('email'));
+                        $confirmEmail = $this->container->pageConfig['contact-confirmation'];
+
+                        if (filter_var($confirmEmail, FILTER_VALIDATE_EMAIL)) {
+                            $sendTo[] = $confirmEmail;
+                        }
+                        
+                        $sendEmail = new \Dappur\Dappurware\Email($this->container);
                         $sendEmail = $sendEmail->sendTemplate(
-                            array(
-                                $request->getParam("email")
-                            ),
+                            $sendTo,
                             'contact-confirmation',
                             array(
                                 'name' => $request->getParam('name'),
@@ -107,12 +105,12 @@ class App extends Controller
                     return $this->redirect($response, 'contact');
                 }
             }
-            $this->flash(
+
+            $this->flashNow(
                 'danger',
                 'An unknown error occured.  Please try again or email us at: ' .
                 $this->config['contact-email']
             );
-            return $this->redirect($response, 'contact');
         }
 
         return $this->view->render($response, 'contact.twig', array("requestParams" => $request->getParams()));
@@ -147,7 +145,8 @@ class App extends Controller
      */
     public function customRoute(Request $request, Response $response)
     {
-        $route = \Dappur\Model\Routes::where('name', $request->getAttribute('route')->getName())
+        $routeName = $request->getAttribute('route')->getName();
+        $route = \Dappur\Model\Routes::where('name', $routeName)
             ->with('roles')
             ->where('status', 1)
             ->first();
@@ -160,7 +159,6 @@ class App extends Controller
         if ((($route->permission || $route->roles->count() > 0) && !$this->auth->check())) {
             $this->flash('warning', 'You must be logged in to access this page.');
             return $response->withRedirect($this->router->pathFor('login', array(), array('redirect' => $route->name)));
-
         }
 
         // Check For permission if logged in and set

@@ -2,7 +2,6 @@
 
 $container['notFoundHandler'] = function ($container) {
     return function ($request, $response) use ($container) {
-
         if (filter_var($container['config']['error-email'], FILTER_VALIDATE_EMAIL)
             && $container['config']['error-email-404']) {
             $email = new \Dappur\Dappurware\Email($container);
@@ -10,10 +9,18 @@ $container['notFoundHandler'] = function ($container) {
                 array(
                     $container['config']['error-email']),
                 "404 Error on " . $container['config']['site-name'],
-                "<pre>" . $exception . "</pre>",
-                $exception
+                "<pre><b>Route: </b>" . $request->getUri()->getPath() . "</pre>" .
+                "<pre><b>Headers: </b>" . json_encode($request->getHeaders(), JSON_PRETTY_PRINT) .  "</pre>"
             );
         }
+
+        $container->logger->addNotice(
+            "404 Error",
+            array(
+                "route" => $request->getUri()->getPath(),
+                "headers" => $request->getHeaders()
+            )
+        );
 
         return $container['view']
             ->render($response, 'errors/404.twig')
@@ -24,7 +31,6 @@ $container['notFoundHandler'] = function ($container) {
 
 $container['notAllowedHandler'] = function ($container) {
     return function ($request, $response, $methods) use ($container) {
-
         if (filter_var($container['config']['error-email'], FILTER_VALIDATE_EMAIL)
             && $container['config']['error-email-405']) {
             $email = new \Dappur\Dappurware\Email($container);
@@ -32,10 +38,18 @@ $container['notAllowedHandler'] = function ($container) {
                 array(
                     $container['config']['error-email']),
                 "405 Error on " . $container['config']['site-name'],
-                "<pre>" . $exception . "</pre>",
-                $exception
+                "<pre><b>Route: </b>" . $request->getUri()->getPath() . "</pre>" .
+                "<pre><b>Headers: </b>" . json_encode($request->getHeaders(), JSON_PRETTY_PRINT) .  "</pre>"
             );
         }
+
+        $container->logger->addNotice(
+            "405 Error",
+            array(
+                "route" => $request->getUri()->getPath(),
+                "headers" => $request->getHeaders()
+            )
+        );
 
         return $container['view']
             ->render($response, 'errors/405.twig', array("methods" => $methods))
@@ -47,7 +61,6 @@ $container['notAllowedHandler'] = function ($container) {
 
 $container['errorHandler'] = function ($container) {
     return function ($request, $response, $exception) use ($container) {
-
         if (filter_var($container['config']['error-email'], FILTER_VALIDATE_EMAIL)
             && $container['config']['error-email-500']) {
             $email = new \Dappur\Dappurware\Email($container);
@@ -55,10 +68,17 @@ $container['errorHandler'] = function ($container) {
                 array(
                     $container['config']['error-email']),
                 "PHP Error on " . $container['config']['site-name'],
-                "<pre>" . $exception . "</pre>",
-                $exception
+                "<pre>" . $exception . "</pre>"
             );
         }
+
+        $container->logger->addError(
+            "Server Error",
+            array(
+                "exception" => $exception,
+                "headers" => $request->getHeaders()
+            )
+        );
 
         return $container['view']
             ->render($response, 'errors/500.twig', array("exception" => $exception))
@@ -76,10 +96,17 @@ $container['phpErrorHandler'] = function ($container) {
                 array(
                     $container['config']['error-email']),
                 "Application Error on " . $container['config']['site-name'],
-                "<pre>" . $exception . "</pre>",
-                $exception
+                "<pre>" . $exception . "</pre>"
             );
         }
+
+        $container->logger->addError(
+            "Application Error",
+            array(
+                "exception" => $exception,
+                "headers" => $request->getHeaders()
+            )
+        );
 
         return $container['view']
             ->render($response, 'errors/500-php.twig', array("exception" => $exception))

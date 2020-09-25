@@ -86,3 +86,7 @@ $container['Oauth2'] = function ($container) {
 $container['Profile'] = function ($container) {
     return new \Dappur\Controller\Profile($container);
 };
+
+$container['WebhooksMailgun'] = function ($container) {
+    return new \Dappur\Controller\Webhooks\Mailgun($container);
+};

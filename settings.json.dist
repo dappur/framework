@@ -1,6 +1,6 @@
 {
     "framework": "dappur",
-    "version": "3.2.0",
+    "version": "4.0.0-RC2",
     "displayErrorDetails": false,
     "environment": "development",
     "db": {
@@ -11,8 +11,8 @@
             "database": "framework",
             "username": "dappur",
             "password": "",
-            "charset": "utf8",
-            "collation": "utf8_general_ci",
+            "charset": "utf8mb4",
+            "collation": "utf8mb4_unicode_520_ci",
             "prefix": "",
             "timezone": "+00:00"
         },
@@ -23,8 +23,8 @@
             "database": "",
             "username": "",
             "password": "",
-            "charset": "utf8",
-            "collation": "utf8_general_ci",
+            "charset": "utf8mb4",
+            "collation": "utf8mb4_unicode_520_ci",
             "prefix": "",
             "timezone": "+00:00"
         },
@@ -35,8 +35,8 @@
             "database": "",
             "username": "",
             "password": "",
-            "charset": "utf8",
-            "collation": "utf8_general_ci",
+            "charset": "utf8mb4",
+            "collation": "utf8mb4_unicode_520_ci",
             "prefix": "",
             "timezone": "+00:00"
         }
@@ -102,27 +102,43 @@
     "oauth2": {
         "facebook": {
             "client_id": "",
-            "client_secret": ""
+            "client_secret": "",
+            "class": "\\Dappur\\Dappurware\\Oauth2\\Providers\\Facebook"
         },
         "google": {
             "client_id": "",
-            "client_secret": ""
+            "client_secret": "",
+            "class": "\\Dappur\\Dappurware\\Oauth2\\Providers\\Google"
         },
         "twitter": {
             "client_id": "",
-            "client_secret": ""
+            "client_secret": "",
+            "class": "\\Dappur\\Dappurware\\Oauth2\\Providers\\Twitter"
         },
         "linkedin": {
             "client_id": "",
-            "client_secret": ""
+            "client_secret": "",
+            "class": "\\Dappur\\Dappurware\\Oauth2\\Providers\\Linkedin"
         },
         "github": {
             "client_id": "",
-            "client_secret": ""
+            "client_secret": "",
+            "class": "\\Dappur\\Dappurware\\Oauth2\\Providers\\Github"
         },
         "instagram": {
             "client_id": "",
-            "client_secret": ""
+            "client_secret": "",
+            "class": "\\Dappur\\Dappurware\\Oauth2\\Providers\\Instagram"
+        },
+        "microsoft": {
+            "client_id": "",
+            "client_secret": "",
+            "class": "\\Dappur\\Dappurware\\Oauth2\\Providers\\Microsoft"
+        }
+    },
+    "webhooks": {
+        "mailgun": {
+            "api_key": ""
         }
     }
 }

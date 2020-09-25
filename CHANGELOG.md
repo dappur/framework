@@ -3,6 +3,65 @@
 ## [Unreleased]
 ### No Changes
 
+## [4.0.0-RC2] - 2019-07-16
+### Added
+- Microsoft Live to Oauth2 Providers
+
+### Changed
+- Separated Oauth2 Providers into their own classes to allow for the easy addition of more providers.
+- Default on scopes field in `oauth2_providers`
+- Added `storage/certs/google` to `.gitignore`
+
+### Fixed
+- Updated and fixed linkedin for their v2 oauth api
+- Contact request count on dashboard main page
+- Contact Confirmation email
+- Bug with pageConfig injection.
+
+## [4.0.0-RC1] - 2019-07-14
+## Notes
+- I promise this will be the last major version upgrade for a while (I hope).  This was necessary in order to separate out the heavier dappurwares into their own repository so that they could be developed further.  The dapurwares that were moved into their own repositories are:
+	- Deployment
+	- Email
+	- Oauth2
+	- Video
+- The email system has been revamped.  Plain text is now generated automatically right before sending.  This lightens the load on the email system considerably. 
+- src has been fixed to pass all PHPMD and PHPCS-PSR2 checks.
+
+### Added
+- Google Analytics is now part of the admin dashboard using the Analytics Embed API and Javascript.  Setup instructions are on the dashboard page for all Admin roled users.
+- Injected `pageSettings` into `$this->container->pageSettings` from middleware.
+- Contact confirmation email to the page config for contact.
+- Default `robots.txt` file to the `/public/` directory.
+- Ability to delete settings individually from the dashboard.
+- Webook controller for mailgun api.  This will auto update the email status within the dashboard.
+- EmailStatus database table to track status changes of emails
+- If admin, redirect to dashboard on oauth login
+
+### Fixed
+- General code formatting cleanup
+- notFound and notAllowed handlers were not emailing correct data.
+- Compensated for null values in the config
+- Missing `templatesDelete()` function in `Admin\Emails` controller.
+- Dashboard permission mispelled in menu setting
+- Redirect on login
+- PHPCS Fixes
+
+### Changed
+- Phinx `create-template.php` no contains the samples as part of the template code as I was constantly copying and pasting anyways.
+- Cleaned up source code, removed unused functions and code
+- All site errors are now reported to monolog
+- Renamed theme files in the controller
+- Moved the `/csrf` route out of middleware
+- Updated `composer.json` for version 4.0 release that separates dappurware out. 
+- Default database charset to `utf8mb4` and the default collation to `utf8mb4_unicode_520_ci`
+- Plain text emails are now generated automatically from the HTML email.
+
+### Removed
+- Removed static use from all src in core framework.
+- All references to plain text as that is now generated automatically using [soundasleep/html2text](https://github.com/soundasleep/html2text)
+- Removed comments from database migrations
+
 ## [3.2.0] - 2018-12-03
 ## Notes
 - This update requires a couple of changes to the theme files
@@ -307,7 +366,9 @@ Once those items are complete, focus will be shifted to feature enhancements.  T
 - Internalized all assets, they are now served from the view folder and not from the public dir.
 
 
-[Unreleased]: https://github.com/dappur/framework/compare/v3.2.0...HEAD
+[Unreleased]: https://github.com/dappur/framework/compare/v4.0.0-RC2...HEAD
+[4.0.0-RC2]: https://github.com/dappur/framework/compare/v4.0.0-RC1...v4.0.0-RC2
+[4.0.0-RC1]: https://github.com/dappur/framework/compare/v3.2.0...v4.0.0-RC1
 [3.2.0]: https://github.com/dappur/framework/compare/v3.1.2...v3.2.0
 [3.1.2]: https://github.com/dappur/framework/compare/v3.1.1...v3.1.2
 [3.1.1]: https://github.com/dappur/framework/compare/v3.1.0...v3.1.1

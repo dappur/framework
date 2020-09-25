@@ -2,27 +2,16 @@
 
 namespace Dappur\Controller;
 
-use Abraham\TwitterOAuth\TwitterOAuth;
-use Carbon\Carbon;
-use Dappur\Dappurware\Email as E;
-use Dappur\Dappurware\Oauth2Utils;
-use Dappur\Model\Oauth2Providers;
-use Dappur\Model\Oauth2Users;
-use Dappur\Model\Users;
 use Interop\Container\ContainerInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
-use Slim\Exception\ContainerException;
 
-/**
- * @SuppressWarnings(PHPMD.StaticAccess)
- */
 class Oauth2 extends Controller
 {
     public function __construct(ContainerInterface $container)
     {
         parent::__construct($container);
-        $this->oauthUtils = new Oauth2Utils($container);
+        $this->oauthUtils = new \Dappur\Dappurware\Oauth2($container);
     }
 
     /**
@@ -32,10 +21,14 @@ class Oauth2 extends Controller
     {
         $slug = $request->getAttribute('route')->getArgument('slug');
 
-        $provider = Oauth2Providers::where('slug', $slug)->where('status', 1)->first();
+        $provider = \Dappur\Model\Oauth2Providers::where('slug', $slug)->where('status', 1)->first();
 
         if (!$provider) {
             $this->flash->addMessage('danger', 'Oauth2 provider not found.');
+            return $this->oauthRedirect();
+        }
+        if ($request->getParam('error')) {
+            $this->flash->addMessage('danger', 'Oauth2 Error: ' . $request->getParam('error_description'));
             return $this->oauthRedirect();
         }
 
@@ -73,7 +66,8 @@ class Oauth2 extends Controller
 
     private function processOauthUser($userInfo, $provider)
     {
-        $oauthUser = Oauth2Users::where('uid', $userInfo['uid'])
+
+        $oauthUser = \Dappur\Model\Oauth2Users::where('uid', $userInfo['uid'])
              ->where('provider_id', $provider->id)
              ->first();
 
@@ -91,13 +85,16 @@ class Oauth2 extends Controller
         // Check user email if exists in array
         $emailCheck = false;
         if (isset($userInfo['email']) && $userInfo['email'] != "") {
-            $emailCheck = Users::where('email', $userInfo['email'])->first();
+            $emailCheck = \Dappur\Model\Users::where('email', $userInfo['email'])->first();
         }
+
 
         // Create account if email doesnt exist
         if (!$emailCheck) {
             return $this->createUser($userInfo, $provider);
         }
+
+
 
         // Create Oauth2 entry for existing user
         return $this->createOauth2User($emailCheck, $userInfo, $provider);
@@ -114,7 +111,7 @@ class Oauth2 extends Controller
 
     private function updateOauth2User(array $userInfo, $provider)
     {
-        $oauthUser = Oauth2Users::where('uid', $userInfo['uid'])
+        $oauthUser = \Dappur\Model\Oauth2Users::where('uid', $userInfo['uid'])
             ->where('provider_id', $provider->id)
             ->first();
 
@@ -128,7 +125,7 @@ class Oauth2 extends Controller
         }
         $oauthUser->expires = null;
         if ($userInfo['expires_in'] != 0) {
-            $oauthUser->expires = Carbon::now()->addSeconds($userInfo['expires_in']);
+            $oauthUser->expires = \Carbon\Carbon::now()->addSeconds($userInfo['expires_in']);
         }
 
         $oauthUser->save();
@@ -137,6 +134,11 @@ class Oauth2 extends Controller
         $this->auth->login($user);
 
         $this->flash->addMessage('success', "You have been logged in using your {$provider->name} account.");
+
+        if ($this->auth->inRole('admin')) {
+            return $this->oauthRedirect('dashboard');
+        }
+
         return $this->oauthRedirect('home');
     }
 
@@ -164,12 +166,12 @@ class Oauth2 extends Controller
             strtolower($userInfo['first_name'] . $userInfo['last_name'])
         );
         $username = $originalUsername;
-        $usernameCheck = Users::where('username', $username)->first();
+        $usernameCheck = \Dappur\Model\Users::where('username', $username)->first();
         $usernameCount = 0;
         while ($usernameCheck) {
             $usernameCount++;
             $username = $originalUsername . $usernameCount;
-            $usernameCheck = Users::where('username', $username)->first();
+            $usernameCheck = \Dappur\Model\Users::where('username', $username)->first();
         }
         $userDetails['username'] = $username;
 
@@ -180,18 +182,20 @@ class Oauth2 extends Controller
         // Add user permissions
         $userDetails['permissions'] = ['user.delete' => 0];
 
+
+
         // Create user account
         $user = $this->auth->registerAndActivate($userDetails);
         $role->users()->attach($user);
 
         // Send Welcome email
-        $sendEmail = new E($this->container);
+        $sendEmail = new \Dappur\Dappurware\Email($this->container);
         $sendEmail = $sendEmail->sendTemplate(array($user->id), 'registration');
         $this->flash('success', 'Your account has been created.');
         $this->auth->login($user);
 
         // Add Oauth record
-        $oauthUser = new Oauth2Users;
+        $oauthUser = new \Dappur\Model\Oauth2Users;
         $oauthUser->user_id = $user->id;
         $oauthUser->provider_id = $provider->id;
         $oauthUser->uid = $userInfo['uid'];
@@ -205,7 +209,7 @@ class Oauth2 extends Controller
         }
         $oauthUser->expires = null;
         if ($userInfo['expires_in'] != 0) {
-            $oauthUser->expires = Carbon::now()->addSeconds($userInfo['expires_in']);
+            $oauthUser->expires = \Carbon\Carbon::now()->addSeconds($userInfo['expires_in']);
         }
         $oauthUser->save();
 
@@ -217,7 +221,7 @@ class Oauth2 extends Controller
         $this->auth->login($user);
 
         // Add Oauth record
-        $oauthUser = new Oauth2Users;
+        $oauthUser = new \Dappur\Model\Oauth2Users;
         $oauthUser->user_id = $user->id;
         $oauthUser->provider_id = $provider->id;
         $oauthUser->uid = $userInfo['uid'];
@@ -231,7 +235,7 @@ class Oauth2 extends Controller
         }
         $oauthUser->expires = null;
         if ($userInfo['expires_in'] != 0) {
-            $oauthUser->expires = Carbon::now()->addSeconds($userInfo['expires_in']);
+            $oauthUser->expires = \Carbon\Carbon::now()->addSeconds($userInfo['expires_in']);
         }
 
         $oauthUser->save();

@@ -5,37 +5,13 @@ use Illuminate\Database\Schema\Blueprint;
 
 class AddOauth extends Migration
 {
-    /**
-    *
-    * Write your reversible migrations using this method.
-    *
-    * Dappur Framework uses Laravel Eloquent ORM as it's database connector.
-    *
-    * More information on writing eloquent migrations is available here:
-    * https://laravel.com/docs/5.4/migrations
-    *
-    * Remember to use both the up() and down() functions in order to be able to roll back.
-    *
-    *   Create Table Sample
-    *   $this->schema->create('sample', function (Blueprint $table) {
-    *       $table->increments('id');
-    *       $table->string('email')->unique();
-    *       $table->string('last_name')->nullable();
-    *       $table->string('first_name')->nullable();
-    *       $table->timestamps();
-    *   });
-    *
-    *   Drop Table Sample
-    *   $this->schema->dropIfExists('sample');
-    */
-    
     public function up()
     {
         $this->schema->create('oauth2_providers', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name')->unique();
             $table->string('slug')->unique();
-            $table->text('scopes')->nullable();
+            $table->text('scopes')->default("");
             $table->string('authorize_url');
             $table->string('token_url');
             $table->string('resource_url');
@@ -85,7 +61,7 @@ class AddOauth extends Migration
             array(
                 "name" => "Twitter",
                 "slug" => "twitter",
-                "scopes" => null,
+                "scopes" => "",
                 "authorize_url" => "https://api.twitter.com/oauth/authorize",
                 "token_url" => "https://api.twitter.com/oauth2/token",
                 "resource_url" => "account/verify_credentials",
@@ -96,10 +72,10 @@ class AddOauth extends Migration
             array(
                 "name" => "LinkedIn",
                 "slug" => "linkedin",
-                "scopes" => null,
+                "scopes" => "r_liteprofile,r_emailaddress",
                 "authorize_url" => "https://www.linkedin.com/oauth/v2/authorization",
                 "token_url" => "https://www.linkedin.com/oauth/v2/accessToken",
-                "resource_url" => "https://api.linkedin.com/v1/people/~:(id,email-address,first-name,last-name)?format=json",
+                "resource_url" => "https://api.linkedin.com/v2/me",
                 "button" => "linkedin",
                 "login" => 0,
                 "status" => 0
@@ -123,6 +99,17 @@ class AddOauth extends Migration
                 "token_url" => "https://github.com/login/oauth/access_token",
                 "resource_url" => "https://api.github.com/user",
                 "button" => "github",
+                "login" => 0,
+                "status" => 0
+            ),
+            array(
+                "name" => "Microsoft Live",
+                "slug" => "microsoft",
+                "scopes" => "wl.basic,wl.emails,wl.signin",
+                "authorize_url" => "https://login.live.com/oauth20_authorize.srf",
+                "token_url" => "https://login.live.com/oauth20_token.srf",
+                "resource_url" => "https://apis.live.net/v5.0/me",
+                "button" => "microsoft",
                 "login" => 0,
                 "status" => 0
             )

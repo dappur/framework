@@ -15,4 +15,16 @@ class Emails extends Model
         'html',
         'plain_text'
     ];
+
+    public function recentStatus()
+    {
+        return $this->hasOne('\Dappur\Model\EmailsStatus', 'email_id', 'id')
+            ->orderBy('created_at', 'DESC');
+    }
+
+    public function status()
+    {
+        return $this->hasMany('\Dappur\Model\EmailsStatus', 'email_id', 'id')
+            ->orderBy('created_at', 'DESC');
+    }
 }

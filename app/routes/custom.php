@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 // Load Databased Routes
 $customRoutes = \Dappur\Model\Routes::select('name', 'pattern')->where('status', 1)->get();

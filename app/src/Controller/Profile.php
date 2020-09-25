@@ -2,17 +2,9 @@
 
 namespace Dappur\Controller;
 
-use Dappur\Model\Oauth2Providers;
-use Dappur\Model\Oauth2Users;
-use Dappur\Model\Users;
-use Dappur\Model\UsersProfile;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
-use Respect\Validation\Validator as V;
 
-/**
- * @SuppressWarnings(PHPMD.StaticAccess)
- */
 class Profile extends Controller
 {
     /**
@@ -147,10 +139,10 @@ class Profile extends Controller
 
                     $updateUser = $this->auth->update($user, $newInformation);
 
-                    $updateProfile = UsersProfile::where('user_id', $user->id)->first();
+                    $updateProfile = \Dappur\Model\UsersProfile::where('user_id', $user->id)->first();
 
                     if (!$updateProfile) {
-                        $updateProfile = new UsersProfile;
+                        $updateProfile = new \Dappur\Model\UsersProfile;
                         $updateProfile->user_id = $user->id;
                         $updateProfile->save();
                     }
@@ -170,10 +162,10 @@ class Profile extends Controller
             }
         }
 
-        $userProviders = Oauth2Users::where('user_id', $user->id)->get()->pluck('provider_id');
+        $userProviders = \Dappur\Model\Oauth2Users::where('user_id', $user->id)->get()->pluck('provider_id');
 
         // Prepare Oauth2 Providers
-        $providers = Oauth2Providers::where('status', 1)->get();
+        $providers = \Dappur\Model\Oauth2Providers::where('status', 1)->get();
         $clientIds = array();
         foreach ($providers as $ovalue) {
             $clientIds[$ovalue->id] = $this->settings['oauth2'][$ovalue->slug]['client_id'];
@@ -215,10 +207,10 @@ class Profile extends Controller
 
                     $updateUser = $this->auth->update($user, $newInformation);
 
-                    $updateProfile = UsersProfile::where('user_id', $user->id)->first();
+                    $updateProfile = \Dappur\Model\UsersProfile::where('user_id', $user->id)->first();
 
                     if (!$updateProfile) {
-                        $updateProfile = new UsersProfile;
+                        $updateProfile = new \Dappur\Model\UsersProfile;
                         $updateProfile->user_id = $user->id;
                         $updateProfile->about = strip_tags($request->getParam('about'));
                         $updateProfile->save();
@@ -246,28 +238,28 @@ class Profile extends Controller
 
         $validateData = array(
             'first_name' => array(
-                'rules' => V::length(2, 25)->alnum('\'?!@#,."'),
+                'rules' => \Respect\Validation\Validator::length(2, 25),
                 'messages' => array(
                     'length' => 'Must be between 2 and 25 characters.',
                     'alpha' => 'Contains an invalid character.'
                     )
             ),
             'last_name' => array(
-                'rules' => V::length(2, 25)->alnum('\'?!@#,."'),
+                'rules' => \Respect\Validation\Validator::length(2, 25),
                 'messages' => array(
                     'length' => 'Must be between 2 and 25 characters.',
                     'alpha' => 'Contains an invalid character.'
                     )
             ),
             'email' => array(
-                'rules' => V::noWhitespace()->email(),
+                'rules' => \Respect\Validation\Validator::noWhitespace()->email(),
                 'messages' => array(
                     'email' => 'Enter a valid email address.',
                     'noWhitespace' => 'Must not contain any spaces.'
                     )
             ),
             'username' => array(
-                'rules' => V::noWhitespace()->alnum(),
+                'rules' => \Respect\Validation\Validator::noWhitespace()->alnum(),
                 'messages' => array(
                     'slug' => 'Must be alpha numeric with no spaces.',
                     'noWhitespace' => 'Must not contain any spaces.'
@@ -277,7 +269,7 @@ class Profile extends Controller
 
         //Check username
         if ($user->username != $this->request->getParam('username')) {
-            $checkUsername = Users::where('id', '!=', $user->id)
+            $checkUsername = \Dappur\Model\Users::where('id', '!=', $user->id)
                 ->where('username', '=', $this->request->getParam('username'))
                 ->first();
             if ($checkUsername) {
@@ -288,7 +280,7 @@ class Profile extends Controller
 
         //Check Email
         if ($user->email != $this->request->getParam('email')) {
-            $checkEmail = Users::where('id', '!=', $user->id)
+            $checkEmail = \Dappur\Model\Users::where('id', '!=', $user->id)
                 ->where('email', '=', $this->request->getParam('email'))
                 ->first();
             if ($checkEmail) {

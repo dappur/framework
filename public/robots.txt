@@ -1,0 +1,4 @@
+# Default Robots.txt
+User-agent: *
+Disallow: /dashboard/
+Disallow: /uploads/

@@ -5,16 +5,6 @@ use Illuminate\Database\Schema\Blueprint;
 
 class InitDatabase extends Migration
 {
-    /**
-    *
-    * Write your reversible migrations using this method.
-    *
-    * More information on writing eloquent migrations is available here:
-    * https://laravel.com/docs/5.4/migrations
-    *
-    * Remember to use both the up() and down() functions in order to be able to roll back.
-    */
-   
     public function up()
     {
         // Create Users Table
@@ -115,7 +105,7 @@ class InitDatabase extends Migration
             $table->integer('type_id')->unsigned()->nullable();
             $table->string('name')->unique();
             $table->string('description')->nullable();
-            $table->text('value')->nullable();
+            $table->text('value');
             $table->timestamps();
             $table->foreign('group_id')->references('id')->on('config_groups')->onDelete('set null');
             $table->foreign('type_id')->references('id')->on('config_types')->onDelete('set null');
@@ -136,7 +126,8 @@ class InitDatabase extends Migration
                 'blog_tags.*' => true,
                 'blog_categories.*' => true,
                 'dashboard.*' => true,
-                'contact.*' => true
+                'contact.*' => true,
+                'analytics.*' => true
             )
         ));
 
@@ -169,7 +160,8 @@ class InitDatabase extends Migration
                 'blog_tags.delete' => false,
                 'blog_categories.*' => true,
                 'blog_categories.delete' => false,
-                'dashboard.*' => true
+                'dashboard.*' => true,
+                'analytics.view' => true
             )
         ));
 
@@ -209,7 +201,8 @@ class InitDatabase extends Migration
                 'permission.view' => true,
                 'blog.view' => true,
                 'dashboard.view' => true,
-                'contact.view' => true
+                'contact.view' => true,
+                'analytics.view' => true
             )
         ));
 
@@ -267,7 +260,7 @@ class InitDatabase extends Migration
         }
 
         //Initial Config Table Options
-        $init_config = array(
+        $initConfig = array(
             array(1, 'timezone', 'Site Timezone', 1, 'America/Los_Angeles'),
             array(1, 'site-name', 'Site Name', 2, 'Dappur'),
             array(1, 'domain', 'Site Domain', 2, 'example.com'),
@@ -279,6 +272,7 @@ class InitDatabase extends Migration
             array(1, 'header-logo', 'Header Logo', 5, 'https://res.cloudinary.com/dappur/image/upload/c_scale,h_75/v1479072913/site-images/logo-horizontal.png'),
             array(2, 'dashboard-theme', 'Dashboard Theme', 3, 'AdminLTE'),
             array(2, 'dashboard-logo', 'Dashboard Logo', 5, 'https://res.cloudinary.com/dappur/image/upload/c_scale,h_75/v1479072913/site-images/logo-horizontal.png'),
+            array(2, 'analytics-view-id', 'Google Analytics View ID', 2, ''),
             array(1, 'ga', 'Google Analytics UA', 2, ''),
             array(1, 'activation', 'Activation Required', 6, 1),
             array(1, 'maintenance-mode', 'Maintenance Mode', 6, 0),
@@ -297,11 +291,12 @@ class InitDatabase extends Migration
             array(4, 'contact-country', 'Contact Country', 2, 'USA'),
             array(3, 'contact-map-url', 'Map Iframe Url', 2, 'https://goo.gl/oDcRix'),
             array(3, 'contact-map-show', 'Show Map', 6, 1),
-            array(3, 'contact-send-email', 'Send Confirmation Email', 6, 1)
+            array(3, 'contact-confirmation', 'Confirmation Email', 2, ""),
+            array(3, 'contact-send-email', 'Send Confirmation to User', 6, 1)
         );
 
         // Seed Config Table
-        foreach ($init_config as $key => $value) {
+        foreach ($initConfig as $key => $value) {
             $config = new Dappur\Model\Config;
             $config->group_id = $value[0];
             $config->name = $value[1];
@@ -319,7 +314,6 @@ class InitDatabase extends Migration
             $table->string('description')->nullable();
             $table->string('subject')->nullable();
             $table->text('html')->nullable();
-            $table->text('plain_text')->nullable();
             $table->text('placeholders')->nullable();
             $table->timestamps();
         });
@@ -337,6 +331,16 @@ class InitDatabase extends Migration
             $table->foreign('template_id')->references('id')->on('emails_templates')->onDelete('set null');
         });
 
+        // Email Status
+        $this->schema->create('emails_status', function (Blueprint $table) {
+            $table->increments('id');
+            $table->integer('email_id')->unsigned()->nullable();
+            $table->string('status');
+            $table->string('details')->nullable();
+            $table->foreign('email_id')->references('id')->on('emails')->onDelete('set null');
+            $table->timestamps();
+        });
+
         // Email Drafts
         $this->schema->create('emails_drafts', function (Blueprint $table) {
             $table->increments('id');
@@ -344,7 +348,6 @@ class InitDatabase extends Migration
             $table->text('send_to')->nullable();
             $table->string('subject')->nullable();
             $table->text('html')->nullable();
-            $table->text('plain_text')->nullable();
             $table->timestamps();
         });
 
@@ -357,7 +360,6 @@ class InitDatabase extends Migration
                 "description" => 'Password reset email to user',
                 "subject" => 'Password Reset Request from {{  settings_site_name  }}',
                 "html" => '<h1>{{ settings_site_name }}</h1>' . "\r\n\r\n" . '<p>Hello&nbsp;{{ user_first_name }},</p>' . "\r\n\r\n" . '<p>You are receiving this email because you recently requested a password reset. &nbsp;</p>' . "\r\n\r\n" . '<h3><a href="{{ reset_url }}">Reset Password Now</a></h3>'."\r\n\r\n".'<p>If you did not request this reset, then please disregard this email.</p>' . "\r\n\r\n" . '<p>Thank You,</p>' . "\r\n\r\n" . '<p>{{ settings_site_name }}</p>' . "\r\n\r\n",
-                "plain_text" => 'Hello {{ user_first_name }},' . "\r\n\r\n" . 'You are receiving this email because you recently requested a password reset.  To continue resetting your password, please click the following link:' . "\r\n\r\n" . '{{ reset_url }}' . "\r\n\r\n" . 'If you did not request this reset, then please disregard this email.' . "\r\n\r\n" . 'Thank You,' . "\r\n\r\n" . '{{ settings_site_name }}',
                 "placeholders" => '["reset_url"]'
             ),
             array(
@@ -367,7 +369,6 @@ class InitDatabase extends Migration
                 "description" => 'Registration Complete Email',
                 "subject" => 'Welcome to {{  settings_site_name  }}, {{  user_first_name  }}!',
                 "html" => '<h1>{{ settings_site_name }}</h1>' . "\r\n\r\n" . '<p>Hello&nbsp;{{ user_first_name }},</p>' . "\r\n\r\n" . '<p>Welcome to &nbsp;{{ settings_site_name }}. &nbsp;Here are your login details:</p>' . "\r\n\r\n" . '<p>Username:&nbsp;{{ user_username }}<br />' . "\r\n" . 'Password: Chosen at Registration</p>' . "\r\n\r\n" . '<h3><a href="https://{{ settings_domain }}">Visit&nbsp;{{ settings_site_name }}</a></h3>' . "\r\n\r\n" . '<p>Thank You,</p>'."\r\n\r\n".'<p>{{ settings_site_name }}</p>',
-                "plain_text" => 'Hello {{ user_first_name }},' . "\r\n\r\n" . 'Welcome to {{  settings_site_name  }}.  Here are your login details:' . "\r\n\r\n" . 'Username: {{  user_username  }}' . "\r\n" . 'Password: Chosen at Registration' . "\r\n\r\n" . 'Visit https://{{  settings_domain  }}' . "\r\n\r\n" . 'Thank You,' . "\r\n\r\n" . '{{ settings_site_name }}',
                 "placeholders" => null
             ),
             array(
@@ -377,7 +378,6 @@ class InitDatabase extends Migration
                 "description" => 'Account Activation Email',
                 "subject" => 'Activate Your {{  settings_site_name  }} Account',
                 "html" => '<h1>{{ settings_site_name }}</h1>'."\r\n\r\n".'<p>Hello&nbsp;{{ user_first_name }},</p>'."\r\n\r\n".'<p>Thank you for creating your account. &nbsp;In order to ensure the best possible experience, we require that you verify your email address before you can begin using your account. &nbsp;To do so, simply click the following link and you will be immediately logged in to your account.</p>'."\r\n\r\n".'<h3><a href="{{ confirm_url }}">Confirm Email Now</a></h3>'."\r\n\r\n".'<p>Thank You,</p>'."\r\n\r\n".'<p>{{ settings_site_name }} Team</p>',
-                "plain_text" => '{{ settings_site_name }}' . "\r\n\r\n" . 'Hello {{  user_first_name  }},' . "\r\n\r\n" . 'Thank you for creating your account.  In order to ensure the best possible experience, we require that you verify your email address before you can begin using your account.  To do so, simply click the following link and you will be immediately logged in to your account.' . "\r\n\r\n" . '{{ confirm_url }}' . "\r\n\r\n" . 'Thank You,' . "\r\n\r\n" . '{{ settings_site_name }} Team',
                 "placeholders" => '["confirm_url"]'
             ),
             array(
@@ -387,7 +387,6 @@ class InitDatabase extends Migration
                 "description" => 'Contact confirmation sent to the user',
                 "subject" => 'Contact Confirmation from {{  settings_site_name  }}',
                 "html" => '<h1>{{ settings_site_name }}</h1>'."\r\n\r\n".'<p>Hello {{ name }},</p>'."\r\n\r\n".'<p>We have received your contact request and if it requires a reply, we will be in touch with you soon. &nbsp;here is the information that you submitted:</p>'."\r\n\r\n".'<p><strong>Phone:</strong>&nbsp;{{ phone }}<br />'."\r\n".'<strong>Comment:</strong>&nbsp;{{ comment }}</p>'."\r\n\r\n".'<h3><a href="https://{{ settings_domain }}">Visit {{ settings_site_name }}</a></h3>'."\r\n\r\n".'<p>Thank You,</p>'."\r\n\r\n".'<p>{{ settings_site_name }} Team</p>',
-                "plain_text" => '{{ settings_site_name }}'."\r\n\r\n".'Hello {{ name }},'."\r\n\r\n".'We have received your contact request and if it requires a reply, we will be in touch with you soon. Here is the information that you submitted:'."\r\n\r\n".'Name: {{ name }}'."\r\n".'Phone: {{ phone }}'."\r\n".'Comment: {{ comment }}'."\r\n\r\n".'Visit https://{{  settings_domain  }}'."\r\n\r\n".'Thank You,'."\r\n\r\n".'{{ settings_site_name }} Team',
                 "placeholders" => '["name","phone","comment"]'
             )
         );
@@ -401,7 +400,6 @@ class InitDatabase extends Migration
             $add_template->description = $tevalue['description'];
             $add_template->subject = $tevalue['subject'];
             $add_template->html = $tevalue['html'];
-            $add_template->plain_text = $tevalue['plain_text'];
             $add_template->placeholders = $tevalue['placeholders'];
             $add_template->save();
         }
@@ -556,7 +554,7 @@ class InitDatabase extends Migration
             )
         );
 
-        foreach ($blog_posts as $bkey => $bvalue) {
+        foreach ($blog_posts as $bvalue) {
             $add_post = new \Dappur\Model\BlogPosts;
             $add_post->id = $bvalue['id'];
             $add_post->user_id = $bvalue['user_id'];
@@ -590,7 +588,7 @@ class InitDatabase extends Migration
             )
         );
 
-        foreach ($blog_posts_tags as $bptkey => $bptvalue) {
+        foreach ($blog_posts_tags as $bptvalue) {
             $add_bpt = new \Dappur\Model\BlogPostsTags;
             $add_bpt->post_id = $bptvalue['post_id'];
             $add_bpt->tag_id = $bptvalue['tag_id'];
@@ -614,29 +612,29 @@ class InitDatabase extends Migration
             )
         );
 
-        foreach ($post_comments as $ckey => $cvalue) {
-            $add_comment = new \Dappur\Model\BlogPostsComments;
-            $add_comment->id = $cvalue['id'];
-            $add_comment->user_id = $cvalue['user_id'];
-            $add_comment->post_id = $cvalue['post_id'];
-            $add_comment->comment = $cvalue['comment'];
-            $add_comment->status = $cvalue['status'];
-            $add_comment->save();
+        foreach ($post_comments as $cvalue) {
+            $addComment = new \Dappur\Model\BlogPostsComments;
+            $addComment->id = $cvalue['id'];
+            $addComment->user_id = $cvalue['user_id'];
+            $addComment->post_id = $cvalue['post_id'];
+            $addComment->comment = $cvalue['comment'];
+            $addComment->status = $cvalue['status'];
+            $addComment->save();
         }
 
-        $add_reply = new \Dappur\Model\BlogPostsReplies;
-        $add_reply->user_id = 1;
-        $add_reply->comment_id = 1;
-        $add_reply->reply = 'This is a sample reply.';
-        $add_reply->status = 1;
-        $add_reply->save();
+        $addReply = new \Dappur\Model\BlogPostsReplies;
+        $addReply->user_id = 1;
+        $addReply->comment_id = 1;
+        $addReply->reply = 'This is a sample reply.';
+        $addReply->status = 1;
+        $addReply->save();
 
-        $add_reply = new \Dappur\Model\BlogPostsReplies;
-        $add_reply->user_id = 1;
-        $add_reply->comment_id = 1;
-        $add_reply->reply = 'This is a sample pending reply.';
-        $add_reply->status = 0;
-        $add_reply->save();
+        $addReply = new \Dappur\Model\BlogPostsReplies;
+        $addReply->user_id = 1;
+        $addReply->comment_id = 1;
+        $addReply->reply = 'This is a sample pending reply.';
+        $addReply->status = 0;
+        $addReply->save();
 
         $config = new Dappur\Model\ConfigGroups;
         $config->name = "Blog";
@@ -645,20 +643,38 @@ class InitDatabase extends Migration
         $config->save();
 
         //Initial Config Table Options
-        $init_config = array(
-            array('group_id' => $config->id, 'name' => 'blog-enabled', 'description' => 'Enable Blog', 'type_id' => 6, 'value' => 1),
-            array('group_id' => $config->id, 'name' => 'blog-per-page', 'description' => 'Blog Posts Per Page', 'type_id' => 2, 'value' => 2),
-            array('group_id' => $config->id, 'name' => 'blog-approve-comments', 'description' => 'Approve Comments', 'type_id' => 6, 'value' => 1),
+        $initConfig = array(
+            array(
+                'group_id' => $config->id,
+                'name' => 'blog-enabled',
+                'description' => 'Enable Blog',
+                'type_id' => 6,
+                'value' => 1
+            ),
+            array(
+                'group_id' => $config->id,
+                'name' => 'blog-per-page',
+                'description' => 'Blog Posts Per Page',
+                'type_id' => 2,
+                'value' => 2
+            ),
+            array(
+                'group_id' => $config->id,
+                'name' => 'blog-approve-comments',
+                'description' => 'Approve Comments',
+                'type_id' => 6,
+                'value' => 1
+            )
         );
 
-        foreach ($init_config as $ikey => $ivalue) {
-            $ins_config = new \Dappur\Model\Config;
-            $ins_config->group_id = $ivalue['group_id'];
-            $ins_config->type_id = $ivalue['type_id'];
-            $ins_config->name = $ivalue['name'];
-            $ins_config->description = $ivalue['description'];
-            $ins_config->value = $ivalue['value'];
-            $ins_config->save();
+        foreach ($initConfig as $ivalue) {
+            $insConfig = new \Dappur\Model\Config;
+            $insConfig->group_id = $ivalue['group_id'];
+            $insConfig->type_id = $ivalue['type_id'];
+            $insConfig->name = $ivalue['name'];
+            $insConfig->description = $ivalue['description'];
+            $insConfig->value = $ivalue['value'];
+            $insConfig->save();
         }
     }
 

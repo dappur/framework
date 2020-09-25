@@ -2,8 +2,6 @@
 
 namespace Dappur\Controller;
 
-use Carbon\Carbon;
-use Jobby\Jobby;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 
@@ -25,7 +23,6 @@ class Cron extends Controller
         }
 
         $jobby = new \Jobby\Jobby();
-
         // Sample Job
         $jobby->add('SampleCron', [
             /* 'command' => 'ls', //Run a shell command */

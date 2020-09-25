@@ -3,7 +3,7 @@
 $app->group('/dashboard', function () use ($app, $container) {
 
     // Dashboard Home
-    $app->get('', 'Admin:dashboard')
+    $app->map(['GET', 'POST'], '', 'Admin:dashboard')
         ->setName('dashboard');
     // Contact Requests
     $app->map(['GET'], '/contact', 'Admin:contact')

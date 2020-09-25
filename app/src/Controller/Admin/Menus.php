@@ -2,16 +2,10 @@
 
 namespace Dappur\Controller\Admin;
 
-use Carbon\Carbon;
 use Dappur\Controller\Controller as Controller;
-use Dappur\Dappurware\Utils;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
-use Respect\Validation\Validator as V;
 
-/**
- * @SuppressWarnings(PHPMD.StaticAccess)
- */
 class Menus extends Controller
 {
     /**
@@ -23,12 +17,12 @@ class Menus extends Controller
             return $check;
         }
 
-
+        $roles = new \Dappur\Model\Roles;
         return $this->view->render(
             $response,
             'pages.twig',
             [
-                "roles" => \Dappur\Model\Roles::get()
+                "roles" => $roles->get()
             ]
         );
     }
@@ -45,8 +39,8 @@ class Menus extends Controller
             $output['message'] = "Permission denied";
             return $response->withJson($output);
         }
-
-        $menu = \Dappur\Model\Menus::find($request->getParam('menu_id'));
+        $menus = new \Dappur\Model\Menus;
+        $menu = $menus->find($request->getParam('menu_id'));
 
         if (!$menu) {
             $output['message'] = "Menu not found";
@@ -74,7 +68,8 @@ class Menus extends Controller
             return $response->withJson($output);
         }
 
-        $menu = \Dappur\Model\Menus::find($request->getParam('menu_id'));
+        $menus = new \Dappur\Model\Menus;
+        $menu = $menus->find($request->getParam('menu_id'));
 
         if (!$menu) {
             $output['message'] = "Menu not found";
@@ -107,12 +102,15 @@ class Menus extends Controller
         }
         asort($routeNames);
 
+        $roles = new \Dappur\Model\Roles;
+        $menus = new \Dappur\Model\Menus;
+
         return $this->view->render(
             $response,
             'menus.twig',
             [
-                "roles" => \Dappur\Model\Roles::get(),
-                "menus" => \Dappur\Model\Menus::get(),
+                "roles" => $roles->get(),
+                "menus" => $menus->get(),
                 "routes" => $routeNames,
                 "configOptions" => \Dappur\Model\Config::where('type_id', 6)->get()
             ]
@@ -166,8 +164,8 @@ class Menus extends Controller
             $output['message'] = "Permission denied";
             return $response->withJson($output);
         }
-
-        $menu = \Dappur\Model\Menus::find($request->getParam('menu_id'));
+        $menus = new \Dappur\Model\Menus;
+        $menu = $menus->find($request->getParam('menu_id'));
 
         if (!$menu) {
             $output['message'] = "Menu doesn't exist.";
@@ -198,7 +196,8 @@ class Menus extends Controller
         }
 
         if ($request->getparam("all")) {
-            $menu = \Dappur\Model\Menus::get();
+            $menus = new \Dappur\Model\Menus;
+            $menu = $menus->get();
         }
 
         if (is_numeric($request->getparam("menu_id"))) {
@@ -213,13 +212,14 @@ class Menus extends Controller
         $final = array();
         $final['framework'] = $this->settings['framework'];
         $final['version'] = $this->settings['version'];
-        $final['menus'] = $menu;
+        $final['menus'] = $menu->toArray();
 
         $tempFile = tmpfile();
-        fwrite($tempFile, json_encode($final, JSON_PRETTY_PRINT));
+        fwrite($tempFile, json_encode($final, JSON_UNESCAPED_SLASHES));
         $metaDatas = stream_get_meta_data($tempFile);
         $filePath = $metaDatas['uri'];
-        return \Dappur\Dappurware\FileResponse::getResponse(
+        $fileResponse = new \Dappur\Dappurware\FileResponse;
+        return $fileResponse->getResponse(
             $response,
             $filePath,
             "menu-dappur" .
@@ -262,7 +262,7 @@ class Menus extends Controller
 
         if ($import->status) {
             $return->status = "success";
-            $this->flash('success', 'Settings imported successfully');
+            $this->flash('success', 'Manu imported successfully');
         }
 
         if (!$import->status) {
@@ -291,7 +291,7 @@ class Menus extends Controller
         }
 
         foreach ($decoded->menus as $value) {
-            $route = $this->importMenu($value, $overwrite);
+            $this->importMenu($value, $overwrite);
         }
 
         $return->status = true;

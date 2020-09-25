@@ -14,7 +14,7 @@ if (empty(glob(__DIR__ . '/../app/views/*', GLOB_ONLYDIR))) {
             <a href="https://github.com/dappur/framework/blob/master/README.md">README</a>.'
         );
     }
-    die('Site Error');
+    die('No Theme');
 }
 
 $app = new Slim\App(array('settings' => $settings));

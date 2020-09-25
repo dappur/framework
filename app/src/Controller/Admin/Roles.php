@@ -3,11 +3,8 @@
 namespace Dappur\Controller\Admin;
 
 use Dappur\Controller\Controller as Controller;
-use Dappur\Model\RoleUsers;
-use Dappur\Model\Roles as R;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
-use Respect\Validation\Validator as V;
 
 /**
  * @SuppressWarnings(PHPMD.StaticAccess)
@@ -22,8 +19,8 @@ class Roles extends Controller
 
         if ($request->isPost()) {
             $this->validator->validate($request, [
-                'role_name' => V::length(2, 25)->alpha('\''),
-                'role_slug' => V::slug()
+                'role_name' => \Respect\Validation\Validator::length(2, 25)->alpha('\''),
+                'role_slug' => \Respect\Validation\Validator::slug()
             ]);
 
             if ($this->validator->isValid()) {
@@ -50,13 +47,12 @@ class Roles extends Controller
             return $check;
         }
 
-        $role = R::find($request->getParam('role_id'));
+        $role = \Dappur\Model\Roles::find($request->getParam('role_id'));
 
         if ($role && $role->id != 1) {
-
-            RoleUsers::where('role_id', '=', $request->getParam('role_id'))->delete();
+            \Dappur\Model\RoleUsers::where('role_id', '=', $request->getParam('role_id'))->delete();
             
-            $removeRole = R::find($request->getParam('role_id'));
+            $removeRole = \Dappur\Model\Roles::find($request->getParam('role_id'));
             if ($removeRole->delete()) {
                 $this->flash('success', 'Role has been removed.');
                 return $this->redirect($response, 'admin-users');
@@ -73,21 +69,21 @@ class Roles extends Controller
             return $check;
         }
 
-        $role = R::find($roleid);
+        $role = \Dappur\Model\Roles::find($roleid);
 
         if ($role) {
             if ($request->isPost()) {
                 // Validate Data
                 $validateData = array(
                     'role_name' => array(
-                        'rules' => V::length(2, 25)->alpha('\''),
+                        'rules' => \Respect\Validation\Validator::length(2, 25)->alpha('\''),
                         'messages' => array(
                             'length' => 'Must be between 2 and 25 characters.',
                             'alpha' => 'Letters only and can contain \''
                             )
                     ),
                     'role_slug' => array(
-                        'rules' => V::slug(),
+                        'rules' => \Respect\Validation\Validator::slug(),
                         'messages' => array(
                             'slug' => 'May only contain lowercase letters, numbers and hyphens.'
                             )

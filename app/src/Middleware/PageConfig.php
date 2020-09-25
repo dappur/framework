@@ -2,16 +2,13 @@
 
 namespace Dappur\Middleware;
 
-use Dappur\Model\ConfigGroups;
-use Dappur\Dappurware\SiteConfig;
-
 class PageConfig extends Middleware
 {
     public function __invoke($request, $response, $next)
     {
         $pageName = $request->getAttribute('route')->getName();
         
-        $pageConfig = ConfigGroups::where('page_name', '=', $pageName)->with('config')->get();
+        $pageConfig = \Dappur\Model\ConfigGroups::where('page_name', '=', $pageName)->with('config')->get();
 
         if ($pageConfig) {
             $cfg = array();
@@ -22,6 +19,9 @@ class PageConfig extends Middleware
             }
             
             $this->view->getEnvironment()->addGlobal('pageConfig', $cfg);
+            if (!empty($cfg)) {
+                $this->container->pageConfig = $cfg;
+            }
             return $next($request, $response);
         }
         

@@ -30,5 +30,5 @@ $app->map(['GET', 'POST'], '/login', 'Auth:login')
     ->add(new Dappur\Middleware\RouteName($container))
     ->add(new Dappur\Middleware\PageConfig($container));
 
-// Logout    
+// Logout
 $app->get('/logout', 'Auth:logout')->setName('logout');

@@ -13,7 +13,6 @@ class EmailsTemplates extends Model
         'description',
         'subject',
         'html',
-        'plain_text',
         'placeholders'
     ];
 }
