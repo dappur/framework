@@ -35,8 +35,8 @@ dbPass = database['password']
 
 Vagrant.configure("2") do |config|
     # ubuntu 18.04
-  	config.vm.box = "bento/ubuntu-18.04"
-    config.vm.box_version = "201912.03.0"
+	config.vm.box = "bento/ubuntu-20.04"
+    config.vm.box_version = "202303.13.0"
     # forward http port
   	config.vm.network "forwarded_port",
   		guest: httpPort,

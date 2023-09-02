@@ -11,22 +11,20 @@ DEBIANPASS=$(perl -e 'print map{("a".."z","A".."Z",0..9)[int(rand(62))]}(1..16)'
 BLOWFISH=$(perl -e 'print map{("a".."z","A".."Z",0..9)[int(rand(62))]}(1..32)');
 
 # mariadb unattended install
-sudo debconf-set-selections <<< "mariadb-server mysql-server/root_password password $ROOTPASS"
-sudo debconf-set-selections <<< "mariadb-server mysql-server/root_password_again password $ROOTPASS"
+sudo debconf-set-selections <<< "mysql-server mysql-server/root_password password $ROOTPASS"
+sudo debconf-set-selections <<< "mysql-server mysql-server/root_password_again password $ROOTPASS"
 
 # install php
-sudo apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0xF1656F24C74CD1D8
-sudo add-apt-repository 'deb [arch=amd64] http://mirror.zol.co.zw/mariadb/repo/10.5/ubuntu bionic main'
 sudo apt-get update
 sudo apt-get upgrade
-sudo apt-get install -y php composer php-pear php-fpm php-dev php-zip php-curl php-xmlrpc php-gd php-mysql php-mbstring php-xml libapache2-mod-php mariadb-server mariadb-client apache2 php-gettext
+sudo apt-get install -y php composer php-pear php-fpm php-dev php-zip php-curl php-xmlrpc php-gd php-mysql php-mbstring php-xml libapache2-mod-php mysql-server mysql-client apache2
 
 # configure mariadb
 if [ ! -f "/etc/mysql/mariadb.conf.d/dev.cnf" ]; then
   printf "[mysqld]\nplugin-load-add = auth_socket.so" | sudo tee -a /etc/mysql/mariadb.conf.d/dev.cnf
-  sudo sed -i "s/^bind-address.*/bind-address = 0.0.0.0\nport = ${DBPORT}/" /etc/mysql/mariadb.conf.d/50-server.cnf
+  sudo sed -i "s/^bind-address.*/bind-address = 0.0.0.0\nport = ${DBPORT}/" /etc/mysql/mysql.conf.d/mysqld.cnf
   # sudo sed -i "s/^# port.*/port = ${DBPORT}/" /etc/mysql/my.cnf
-  sudo systemctl restart mariadb.service
+  sudo systemctl restart mysql.service
 fi
 
 sudo debconf-set-selections <<< "phpmyadmin phpmyadmin/internal/skip-preseed boolean true"
@@ -68,15 +66,15 @@ sudo apt-get install -y phpmyadmin
 #fi
 
 # update php max size
-sudo sed -i "s|upload_max_filesize = 2M|upload_max_filesize = 200M|g" /etc/php/7.2/apache2/php.ini
-sudo sed -i "s|post_max_size = 8M|post_max_size = 200M|g" /etc/php/7.2/apache2/php.ini
+sudo sed -i "s|upload_max_filesize = 2M|upload_max_filesize = 200M|g" /etc/php/7.4/apache2/php.ini
+sudo sed -i "s|post_max_size = 8M|post_max_size = 200M|g" /etc/php/7.4/apache2/php.ini
 
 # update apache config
 sudo sed -i "s|DocumentRoot /var/www/html|DocumentRoot /vagrant/public\n\tAlias /phpmyadmin /usr/share/phpmyadmin\n\t<Directory /vagrant/public>\n\t\tOptions Indexes FollowSymLinks Includes ExecCGI\n\t\tAllowOverride All\n\t\tRequire all granted\n\t</Directory>|g" /etc/apache2/sites-enabled/000-default.conf
 sudo sed -i "s|:80|:${PORT}|g" /etc/apache2/sites-enabled/000-default.conf
 sudo sed -i "s|Listen 80|Listen ${PORT}|g" /etc/apache2/ports.conf
 
-sudo a2enmod rewrite
+sudo a2enmod rewrite 
 sudo service apache2 restart
 
 # create database if doesn't exist

@@ -11,7 +11,7 @@ class AddOauth extends Migration
             $table->increments('id');
             $table->string('name')->unique();
             $table->string('slug')->unique();
-            $table->text('scopes')->default("");
+            $table->text('scopes')->nullable();
             $table->string('authorize_url');
             $table->string('token_url');
             $table->string('resource_url');
