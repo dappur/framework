@@ -31,7 +31,7 @@
         "illuminate/database": "^5.8",
         "cartalyst/sentinel": "^2.0",
         "illuminate/events": "^5.8",
-        "symfony/http-foundation": "^4.3.8",
+        "symfony/http-foundation": "^5.4.46",
         "awurth/slim-validation": "^3.1",
         "monolog/monolog": "^1.24",
         "logentries/logentries-monolog-handler": "^2.1",
